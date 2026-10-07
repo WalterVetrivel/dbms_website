@@ -76,6 +76,8 @@ selectivities
 serializability
 Shamkant
 Silberschatz
+STARTROW
+STOPROW
 styleguide
 subtransaction
 subtransactions

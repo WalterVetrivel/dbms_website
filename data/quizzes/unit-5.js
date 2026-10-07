@@ -467,6 +467,66 @@
       answer: false,
       explain: "It cannot look inside values. The app must keep an extra key, such as city:Salem, holding the matching user ids.",
       link: "#ops"
+    },
+    /* 5.8 Column Based Systems */
+    {
+      id: "q5.8-01",
+      topic: "5.8",
+      type: "mcq",
+      question: "In a wide-column database, what is a column family?",
+      options: ["A group of related columns stored together", "A list of row keys", "A copy of a table on another server", "A join between two tables"],
+      answer: 0,
+      explain: "Columns are grouped into column families, such as info and marks, and each family is stored together.",
+      link: "#model"
+    },
+    {
+      id: "q5.8-02",
+      topic: "5.8",
+      type: "tf",
+      question: "In HBase, every column must be declared when the table is created.",
+      answer: false,
+      explain: "Only the column families are declared. Any row can add new columns inside a family at any time.",
+      link: "#hbase"
+    },
+    {
+      id: "q5.8-03",
+      topic: "5.8",
+      type: "mcq",
+      question: "Row 102 has no OS mark. How does a wide-column store keep this?",
+      options: ["As NULL, which takes space", "As zero", "The cell is simply not stored", "It refuses to insert the row"],
+      answer: 2,
+      explain: "Missing cells are not stored at all, so sparse rows cost nothing extra.",
+      link: "#model"
+    },
+    {
+      id: "q5.8-04",
+      topic: "5.8",
+      type: "multi",
+      question: "Which are column-based (wide-column) NoSQL databases? Select all that apply.",
+      options: ["Apache HBase", "Apache Cassandra", "CouchDB", "Neo4j"],
+      answer: [0, 1],
+      explain: "HBase and Cassandra are wide-column stores. CouchDB is a document store and Neo4j is a graph database.",
+      link: "#what"
+    },
+    {
+      id: "q5.8-05",
+      topic: "5.8",
+      type: "mcq",
+      question: "In the Cassandra table PRIMARY KEY ((sensor_id, day), read_at), what does read_at do?",
+      options: ["Chooses the server", "Sorts rows inside a partition (clustering column)", "Encrypts the data", "Makes a join possible"],
+      answer: 1,
+      explain: "(sensor_id, day) is the partition key that picks the servers. read_at is a clustering column that orders rows inside the partition.",
+      link: "#cassandra"
+    },
+    {
+      id: "q5.8-06",
+      topic: "5.8",
+      type: "mcq",
+      question: "Why are writes fast in HBase and Cassandra?",
+      options: ["They skip writing to disk", "Writes are appended to a log and a memory table, not updated in place", "They lock the whole table", "They use two-phase commit"],
+      answer: 1,
+      explain: "A write is added to a commit log and a sorted table in memory, then flushed as a new file. Appending is much faster than updating in place.",
+      link: "#writes"
     }
   ]);
 })();
