@@ -185,7 +185,7 @@ for (const f of htmlFiles) {
   const html = fs.readFileSync(f, "utf8");
   const main = (html.match(/<main[\s\S]*?<\/main>/) || [""])[0]
     .replace(/<(pre|code|table|script|style|noscript)[\s\S]*?<\/\1>/g, " ");
-  const paras = [...main.matchAll(/<(p|li|dd)[^>]*>([\s\S]*?)<\/\1>/g)].map((m) => stripTags(m[2]));
+  const paras = [...main.matchAll(/<(p|li|dd)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/g)].map((m) => stripTags(m[2]));
   const text = paras.map((p) => p.trim().replace(/[^.!?]$/, "$&.")).join(" ").replace(/&[a-z]+;/g, " ");
   const score = flesch(text);
   if (score === null) continue;

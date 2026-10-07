@@ -277,6 +277,76 @@
       answer: 1,
       explain: "MongoDB is a document database. Redis is key-value, Neo4j is a graph database and MySQL is relational.",
       link: "#types"
+    },
+    /* 5.5 CAP Theorem */
+    {
+      id: "q5.5-01",
+      topic: "5.5",
+      type: "mcq",
+      question: "In the CAP theorem, what does consistency (C) mean?",
+      options: ["The data obeys all constraints", "Every read gets the most recent write, or an error", "Every request gets a response", "The system works when the network splits"],
+      answer: 1,
+      explain: "CAP consistency means every copy shows the latest value. Obeying constraints is the C in ACID, which is different.",
+      link: "#three"
+    },
+    {
+      id: "q5.5-02",
+      topic: "5.5",
+      type: "mcq",
+      question: "What does the CAP theorem state?",
+      options: ["A distributed system can guarantee all three of C, A and P", "A distributed system can guarantee at most two of C, A and P at the same time", "Only NoSQL systems can be partition tolerant", "Consistency is always more important than availability"],
+      answer: 1,
+      explain: "A distributed system with replicated data can guarantee at most two of consistency, availability and partition tolerance at once.",
+      link: "#theorem"
+    },
+    {
+      id: "q5.5-03",
+      topic: "5.5",
+      type: "mcq",
+      question: "During a network partition, a server answers a read from its own old copy. Which guarantee has it given up?",
+      options: ["Availability", "Partition tolerance", "Consistency", "Durability"],
+      answer: 2,
+      explain: "It answered, so it is available, but the answer may be old, so it is not consistent.",
+      link: "#why"
+    },
+    {
+      id: "q5.5-04",
+      topic: "5.5",
+      type: "mcq",
+      question: "Which system is usually given as an example of an AP system?",
+      options: ["HBase", "Apache Cassandra", "MySQL on one server", "MongoDB with default settings"],
+      answer: 1,
+      explain: "Cassandra keeps answering during a partition and syncs copies later. HBase and MongoDB (default) are CP; MySQL on one server is CA.",
+      link: "#choices"
+    },
+    {
+      id: "q5.5-05",
+      topic: "5.5",
+      type: "mcq",
+      question: "A train booking system must never sell one seat twice. Which choice suits it best?",
+      options: ["CP", "AP", "Neither; it should drop partition tolerance", "BASE with eventual consistency"],
+      answer: 0,
+      explain: "An old seat count could sell a seat twice. Refusing for a while is better than a wrong answer, so CP fits.",
+      link: "#choosing"
+    },
+    {
+      id: "q5.5-06",
+      topic: "5.5",
+      type: "tf",
+      question: "In a system spread across many servers, partition tolerance cannot really be given up, so the real choice is between consistency and availability.",
+      answer: true,
+      explain: "Network failures will happen across many servers. So during a partition the system must pick C or A.",
+      link: "#why"
+    },
+    {
+      id: "q5.5-07",
+      topic: "5.5",
+      type: "multi",
+      question: "Which of these describe an AP system? Select all that apply.",
+      options: ["Every working server keeps answering during a partition", "Copies become the same later (eventual consistency)", "Some requests get “try again later” during a partition", "Users may read old data for a short time"],
+      answer: [0, 1, 3],
+      explain: "AP systems stay available and allow old reads; copies agree later. Refusing requests is what CP systems do.",
+      link: "#choices"
     }
   ]);
 })();
