@@ -587,6 +587,67 @@
       answer: true,
       explain: "Each hop joins the friendship table again. In Cypher, the pattern just gets one more relationship.",
       link: "#sql"
+    },
+    /* 5.10 Database Security: Security Issues */
+    {
+      id: "q5.10-01",
+      topic: "5.10",
+      type: "mcq",
+      question: "A hacker copies a list of customers' phone numbers but changes nothing. Which loss is this?",
+      options: ["Loss of integrity", "Loss of availability", "Loss of confidentiality", "Loss of durability"],
+      answer: 2,
+      explain: "Private data was seen by someone who should not see it. That is loss of confidentiality.",
+      link: "#threats"
+    },
+    {
+      id: "q5.10-02",
+      topic: "5.10",
+      type: "mcq",
+      question: "A program bug sets every student's attendance to 0%. Which loss is this?",
+      options: ["Loss of integrity", "Loss of availability", "Loss of confidentiality", "No loss, since no one meant harm"],
+      answer: 0,
+      explain: "The data is now wrong. Integrity can be lost by accident as well as on purpose.",
+      link: "#classify"
+    },
+    {
+      id: "q5.10-03",
+      topic: "5.10",
+      type: "multi",
+      question: "Which are the four main control measures for database security? Select all that apply.",
+      options: ["Access control", "Inference control", "Flow control", "Data encryption", "Normalization"],
+      answer: [0, 1, 2, 3],
+      explain: "The four control measures are access control, inference control, flow control and encryption. Normalization is a design method, not a security control.",
+      link: "#controls"
+    },
+    {
+      id: "q5.10-04",
+      topic: "5.10",
+      type: "mcq",
+      question: "A statistical database answers an AVG query for a group with only one person. Which control should have stopped this?",
+      options: ["Flow control", "Inference control", "Encryption", "Backup"],
+      answer: 1,
+      explain: "Inference control stops users from working out one person's value from summary answers, for example by refusing very small groups.",
+      link: "#inference"
+    },
+    {
+      id: "q5.10-05",
+      topic: "5.10",
+      type: "mcq",
+      question: "What are covert channels?",
+      options: ["Encrypted network links", "Hidden paths that let information flow against the security policy", "Backup copies of the database", "Roles in RBAC"],
+      answer: 1,
+      explain: "Flow control tries to block covert channels, the hidden paths that leak information to unauthorized users.",
+      link: "#controls"
+    },
+    {
+      id: "q5.10-06",
+      topic: "5.10",
+      type: "multi",
+      question: "Which actions does the DBA perform with the superuser account? Select all that apply.",
+      options: ["Account creation", "Privilege granting", "Privilege revocation", "Security level assignment"],
+      answer: [0, 1, 2, 3],
+      explain: "The DBA creates accounts, grants and revokes privileges, and assigns security levels.",
+      link: "#dba"
     }
   ]);
 })();
