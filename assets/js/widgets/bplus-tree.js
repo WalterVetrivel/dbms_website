@@ -572,7 +572,7 @@
   /* ---------- Widget ---------- */
 
   var PRESETS = {
-    "iat2": {
+    "qb-unit4": {
       label: "Question bank: 2, 3, 5 … 31 with n = 3",
       n: 3,
       ops: [["insert", [2, 3, 5, 7, 11, 17, 19, 23, 29, 31]]]
