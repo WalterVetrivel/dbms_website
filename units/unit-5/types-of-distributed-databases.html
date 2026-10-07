@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Types of Distributed Databases | DBMS Study Guide</title>
+  <meta name="description" content="Learn the types of distributed databases: homogeneous, heterogeneous and federated (multidatabase) systems, local autonomy, and how to tell them apart, with examples and a comparison table.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="5" data-topic="5.2" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-5">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-5">Unit V</span>
+            <span class="badge badge-level" title="Topic number">Topic 5.2</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO5</span>
+          </div>
+          <h1>Types of Distributed Databases</h1>
+          <p class="lead">Some distributed databases use the same DBMS at every site. Others join different systems that were built separately. This page explains homogeneous, heterogeneous and federated databases.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Explain the two main types: homogeneous and heterogeneous.</li>
+              <li>Describe a federated system and the kinds of autonomy.</li>
+              <li>Compare the types in a table and give an example of each.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#overview">Two questions that decide the type</a></li>
+            <li><a href="#homogeneous">Homogeneous systems</a></li>
+            <li><a href="#heterogeneous">Heterogeneous systems</a></li>
+            <li><a href="#federated">Federated systems</a></li>
+            <li><a href="#compare">The types compared</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="overview" class="topic-section" aria-labelledby="overview-title">
+          <h2 id="overview-title">Two questions that decide the type</h2>
+          <p>Think of a chain of shops. In one chain, every shop uses the same billing app, so the shops can share data with ease. In another group, each shop picked its own app. They can still share data, but someone must first convert it. Distributed databases are the same.</p>
+          <p>A distributed database has many sites. To find its type, we ask two simple questions about the sites.</p>
+          <ol>
+            <li><strong>Do all sites use the same software?</strong> If every site runs the same DBMS with the same schema, the system is <strong>homogeneous</strong> (“homo” means same). If not, it is <strong>heterogeneous</strong> (“hetero” means different).</li>
+            <li><strong>How much does each site control itself?</strong> This is called <strong>local autonomy</strong>. A site with full autonomy makes its own rules. It can change its own tables. It can say no to a request from another site.</li>
+          </ol>
+          <figure class="figure">
+            <div class="widget-stage" tabindex="0">
+              <svg viewBox="0 0 560 220" width="560" role="img" aria-labelledby="types-svg-title" style="max-width:100%;height:auto">
+                <title id="types-svg-title">Tree of types: distributed databases split into homogeneous and heterogeneous; heterogeneous includes federated or multidatabase systems</title>
+                <g style="stroke:var(--border-strong);stroke-width:2">
+                  <line x1="280" y1="56" x2="140" y2="100"/>
+                  <line x1="280" y1="56" x2="420" y2="100"/>
+                  <line x1="420" y1="140" x2="420" y2="166"/>
+                </g>
+                <rect x="160" y="16" width="240" height="40" rx="8" style="fill:var(--primary-soft);stroke:var(--primary);stroke-width:2"/>
+                <text x="280" y="41" text-anchor="middle" style="fill:var(--text);font:600 14px var(--font-sans)">Distributed databases</text>
+                <rect x="40" y="100" width="200" height="40" rx="8" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:2"/>
+                <text x="140" y="125" text-anchor="middle" style="fill:var(--text);font:600 14px var(--font-sans)">Homogeneous</text>
+                <rect x="320" y="100" width="200" height="40" rx="8" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:2"/>
+                <text x="420" y="125" text-anchor="middle" style="fill:var(--text);font:600 14px var(--font-sans)">Heterogeneous</text>
+                <rect x="300" y="166" width="240" height="40" rx="8" style="fill:var(--warning-soft);stroke:var(--warning);stroke-width:2"/>
+                <text x="420" y="191" text-anchor="middle" style="fill:var(--text);font:600 14px var(--font-sans)">Federated (multidatabase)</text>
+              </svg>
+            </div>
+            <figcaption>The types of distributed databases. A federated system is a kind of heterogeneous system in which each site keeps a lot of autonomy.</figcaption>
+          </figure>
+        </section>
+
+        <section id="homogeneous" class="topic-section" aria-labelledby="homogeneous-title">
+          <h2 id="homogeneous-title">Homogeneous systems</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>In a <strong>homogeneous distributed database</strong>, all sites use the <strong>same DBMS software</strong> and the <strong>same schema</strong>. The sites know about each other and <strong>cooperate</strong> to answer user requests.</p>
+          </div>
+          <ul>
+            <li>To the user, it looks like <strong>one single database</strong>.</li>
+            <li>Each site gives up part of its autonomy. For example, a site cannot change the schema or the DBMS software on its own.</li>
+            <li>The system is usually designed as one distributed database from the start (top-down design).</li>
+          </ul>
+          <div class="callout callout-example">
+            <div class="callout-title">Example</div>
+            <p>A bank runs MySQL 8.4 at its Salem, Chennai and Coimbatore branches. Every branch has the same Account and Customer tables. A transfer from Salem to Chennai is handled by the two MySQL sites working together.</p>
+          </div>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Merits (advantages)</h3>
+              <ul>
+                <li>Easy to design, manage and grow.</li>
+                <li>No translation between systems is needed.</li>
+                <li>The sites work as one team, so a query that needs many sites is simple.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Demerits (disadvantages)</h3>
+              <ul>
+                <li>Every site must use the same product, even if a site needs a different one.</li>
+                <li>Each site has little control of its own.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="heterogeneous" class="topic-section" aria-labelledby="heterogeneous-title">
+          <h2 id="heterogeneous-title">Heterogeneous systems</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>In a <strong>heterogeneous distributed database</strong>, the sites may use <strong>different DBMS software</strong> or <strong>different schemas</strong>. They may even use different data models. For example, one site has tables and another site stores JSON documents.</p>
+          </div>
+          <ul>
+            <li>A site may not know about the other sites.</li>
+            <li>Sites help each other only a little. This is called <strong>limited cooperation</strong>.</li>
+            <li>A program called <strong>middleware</strong> (or a gateway) sits between the sites. It turns a query for one system into a query the other system can read.</li>
+            <li>Such a system often starts as many separate databases. They are joined later. This is called bottom-up design.</li>
+          </ul>
+          <p>Sites can differ in many ways:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Kinds of difference between sites</caption>
+              <thead><tr><th scope="col">Level</th><th scope="col">Example</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">DBMS software</th><td>MySQL at one site, Oracle at another</td></tr>
+                <tr><th scope="row">Data model</th><td>Relational tables at one site, JSON documents at another</td></tr>
+                <tr><th scope="row">Schema</th><td>One site calls a column <code>Phone</code>, another calls it <code>MobileNo</code></td></tr>
+                <tr><th scope="row">Meaning of values</th><td>Marks out of 100 at one site and grades A to F at another</td></tr>
+                <tr><th scope="row">Hardware and operating system</th><td>A Linux server at one site, a Windows server at another</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-example">
+            <div class="callout-title">Example</div>
+            <p>After two banks merge, one bank's branches still run Oracle and the other bank's branches run MySQL. Middleware lets head office run one query over both.</p>
+          </div>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Merits (advantages)</h3>
+              <ul>
+                <li>Old databases can be joined. We do not need to build them again.</li>
+                <li>Each site can choose the system that suits it best.</li>
+                <li>Each site keeps more control over its own data.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Demerits (disadvantages)</h3>
+              <ul>
+                <li>Queries and data must be translated, which is complex and slower.</li>
+                <li>A transaction that uses many sites is hard to control.</li>
+                <li>Differences in schema and meaning must be resolved by hand.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="federated" class="topic-section" aria-labelledby="federated-title">
+          <h2 id="federated-title">Federated systems</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>federated database system (FDBS)</strong> is a group of <strong>autonomous</strong> databases that agree to share some of their data. It is also called a <strong>multidatabase system</strong>. A layer of software on top gives users one view of the shared data.</p>
+          </div>
+          <p>Each member database still works for its own local users. It shares only the data it wants to share. So the global view shows only part of the data.</p>
+          <h3>Kinds of autonomy in a federated system</h3>
+          <ul>
+            <li><strong>Design autonomy:</strong> each site chooses its own data model, schema and DBMS.</li>
+            <li><strong>Communication autonomy:</strong> each site decides whether to talk to other sites and what to share.</li>
+            <li><strong>Execution autonomy:</strong> each site runs its local work in its own way, and can refuse or delay a global request.</li>
+            <li><strong>Association autonomy:</strong> each site decides how much of its data and processing to share.</li>
+          </ul>
+          <div class="callout callout-example">
+            <div class="callout-title">Example</div>
+            <p>A state health department wants a report on patients from many hospitals. Each hospital keeps its own system and its own rules. Each hospital shares only a few tables, without names, with the department's federated system.</p>
+          </div>
+          <div class="callout callout-note">
+            <div class="callout-title">Note</div>
+            <p>Some books also use the words <strong>peer-to-peer</strong> and <strong>client-server</strong>. These words tell us how the sites are set up. They do not tell us if the sites use the same software. See <a href="distributed-database-architecture.html#architecture">Distributed Databases: Architecture</a>.</p>
+          </div>
+        </section>
+
+        <section id="compare" class="topic-section" aria-labelledby="compare-title">
+          <h2 id="compare-title">The types compared</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Homogeneous, heterogeneous and federated distributed databases</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Homogeneous</th><th scope="col">Heterogeneous</th><th scope="col">Federated</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">DBMS at each site</th><td>Same</td><td>May differ</td><td>May differ</td></tr>
+                <tr><th scope="row">Schema</th><td>Same global schema</td><td>May differ</td><td>Each site has its own; only shared parts form the global view</td></tr>
+                <tr><th scope="row">Do sites know each other?</th><td>Yes</td><td>Not always</td><td>Only through the federation layer</td></tr>
+                <tr><th scope="row">Cooperation</th><td>Full</td><td>Limited</td><td>Voluntary</td></tr>
+                <tr><th scope="row">Local autonomy</th><td>Low</td><td>Medium to high</td><td>High</td></tr>
+                <tr><th scope="row">Translation needed</th><td>No</td><td>Yes (middleware)</td><td>Yes (federation layer)</td></tr>
+                <tr><th scope="row">How it is built</th><td>Designed as one system (top-down)</td><td>Joined from existing systems (bottom-up)</td><td>Joined from existing systems (bottom-up)</td></tr>
+                <tr><th scope="row">Example</th><td>One bank on MySQL at all branches</td><td>Merged banks on Oracle and MySQL</td><td>Hospitals sharing data with a health department</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>For a 2-mark “differentiate” question, write three rows: software and schema, cooperation, and ease of management. For a 16-mark question, add the federated type, the kinds of autonomy and one example of each type.</p>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>College group</h3>
+              <p class="muted">A group of colleges uses one ERP product at every campus with the same tables. This is a homogeneous system, so the group office can run reports across campuses easily.</p>
+            </div>
+            <div class="card">
+              <h3>DigiLocker</h3>
+              <p class="muted">DigiLocker shows mark sheets, driving licenses and other documents from many government departments. Each department keeps its own system, and only shares the documents through a common layer, much like a federated system.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>The type depends on two things: whether sites use the same software (homogeneity) and how much control each site keeps (autonomy).</li>
+              <li>Homogeneous: same DBMS and schema at all sites; sites know each other and cooperate fully.</li>
+              <li>Heterogeneous: sites may use different DBMS software, schemas or data models; middleware translates between them.</li>
+              <li>Federated (multidatabase): each database keeps its own control and shares only some data through a common layer.</li>
+              <li>There are four kinds of autonomy. They are design, communication, execution and association.</li>
+              <li>A homogeneous system is easy to manage. A heterogeneous system lets old databases work together.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit V question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="5.2"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="5.2"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 20 “Database-System Architectures”, the section on distributed databases (homogeneous and heterogeneous systems).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 23, Section 23.6 “Types of Distributed Database Systems”.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-5.js"></script>
+  <script src="../../data/quizzes/unit-5.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+</body>
+</html>

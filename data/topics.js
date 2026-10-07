@@ -123,7 +123,7 @@ DBMS.topics = [
 
   // Unit V
   { id: "5.1", unit: 5, slug: "distributed-database-architecture", title: "Distributed Databases: Architecture", level: "L2", textbooks: ["S20", "S21", "E23"], covers: "Sites, replication and fragmentation", status: "published", prereqs: ["1.6", "1.9"], related: ["5.2", "5.3"], widgets: ["V31"] },
-  { id: "5.2", unit: 5, slug: "types-of-distributed-databases", title: "Types of Distributed Databases", level: "L2", textbooks: ["S20", "E23"], covers: "Homogeneous, heterogeneous and federated databases", status: "planned", prereqs: [], related: [] },
+  { id: "5.2", unit: 5, slug: "types-of-distributed-databases", title: "Types of Distributed Databases", level: "L2", textbooks: ["S20", "E23"], covers: "Homogeneous, heterogeneous and federated databases", status: "published", prereqs: ["5.1"], related: ["5.3", "5.4"] },
   { id: "5.3", unit: 5, slug: "distributed-transaction-processing", title: "Transaction Processing", level: "L2", textbooks: ["S23", "E23"], covers: "Coordinators, types of failure, and two-phase and three-phase commit", status: "planned", prereqs: [], related: [] },
   { id: "5.4", unit: 5, slug: "nosql-introduction", title: "NoSQL Databases: Introduction", level: "L2", textbooks: ["S10", "E24"], covers: "Why NoSQL is needed, its features, and relational databases compared with NoSQL", status: "planned", prereqs: [], related: [] },
   { id: "5.5", unit: 5, slug: "cap-theorem", title: "CAP Theorem", level: "L2", textbooks: ["S10", "E24"], covers: "Consistency, availability and partition tolerance", status: "planned", prereqs: [], related: [] },

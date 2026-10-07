@@ -77,6 +77,61 @@
       ],
       explain: "The local database is searched first. Only data that is not local is fetched from another site.",
       link: "#architecture"
+    },
+    /* 5.2 Types of Distributed Databases */
+    {
+      id: "q5.2-01",
+      topic: "5.2",
+      type: "mcq",
+      question: "All branches of a bank run MySQL 8.4 with the same tables, and the sites cooperate fully. What type of distributed database is this?",
+      options: ["Homogeneous", "Heterogeneous", "Federated", "Centralized"],
+      answer: 0,
+      explain: "Same DBMS and same schema at every site, with full cooperation, means a homogeneous system.",
+      link: "#homogeneous"
+    },
+    {
+      id: "q5.2-02",
+      topic: "5.2",
+      type: "multi",
+      question: "Which of these are true for a heterogeneous distributed database? Choose all that apply.",
+      options: [
+        "Sites may use different DBMS software",
+        "Middleware translates queries between sites",
+        "Every site must have the same schema",
+        "Global transactions are harder to manage"
+      ],
+      answer: [0, 1, 3],
+      explain: "Heterogeneous sites can differ in software and schema, so translation is needed and global transactions are harder.",
+      link: "#heterogeneous"
+    },
+    {
+      id: "q5.2-03",
+      topic: "5.2",
+      type: "mcq",
+      question: "Another name for a federated database system is:",
+      options: ["Multidatabase system", "Replicated database", "Centralized database", "Key-value store"],
+      answer: 0,
+      explain: "A federated database system is also called a multidatabase system. Autonomous databases share some of their data through a common layer.",
+      link: "#federated"
+    },
+    {
+      id: "q5.2-04",
+      topic: "5.2",
+      type: "mcq",
+      question: "A hospital can refuse or delay a request that comes from the federated system. Which kind of autonomy is this?",
+      options: ["Design autonomy", "Communication autonomy", "Execution autonomy", "Schema autonomy"],
+      answer: 2,
+      explain: "Execution autonomy means each site runs its work in its own way and can refuse or delay global requests.",
+      link: "#federated"
+    },
+    {
+      id: "q5.2-05",
+      topic: "5.2",
+      type: "tf",
+      question: "In a homogeneous distributed database, each site keeps full control and can change its schema whenever it likes.",
+      answer: false,
+      explain: "False. Sites in a homogeneous system give up part of their autonomy, such as the right to change the schema or software on their own.",
+      link: "#homogeneous"
     }
   ]);
 })();
