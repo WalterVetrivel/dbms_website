@@ -1,0 +1,245 @@
+/* Styles shared by interactive widgets. Colors come from tokens.css. */
+
+.bpt-meta {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-4);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.bpt-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.bpt-field select,
+.bpt-field input[type="text"] {
+  min-height: 44px;
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 400;
+}
+
+.bpt-grow {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.bpt-grow select {
+  width: 100%;
+  text-overflow: ellipsis;
+}
+
+.bpt-ops,
+.bpt-setup,
+.bpt-player {
+  align-items: flex-end;
+}
+
+.bpt-speed input {
+  min-height: 44px;
+  width: 7rem;
+}
+
+.bpt-step {
+  margin-left: auto;
+  align-self: center;
+  font-size: var(--fs-xs);
+}
+
+.bpt-stage {
+  background: var(--bg);
+}
+
+.bpt-svg {
+  display: block;
+  max-width: none;
+  margin: 0 auto;
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+
+.bpt-box {
+  fill: var(--surface);
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+}
+
+.bpt-node.is-leaf .bpt-box {
+  fill: var(--accent-soft);
+}
+
+.bpt-divider {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.bpt-key {
+  fill: var(--text);
+  font-weight: 600;
+}
+
+.bpt-ptr {
+  fill: var(--text-muted);
+}
+
+.bpt-edge {
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+}
+
+.bpt-edge.is-path {
+  stroke: var(--primary);
+  stroke-width: 3;
+}
+
+.bpt-link {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}
+
+.bpt-arrowhead {
+  fill: var(--accent);
+}
+
+.bpt-node.is-path .bpt-box {
+  stroke: var(--primary);
+  stroke-width: 2.5;
+}
+
+.bpt-node.is-focus .bpt-box {
+  fill: var(--primary-soft);
+}
+
+.bpt-node.is-changed .bpt-box {
+  fill: var(--warning-soft);
+  stroke: var(--warning);
+  stroke-width: 2.5;
+}
+
+.bpt-node.is-overflow .bpt-box,
+.bpt-node.is-missing .bpt-box {
+  fill: var(--danger-soft);
+  stroke: var(--danger);
+  stroke-width: 2.5;
+}
+
+.bpt-found {
+  fill: var(--success-soft);
+  stroke: var(--success);
+  stroke-width: 2;
+}
+
+.bpt-new {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 2;
+}
+
+.bpt-empty {
+  fill: var(--text-muted);
+  font-family: var(--font-sans);
+}
+
+.bpt-text {
+  border-top: 1px solid var(--border);
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--fs-sm);
+}
+
+.bpt-text summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 32px;
+}
+
+.bpt-text p {
+  margin: var(--sp-1) 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.bpt-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-4);
+  padding: 0;
+  margin: var(--sp-2) 0 0;
+  list-style: none;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.bpt-legend span {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-right: var(--sp-1);
+  vertical-align: -2px;
+  border-radius: 3px;
+  border: 2px solid;
+}
+
+.figure {
+  margin: var(--sp-5) 0;
+}
+
+.figure figcaption {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.figure .widget-stage {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  min-height: 0;
+}
+
+@media print {
+  .bpt-setup,
+  .bpt-ops,
+  .bpt-player,
+  .bpt-text summary {
+    display: none;
+  }
+}
+
+/* Tables that show tree nodes */
+.node-layout {
+  width: auto;
+  margin: 0 auto;
+}
+
+.node-layout td {
+  min-width: 2.75rem;
+  border: 1px solid var(--border-strong);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.node-layout td:nth-child(even) {
+  background: var(--primary-soft);
+}
+
+.worked td:first-child {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.worked td:last-child {
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
