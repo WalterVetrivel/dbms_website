@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ordered Indices | DBMS Study Guide</title>
+  <meta name="description" content="Learn ordered indices: primary (clustering) and secondary (non-clustering) indices, dense and sparse indices, and multilevel indices, with worked examples and an interactive index lookup.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="4" data-topic="4.5" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-4">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-4">Unit IV</span>
+            <span class="badge badge-level" title="Topic number">Topic 4.5</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO4</span>
+          </div>
+          <h1>Ordered Indices</h1>
+          <p class="lead">An ordered index keeps its search keys in sorted order, like the index of a book. This page covers the main types: primary and secondary, dense and sparse, and multilevel.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define primary (clustering) and secondary (non-clustering) indices.</li>
+              <li>Differentiate between dense and sparse indices.</li>
+              <li>Search for a record using a dense, a sparse and a multilevel index.</li>
+              <li>Explain why large indices are built in several levels.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#intro">What an ordered index is</a></li>
+            <li><a href="#primary">Primary and secondary indices</a></li>
+            <li><a href="#dense-sparse">Dense and sparse indices</a></li>
+            <li><a href="#multilevel">Multilevel indices</a></li>
+            <li><a href="#secondary">Secondary indices on non-key attributes</a></li>
+            <li><a href="#update">Updating an index</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="intro" class="topic-section" aria-labelledby="intro-title">
+          <h2 id="intro-title">What an ordered index is</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>An <strong>ordered index</strong> stores the search-key values in <strong>sorted order</strong>, and links each value to the records that have it.</p>
+          </div>
+          <p>On this page, the data file is a STUDENT file with 15 records, kept in RollNo order, with 3 records in each block (B1 to B5).</p>
+          <div class="table-wrap">
+            <table>
+              <caption>The STUDENT data file, sorted on RollNo</caption>
+              <thead><tr><th scope="col">Block</th><th scope="col">Records (RollNo, Name, Dept)</th></tr></thead>
+              <tbody>
+                <tr><td>B1</td><td>(101, Anitha, CSE), (104, Bharath, ECE), (108, Charan, MECH)</td></tr>
+                <tr><td>B2</td><td>(112, Divya, CSE), (115, Elango, EEE), (119, Fathima, CSE)</td></tr>
+                <tr><td>B3</td><td>(123, Ganesh, ECE), (126, Harini, IT), (130, Imran, CSE)</td></tr>
+                <tr><td>B4</td><td>(134, Janani, MECH), (137, Karthik, IT), (141, Lakshmi, ECE)</td></tr>
+                <tr><td>B5</td><td>(145, Manoj, CSE), (148, Nandhini, EEE), (152, Prakash, IT)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="primary" class="topic-section" aria-labelledby="primary-title">
+          <h2 id="primary-title">Primary and secondary indices</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definitions</div>
+            <p>A <strong>primary index</strong>, also called a <strong>clustering index</strong>, is an index whose search key <strong>also sets the order of the records</strong> in the file. A file can have only <strong>one</strong> primary index.</p>
+            <p>A <strong>secondary index</strong>, also called a <strong>non-clustering index</strong>, is an index whose search key is in a <strong>different order</strong> from the file. A file can have <strong>many</strong> secondary indices.</p>
+          </div>
+          <p>For our file, an index on RollNo is the primary (clustering) index, because the file is sorted on RollNo. An index on Name or Dept is a secondary (non-clustering) index.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Note on terms</div>
+            <p>This page follows Silberschatz, where “primary index” and “clustering index” mean the same thing. Elmasri and Navathe split them. In their books, a <strong>primary index</strong> is on an ordering field that is a <strong>key</strong> (unique). A <strong>clustering index</strong> is on an ordering field that is <strong>not a key</strong>, such as Dept when the file is sorted by Dept. In both books, a <strong>secondary index</strong> is on a field that does not set the order of the file.</p>
+          </div>
+          <p>A clustering index on a non-key field groups records with the same value together. For example, if the file were sorted by semester, all first-semester students would be together, then all second-semester students, and so on. The index entry for each semester points to the first record of its group.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Clustering index compared with non-clustering index</caption>
+              <thead><tr><th scope="col">Clustering (primary) index</th><th scope="col">Non-clustering (secondary) index</th></tr></thead>
+              <tbody>
+                <tr><td>The file is sorted on the same search key as the index.</td><td>The file is sorted on a different key.</td></tr>
+                <tr><td>Only one for each file.</td><td>A file can have many.</td></tr>
+                <tr><td>Can be sparse.</td><td>Must be dense.</td></tr>
+                <tr><td>Records with nearby keys are in the same block, so range queries read few blocks.</td><td>Records with nearby keys can be in different blocks, so a range query may read one block per record.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="dense-sparse" class="topic-section" aria-labelledby="dense-sparse-title">
+          <h2 id="dense-sparse-title">Dense and sparse indices</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definitions</div>
+            <p>In a <strong>dense index</strong>, there is an index entry for <strong>every search-key value</strong> in the file.</p>
+            <p>In a <strong>sparse index</strong>, there are index entries for <strong>only some</strong> of the search-key values, usually one entry for <strong>each block</strong> (the first key in the block).</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>A dense and a sparse index on RollNo for the same file</caption>
+              <thead><tr><th scope="col">Dense index (15 entries)</th><th scope="col">Sparse index (5 entries)</th></tr></thead>
+              <tbody>
+                <tr><td>101 → B1, 104 → B1, 108 → B1</td><td>101 → B1</td></tr>
+                <tr><td>112 → B2, 115 → B2, 119 → B2</td><td>112 → B2</td></tr>
+                <tr><td>123 → B3, 126 → B3, 130 → B3</td><td>123 → B3</td></tr>
+                <tr><td>134 → B4, 137 → B4, 141 → B4</td><td>134 → B4</td></tr>
+                <tr><td>145 → B5, 148 → B5, 152 → B5</td><td>145 → B5</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Searching</h3>
+          <ul>
+            <li><strong>Dense index:</strong> find the entry for the key and follow its pointer straight to the record. If there is no entry, the record does not exist, and no data block is read.</li>
+            <li><strong>Sparse index:</strong> find the entry with the <strong>largest search key that is less than or equal to</strong> the key you want. Follow its pointer to a block, then read the records in that block one by one until you find the key.</li>
+          </ul>
+          <div class="callout callout-example">
+            <div class="callout-title">Example: find RollNo 126 with the sparse index</div>
+            <ol>
+              <li>The largest entry that is less than or equal to 126 is 123. It points to block B3.</li>
+              <li>Read block B3: 123 is not it, 126 is found.</li>
+            </ol>
+            <p>Only one data block is read, and the index has only 5 entries instead of 15.</p>
+          </div>
+          <p>A sparse index works only when the file is <strong>sorted</strong> on the search key, so only a clustering index can be sparse. A secondary index must be dense, because the records it points to are not in order.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Dense index compared with sparse index</caption>
+              <thead><tr><th scope="col">Dense index</th><th scope="col">Sparse index</th></tr></thead>
+              <tbody>
+                <tr><td>An entry for every search-key value.</td><td>Entries for only some values (one per block).</td></tr>
+                <tr><td>Faster to find a record; can tell that a key is missing without reading the file.</td><td>A little slower: must read the block and look through it.</td></tr>
+                <tr><td>Needs more space and more upkeep on inserts and deletes.</td><td>Needs less space and less upkeep.</td></tr>
+                <tr><td>Can be used with any file.</td><td>Only when the file is sorted on the search key.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>A good trade-off, used by real systems, is a sparse index with <strong>one entry per block</strong>. The biggest cost of a search is bringing a block into memory. Once the block is in memory, looking through it takes almost no time.</p>
+          </div>
+        </section>
+
+        <section id="multilevel" class="topic-section" aria-labelledby="multilevel-title">
+          <h2 id="multilevel-title">Multilevel indices</h2>
+          <p>Even a sparse index can be large. Suppose a file has 1,000,000 records and 100 records fit in a block. That is 10,000 data blocks, so a sparse index has 10,000 entries. If 100 entries fit in a block, the index itself fills 100 blocks. A binary search on 100 blocks reads about log<sub>2</sub>(100) ≈ 7 index blocks for every search.</p>
+          <p>The solution is to treat the index like any other sorted file and build a <strong>sparse index on the index</strong>.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>multilevel index</strong> is an index with two or more levels. The original index is the <strong>inner index</strong>. A sparse <strong>outer index</strong> is built on the blocks of the inner index. If the outer index is still too large, another level is added.</p>
+          </div>
+          <p>In the example, the outer index has only 100 entries, so it fits in one block, which can stay in memory. A search reads 1 inner index block and then 1 data block, instead of about 7 index blocks.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example from the class notes: why an index helps</div>
+            <p>A data file has 300 blocks. A binary search on the file reads about log<sub>2</sub>(300) + 1 ≈ 9 blocks. Its primary index fits in only 3 blocks. A binary search on the index reads about log<sub>2</sub>(3) + 1 ≈ 3 blocks, plus one read of the data block that the index points to.</p>
+          </div>
+          <p>A multilevel index is a tree. A <strong>B+ tree</strong> (topic 4.6) is a multilevel index that stays balanced as records are inserted and deleted.</p>
+        </section>
+
+        <section id="secondary" class="topic-section" aria-labelledby="secondary-title">
+          <h2 id="secondary-title">Secondary indices on non-key attributes</h2>
+          <p>A secondary index on Dept has a problem: many students share the same department. Each index entry must point to <strong>all</strong> the records with that value.</p>
+          <p>The usual answer is an extra level of indirection. Each index entry points to a <strong>bucket</strong> of pointers, and the bucket holds a pointer to every record with that value.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>A secondary index on Dept, with a bucket of record pointers for each value</caption>
+              <thead><tr><th scope="col">Dept</th><th scope="col">Bucket of pointers (RollNo of each record)</th></tr></thead>
+              <tbody>
+                <tr><td>CSE</td><td>101, 112, 119, 130, 145</td></tr>
+                <tr><td>ECE</td><td>104, 123, 141</td></tr>
+                <tr><td>EEE</td><td>115, 148</td></tr>
+                <tr><td>IT</td><td>126, 137, 152</td></tr>
+                <tr><td>MECH</td><td>108, 134</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The five CSE students are in four different blocks. So a query for all CSE students may read one block for each student. This is why a secondary index is slower than a clustering index for queries that return many records.</p>
+        </section>
+
+        <section id="update" class="topic-section" aria-labelledby="update-title">
+          <h2 id="update-title">Updating an index</h2>
+          <p>Every index must change when records are inserted or deleted.</p>
+          <ul>
+            <li><strong>Insertion, dense index:</strong> if the search-key value is new, add an entry for it in the right sorted place.</li>
+            <li><strong>Insertion, sparse index:</strong> change the index only if the insert creates a new block; the first key of the new block gets an entry.</li>
+            <li><strong>Deletion, dense index:</strong> if the deleted record was the last one with its search-key value, remove that entry.</li>
+            <li><strong>Deletion, sparse index:</strong> if the deleted key has an index entry, replace it with the next key in the file, or remove the entry if the block is now empty.</li>
+          </ul>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>Choose a dense, sparse or multilevel index and search for a roll number. Watch which index entries and blocks are read. Then try a roll number that is not in the file.</p>
+          <div class="widget" data-widget="index-lookup" data-mode="sparse">
+            <noscript><p class="widget-narration">The index lookup widget needs JavaScript. The examples above show the same steps.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Search for 120 with the dense index and then with the sparse index. Which one finds out sooner that 120 is missing?</li>
+              <li>Search for 141 with each index. Count the index entries and the records checked.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>A dictionary</h3>
+              <p class="muted">A printed dictionary shows the first word of each page at the top. That is a sparse index: you find the right page from the top words, then read down the page.</p>
+            </div>
+            <div class="card">
+              <h3>College admissions</h3>
+              <p class="muted">The admission file is sorted by application number (the primary index). The office also searches by name and by district, so it keeps secondary indices on those fields.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>An ordered index keeps search keys in sorted order with pointers to the records.</li>
+              <li>A primary (clustering) index has a search key that sets the file order; a file has only one.</li>
+              <li>A secondary (non-clustering) index is on any other search key; it must be dense.</li>
+              <li>A dense index has an entry for every search-key value; a sparse index has one for only some values, usually one per block.</li>
+              <li>To search a sparse index, take the largest entry less than or equal to the key, then scan that block.</li>
+              <li>A multilevel index builds a sparse outer index on the inner index, so a search reads very few blocks.</li>
+              <li>A secondary index on a non-key attribute points to a bucket of record pointers for each value.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit IV question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="4.5"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="4.5"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 14, Section 14.2 “Ordered Indices”.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 17, Section 17.1 “Types of Single-Level Ordered Indexes” and Section 17.2 “Multilevel Indexes”.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/innodb-index-types.html" target="_blank" rel="noopener">Clustered and Secondary Indexes</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-4.js"></script>
+  <script src="../../data/quizzes/unit-4.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/index-lookup.js"></script>
+</body>
+</html>

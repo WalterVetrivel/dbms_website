@@ -525,7 +525,7 @@
           }, edges);
         }
 
-        var cls = "bpt-node" + (node.leaf ? " is-leaf" : "");
+        var cls = "bpt-node" + (node.leaf && !hl.plain ? " is-leaf" : "");
         if (has("path", node.id)) cls += " is-path";
         if (hl.focus === node.id) cls += " is-focus";
         if (has("changed", node.id)) cls += " is-changed";
@@ -821,6 +821,9 @@
       describe(t.root).join(". ").replace(/"/g, "") + '"></svg></div>';
     draw(box.querySelector("svg"), t.root, n, {});
   }
+
+  // The B tree widget (V27) draws its trees with the same code.
+  D.BPlusTree.draw = draw;
 
   if (typeof document !== "undefined" && document.querySelectorAll) {
     var start = function () {

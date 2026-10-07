@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Query Optimization using Heuristics and Cost Estimation | DBMS Study Guide</title>
+  <meta name="description" content="Learn how a DBMS picks a fast plan for a query: equivalence rules, query trees, heuristic rules such as performing selections early, and cost-based optimization with catalog statistics, selectivity and histograms.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="4" data-topic="4.11" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-4">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-4">Unit IV</span>
+            <span class="badge badge-level" title="Topic number">Topic 4.11</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO4</span>
+          </div>
+          <h1>Query Optimization using Heuristics and Cost Estimation</h1>
+          <p class="lead">One SQL query can be run in many ways, and some ways are thousands of times faster than others. The optimizer uses rules (heuristics) and cost estimates to pick a fast way.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Explain what query optimization is and why it is needed.</li>
+              <li>Use equivalence rules to rewrite a relational algebra expression.</li>
+              <li>Apply the heuristic rules to a query tree, step by step.</li>
+              <li>Estimate result sizes from catalog statistics and use them to choose a plan.</li>
+              <li>Compare heuristic and cost-based optimization.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is query optimization?</a></li>
+            <li><a href="#trees">Query trees</a></li>
+            <li><a href="#equivalence">Equivalence rules</a></li>
+            <li><a href="#heuristics">Heuristic optimization</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#cost-based">Cost-based optimization</a></li>
+            <li><a href="#statistics">Catalog statistics and size estimation</a></li>
+            <li><a href="#choosing">Choosing a plan by cost</a></li>
+            <li><a href="#compare">Heuristic and cost-based optimization compared</a></li>
+            <li><a href="#mysql">Statistics and plans in MySQL</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is query optimization?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Query optimization</strong> is the process of choosing the most efficient <strong>query evaluation plan</strong> from the many equivalent plans for a query.</p>
+          </div>
+          <p>SQL says <em>what</em> data you want. It does not say <em>how</em> to get it. So the system must decide the order of the operations and the algorithm for each one. The user should not have to write the query in the “best” form.</p>
+          <p>Optimization is needed because equivalent plans can differ in cost a lot. One plan might read a few blocks, and another plan for the same query might read millions of blocks.</p>
+          <p>There are two main approaches:</p>
+          <ul>
+            <li><strong>Heuristic optimization</strong> uses fixed rules that usually make a query cheaper.</li>
+            <li><strong>Cost-based optimization</strong> estimates the cost of each plan and picks the cheapest.</li>
+          </ul>
+          <p>Most real systems use both: rules first, to cut down the number of choices, and then cost estimates to choose among the rest.</p>
+        </section>
+
+        <section id="trees" class="topic-section" aria-labelledby="trees-title">
+          <h2 id="trees-title">Query trees</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>query tree</strong> is a tree that shows a relational algebra expression. The <strong>leaves</strong> are the relations. The <strong>internal nodes</strong> are operations such as σ (selection), π (projection), × (Cartesian product) and ⋈ (join). Results flow upward, and the <strong>root</strong> gives the final answer.</p>
+          </div>
+          <p>The parser first builds a <strong>canonical</strong> (initial) query tree straight from the SQL:</p>
+          <ul>
+            <li>the FROM clause becomes Cartesian products of the relations;</li>
+            <li>the WHERE clause becomes one selection on top of them;</li>
+            <li>the SELECT clause becomes a projection at the root.</li>
+          </ul>
+          <p>This tree is correct, but it is slow, because it builds every combination of rows before it filters them. Optimization changes the shape of the tree without changing the answer.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example: the class notes query</div>
+            <p>Find the names of customers who have an account at a branch in Pune. Two equivalent expressions are:</p>
+            <ol>
+              <li>Π<sub>cname</sub>(σ<sub>city = “Pune”</sub>(BRANCH ⋈ ACCOUNT ⋈ CUSTOMER))</li>
+              <li>Π<sub>cname</sub>(σ<sub>city = “Pune”</sub>(BRANCH) ⋈ (ACCOUNT ⋈ CUSTOMER))</li>
+            </ol>
+            <p>Tree (a) joins all the branches with all the accounts and customers, and selects Pune at the end. Tree (b) first selects the Pune branches, so the join works on far fewer tuples. Tree (b) is much faster. Choose “Class notes” in the widget below to see both trees and their sizes.</p>
+          </div>
+        </section>
+
+        <section id="equivalence" class="topic-section" aria-labelledby="equivalence-title">
+          <h2 id="equivalence-title">Equivalence rules</h2>
+          <p>Two expressions are <strong>equivalent</strong> if they give the same set of tuples on every legal database. An <strong>equivalence rule</strong> says that one form of an expression can be replaced by another form. The optimizer uses these rules to rewrite a query tree. The main rules are:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Main equivalence rules (E, E1, E2 are expressions; θ is a condition)</caption>
+              <thead><tr><th scope="col">No.</th><th scope="col">Rule</th><th scope="col">In symbols</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td><strong>Cascade of σ.</strong> A selection with AND can be split into a sequence of selections.</td><td>σ<sub>θ1 ∧ θ2</sub>(E) = σ<sub>θ1</sub>(σ<sub>θ2</sub>(E))</td></tr>
+                <tr><td>2</td><td><strong>σ is commutative.</strong> Selections can be done in any order.</td><td>σ<sub>θ1</sub>(σ<sub>θ2</sub>(E)) = σ<sub>θ2</sub>(σ<sub>θ1</sub>(E))</td></tr>
+                <tr><td>3</td><td><strong>Cascade of π.</strong> Only the last (outer) projection matters.</td><td>Π<sub>L1</sub>(Π<sub>L2</sub>(E)) = Π<sub>L1</sub>(E), when L1 ⊆ L2</td></tr>
+                <tr><td>4</td><td><strong>σ with × is a join.</strong></td><td>σ<sub>θ</sub>(E1 × E2) = E1 ⋈<sub>θ</sub> E2</td></tr>
+                <tr><td>5</td><td><strong>Joins are commutative.</strong></td><td>E1 ⋈ E2 = E2 ⋈ E1</td></tr>
+                <tr><td>6</td><td><strong>Natural joins are associative.</strong></td><td>(E1 ⋈ E2) ⋈ E3 = E1 ⋈ (E2 ⋈ E3)</td></tr>
+                <tr><td>7</td><td><strong>σ distributes over a join</strong> when θ uses only attributes of E1.</td><td>σ<sub>θ</sub>(E1 ⋈ E2) = σ<sub>θ</sub>(E1) ⋈ E2</td></tr>
+                <tr><td>8</td><td><strong>π distributes over a join</strong> when the join attributes are kept.</td><td>Π<sub>L1 ∪ L2</sub>(E1 ⋈ E2) = Π<sub>L1</sub>(E1) ⋈ Π<sub>L2</sub>(E2)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Rules for set operations also exist. For example, ∪ and ∩ are commutative and associative, and σ distributes over ∪, ∩ and −.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example: pushing a selection down (rule 7)</div>
+            <p>σ<sub>dept = “CSE”</sub>(STUDENT ⋈ MARKS) = σ<sub>dept = “CSE”</sub>(STUDENT) ⋈ MARKS</p>
+            <p>dept is an attribute of STUDENT only, so the selection can be done on STUDENT before the join. The join then works on CSE students only.</p>
+          </div>
+        </section>
+
+        <section id="heuristics" class="topic-section" aria-labelledby="heuristics-title">
+          <h2 id="heuristics-title">Heuristic optimization</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>heuristic</strong> is a rule that leads to the least cost in most cases. <strong>Heuristic optimization</strong> changes the query tree using a set of such rules, without computing the cost of each plan.</p>
+          </div>
+          <h3>The heuristic rules</h3>
+          <ol>
+            <li><strong>Perform selections as early as possible.</strong> This reduces the number of <strong>tuples</strong> that later operations must handle.</li>
+            <li><strong>Perform projections as early as possible.</strong> This reduces the number of <strong>attributes</strong>, so each tuple is smaller.</li>
+            <li><strong>Perform the most restrictive selections and joins first.</strong> “Most restrictive” means the one that gives the fewest tuples. Do these before other similar operations.</li>
+            <li><strong>Avoid Cartesian products.</strong> Replace a Cartesian product followed by a selection with a join.</li>
+          </ol>
+          <h3>Steps in heuristic optimization</h3>
+          <p>The class notes give three steps:</p>
+          <ol class="steps">
+            <li>The scanner and parser build the initial query representation (the canonical query tree).</li>
+            <li>The representation is improved using the heuristic rules.</li>
+            <li>The query execution plan is built from the improved tree.</li>
+          </ol>
+          <p>Step 2 is done in this order (Elmasri and Navathe):</p>
+          <ol>
+            <li>Split each selection with AND into a cascade of single selections (rule 1).</li>
+            <li>Move each selection down the tree as far as it can go (rules 2 and 7).</li>
+            <li>Rearrange the leaves so that the most restrictive selections and joins are done first (rules 5 and 6).</li>
+            <li>Combine each Cartesian product and the selection above it into a join (rule 4).</li>
+            <li>Split projections and move them down the tree, keeping only the attributes that later steps need (rules 3 and 8).</li>
+            <li>Find the subtrees that can be run as one pipeline.</li>
+          </ol>
+          <div class="callout callout-example">
+            <div class="callout-title">Worked example: CSE students who take the DBMS course</div>
+            <p>STUDENT has 5,000 rows, ENROLL has 40,000 rows and COURSE has 200 rows. The query is:</p>
+            <div class="code-block">
+              <span class="code-label">SQL</span>
+              <pre><code>SELECT name
+FROM student, enroll, course
+WHERE student.roll_no = enroll.roll_no
+  AND enroll.course_id = course.course_id
+  AND course.title = 'DBMS'
+  AND student.dept = 'CSE';</code></pre>
+            </div>
+            <div class="table-wrap">
+              <table class="worked">
+                <caption>Applying the heuristic rules (sizes estimated by the widget below)</caption>
+                <thead><tr><th scope="col">Step</th><th scope="col">What changes</th><th scope="col">Intermediate results</th></tr></thead>
+                <tbody>
+                  <tr><td>Canonical tree</td><td>STUDENT × ENROLL × COURSE, then one σ, then π<sub>name</sub>. The first product alone has 5,000 × 40,000 = 200 million rows.</td><td>About 4.0 TB</td></tr>
+                  <tr><td>Selections early</td><td>dept = 'CSE' goes onto STUDENT. title = 'DBMS' goes onto COURSE.</td><td>About 1.3 GB</td></tr>
+                  <tr><td>Most restrictive first</td><td>title = 'DBMS' leaves 1 course, so COURSE is joined with ENROLL first.</td><td>About 15 MB</td></tr>
+                  <tr><td>× and σ become ⋈</td><td>The join algorithm never builds the full product.</td><td>About 38 KB</td></tr>
+                  <tr><td>Projections early</td><td>Keep only roll_no, course_id and name.</td><td>About 23 KB</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>The same query now moves about 23 KB of intermediate data instead of 4 TB.</p>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Do not move a selection below a join if the condition uses attributes from both sides. For example, S.roll_no = E.roll_no must stay at the join, because it needs a row from each relation.</p>
+          </div>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>Step through the heuristic rules on a query tree. Each step shows the new tree and the estimated size of all the intermediate results. Choose another query from the list to see the class notes example.</p>
+          <div class="widget" data-widget="query-tree" data-preset="college">
+            <noscript><p class="widget-narration">The query tree widget needs JavaScript. The worked example above lists the same steps and sizes.</p></noscript>
+          </div>
+        </section>
+
+        <section id="cost-based" class="topic-section" aria-labelledby="cost-based-title">
+          <h2 id="cost-based-title">Cost-based optimization</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Cost-based optimization</strong> creates many equivalent evaluation plans, <strong>estimates the cost</strong> of each plan from statistics about the data, and picks the plan with the <strong>least cost</strong>.</p>
+          </div>
+          <p>The class notes describe it in three steps:</p>
+          <ol class="steps">
+            <li>The optimizer looks at all the possible ways (scenarios) in which the query can be run.</li>
+            <li>Each scenario is given a <strong>cost</strong>, which shows how efficiently the query can be run that way.</li>
+            <li>The optimizer picks the scenario with the least cost and runs the query using it.</li>
+          </ol>
+          <p>The scope of optimization is usually one <strong>query block</strong> (one SELECT … FROM … WHERE). Optimizing a query with several blocks together is called <strong>global query optimization</strong>.</p>
+          <h3>Cost components</h3>
+          <ul>
+            <li><strong>Access cost to secondary storage:</strong> reading and writing disk blocks. This is usually the largest part.</li>
+            <li><strong>Disk storage cost:</strong> storing intermediate results on disk.</li>
+            <li><strong>Computation cost:</strong> CPU work such as comparing, sorting and merging.</li>
+            <li><strong>Memory usage cost:</strong> the number of memory buffers needed.</li>
+            <li><strong>Communication cost:</strong> sending data between sites in a distributed database.</li>
+          </ul>
+          <p>As in the query processing topic, we measure cost mainly by the number of <strong>block transfers</strong> (t<sub>T</sub> each) and <strong>seeks</strong> (t<sub>S</sub> each).</p>
+        </section>
+
+        <section id="statistics" class="topic-section" aria-labelledby="statistics-title">
+          <h2 id="statistics-title">Catalog statistics and size estimation</h2>
+          <p>The optimizer cannot run every plan to see which is fastest. It estimates. The estimates use <strong>statistics</strong> kept in the DBMS <strong>catalog</strong> (data dictionary).</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Statistics stored for a relation r (Silberschatz notation)</caption>
+              <thead><tr><th scope="col">Symbol</th><th scope="col">Meaning</th></tr></thead>
+              <tbody>
+                <tr><td>n<sub>r</sub></td><td>Number of tuples in r</td></tr>
+                <tr><td>b<sub>r</sub></td><td>Number of blocks that hold the tuples of r</td></tr>
+                <tr><td>l<sub>r</sub></td><td>Size of one tuple of r, in bytes</td></tr>
+                <tr><td>f<sub>r</sub></td><td>Blocking factor: the number of tuples that fit in one block</td></tr>
+                <tr><td>V(A, r)</td><td>Number of distinct values of attribute A in r</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The catalog also stores the file organization (heap, sorted or hashed), the indices on each file and the number of levels of each multilevel index. These are all listed in the class notes.</p>
+          <p>If the tuples of r are stored together, b<sub>r</sub> = ⌈n<sub>r</sub> / f<sub>r</sub>⌉.</p>
+          <h3>Selectivity</h3>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>The <strong>selectivity</strong> of a condition is the fraction of tuples that satisfy it. A condition with low selectivity keeps few tuples, so it is very “restrictive”.</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Estimating the number of result tuples (assuming values are spread evenly)</caption>
+              <thead><tr><th scope="col">Operation</th><th scope="col">Estimated size</th></tr></thead>
+              <tbody>
+                <tr><td>σ<sub>A = v</sub>(r)</td><td>n<sub>r</sub> / V(A, r)</td></tr>
+                <tr><td>σ<sub>A ≤ v</sub>(r)</td><td>n<sub>r</sub> × (v − min(A, r)) / (max(A, r) − min(A, r))</td></tr>
+                <tr><td>σ<sub>θ1 ∧ θ2</sub>(r)</td><td>n<sub>r</sub> × s<sub>1</sub> × s<sub>2</sub>, where s<sub>1</sub> and s<sub>2</sub> are the selectivities</td></tr>
+                <tr><td>r ⋈ s, where the common attribute is a key of r</td><td>At most n<sub>s</sub></td></tr>
+                <tr><td>r ⋈ s on attribute A, in general</td><td>n<sub>r</sub> × n<sub>s</sub> / max(V(A, r), V(A, s))</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-example">
+            <div class="callout-title">Example: estimating sizes</div>
+            <p>STUDENT has n<sub>r</sub> = 5,000 and V(dept, STUDENT) = 8. COURSE has 200 tuples with 200 different titles. ENROLL has 40,000 tuples.</p>
+            <ul>
+              <li>σ<sub>dept = 'CSE'</sub>(STUDENT): 5,000 / 8 = <strong>625</strong> tuples.</li>
+              <li>σ<sub>title = 'DBMS'</sub>(COURSE): 200 / 200 = <strong>1</strong> tuple.</li>
+              <li>That 1 course ⋈ ENROLL: course_id is the key of COURSE, so each course has about 40,000 / 200 = <strong>200</strong> enrollments.</li>
+              <li>Those 200 enrollments ⋈ the 625 CSE students: 200 × 625 / 5,000 = <strong>25</strong> tuples.</li>
+            </ul>
+            <p>These are the numbers the optimizer uses to see that COURSE should be joined first.</p>
+          </div>
+          <h3>Histograms</h3>
+          <p>The formulas above assume that values are spread evenly. Real data is often uneven. So the class notes say that an RDBMS stores <strong>histograms</strong> for the most important attributes. A histogram divides the values into ranges (buckets) and stores the number of tuples in each range.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Histogram on STUDENT.marks (5,000 students)</caption>
+              <thead><tr><th scope="col">Marks</th><th scope="col">0 to 20</th><th scope="col">21 to 40</th><th scope="col">41 to 60</th><th scope="col">61 to 80</th><th scope="col">81 to 100</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Students</th><td>200</td><td>800</td><td>1,800</td><td>1,600</td><td>600</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>For σ<sub>marks &gt; 80</sub>(STUDENT), the even-spread formula gives 5,000 × 20 / 100 = 1,000 tuples. The histogram gives <strong>600</strong>, which is much closer to the truth.</p>
+        </section>
+
+        <section id="choosing" class="topic-section" aria-labelledby="choosing-title">
+          <h2 id="choosing-title">Choosing a plan by cost</h2>
+          <p>Cost estimates let the optimizer choose an <strong>algorithm</strong> for each operation and an <strong>order</strong> for the joins.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Worked example: is the index worth using?</div>
+            <p>STUDENT has 5,000 tuples, 50 per block, so b<sub>r</sub> = 100. A secondary B+ tree index on dept has height 2. Take t<sub>T</sub> = 0.1 ms and t<sub>S</sub> = 4 ms. The query is σ<sub>dept = 'CSE'</sub>(STUDENT), with 625 matching tuples (estimated above).</p>
+            <div class="table-wrap">
+              <table class="worked">
+                <caption>Two plans for the same selection</caption>
+                <thead><tr><th scope="col">Plan</th><th scope="col">Cost formula</th><th scope="col">Estimated time</th></tr></thead>
+                <tbody>
+                  <tr><td>Linear search (read every block)</td><td>b<sub>r</sub> × t<sub>T</sub> + t<sub>S</sub> = 100 × 0.1 + 4</td><td><strong>14 ms</strong></td></tr>
+                  <tr><td>Secondary index on dept</td><td>(h + n) × (t<sub>T</sub> + t<sub>S</sub>) = (2 + 625) × 4.1, because each match may be in a different block</td><td><strong>about 2,571 ms</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>The optimizer picks the <strong>linear search</strong>. A rule like “always use an index” would pick the slow plan here. For σ<sub>roll_no = 1234</sub>(STUDENT), only one tuple matches, so the index costs (2 + 1) × 4.1 ≈ 12 ms and wins.</p>
+          </div>
+          <h3>Join order</h3>
+          <p>The number of possible join orders grows very fast. For n relations there are (2(n − 1))! / (n − 1)! different join orders.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Number of join orders</caption>
+              <thead><tr><th scope="col">Relations</th><th scope="col">3</th><th scope="col">5</th><th scope="col">7</th><th scope="col">10</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Join orders</th><td>12</td><td>1,680</td><td>665,280</td><td>more than 17.6 billion</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>So optimizers do not try every order. They use <strong>dynamic programming</strong>: the best plan for each smaller set of relations is found once and reused. Many systems also consider only <strong>left-deep join trees</strong>, where the right input of every join is a stored relation. Left-deep trees work well with pipelining and indexed nested-loop joins.</p>
+        </section>
+
+        <section id="compare" class="topic-section" aria-labelledby="compare-title">
+          <h2 id="compare-title">Heuristic and cost-based optimization compared</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Heuristic optimization compared with cost-based optimization</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Heuristic</th><th scope="col">Cost-based</th></tr></thead>
+              <tbody>
+                <tr><td>How it chooses</td><td>Applies fixed rules to the query tree</td><td>Compares the estimated cost of many plans</td></tr>
+                <tr><td>Uses statistics</td><td>No</td><td>Yes: n<sub>r</sub>, b<sub>r</sub>, V(A, r), histograms</td></tr>
+                <tr><td>Time to optimize</td><td>Short</td><td>Longer, because many plans are compared</td></tr>
+                <tr><td>Quality of the plan</td><td>Good in most cases, but may miss the best plan</td><td>Usually finds a better plan, if the statistics are up to date</td></tr>
+                <tr><td>Merits (advantages)</td><td>Simple and fast; needs no statistics</td><td>Adapts to the real data; chooses algorithms and join order well</td></tr>
+                <tr><td>Demerits (disadvantages)</td><td>Ignores the actual data, so a rule can make a plan slower</td><td>Costs time and memory to optimize; poor estimates give poor plans</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Tip</div>
+            <p>Many systems use heuristics to reduce the number of choices, and then use cost estimates to choose among the plans that are left. Some systems use only heuristics.</p>
+          </div>
+        </section>
+
+        <section id="mysql" class="topic-section" aria-labelledby="mysql-title">
+          <h2 id="mysql-title">Statistics and plans in MySQL</h2>
+          <p>MySQL has a cost-based optimizer. <code>ANALYZE TABLE</code> updates the statistics that it uses, and it can also build a histogram on a column. <code>EXPLAIN</code> shows the chosen plan with its estimated cost and row counts.</p>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>-- Refresh the statistics for the table
+ANALYZE TABLE student;
+
+-- Build a histogram on marks with 5 buckets
+ANALYZE TABLE student UPDATE HISTOGRAM ON marks WITH 5 BUCKETS;
+
+-- See the plan, with estimated cost and rows
+EXPLAIN FORMAT=TREE
+SELECT name
+FROM student
+WHERE marks &gt; 80;</code></pre>
+          </div>
+          <p>In the output, <code>cost=</code> is the optimizer's cost estimate and <code>rows=</code> is its estimate of the number of rows. If these estimates are far from the real numbers, refresh the statistics.</p>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Maps and route planning</h3>
+              <p class="muted">A maps app does not try every possible road. It uses rules (stay on main roads) and estimates (traffic and distance) to choose a fast route. A query optimizer does the same with rules and cost estimates.</p>
+            </div>
+            <div class="card">
+              <h3>Slow reports after a data load</h3>
+              <p class="muted">When a college loads a new semester's marks, an old report can suddenly become slow. The statistics still describe the old data, so the optimizer picks a poor plan. Running ANALYZE TABLE often fixes it.</p>
+            </div>
+            <div class="card">
+              <h3>Shopping filters</h3>
+              <p class="muted">On a shopping site, “brand = X” may match 50 products while “in stock” matches a million. The optimizer applies the brand filter first, because it is the most restrictive.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Query optimization chooses the most efficient plan from many equivalent plans.</li>
+              <li>A query tree shows relations as leaves and operations as internal nodes; the canonical tree is correct but slow.</li>
+              <li>Equivalence rules (cascade of σ, pushing σ and π through joins, join commutativity and associativity) let the optimizer rewrite a tree safely.</li>
+              <li>Heuristic rules: perform selections early, perform projections early, do the most restrictive operations first, and replace × followed by σ with ⋈.</li>
+              <li>Cost-based optimization estimates the cost of each plan from catalog statistics (n<sub>r</sub>, b<sub>r</sub>, V(A, r), histograms) and picks the cheapest.</li>
+              <li>Selectivity is the fraction of tuples that satisfy a condition; σ<sub>A = v</sub>(r) is estimated as n<sub>r</sub> / V(A, r).</li>
+              <li>Heuristics are fast but may miss the best plan; cost-based optimization is slower but usually better.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit IV question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="4.11"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="4.11"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 16 “Query Optimization”, Sections 16.1 to 16.4.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 19 “Query Optimization”.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/analyze-table.html" target="_blank" rel="noopener">ANALYZE TABLE Statement</a> and <a href="https://dev.mysql.com/doc/refman/8.4/en/optimizer-statistics.html" target="_blank" rel="noopener">Optimizer Statistics</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-4.js"></script>
+  <script src="../../data/quizzes/unit-4.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/query-tree.js"></script>
+</body>
+</html>

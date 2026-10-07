@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Query Processing Overview | DBMS Study Guide</title>
+  <meta name="description" content="Learn how a DBMS runs an SQL query: parsing and translation, optimization and evaluation, how query cost is measured, and the algorithms for selection, external sorting and joins, with worked examples.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="4" data-topic="4.10" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-4">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-4">Unit IV</span>
+            <span class="badge badge-level" title="Topic number">Topic 4.10</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO4</span>
+          </div>
+          <h1>Query Processing Overview</h1>
+          <p class="lead">When you send an SQL query, the DBMS checks it, turns it into relational algebra, picks a good plan and then runs that plan. This page follows a query through each step.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Describe the three steps of query processing.</li>
+              <li>Explain query evaluation plans and how query cost is measured.</li>
+              <li>Compute the cost of linear and binary search for a selection.</li>
+              <li>Explain external merge sort and the main join algorithms with their costs.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#steps">The three steps of query processing</a></li>
+            <li><a href="#plans">Evaluation plans</a></li>
+            <li><a href="#cost">Measures of query cost</a></li>
+            <li><a href="#selection">Algorithms for selection</a></li>
+            <li><a href="#sorting">External sorting</a></li>
+            <li><a href="#joins">Algorithms for joins</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#mysql">Seeing the plan in MySQL</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <!-- cspell:ignore studnet -->
+        <section id="steps" class="topic-section" aria-labelledby="steps-title">
+          <h2 id="steps-title">The three steps of query processing</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Query processing</strong> is the set of activities that turn a high-level query (such as SQL) into steps that the system can run on the stored data. It also runs these steps to get the result.</p>
+          </div>
+          <ol class="steps">
+            <li><strong>Parsing and translation.</strong> The <strong>parser</strong> checks the <strong>syntax</strong> of the query (is it written correctly?) and checks that the relations and attributes in it exist. The query is then translated into an internal form, usually a <strong>relational algebra</strong> expression.</li>
+            <li><strong>Optimization.</strong> The <strong>optimizer</strong> considers the many equivalent ways to run the query and estimates the <strong>cost</strong> of each. It uses <strong>statistics</strong> from the data dictionary, such as the number of tuples in each relation. It picks the plan with the lowest estimated cost.</li>
+            <li><strong>Evaluation.</strong> The <strong>query execution engine</strong> takes the chosen plan, runs it and returns the answer.</li>
+          </ol>
+          <div class="table-wrap">
+            <table>
+              <caption>The path of a query through the DBMS</caption>
+              <thead><tr><th scope="col">Input</th><th scope="col">Step</th><th scope="col">Output</th></tr></thead>
+              <tbody>
+                <tr><td>SQL query</td><td>Parser and translator</td><td>Relational algebra expression</td></tr>
+                <tr><td>Relational algebra expression and statistics about the data</td><td>Optimizer</td><td>Query evaluation plan</td></tr>
+                <tr><td>Query evaluation plan and the data</td><td>Query execution engine (evaluation)</td><td>Query output</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-example">
+            <div class="callout-title">Example: what the parser rejects</div>
+            <p><code>SELECT name FORM student;</code> is rejected for its <strong>syntax</strong>, because FORM is not a keyword. <code>SELECT name FROM studnet;</code> has the right syntax, but it is rejected because no relation is called studnet.</p>
+          </div>
+        </section>
+
+        <section id="plans" class="topic-section" aria-labelledby="plans-title">
+          <h2 id="plans-title">Evaluation plans</h2>
+          <p>One SQL query can be written as several equivalent relational algebra expressions. Take this query from the class notes:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT balance
+FROM account
+WHERE balance &lt; 1000;</code></pre>
+          </div>
+          <p>It can be translated into either of these expressions. Both give the same result.</p>
+          <ol>
+            <li>σ<sub>balance &lt; 1000</sub>(Π<sub>balance</sub>(account))</li>
+            <li>Π<sub>balance</sub>(σ<sub>balance &lt; 1000</sub>(account))</li>
+          </ol>
+          <p>An expression alone does not say <strong>how</strong> to run each operation. For example, σ<sub>balance &lt; 1000</sub> could read the whole file, or it could use an index on balance.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definitions</div>
+            <p>An <strong>evaluation primitive</strong> is a relational algebra operation together with instructions on how to evaluate it, for example “σ using the index on balance”.</p>
+            <p>A <strong>query evaluation plan</strong> (query execution plan) is a sequence of evaluation primitives that together evaluate a query. It is often drawn as a tree.</p>
+          </div>
+          <p>Each plan has a cost. The job of the optimizer (topic 4.11) is to find the plan with the lowest cost.</p>
+          <p>The results of one operation can be passed to the next in two ways. In <strong>materialization</strong>, each result is written to a temporary relation on disk and then read by the next operation. In <strong>pipelining</strong>, each tuple is passed to the next operation as soon as it is produced, so no temporary relation is written.</p>
+        </section>
+
+        <section id="cost" class="topic-section" aria-labelledby="cost-title">
+          <h2 id="cost-title">Measures of query cost</h2>
+          <p>The cost of a query is the time it takes. Many things add to it:</p>
+          <ul>
+            <li><strong>Disk access</strong>: reading and writing blocks.</li>
+            <li><strong>CPU time</strong> to run the query in memory.</li>
+            <li><strong>Communication cost</strong> in distributed and parallel databases.</li>
+          </ul>
+          <p>Disk access is much slower than work in memory, so it is usually the <strong>main cost</strong>. It is also easy to estimate. So the cost of a plan is measured by two numbers:</p>
+          <ul>
+            <li><strong>b</strong>: the number of <strong>block transfers</strong> (blocks read or written), each taking t<sub>T</sub> seconds.</li>
+            <li><strong>S</strong>: the number of <strong>seeks</strong> (moving the disk head to a new place), each taking t<sub>S</sub> seconds.</li>
+          </ul>
+          <div class="callout callout-definition">
+            <div class="callout-title">Formula</div>
+            <p><strong>Query cost = b × t<sub>T</sub> + S × t<sub>S</sub></strong></p>
+          </div>
+          <p>For example, a hard disk might have t<sub>S</sub> = 4 milliseconds and t<sub>T</sub> = 0.1 milliseconds for a 4 KB block. One seek costs as much as 40 block transfers, so reading blocks one after another is much cheaper than jumping around the disk.</p>
+          <p>Writing a block costs more than reading it, because the system reads the block back to check that the write worked. CPU time is usually left out of the estimate because it is small and hard to measure.</p>
+        </section>
+
+        <section id="selection" class="topic-section" aria-labelledby="selection-title">
+          <h2 id="selection-title">Algorithms for selection</h2>
+          <p>A selection (σ) is done with a <strong>file scan</strong>: a search that finds the records that meet the condition. In the formulas, <strong>b<sub>r</sub></strong> is the number of blocks of relation r.</p>
+          <h3>A1: Linear search</h3>
+          <p>Read every block of the file and test every record against the condition.</p>
+          <ul>
+            <li>Cost: <strong>b<sub>r</sub> block transfers + 1 seek</strong>.</li>
+            <li>If the condition is an equality on a <strong>key</strong>, the search can stop at the first match. On average this costs <strong>b<sub>r</sub> / 2 block transfers + 1 seek</strong>.</li>
+            <li>Works for <strong>any</strong> condition, on any file, sorted or not, with or without an index.</li>
+          </ul>
+          <h3>A2: Binary search</h3>
+          <p>Possible when the condition is an equality on the attribute on which the file is <strong>sorted</strong>, and the blocks are stored one after another.</p>
+          <ul>
+            <li>Cost to find the first matching record: <strong>⌈log<sub>2</sub>(b<sub>r</sub>)⌉ × (t<sub>T</sub> + t<sub>S</sub>)</strong>. Each step of the binary search reads one block at a new place.</li>
+            <li>If several records match, add the transfer cost of the blocks that hold them.</li>
+          </ul>
+          <div class="callout callout-example">
+            <div class="callout-title">Example</div>
+            <p>A sorted STUDENT file has b<sub>r</sub> = 1,000 blocks. Linear search reads up to 1,000 blocks. Binary search reads ⌈log<sub>2</sub> 1000⌉ = 10 blocks.</p>
+          </div>
+          <h3>Selection using an index</h3>
+          <p>With a B+ tree index of height h<sub>i</sub>, an equality search on a key reads h<sub>i</sub> index blocks and one data block. The cost is about <strong>(h<sub>i</sub> + 1) × (t<sub>T</sub> + t<sub>S</sub>)</strong>. This is often the cheapest choice (topic 4.6).</p>
+        </section>
+
+        <section id="sorting" class="topic-section" aria-labelledby="sorting-title">
+          <h2 id="sorting-title">External sorting</h2>
+          <p>Queries with ORDER BY, and some join methods, need sorted data. If a relation fits in memory, any normal sort works. Large relations do not fit, so the DBMS uses <strong>external sorting</strong>.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>External merge sort</strong> sorts data that is too large for memory in two stages. First, it loads one memory-full of records at a time, sorts it and writes it out as a sorted <strong>run</strong>. Second, it <strong>merges</strong> the runs, again and again, until one sorted run is left.</p>
+          </div>
+          <p>For example, 10,000 records must be sorted, and memory holds 500 records. Stage 1 makes 20 sorted runs of 500 records each. Stage 2 merges the runs into longer and longer runs.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example from the class notes: two-way merge sort with M = 3</div>
+            <p>Sort 20, 47, 15, 8, 9, 4, 40, 30, 12, 17, 11, 56, 28, 35, with memory for 3 records.</p>
+            <div class="table-wrap">
+              <table class="worked">
+                <caption>External two-way merge sort</caption>
+                <thead><tr><th scope="col">Stage</th><th scope="col">What happens</th><th scope="col">Runs</th></tr></thead>
+                <tbody>
+                  <tr><td>Sort runs</td><td>Read 3 records at a time, sort them, write a run.</td><td>[15, 20, 47] [4, 8, 9] [12, 30, 40] [11, 17, 56] [28, 35]</td></tr>
+                  <tr><td>Merge pass 1</td><td>Merge runs in pairs.</td><td>[4, 8, 9, 15, 20, 47] [11, 12, 17, 30, 40, 56] [28, 35]</td></tr>
+                  <tr><td>Merge pass 2</td><td>Merge again.</td><td>[4, 8, 9, 11, 12, 15, 17, 20, 30, 40, 47, 56] [28, 35]</td></tr>
+                  <tr><td>Merge pass 3</td><td>Merge the last two runs.</td><td>[4, 8, 9, 11, 12, 15, 17, 20, 28, 30, 35, 40, 47, 56]</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p>Each pass halves the number of runs. With N records and runs of M records, a two-way merge needs about ⌈log<sub>2</sub>(N / M)⌉ merge passes. A <strong>multiway merge</strong> merges more than two runs at a time, so it needs fewer passes.</p>
+        </section>
+
+        <section id="joins" class="topic-section" aria-labelledby="joins-title">
+          <h2 id="joins-title">Algorithms for joins</h2>
+          <p>The join is the most costly common operation. In the formulas, r is the <strong>outer</strong> relation and s is the <strong>inner</strong> relation. n<sub>r</sub> is the number of tuples of r, and b<sub>r</sub> and b<sub>s</sub> are their numbers of blocks.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Join algorithms and their costs (worst case, with little memory)</caption>
+              <thead><tr><th scope="col">Algorithm</th><th scope="col">How it works</th><th scope="col">Block transfers</th><th scope="col">Seeks</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Nested-loop join</th><td>For each tuple of r, read all of s and test each pair.</td><td>n<sub>r</sub> × b<sub>s</sub> + b<sub>r</sub></td><td>n<sub>r</sub> + b<sub>r</sub></td></tr>
+                <tr><th scope="row">Block nested-loop join</th><td>For each block of r, read all of s and test the pairs block by block.</td><td>b<sub>r</sub> × b<sub>s</sub> + b<sub>r</sub></td><td>2 × b<sub>r</sub></td></tr>
+                <tr><th scope="row">Indexed nested-loop join</th><td>For each tuple of r, use an index on s to find the matching tuples.</td><td colspan="2">b<sub>r</sub> × (t<sub>T</sub> + t<sub>S</sub>) + n<sub>r</sub> × c, where c is the cost of one index lookup</td></tr>
+                <tr><th scope="row">Merge join</th><td>Sort both relations on the join attribute, then read them together once, like merging two sorted lists. Only for equi-joins and natural joins.</td><td>b<sub>r</sub> + b<sub>s</sub> (plus the cost of sorting)</td><td>⌈b<sub>r</sub>/b<sub>b</sub>⌉ + ⌈b<sub>s</sub>/b<sub>b</sub>⌉</td></tr>
+                <tr><th scope="row">Hash join</th><td>Use a hash function on the join attribute to split both relations into partitions; join each pair of matching partitions in memory.</td><td>3(b<sub>r</sub> + b<sub>s</sub>) + 4n<sub>h</sub></td><td>2(⌈b<sub>r</sub>/b<sub>b</sub>⌉ + ⌈b<sub>s</sub>/b<sub>b</sub>⌉)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Here b<sub>b</sub> is the number of blocks read at a time (the buffer size), and n<sub>h</sub> is the number of partitions. If the smaller relation fits <strong>entirely in memory</strong>, nested-loop, block nested-loop and hash joins all drop to <strong>b<sub>r</sub> + b<sub>s</sub></strong> block transfers.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Worked example from the class notes: CUSTOMER ⋈ ORDERS</div>
+            <p>CUSTOMER has 10,000 tuples in 400 blocks. ORDERS has 5,000 tuples in 100 blocks. Join them on CName with a nested-loop join.</p>
+            <ul>
+              <li><strong>ORDERS as the outer relation:</strong> 5,000 × 400 + 100 = <strong>2,000,100</strong> block transfers and 5,000 + 100 = <strong>5,100</strong> seeks.</li>
+              <li><strong>CUSTOMER as the outer relation:</strong> 10,000 × 100 + 400 = <strong>1,000,400</strong> block transfers and 10,000 + 400 = <strong>10,400</strong> seeks.</li>
+              <li><strong>Block nested-loop join, ORDERS outer:</strong> 100 × 400 + 100 = <strong>40,100</strong> block transfers and 2 × 100 = <strong>200</strong> seeks.</li>
+              <li><strong>ORDERS fits in memory:</strong> 400 + 100 = <strong>500</strong> block transfers.</li>
+            </ul>
+            <p>The same join can cost 500 or 2 million block transfers. Choosing well is the job of the optimizer.</p>
+          </div>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>See how an SQL query becomes a relational algebra <strong>query tree</strong>. Press Next to compare the two expressions for the query above, or choose a larger query to see how much the plan matters.</p>
+          <div class="widget" data-widget="query-tree" data-preset="simple">
+            <noscript><p class="widget-narration">The query tree widget needs JavaScript. The two expressions above are the same two trees.</p></noscript>
+          </div>
+        </section>
+
+        <section id="mysql" class="topic-section" aria-labelledby="mysql-title">
+          <h2 id="mysql-title">Seeing the plan in MySQL</h2>
+          <p>MySQL shows the plan it chose with <code>EXPLAIN</code>. <code>EXPLAIN ANALYZE</code> also runs the query and shows the real time of each step.</p>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>EXPLAIN FORMAT=TREE
+SELECT name
+FROM student
+WHERE marks &lt; 50;
+
+EXPLAIN ANALYZE
+SELECT name
+FROM student
+WHERE marks &lt; 50;</code></pre>
+          </div>
+          <p>In the output, “Table scan” means a linear search, and “Index range scan” means the plan uses an index.</p>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Like booking a train journey</h3>
+              <p class="muted">To travel from Salem to Delhi, there are many routes. You check that the stations exist (parsing), compare routes by time and cost (optimization), then travel on the chosen one (evaluation).</p>
+            </div>
+            <div class="card">
+              <h3>Online shopping search</h3>
+              <p class="muted">When you search for “red shoes under ₹1,000”, the shop's database runs a query with a selection and a join. A good plan returns the page in a fraction of a second; a poor plan could take minutes.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Query processing has three steps: parsing and translation, optimization, and evaluation.</li>
+              <li>The parser checks syntax and names, and translates SQL into relational algebra.</li>
+              <li>A query evaluation plan is relational algebra annotated with how to evaluate each operation.</li>
+              <li>Query cost = b × t<sub>T</sub> + S × t<sub>S</sub>: block transfers and seeks, because disk access dominates.</li>
+              <li>Linear search costs b<sub>r</sub> transfers + 1 seek; binary search costs ⌈log<sub>2</sub>(b<sub>r</sub>)⌉ × (t<sub>T</sub> + t<sub>S</sub>).</li>
+              <li>External merge sort makes sorted runs that fit in memory, then merges them.</li>
+              <li>Join algorithms: nested-loop, block nested-loop, indexed nested-loop, merge join and hash join; the choice depends on cost.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit IV question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="4.10"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="4.10"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 15 “Query Processing”, Sections 15.1 to 15.5.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 18 “Strategies for Query Processing”.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/explain.html" target="_blank" rel="noopener">EXPLAIN Statement</a> and <a href="https://dev.mysql.com/doc/refman/8.4/en/using-explain.html" target="_blank" rel="noopener">Optimizing Queries with EXPLAIN</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-4.js"></script>
+  <script src="../../data/quizzes/unit-4.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/query-tree.js"></script>
+</body>
+</html>
