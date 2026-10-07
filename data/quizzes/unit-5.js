@@ -772,6 +772,76 @@
       answer: 1,
       explain: "One grant to the teacher role reaches every user who holds that role.",
       link: "#changes"
+    },
+    /* 5.13 SQL Injection */
+    {
+      id: "q5.13-01",
+      topic: "5.13",
+      type: "mcq",
+      question: "What is the root cause of SQL injection?",
+      options: ["A weak database password", "User input joined directly into an SQL query", "Too many indexes", "Using MySQL instead of Oracle"],
+      answer: 1,
+      explain: "When input is pasted into the query text, a quote in it can end the string and turn the rest into SQL code.",
+      link: "#how"
+    },
+    {
+      id: "q5.13-02",
+      topic: "5.13",
+      type: "mcq",
+      question: "The password field gets ' OR '1'='1. Why does the unsafe login succeed?",
+      options: ["The password is guessed", "The WHERE clause becomes true for every row", "MySQL ignores the password column", "The user table is deleted"],
+      answer: 1,
+      explain: "AND is done before OR, so the condition becomes (... AND password = '') OR '1'='1', which is true for every row.",
+      link: "#examples"
+    },
+    {
+      id: "q5.13-03",
+      topic: "5.13",
+      type: "mcq",
+      question: "In the input admin' -- , what does the -- do in MySQL?",
+      options: ["Subtracts two numbers", "Starts a comment, so the password check is ignored", "Ends the statement", "Joins two queries"],
+      answer: 1,
+      explain: "-- followed by a space starts a comment. Everything after it, including the password check, is ignored.",
+      link: "#examples"
+    },
+    {
+      id: "q5.13-04",
+      topic: "5.13",
+      type: "mcq",
+      question: "An attacker sees no data or errors, but learns one yes-or-no answer at a time from how the page changes. Which type is this?",
+      options: ["UNION based", "Boolean-based blind", "Error based", "Out-of-band"],
+      answer: 1,
+      explain: "Blind injection shows nothing directly. In boolean-based blind injection, the attacker asks true or false questions and watches the page.",
+      link: "#types"
+    },
+    {
+      id: "q5.13-05",
+      topic: "5.13",
+      type: "mcq",
+      question: "Which is the main defense against SQL injection?",
+      options: ["Hiding error messages", "Prepared statements with ? placeholders", "Longer passwords", "Adding more indexes"],
+      answer: 1,
+      explain: "Prepared statements send the SQL and the values separately, so a value can never change the query.",
+      link: "#prevention"
+    },
+    {
+      id: "q5.13-06",
+      topic: "5.13",
+      type: "tf",
+      question: "conn.prepareStatement(\"SELECT * FROM users WHERE name = '\" + user + \"'\") is safe because it uses a prepared statement.",
+      answer: false,
+      explain: "The input was joined into the text before preparing. Only input passed through a ? placeholder is safe.",
+      link: "#prepared"
+    },
+    {
+      id: "q5.13-07",
+      topic: "5.13",
+      type: "multi",
+      question: "Which measures help prevent or limit SQL injection? Select all that apply.",
+      options: ["Prepared statements", "Allow-list input validation", "Giving the web app account only the privileges it needs", "Showing full database errors to users"],
+      answer: [0, 1, 2],
+      explain: "Parameters, validation and least privilege all help. Showing full errors helps attackers, so errors should be hidden and logged.",
+      link: "#prevention"
     }
   ]);
 })();

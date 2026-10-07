@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SQL Injection | DBMS Study Guide</title>
+  <meta name="description" content="Learn SQL injection: how joining user input into a query lets attackers change it, worked login bypass, comment and UNION examples, the types (in-band, blind and out-of-band), the impacts, and prevention with prepared statements in MySQL 8.4 and Java, with a safe interactive demo.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="5" data-topic="5.13" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-5">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-5">Unit V</span>
+            <span class="badge badge-level" title="Topic number">Topic 5.13</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO5</span>
+          </div>
+          <h1>SQL Injection</h1>
+          <p class="lead">SQL injection is one of the oldest and most common attacks on web applications. It happens when a program pastes user input into an SQL query. This page shows how the attack works, its types and impacts, and how prepared statements stop it.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define SQL injection and explain how it changes a query.</li>
+              <li>Trace a login bypass, a comment attack and a UNION attack.</li>
+              <li>Describe the types and impacts of SQL injection.</li>
+              <li>Prevent it with prepared statements and other defenses.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is SQL injection?</a></li>
+            <li><a href="#how">How the attack works</a></li>
+            <li><a href="#examples">Worked examples</a></li>
+            <li><a href="#types">Types of SQL injection</a></li>
+            <li><a href="#impacts">Impacts</a></li>
+            <li><a href="#prevention">Prevention</a></li>
+            <li><a href="#prepared">Worked example: the prepared statement fix</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is SQL injection?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>SQL injection</strong> is an attack in which a user types <strong>SQL code into an input field</strong>, such as a login box or a search box. The application joins this input directly into its SQL query, so the input <strong>changes the meaning of the query</strong>. The attacker can then read, change or delete data they should not reach.</p>
+          </div>
+          <p>Think of a form at a bank: “Pay ₹____ to ____.” The clerk copies your words into the gap. If you write “₹100 to Ravi, and also give me all the cash in the safe”, a careless clerk copies all of it and obeys. The problem is not the form. It is the clerk who treats your words as orders.</p>
+          <p>Any database can be attacked this way: MySQL, Oracle, SQL Server and others. The fault is in the <strong>application code</strong>, not in the DBMS.</p>
+        </section>
+
+        <section id="how" class="topic-section" aria-labelledby="how-title">
+          <h2 id="how-title">How the attack works</h2>
+          <p>Here is a login check written the unsafe way, in Java. It builds the query by joining strings.</p>
+          <div class="code-block">
+            <span class="code-label">Java (unsafe)</span>
+            <pre><code>String user = request.getParameter("username");
+String pass = request.getParameter("password");
+
+String sql = "SELECT * FROM users WHERE username = '" + user +
+             "' AND password = '" + pass + "'";
+
+ResultSet rs = stmt.executeQuery(sql);
+if (rs.next()) {
+    // login successful
+}</code></pre>
+          </div>
+          <p>For a normal user, <code>anitha</code> and <code>Anitha@123</code>, the server builds a normal query.</p>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>SELECT * FROM users WHERE username = 'anitha' AND password = 'Anitha@123'</code></pre>
+          </div>
+          <p>But the input goes straight inside the quotes. If the input itself contains a quote <code>'</code>, it <strong>closes the string early</strong>. Whatever follows is read as SQL code, not as data. That is the whole trick.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Note</div>
+            <p>Real systems never store plain passwords. They store a salted hash. We use plain text here only to keep the queries short.</p>
+          </div>
+        </section>
+
+        <section id="examples" class="topic-section" aria-labelledby="examples-title">
+          <h2 id="examples-title">Worked examples</h2>
+          <div class="callout callout-example">
+            <div class="callout-title">Example 1: always true (tautology)</div>
+            <p>The attacker types <code>anitha</code> as the username and <code>' OR '1'='1</code> as the password.</p>
+          </div>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>SELECT * FROM users
+WHERE username = 'anitha' AND password = '' OR '1'='1'</code></pre>
+          </div>
+          <p><code>AND</code> is done before <code>OR</code>, so the condition is <code>(username = 'anitha' AND password = '') OR '1'='1'</code>. The part <code>'1'='1'</code> is true for every row. The query returns all users, and the program logs the attacker in as the first one, often the administrator.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example 2: cut off the rest (comment)</div>
+            <p>The attacker types <code>admin' -- </code> (with a space at the end) as the username and anything as the password.</p>
+          </div>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>SELECT * FROM users
+WHERE username = 'admin' -- ' AND password = 'anything'</code></pre>
+          </div>
+          <p>In MySQL, <code>-- </code> starts a comment, so everything after it is ignored. The password check is gone. The query finds the <code>admin</code> row, and the attacker is logged in as admin.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example 3: steal another table (UNION)</div>
+            <p>A shop's search page runs <code>SELECT name, price FROM products WHERE name LIKE '%<em>input</em>%'</code>. The attacker searches for:</p>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Attacker's input</span>
+            <pre><code>%' UNION SELECT username, password FROM users -- </code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>SELECT name, price FROM products WHERE name LIKE '%%'
+UNION SELECT username, password FROM users -- %'</code></pre>
+          </div>
+          <p><code>UNION</code> adds the rows of a second query to the first. Both have two columns, so the page now lists every username and password next to the products.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Hiding the error messages does not fix SQL injection. Attackers can still ask yes-or-no questions and watch how the page changes. Only keeping input out of the SQL code fixes it.</p>
+          </div>
+        </section>
+
+        <section id="types" class="topic-section" aria-labelledby="types-title">
+          <h2 id="types-title">Types of SQL injection</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Types of SQL injection</caption>
+              <thead><tr><th scope="col">Type</th><th scope="col">How the attacker gets data</th><th scope="col">Example</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">In-band: tautology</th><td>Makes the WHERE clause always true</td><td><code>' OR '1'='1</code></td></tr>
+                <tr><th scope="row">In-band: UNION based</th><td>Joins the results of another query onto the page</td><td><code>' UNION SELECT username, password FROM users -- </code></td></tr>
+                <tr><th scope="row">In-band: error based</th><td>Makes the database show an error that contains data</td><td>A bad cast whose error message prints a value</td></tr>
+                <tr><th scope="row">Blind: boolean based</th><td>Asks yes-or-no questions and watches if the page changes</td><td><code>' AND SUBSTRING(password,1,1) = 'a' -- </code></td></tr>
+                <tr><th scope="row">Blind: time based</th><td>Makes the database wait when the answer is yes</td><td><code>' AND IF(1=1, SLEEP(5), 0) -- </code></td></tr>
+                <tr><th scope="row">Piggy-backed (stacked)</th><td>Adds a second statement after a <code>;</code></td><td><code>'; DROP TABLE users; -- </code></td></tr>
+                <tr><th scope="row">Out-of-band</th><td>Makes the server send data to the attacker's machine</td><td>Using a function that opens a network link</td></tr>
+                <tr><th scope="row">Second order</th><td>Stores the input safely now; it runs as SQL later in another query</td><td>A username such as <code>admin' -- </code> used later in a password-change query</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>In <strong>in-band</strong> attacks, the data comes back on the same page. In <strong>blind</strong> attacks, nothing is shown, so the attacker learns one bit at a time. Blind attacks are slower, but tools can automate them.</p>
+        </section>
+
+        <section id="impacts" class="topic-section" aria-labelledby="impacts-title">
+          <h2 id="impacts-title">Impacts</h2>
+          <ul>
+            <li><strong>Login bypass:</strong> enter as any user, even the administrator, without a password.</li>
+            <li><strong>Data theft (loss of confidentiality):</strong> read passwords, card numbers, marks and personal details.</li>
+            <li><strong>Data change (loss of integrity):</strong> change marks or prices, or add fake records.</li>
+            <li><strong>Data loss (loss of availability):</strong> delete rows or drop whole tables.</li>
+            <li><strong>Server takeover:</strong> with too many privileges, write files or run commands on the server.</li>
+            <li><strong>Legal and money loss:</strong> fines under data protection law, lawsuits and loss of trust.</li>
+          </ul>
+        </section>
+
+        <section id="prevention" class="topic-section" aria-labelledby="prevention-title">
+          <h2 id="prevention-title">Prevention</h2>
+          <ol>
+            <li><strong>Prepared statements (parameterized queries):</strong> the main defense. The SQL is sent with <code>?</code> placeholders, and the values are sent separately. The database never reads a value as code, whatever quotes or dashes it contains.</li>
+            <li><strong>Stored procedures</strong> that use parameters, not joined strings, inside them.</li>
+            <li><strong>Input validation with allow-lists:</strong> accept only what is expected. A roll number must be digits only; a sort column must be one of a fixed list.</li>
+            <li><strong>Least privilege:</strong> the web app's MySQL account gets only the privileges it needs (topic 5.11). A login page does not need <code>DROP</code>.</li>
+            <li><strong>Hide database errors</strong> from users and log them for the developers instead.</li>
+            <li><strong>Escaping</strong> special characters, only when nothing else is possible. It is easy to get wrong.</li>
+            <li><strong>A web application firewall (WAF)</strong> that blocks known attack patterns, as an extra layer.</li>
+          </ol>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>For the 16-mark question, cover five parts. Define SQL injection and show the unsafe code with the <code>' OR '1'='1</code> example. Then list the types in a table and the impacts. End with prevention, showing the prepared statement code.</p>
+          </div>
+        </section>
+
+        <section id="prepared" class="topic-section" aria-labelledby="prepared-title">
+          <h2 id="prepared-title">Worked example: the prepared statement fix</h2>
+          <p>The same login check, written safely with JDBC's <code>PreparedStatement</code>.</p>
+          <div class="code-block">
+            <span class="code-label">Java (safe)</span>
+            <pre><code>String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+
+PreparedStatement ps = conn.prepareStatement(sql);
+ps.setString(1, user);   // value for the 1st ?
+ps.setString(2, pass);   // value for the 2nd ?
+
+ResultSet rs = ps.executeQuery();</code></pre>
+          </div>
+          <p>Now the attacker types <code>' OR '1'='1</code> as the password. The database looks for a user whose password is exactly the 11 characters <code>' OR '1'='1</code>. No such row exists, so the login fails. The query's shape was fixed before the value arrived.</p>
+          <p>MySQL 8.4 also supports prepared statements directly in SQL.</p>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>PREPARE login FROM
+  'SELECT * FROM users WHERE username = ? AND password = ?';
+
+SET @u = 'anitha', @p = ''' OR ''1''=''1';
+EXECUTE login USING @u, @p;     -- no rows: the attack fails
+
+DEALLOCATE PREPARE login;</code></pre>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>A prepared statement helps only if the input goes into a <code>?</code>. Code such as <code>conn.prepareStatement("... WHERE name = '" + user + "'")</code> is still unsafe, because the input was joined before preparing.</p>
+          </div>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>This is a pretend login. It runs in your browser against a tiny table of three users; no real database is involved. Type your own input or press a “Try” button, then switch between the two ways of building the query.</p>
+          <div class="widget" data-widget="sql-injection">
+            <noscript><p class="widget-narration">The SQL injection demo needs JavaScript. The worked examples above show the same queries.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Press <strong>' OR '1'='1</strong>. How many rows match? Now switch to the prepared statement.</li>
+              <li>Press <strong>admin' -- </strong>. Which part of the query turns into a comment?</li>
+              <li>Press <strong>Stray quote</strong>. Why does a name like O'Brien break the unsafe query but not the safe one?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Big data breaches</h3>
+              <p class="muted">SQL injection has caused some of the largest leaks of card numbers and passwords. It is still listed in the OWASP Top 10 risks for web applications, under “Injection”.</p>
+            </div>
+            <div class="card">
+              <h3>Frameworks help</h3>
+              <p class="muted">Modern tools such as Spring (Java), Django (Python) and Laravel (PHP) use parameters by default. Injection usually returns when a developer joins strings by hand.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>SQL injection happens when user input is joined into an SQL query and changes its meaning.</li>
+              <li>A quote in the input closes the string early; what follows runs as SQL.</li>
+              <li>Classic attacks: <code>' OR '1'='1</code> (always true), <code>admin' -- </code> (comment) and <code>UNION SELECT</code> (steal data).</li>
+              <li>Types: in-band (tautology, UNION, error based), blind (boolean, time based), stacked, out-of-band and second order.</li>
+              <li>Impacts: login bypass, data theft, data change or loss, and server takeover.</li>
+              <li>Prevention: prepared statements first, plus allow-list validation, least privilege and hidden errors.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit V question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="5.13"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="5.13"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 30, Section 30.4 “SQL Injection”.</li>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 9, Section 9.8.1 “SQL Injection”.</li>
+            <li>OWASP, “SQL Injection Prevention Cheat Sheet” (cheatsheetseries.owasp.org).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-5.js"></script>
+  <script src="../../data/quizzes/unit-5.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/sql-injection.js"></script>
+</body>
+</html>

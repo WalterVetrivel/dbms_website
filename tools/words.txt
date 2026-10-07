@@ -15,6 +15,7 @@ cascadeless
 cgpa
 Charan
 Charu
+cheatsheetseries
 chev
 Chitra
 cmptext
@@ -51,6 +52,7 @@ Kavin
 KIOT
 Korth
 LaPadula
+Laravel
 Manoj
 Meena
 multidatabase
@@ -81,6 +83,7 @@ selectivities
 serializability
 Shamkant
 Silberschatz
+sqli
 STARTROW
 STOPROW
 styleguide

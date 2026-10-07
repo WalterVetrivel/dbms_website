@@ -1500,3 +1500,88 @@
     border-left: 4px dashed var(--danger);
   }
 }
+
+/* ---------- V34 SQL injection demo ---------- */
+
+.sqli-presets {
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.sqli-try {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.sqli-preset {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.sqli-stage {
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.sqli-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-2);
+}
+
+.sqli-form input[type="text"] {
+  font-family: var(--font-mono);
+}
+
+.sqli-label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.sqli-query {
+  margin: 0;
+  padding: var(--sp-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.sqli-in {
+  background: var(--warning-soft);
+  color: var(--text);
+  outline: 1px solid var(--warning);
+  border-radius: 2px;
+  white-space: pre-wrap;
+}
+
+.sqli-q {
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 700;
+  padding: 0 2px;
+}
+
+.sqli-params {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.sqli-result {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--fs-sm);
+}
+
+.sqli-hit td {
+  background: var(--primary-soft);
+  font-weight: 600;
+}
