@@ -407,6 +407,66 @@
       answer: 1,
       explain: "Embedding copies data, so a change may have to be made in many documents. Arrays are allowed and joins are often not needed.",
       link: "#merits"
+    },
+    /* 5.7 Key Value Stores */
+    {
+      id: "q5.7-01",
+      topic: "5.7",
+      type: "mcq",
+      question: "How does a key-value store find data?",
+      options: ["By searching inside every value", "Only by the key", "By joining tables", "By scanning column families"],
+      answer: 1,
+      explain: "The store treats the value as opaque and finds data only by its unique key.",
+      link: "#what"
+    },
+    {
+      id: "q5.7-02",
+      topic: "5.7",
+      type: "multi",
+      question: "Which are the basic operations of a key-value store? Select all that apply.",
+      options: ["put(key, value)", "get(key)", "delete(key)", "join(table1, table2)"],
+      answer: [0, 1, 2],
+      explain: "put, get and delete are enough. There are no joins.",
+      link: "#ops"
+    },
+    {
+      id: "q5.7-03",
+      topic: "5.7",
+      type: "mcq",
+      question: "Login sessions should vanish after 30 minutes. Which Redis feature helps?",
+      options: ["Sorted sets", "An expiry time (TTL) on the key", "Column families", "Foreign keys"],
+      answer: 1,
+      explain: "SET key value EX 1800 stores the session with a 1800-second time to live, after which Redis deletes it.",
+      link: "#examples"
+    },
+    {
+      id: "q5.7-04",
+      topic: "5.7",
+      type: "mcq",
+      question: "How does a large key-value store decide which server holds a key?",
+      options: ["Alphabetical order of values", "By hashing the key", "By the size of the value", "The user picks the server"],
+      answer: 1,
+      explain: "A hash of the key picks the server, so any server can find the key without a central index.",
+      link: "#scale"
+    },
+    {
+      id: "q5.7-05",
+      topic: "5.7",
+      type: "mcq",
+      question: "Which of these is a key-value store?",
+      options: ["MongoDB", "Neo4j", "Redis", "HBase"],
+      answer: 2,
+      explain: "Redis is a key-value store. MongoDB is a document store, Neo4j a graph database and HBase a column store.",
+      link: "#systems"
+    },
+    {
+      id: "q5.7-06",
+      topic: "5.7",
+      type: "tf",
+      question: "A key-value store can directly answer “find all users from Salem” by looking inside each value.",
+      answer: false,
+      explain: "It cannot look inside values. The app must keep an extra key, such as city:Salem, holding the matching user ids.",
+      link: "#ops"
     }
   ]);
 })();

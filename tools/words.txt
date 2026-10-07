@@ -69,6 +69,7 @@ Ramez
 Ravi
 RDBMS
 rels
+Riak
 rollno
 Savepoints
 selectivities
@@ -83,4 +84,7 @@ superkey
 Swamynathan
 Venkataraman
 Vetrivel
+WITHSCORES
 Yercaud
+ZADD
+ZREVRANGE
