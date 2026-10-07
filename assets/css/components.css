@@ -819,3 +819,168 @@ a.chip:hover {
   margin: 0;
   padding: var(--sp-2);
 }
+
+/* Question bank items */
+.q-group {
+  margin: 0 0 var(--sp-6);
+}
+
+.q-group-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+
+.q-group-head h3 {
+  margin: 0;
+}
+
+.q-item summary,
+.q-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-3);
+  align-items: baseline;
+}
+
+.q-text {
+  flex: 1 1 18rem;
+  font-weight: 600;
+}
+
+.q-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+
+.q-label {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.q-plain {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: var(--sp-4);
+  margin-bottom: var(--sp-3);
+}
+
+.q-more {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-sm);
+}
+
+/* Quiz extras */
+.quiz-num {
+  color: var(--primary);
+}
+
+.quiz-hint {
+  display: block;
+  margin: calc(-1 * var(--sp-2)) 0 var(--sp-3);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.quiz-code {
+  margin: 0 0 var(--sp-3);
+  padding: var(--sp-3);
+  background: var(--code-bg);
+  color: var(--code-text);
+  border-radius: var(--radius);
+  font-size: var(--fs-sm);
+  overflow-x: auto;
+}
+
+.quiz-order {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quiz-order li {
+  align-items: center;
+  cursor: default;
+}
+
+.quiz-order-text {
+  flex: 1;
+}
+
+.quiz-order-btns {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+.quiz-feedback.is-right strong {
+  color: var(--success);
+}
+
+.quiz-feedback.is-wrong strong {
+  color: var(--danger);
+}
+
+.quiz-answer-order {
+  margin: var(--sp-2) 0;
+}
+
+.quiz-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  align-items: center;
+}
+
+.quiz-score {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Topic page header */
+.topic-head .badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+
+.outcomes {
+  margin: 0 0 var(--sp-6);
+}
+
+.on-this-page {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  padding: var(--sp-4) var(--sp-5);
+  margin: 0 0 var(--sp-8);
+  font-size: var(--fs-sm);
+}
+
+.on-this-page ol {
+  columns: 2 14rem;
+  margin: var(--sp-2) 0 0;
+  padding-left: 1.2rem;
+}
+
+.topic-section {
+  scroll-margin-top: calc(var(--header-h) + var(--sp-4));
+}
+
+.topic-section > h2 {
+  margin-top: var(--sp-12);
+}
+
+.topic-footer {
+  margin-top: var(--sp-12);
+  padding-top: var(--sp-6);
+  border-top: 1px solid var(--border);
+}

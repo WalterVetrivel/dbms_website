@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>B+ Tree Index Files | DBMS Study Guide</title>
+  <meta name="description" content="Learn how a B+ tree index is built: node structure, search, insertion with node splits, deletion with borrowing and merging, and fan-out. Includes an interactive B+ tree visualizer.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="4" data-topic="4.6" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-4">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-4">Unit IV</span>
+            <span class="badge badge-level" title="Topic number">Topic 4.6</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO4</span>
+          </div>
+          <h1>B+ Tree Index Files</h1>
+          <p class="lead">A B+ tree is the index that most databases use. It finds any record in a few disk reads, and it stays balanced when you insert or delete keys.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Describe the structure of a B+ tree node and the rules each node follows.</li>
+              <li>Search for a key, step by step.</li>
+              <li>Build a B+ tree by inserting keys and splitting nodes.</li>
+              <li>Delete keys by borrowing from a sibling or merging nodes.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#why">Why we need a B+ tree</a></li>
+            <li><a href="#structure">Structure of a B+ tree</a></li>
+            <li><a href="#search">Searching</a></li>
+            <li><a href="#insertion">Insertion</a></li>
+            <li><a href="#worked-example">Worked example (n = 3)</a></li>
+            <li><a href="#deletion">Deletion</a></li>
+            <li><a href="#fan-out">Fan-out and height</a></li>
+            <li><a href="#merits">Merits and demerits</a></li>
+            <li><a href="#mysql">B+ trees in MySQL</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="why" class="topic-section" aria-labelledby="why-title">
+          <h2 id="why-title">Why we need a B+ tree</h2>
+          <p>Think of a college with 50,000 student records stored on disk. You want the record for roll number 4217. Without an index, the DBMS may have to read every block of the file. That is slow, because each disk read takes time.</p>
+          <p>An <strong>index</strong> works like the index at the back of a textbook. It tells the DBMS where to look. A simple sorted index (see Ordered Indices, topic 4.5) works well at first. But when many records are inserted and deleted, a sorted index gets out of order and needs to be rebuilt.</p>
+          <p>A B+ tree solves this problem. It reorganizes itself in small steps on every insert and delete, so it never needs a full rebuild.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>B+ tree</strong> is a <strong>balanced tree</strong> that is used as an index. All search keys are stored in the <strong>leaf nodes</strong>, the leaves are <strong>linked</strong> in key order, and the <strong>internal nodes</strong> guide the search.</p>
+          </div>
+          <p><strong>Balanced</strong> means that every path from the root to a leaf has the same length. So every search takes the same number of steps.</p>
+        </section>
+
+        <section id="structure" class="topic-section" aria-labelledby="structure-title">
+          <h2 id="structure-title">Structure of a B+ tree</h2>
+          <p>Every node of a B+ tree has the same layout. A node holds up to <strong>n pointers</strong> (P) and up to <strong>n − 1 search keys</strong> (K). The keys in a node are kept in sorted order.</p>
+          <div class="table-wrap">
+            <table class="node-layout">
+              <caption>Layout of one node</caption>
+              <tbody>
+                <tr><td>P<sub>1</sub></td><td>K<sub>1</sub></td><td>P<sub>2</sub></td><td>K<sub>2</sub></td><td>…</td><td>P<sub>n−1</sub></td><td>K<sub>n−1</sub></td><td>P<sub>n</sub></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>There are three kinds of node:</p>
+          <ul>
+            <li><strong>Leaf nodes</strong> are at the bottom. Each key K<sub>i</sub> has a pointer P<sub>i</sub> to its record on disk. The last pointer P<sub>n</sub> points to the next leaf. The chain of linked leaves is called the <strong>sequence set</strong>.</li>
+            <li><strong>Internal nodes</strong> (non-leaf nodes) only guide the search. Pointer P<sub>i</sub> leads to a subtree that holds the keys from K<sub>i−1</sub> up to (but not including) K<sub>i</sub>.</li>
+            <li>The <strong>root</strong> is the top node. It can be a leaf (when the tree is small) or an internal node.</li>
+          </ul>
+
+          <h3>The rules for each node</h3>
+          <p>To stay balanced, every node except the root must be <strong>at least half full</strong>. The table shows what this means for small values of n.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Node rules for a B+ tree with n pointers per node</caption>
+              <thead>
+                <tr><th scope="col">Rule</th><th scope="col">Formula</th><th scope="col">n = 3</th><th scope="col">n = 4</th><th scope="col">n = 5</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Most keys in any node</th><td>n − 1</td><td>2</td><td>3</td><td>4</td></tr>
+                <tr><th scope="row">Fewest keys in a leaf</th><td>⌈(n − 1) / 2⌉</td><td>1</td><td>2</td><td>2</td></tr>
+                <tr><th scope="row">Fewest pointers in an internal node</th><td>⌈n / 2⌉</td><td>2</td><td>2</td><td>3</td></tr>
+                <tr><th scope="row">Fewest pointers in the root (if it is not a leaf)</th><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-note">
+            <div class="callout-title">Note</div>
+            <p>Some books and question papers say “a tree of <strong>order 3</strong>”. This means each node has at most 3 pointers (children), so n = 3 and each node holds at most 2 keys.</p>
+          </div>
+
+          <figure class="figure">
+            <div data-bpt-static data-n="4" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31">
+              <noscript><p>Root: [19]. Level 2: [5 | 11] and [29]. Leaves: [2 | 3] → [5 | 7] → [11 | 17] → [19 | 23] → [29 | 31].</p></noscript>
+            </div>
+            <figcaption>A B+ tree with n = 4. The root and the internal nodes (white) guide the search. The leaves (green) hold every key and are linked from left to right by the dashed arrows.</figcaption>
+          </figure>
+        </section>
+
+        <section id="search" class="topic-section" aria-labelledby="search-title">
+          <h2 id="search-title">Searching</h2>
+          <p>To find a key, start at the root and go down one level at a time until you reach a leaf.</p>
+          <ol class="steps">
+            <li>In the current node, compare the search key with the keys in the node.</li>
+            <li>If the search key is less than the first key, follow the first pointer. Otherwise, follow the pointer just after the largest key that is less than or equal to the search key.</li>
+            <li>Repeat until you reach a leaf.</li>
+            <li>If the leaf has the key, the search is successful. If not, the key is not in the tree.</li>
+          </ol>
+          <div class="callout callout-example">
+            <div class="callout-title">Example: search for 17 in the tree above</div>
+            <ol>
+              <li>At the root [19]: 17 &lt; 19, so follow the first pointer.</li>
+              <li>At [5 | 11]: 17 ≥ 11, so follow the last pointer.</li>
+              <li>At the leaf [11 | 17]: 17 is found.</li>
+            </ol>
+            <p>The search read 3 nodes, one on each level. A search for 20 also reads 3 nodes and ends at the leaf [19 | 23]. 20 is not there, so the search is unsuccessful.</p>
+          </div>
+          <h3>Range queries</h3>
+          <p>A <strong>range query</strong> asks for all keys between two values, for example “all keys from 7 to 19”. The B+ tree finds 7 with a normal search. Then it reads along the linked leaves until it passes 19. It does not need to go back up the tree. This is the main reason why the leaves are linked.</p>
+        </section>
+
+        <section id="insertion" class="topic-section" aria-labelledby="insertion-title">
+          <h2 id="insertion-title">Insertion</h2>
+          <p>A new key always goes into a leaf. If the leaf is full, it splits into two nodes. A split can travel up the tree, one level at a time.</p>
+          <ol class="steps">
+            <li>Search for the leaf where the new key belongs.</li>
+            <li>Put the key into the leaf in sorted order.</li>
+            <li>If the leaf now has more than n − 1 keys, split it. The old leaf keeps the first half of the keys. A new leaf gets the second half. <strong>Copy</strong> the first key of the new leaf (the middle key) up into the parent.</li>
+            <li>If the parent now has more than n pointers, split the parent too. This time, <strong>move</strong> the middle key up. It does not stay at the lower level.</li>
+            <li>If the root splits, make a new root. The tree grows one level taller.</li>
+          </ol>
+          <div class="table-wrap">
+            <table>
+              <caption>Leaf split compared with internal node split</caption>
+              <thead>
+                <tr><th scope="col"></th><th scope="col">Leaf split</th><th scope="col">Internal node split</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Middle key</th><td>Copied up</td><td>Moved up</td></tr>
+                <tr><th scope="row">Does the middle key stay at this level?</th><td>Yes, in the new leaf</td><td>No</td></tr>
+                <tr><th scope="row">Why</th><td>Every key must stay in a leaf</td><td>Internal keys are only guides</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-example">
+            <div class="callout-title">Example: a leaf split with n = 4</div>
+            <p>A leaf holds [5 | 7 | 11], which is full (3 keys). Insert 17. The sorted keys are 5, 7, 11 and 17. The old leaf keeps [5 | 7]. The new leaf gets [11 | 17]. The middle key 11 is copied up into the parent.</p>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Students often remove the middle key from the leaf after a leaf split. Do not do this. In a B+ tree, every key must stay in a leaf. Only an internal node split moves the key up.</p>
+          </div>
+          <div class="callout callout-note">
+            <div class="callout-title">Note on odd numbers of keys</div>
+            <p>When a full leaf gets one more key and the total is odd, one side gets the extra key. This page follows the method in the class notes: the new (right) leaf gets the extra key. For example, with n = 3, the keys 2, 3 and 5 split into [2] and [3 | 5], and 3 is copied up. Some textbooks keep the extra key on the left instead. Both trees are correct B+ trees. In the exam, use one method and show every step.</p>
+          </div>
+        </section>
+
+        <section id="worked-example" class="topic-section" aria-labelledby="worked-title">
+          <h2 id="worked-title">Worked example (n = 3)</h2>
+          <div class="callout callout-tip">
+            <div class="callout-title">Question bank, IAT-2 (16 marks)</div>
+            <p>Construct a B+ tree for the following set of key values: (2, 3, 5, 7, 11, 17, 19, 23, 29, 31). Assume that the tree is initially empty and the values are inserted in ascending order. Each node can contain a maximum of three pointers.</p>
+          </div>
+          <p><strong>Given:</strong> n = 3 pointers, so each node holds at most <strong>2 keys</strong>. A leaf needs at least 1 key, and an internal node needs at least 2 pointers.</p>
+          <div class="table-wrap">
+            <table class="worked">
+              <caption>Building the tree one key at a time</caption>
+              <thead>
+                <tr><th scope="col">Insert</th><th scope="col">What happens</th><th scope="col">Tree after this step</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>2, 3</td><td>The first leaf has room for both keys. This leaf is the root.</td><td>[2 | 3]</td></tr>
+                <tr><td>5</td><td>The leaf has 2, 3, 5: too many. Split it into [2] and [3 | 5]. Copy 3 up into a new root.</td><td>Root [3]<br>Leaves [2] → [3 | 5]</td></tr>
+                <tr><td>7</td><td>The leaf has 3, 5, 7. Split it into [3] and [5 | 7]. Copy 5 up. The root has room.</td><td>Root [3 | 5]<br>Leaves [2] → [3] → [5 | 7]</td></tr>
+                <tr><td>11</td><td>The leaf has 5, 7, 11. Split it into [5] and [7 | 11]. Copy 7 up. Now the root has 3, 5, 7: too many. Split the root into [3] and [7], and move 5 up into a new root.</td><td>Root [5]<br>Level 2 [3] [7]<br>Leaves [2] → [3] → [5] → [7 | 11]</td></tr>
+                <tr><td>17</td><td>The leaf has 7, 11, 17. Split it into [7] and [11 | 17]. Copy 11 up into [7], which becomes [7 | 11].</td><td>Root [5]<br>Level 2 [3] [7 | 11]<br>Leaves [2] → [3] → [5] → [7] → [11 | 17]</td></tr>
+                <tr><td>19</td><td>The leaf has 11, 17, 19. Split it into [11] and [17 | 19]. Copy 17 up. The node [7 | 11 | 17] is too full. Split it into [7] and [17], and move 11 up into the root.</td><td>Root [5 | 11]<br>Level 2 [3] [7] [17]<br>Leaves [2] → [3] → [5] → [7] → [11] → [17 | 19]</td></tr>
+                <tr><td>23</td><td>The leaf has 17, 19, 23. Split it into [17] and [19 | 23]. Copy 19 up into [17], which becomes [17 | 19].</td><td>Root [5 | 11]<br>Level 2 [3] [7] [17 | 19]<br>Leaves … → [17] → [19 | 23]</td></tr>
+                <tr><td>29</td><td>The leaf has 19, 23, 29. Split it into [19] and [23 | 29]. Copy 23 up. The node [17 | 19 | 23] is too full: split it into [17] and [23], and move 19 up. Now the root [5 | 11 | 19] is too full: split it into [5] and [19], and move 11 up into a new root.</td><td>Root [11]<br>Level 2 [5] [19]<br>Level 3 [3] [7] [17] [23]<br>Leaves … → [19] → [23 | 29]</td></tr>
+                <tr><td>31</td><td>The leaf has 23, 29, 31. Split it into [23] and [29 | 31]. Copy 29 up into [23], which becomes [23 | 29].</td><td>Final tree, shown below</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <figure class="figure">
+            <div data-bpt-static data-n="3" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31">
+              <noscript><p>Root: [11]. Level 2: [5] and [19]. Level 3: [3], [7], [17] and [23 | 29]. Leaves: [2] → [3] → [5] → [7] → [11] → [17] → [19] → [23] → [29 | 31].</p></noscript>
+            </div>
+            <figcaption>The final B+ tree for the IAT-2 question (n = 3). It has four levels. Every key is in a leaf, and the leaves are linked in order.</figcaption>
+          </figure>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>Start your answer by writing n, the most keys in a node (n − 1) and the fewest keys in a leaf. Then draw the tree after every split. Mark which keys are copied up and which are moved up. You can check each step with the “Question bank” example in the visualizer below.</p>
+          </div>
+        </section>
+
+        <section id="deletion" class="topic-section" aria-labelledby="deletion-title">
+          <h2 id="deletion-title">Deletion</h2>
+          <p>To delete a key, find its leaf and remove the key. If the leaf is still at least half full, you are done. If not, the leaf has an <strong>underflow</strong>, and it must get more keys from a sibling. A <strong>sibling</strong> is a node next to it with the same parent.</p>
+          <ol class="steps">
+            <li>Find the leaf that holds the key and remove the key.</li>
+            <li>If the leaf still has at least ⌈(n − 1) / 2⌉ keys, stop.</li>
+            <li><strong>Borrow (redistribute):</strong> if a sibling has more keys than it needs, move one key from the sibling into the leaf. Update the guide key in the parent.</li>
+            <li><strong>Merge (coalesce):</strong> if no sibling can lend a key, join the leaf and a sibling into one node. Remove one key and one pointer from the parent.</li>
+            <li>If the parent now has too few pointers, repeat steps 3 and 4 for the parent. When an internal node borrows, the key from the parent comes down, and a key from the sibling goes up.</li>
+            <li>If the root is left with only one child, remove the root. The tree becomes one level shorter.</li>
+            <li>If the deleted key is still used as a guide key in an internal node, replace it with its <strong>in-order successor</strong> (the smallest key in the subtree to its right).</li>
+          </ol>
+          <div class="callout callout-example">
+            <div class="callout-title">Example: delete 23, then 19 (n = 4)</div>
+            <p>Start with the tree from the class notes: insert 2, 3, 5, 7, 11, 17, 19, 23, 29, 31, then 9, 10 and 8.</p>
+          </div>
+          <figure class="figure">
+            <div data-bpt-static data-n="4" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31, 9, 10, 8">
+              <noscript><p>Root: [19]. Level 2: [5 | 9 | 11] and [29]. Leaves: [2 | 3] → [5 | 7 | 8] → [9 | 10] → [11 | 17] → [19 | 23] → [29 | 31].</p></noscript>
+            </div>
+            <figcaption>Before deleting. Each leaf needs at least 2 keys and each internal node needs at least 2 pointers.</figcaption>
+          </figure>
+          <p><strong>Delete 23.</strong> The leaf [19 | 23] becomes [19], with only 1 key. Its only sibling, [29 | 31], has no key to spare. So merge them into [19 | 29 | 31], and remove 29 from the parent. Now the parent has only 1 pointer. Its left sibling [5 | 9 | 11] has 4 pointers, so it can lend one. The key 19 comes down from the root, the leaf [11 | 17] moves across, and 11 goes up into the root.</p>
+          <figure class="figure">
+            <div data-bpt-static data-n="4" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31, 9, 10, 8" data-delete="23">
+              <noscript><p>Root: [11]. Level 2: [5 | 9] and [19]. Leaves: [2 | 3] → [5 | 7 | 8] → [9 | 10] → [11 | 17] → [19 | 29 | 31].</p></noscript>
+            </div>
+            <figcaption>After deleting 23. The root is now 11.</figcaption>
+          </figure>
+          <p><strong>Delete 19.</strong> The leaf [19 | 29 | 31] becomes [29 | 31]. It still has 2 keys, so no node changes shape. But 19 is still a guide key in the internal node [19]. Replace it with its in-order successor, 29.</p>
+          <figure class="figure">
+            <div data-bpt-static data-n="4" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31, 9, 10, 8" data-delete="23, 19">
+              <noscript><p>Root: [11]. Level 2: [5 | 9] and [29]. Leaves: [2 | 3] → [5 | 7 | 8] → [9 | 10] → [11 | 17] → [29 | 31].</p></noscript>
+            </div>
+            <figcaption>After deleting 19. The guide key 19 is replaced by 29.</figcaption>
+          </figure>
+        </section>
+
+        <section id="fan-out" class="topic-section" aria-labelledby="fan-out-title">
+          <h2 id="fan-out-title">Fan-out and height</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>The <strong>fan-out</strong> of a node is the number of pointers (children) it has. In a B+ tree, each internal node except the root has a fan-out between ⌈n / 2⌉ and n.</p>
+          </div>
+          <p>Real B+ trees have a very large fan-out. One node usually fills one disk block. If a block is 4 KB and one key with its pointer takes about 40 bytes, a node holds about 100 pointers.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>How many keys a B+ tree can index with a fan-out of about 100</caption>
+              <thead>
+                <tr><th scope="col">Levels</th><th scope="col">Keys (about)</th><th scope="col">Disk reads for one search</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>2</td><td>10,000</td><td>2</td></tr>
+                <tr><td>3</td><td>1,000,000</td><td>3</td></tr>
+                <tr><td>4</td><td>100,000,000</td><td>4</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>So a high fan-out keeps the tree <strong>short</strong>, and a short tree means <strong>few disk reads</strong>. For N keys, a search follows a path of at most about ⌈log<sub>⌈n/2⌉</sub>(N)⌉ nodes.</p>
+        </section>
+
+        <section id="merits" class="topic-section" aria-labelledby="merits-title">
+          <h2 id="merits-title">Merits and demerits</h2>
+          <h3>Merits</h3>
+          <ul>
+            <li>The tree is always balanced, so every search reads the same number of nodes.</li>
+            <li>Inserts and deletes change only a few nodes. The index never needs a full rebuild.</li>
+            <li>Every node except the root is at least half full, so little space is wasted.</li>
+            <li>The leaves are linked, so range queries and sorted reads are fast.</li>
+            <li>The tree supports both random access (one key) and sequential access (keys in order).</li>
+          </ul>
+          <h3>Demerits</h3>
+          <ul>
+            <li>Splits and merges add extra work to inserts and deletes.</li>
+            <li>Some keys are stored twice (in a leaf and in an internal node), and nodes may be only half full. This takes extra space.</li>
+          </ul>
+          <p>A <strong>B tree</strong> is a similar index that stores each key only once. Topic 4.7 compares the two.</p>
+        </section>
+
+        <section id="mysql" class="topic-section" aria-labelledby="mysql-title">
+          <h2 id="mysql-title">B+ trees in MySQL</h2>
+          <p>In MySQL, the InnoDB storage engine keeps each table and each index as a tree of disk pages. The MySQL manual calls these <strong>B-tree indexes</strong>. They work like a B+ tree: the keys or rows are in the leaf pages, and the pages on each level are linked. So a query on a range of values is fast.</p>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>CREATE TABLE student (
+  roll_no INT PRIMARY KEY,
+  name    VARCHAR(50),
+  marks   INT
+);
+
+CREATE INDEX idx_marks ON student (marks);
+
+SELECT name, marks
+FROM student
+WHERE marks BETWEEN 60 AND 80;</code></pre>
+          </div>
+          <p>The primary key <code>roll_no</code> gets an index on its own. <code>CREATE INDEX</code> builds a second index on <code>marks</code>. The <code>SELECT</code> can use this index to find 60 and then read along the leaves until it passes 80.</p>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>Insert, delete and search for keys, and watch every step. Choose an example to replay the question bank answer or the examples from the class notes. You can type several keys at once, for example <kbd>4, 9, 13</kbd>.</p>
+          <div class="widget" data-widget="bplus-tree" data-n="3" data-preset="iat2">
+            <noscript><p class="widget-narration">The B+ tree visualizer needs JavaScript. The worked example above shows the same steps.</p></noscript>
+          </div>
+          <ul class="bpt-legend" aria-label="Colors used in the drawing">
+            <li><span style="border-color:var(--primary);background:var(--primary-soft)"></span>Node on the search path</li>
+            <li><span style="border-color:var(--warning);background:var(--warning-soft)"></span>Node that just changed</li>
+            <li><span style="border-color:var(--danger);background:var(--danger-soft)"></span>Too full or too empty</li>
+            <li><span style="border-color:var(--success);background:var(--success-soft)"></span>Key found</li>
+          </ul>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Set n to 4 and insert 1 to 12 in order. Count the levels. Then set n to 6 and do it again.</li>
+              <li>Load the “Deletion practice” example and watch a leaf borrow a key and a merge make the tree shorter.</li>
+              <li>Search for a key that is not in the tree. How many nodes does the search read?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Railway PNR status</h3>
+              <p class="muted">A railway booking system stores crores of bookings. When you check a PNR number, a B+ tree index on the PNR column finds your booking by reading only three or four nodes.</p>
+            </div>
+            <div class="card">
+              <h3>UPI payment history</h3>
+              <p class="muted">When you ask your UPI app for “payments from 1 March to 15 March”, the bank's database uses an index on the payment date. It finds 1 March once, then reads along the linked leaves until 15 March. This is a range query.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>A B+ tree is a balanced tree index: every leaf is on the same level.</li>
+              <li>A node has up to n pointers and n − 1 keys. Every node except the root is at least half full.</li>
+              <li>All keys and record pointers are in the leaves. The leaves are linked in key order.</li>
+              <li>A search goes from the root to one leaf, so it reads one node on each level.</li>
+              <li>A leaf split copies the middle key up. An internal node split moves the middle key up.</li>
+              <li>A deletion that leaves a node too empty borrows from a sibling, or merges with one if no sibling can lend.</li>
+              <li>The tree grows taller only when the root splits, and shorter only when the root loses its last key.</li>
+              <li>A high fan-out keeps the tree short, so a search needs few disk reads.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit IV and IAT-2 question banks. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="4.6"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="4.6"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 14, Section 14.3 “B+-Tree Index Files”.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 17, Section 17.3 “Dynamic Multilevel Indexes Using B-Trees and B+-Trees”.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-index.html" target="_blank" rel="noopener">CREATE INDEX Statement</a> and <a href="https://dev.mysql.com/doc/refman/8.4/en/mysql-indexes.html" target="_blank" rel="noopener">How MySQL Uses Indexes</a>.</li>
+            <li>Lab Exercise 9 builds a B+ tree in C. Its explanation is coming soon.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-4.js"></script>
+  <script src="../../data/quizzes/unit-4.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/bplus-tree.js"></script>
+</body>
+</html>
