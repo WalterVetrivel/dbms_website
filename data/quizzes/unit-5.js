@@ -708,6 +708,70 @@
       answer: false,
       explain: "GRANT works on databases, tables, columns and views. To limit rows, create a view with a WHERE clause and grant on the view.",
       link: "#grant"
+    },
+    /* 5.12 Role Based Access Control */
+    {
+      id: "q5.12-01",
+      topic: "5.12",
+      type: "mcq",
+      question: "In RBAC, privileges are given directly to what?",
+      options: ["Users", "Roles", "Tables", "Security levels"],
+      answer: 1,
+      explain: "Privileges go to roles, and users get privileges by being assigned roles.",
+      link: "#what"
+    },
+    {
+      id: "q5.12-02",
+      topic: "5.12",
+      type: "mcq",
+      question: "HOD inherits Teacher, and Teacher inherits Staff. Which privileges does a user with only the HOD role get?",
+      options: ["Only HOD privileges", "HOD and Teacher privileges, but not Staff", "HOD, Teacher and Staff privileges", "None until the DBA grants each table"],
+      answer: 2,
+      explain: "In a role hierarchy, a senior role inherits all privileges of the roles below it, step by step.",
+      link: "#hierarchy"
+    },
+    {
+      id: "q5.12-03",
+      topic: "5.12",
+      type: "order",
+      question: "Put the MySQL 8.4 steps for giving Ravi the teacher role in order.",
+      options: [
+        "CREATE ROLE 'teacher';",
+        "GRANT SELECT, INSERT, UPDATE ON college.marks TO 'teacher';",
+        "GRANT 'teacher' TO 'ravi'@'%';",
+        "SET DEFAULT ROLE ALL TO 'ravi'@'%';"
+      ],
+      explain: "Create the role, give it privileges, give the role to the user, then make it active at login.",
+      link: "#mysql"
+    },
+    {
+      id: "q5.12-04",
+      topic: "5.12",
+      type: "tf",
+      question: "In MySQL 8.4, a role granted to a user is always active as soon as it is granted.",
+      answer: false,
+      explain: "The role must be activated with SET DEFAULT ROLE (at login) or SET ROLE (for a session).",
+      link: "#mysql"
+    },
+    {
+      id: "q5.12-05",
+      topic: "5.12",
+      type: "mcq",
+      question: "No user may ever hold both the fee_entry and the fee_approver roles. What is this rule called?",
+      options: ["Role hierarchy", "Static separation of duties", "No write down", "Grant option"],
+      answer: 1,
+      explain: "Static separation of duties makes the two roles mutually exclusive for every user.",
+      link: "#sod"
+    },
+    {
+      id: "q5.12-06",
+      topic: "5.12",
+      type: "mcq",
+      question: "A college adds a new attendance table that all 200 teachers need. With RBAC, how many grants are needed?",
+      options: ["200", "1, to the teacher role", "400", "0, it is automatic"],
+      answer: 1,
+      explain: "One grant to the teacher role reaches every user who holds that role.",
+      link: "#changes"
     }
   ]);
 })();

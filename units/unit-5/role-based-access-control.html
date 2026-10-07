@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Role Based Access Control | DBMS Study Guide</title>
+  <meta name="description" content="Learn role-based access control (RBAC): roles, users and permissions, role hierarchies, separation of duties, and CREATE ROLE, GRANT and SET ROLE in MySQL 8.4, with a worked college example and a comparison with DAC and MAC.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="5" data-topic="5.12" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-5">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-5">Unit V</span>
+            <span class="badge badge-level" title="Topic number">Topic 5.12</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO5</span>
+          </div>
+          <h1>Role Based Access Control</h1>
+          <p class="lead">In a big organization, giving privileges to each person one by one is slow and error-prone. Role-based access control gives privileges to roles, such as Teacher or Accountant, and then gives roles to people. This page explains how it works in theory and in MySQL 8.4.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define RBAC and explain users, roles and permissions.</li>
+              <li>Explain role hierarchies and separation of duties.</li>
+              <li>Create, grant, activate and revoke roles in MySQL 8.4.</li>
+              <li>Compare RBAC with DAC and MAC.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is RBAC?</a></li>
+            <li><a href="#why">Why roles help</a></li>
+            <li><a href="#hierarchy">Role hierarchies</a></li>
+            <li><a href="#sod">Separation of duties</a></li>
+            <li><a href="#mysql">Worked example: roles in MySQL 8.4</a></li>
+            <li><a href="#changes">Worked example: when people change jobs</a></li>
+            <li><a href="#compare">DAC, MAC and RBAC compared</a></li>
+            <li><a href="#merits">Merits and demerits (advantages and disadvantages)</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is RBAC?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>In <strong>role-based access control (RBAC)</strong>, privileges (permissions) are given to <strong>roles</strong>, not directly to users. A role stands for a job, such as Teacher, Accountant or Student. Each <strong>user</strong> is assigned one or more roles and gets all the privileges of those roles.</p>
+          </div>
+          <p>Think of the uniform of a bus conductor. Whoever wears it may collect fares and issue tickets. When a new conductor joins, they get the uniform and the rights that come with it. Nobody writes a new list of rights for each person.</p>
+          <p>RBAC has three parts:</p>
+          <ul>
+            <li><strong>Users:</strong> the people or programs, such as Ravi or the results app.</li>
+            <li><strong>Roles:</strong> named jobs, such as <code>teacher</code>.</li>
+            <li><strong>Permissions:</strong> privileges on objects, such as <code>UPDATE</code> on <code>marks</code>.</li>
+          </ul>
+          <p>Users are linked to roles, and roles are linked to permissions. A user can have many roles, and many users can share a role. RBAC is also called <strong>non-discretionary</strong> access control, because the administrator, not each owner, decides the roles.</p>
+        </section>
+
+        <section id="why" class="topic-section" aria-labelledby="why-title">
+          <h2 id="why-title">Why roles help</h2>
+          <p>A college has 200 teachers. Each needs the same 6 privileges.</p>
+          <ul>
+            <li><strong>Without roles</strong> (plain DAC): the DBA runs 200 × 6 = 1,200 grants. When a new table is added, 200 more grants are needed. It is easy to miss someone.</li>
+            <li><strong>With roles:</strong> the DBA gives the 6 privileges to the <code>teacher</code> role once, then gives the role to 200 users. A new table needs <strong>one</strong> grant to the role.</li>
+          </ul>
+          <p>Roles also make checks easy. To see what a teacher can do, look at one role, not 200 users.</p>
+        </section>
+
+        <section id="hierarchy" class="topic-section" aria-labelledby="hierarchy-title">
+          <h2 id="hierarchy-title">Role hierarchies</h2>
+          <p>Roles can be arranged in a <strong>hierarchy</strong>. A senior role <strong>inherits</strong> all the privileges of the roles below it, and adds its own.</p>
+          <figure class="figure">
+            <div class="widget-stage" tabindex="0">
+              <svg viewBox="0 0 440 250" width="440" role="img" aria-labelledby="rh-svg-title" style="max-width:100%;height:auto">
+                <title id="rh-svg-title">Role hierarchy. Principal inherits from HOD. HOD inherits from Teacher. Teacher inherits from Staff. Accountant also inherits from Staff.</title>
+                <defs><marker id="rh-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--border-strong)"/></marker></defs>
+                <g style="fill:none;stroke:var(--border-strong);stroke-width:2">
+                  <path d="M130 50 V74" marker-end="url(#rh-arrow)"/>
+                  <path d="M130 118 V142" marker-end="url(#rh-arrow)"/>
+                  <path d="M130 186 L196 206" marker-end="url(#rh-arrow)"/>
+                  <path d="M310 186 L244 206" marker-end="url(#rh-arrow)"/>
+                </g>
+                <g style="fill:var(--primary-soft);stroke:var(--primary);stroke-width:2">
+                  <rect x="70" y="8" width="120" height="40" rx="8"/>
+                  <rect x="70" y="76" width="120" height="40" rx="8"/>
+                  <rect x="70" y="144" width="120" height="40" rx="8"/>
+                  <rect x="250" y="144" width="120" height="40" rx="8"/>
+                </g>
+                <rect x="160" y="208" width="120" height="36" rx="8" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:2"/>
+                <g style="font:600 14px var(--font-sans);fill:var(--text)" text-anchor="middle">
+                  <text x="130" y="33">Principal</text>
+                  <text x="130" y="101">HOD</text>
+                  <text x="130" y="169">Teacher</text>
+                  <text x="310" y="169">Accountant</text>
+                  <text x="220" y="231">Staff</text>
+                </g>
+              </svg>
+            </div>
+            <figcaption>An arrow points from a senior role to the junior role it inherits from. Staff is the base role for everyone.</figcaption>
+          </figure>
+          <ul>
+            <li><strong>Staff:</strong> read the timetable and the notice board.</li>
+            <li><strong>Teacher</strong> inherits Staff, and can also enter marks.</li>
+            <li><strong>HOD</strong> inherits Teacher, and can also approve the marks of the department.</li>
+            <li><strong>Principal</strong> inherits HOD, and can also read all reports.</li>
+            <li><strong>Accountant</strong> inherits Staff, and can also manage fees.</li>
+          </ul>
+          <p>A hierarchy avoids repeating the same privileges in many roles. It also matches the way an organization is really arranged.</p>
+        </section>
+
+        <section id="sod" class="topic-section" aria-labelledby="sod-title">
+          <h2 id="sod-title">Separation of duties</h2>
+          <p>Some pairs of jobs should never be done by the same person. If one person can both <strong>create</strong> a payment and <strong>approve</strong> it, they could pay themselves.</p>
+          <ul>
+            <li><strong>Static separation of duties:</strong> two roles are <strong>mutually exclusive</strong>. No user may ever hold both, such as <code>fee_entry</code> and <code>fee_approver</code>.</li>
+            <li><strong>Dynamic separation of duties:</strong> a user may hold both roles, but may not <strong>use</strong> both in the same session.</li>
+          </ul>
+          <p>RBAC makes these rules easy to state, because they are written about roles instead of about each person.</p>
+        </section>
+
+        <section id="mysql" class="topic-section" aria-labelledby="mysql-title">
+          <h2 id="mysql-title">Worked example: roles in MySQL 8.4</h2>
+          <p>We build the Staff, Teacher and HOD roles for a <code>college</code> database.</p>
+          <p><strong>Step 1.</strong> Create the roles and give them privileges.</p>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>CREATE ROLE 'staff', 'teacher', 'hod';
+
+GRANT SELECT ON college.timetable TO 'staff';
+GRANT SELECT ON college.notices   TO 'staff';
+
+GRANT SELECT, INSERT, UPDATE ON college.marks TO 'teacher';
+
+GRANT UPDATE (approved) ON college.marks TO 'hod';</code></pre>
+          </div>
+          <p><strong>Step 2.</strong> Build the hierarchy by granting roles to roles.</p>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>GRANT 'staff'   TO 'teacher';   -- teacher inherits staff
+GRANT 'teacher' TO 'hod';       -- hod inherits teacher (and staff)</code></pre>
+          </div>
+          <p><strong>Step 3.</strong> Give roles to users and make them active at login.</p>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>CREATE USER 'ravi'@'%'  IDENTIFIED BY 'R@vi#2026';
+CREATE USER 'latha'@'%' IDENTIFIED BY 'L@tha#2026';
+
+GRANT 'teacher' TO 'ravi'@'%';
+GRANT 'hod'     TO 'latha'@'%';
+
+SET DEFAULT ROLE ALL TO 'ravi'@'%', 'latha'@'%';</code></pre>
+          </div>
+          <p><strong>Step 4.</strong> Check what Latha can do. <code>USING</code> expands the roles into their privileges.</p>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>SHOW GRANTS FOR 'latha'@'%' USING 'hod';
+-- SELECT on timetable and notices        (from staff)
+-- SELECT, INSERT, UPDATE on marks        (from teacher)
+-- UPDATE (approved) on marks             (from hod)</code></pre>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>In MySQL, a granted role is <strong>not active</strong> until it is turned on. Without <code>SET DEFAULT ROLE</code>, Ravi logs in and gets “access denied”. Ravi can also turn it on for one session with <code>SET ROLE 'teacher';</code>. Check the active roles with <code>SELECT CURRENT_ROLE();</code>.</p>
+          </div>
+        </section>
+
+        <section id="changes" class="topic-section" aria-labelledby="changes-title">
+          <h2 id="changes-title">Worked example: when people change jobs</h2>
+          <ol>
+            <li><strong>A new teacher, Divya, joins.</strong> One grant is enough: <code>GRANT 'teacher' TO 'divya'@'%';</code></li>
+            <li><strong>Ravi becomes HOD.</strong> Swap Ravi's role: <code>REVOKE 'teacher' FROM 'ravi'@'%'; GRANT 'hod' TO 'ravi'@'%';</code></li>
+            <li><strong>The college adds an attendance table.</strong> One grant to the role reaches every teacher and HOD: <code>GRANT SELECT, INSERT ON college.attendance TO 'teacher';</code></li>
+            <li><strong>Latha leaves the college.</strong> <code>DROP USER 'latha'@'%';</code> removes the account and all its role links at once.</li>
+          </ol>
+          <p>With plain DAC, each of these steps would need many separate grants or revokes, one per privilege.</p>
+        </section>
+
+        <section id="compare" class="topic-section" aria-labelledby="compare-title">
+          <h2 id="compare-title">DAC, MAC and RBAC compared</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Three access control models</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">DAC</th><th scope="col">MAC</th><th scope="col">RBAC</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Privileges given to</th><td>Each user</td><td>Security levels</td><td>Roles</td></tr>
+                <tr><th scope="row">Who decides</th><td>The object's owner</td><td>The system</td><td>The administrator</td></tr>
+                <tr><th scope="row">Passing rights on</th><td>Yes (grant option)</td><td>No</td><td>No; roles are assigned centrally</td></tr>
+                <tr><th scope="row">Easy to manage at scale</th><td>No</td><td>Medium</td><td>Yes</td></tr>
+                <tr><th scope="row">Matches the organization</th><td>No</td><td>Partly (levels)</td><td>Yes (jobs)</td></tr>
+                <tr><th scope="row">Used in</th><td>Small systems, personal data</td><td>Military, government</td><td>Most companies, colleges and hospitals</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>For the 2-mark question, define RBAC in two lines and add one <code>CREATE ROLE</code> and <code>GRANT</code> example. In a long answer, add the three parts, a hierarchy diagram, separation of duties and this table.</p>
+          </div>
+        </section>
+
+        <section id="merits" class="topic-section" aria-labelledby="merits-title">
+          <h2 id="merits-title">Merits and demerits (advantages and disadvantages)</h2>
+          <h3>Merits (advantages)</h3>
+          <ul>
+            <li><strong>Easy to manage:</strong> change a role once and every user with it is updated.</li>
+            <li><strong>Least privilege:</strong> each user gets only what their job needs.</li>
+            <li><strong>Matches the organization:</strong> roles follow real jobs and their ranks.</li>
+            <li><strong>Easy to audit:</strong> checking a few roles is faster than checking thousands of users.</li>
+            <li><strong>Supports separation of duties:</strong> conflicting roles can be kept apart.</li>
+          </ul>
+          <h3>Demerits (disadvantages)</h3>
+          <ul>
+            <li><strong>Needs careful design:</strong> each job must be understood well to define the roles.</li>
+            <li><strong>Role explosion:</strong> too many small, special roles become hard to manage.</li>
+            <li><strong>Wrong roles are risky:</strong> a role with too many privileges gives them to everyone in it.</li>
+            <li><strong>Less flexible for one-off needs:</strong> a single exception may need a new role.</li>
+          </ul>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>College ERP</h3>
+              <p class="muted">The ERP has roles such as Student, Faculty, HOD, Office and Admin. When a faculty member becomes HOD, the office only changes their role.</p>
+            </div>
+            <div class="card">
+              <h3>Bank branch</h3>
+              <p class="muted">A cashier role can accept deposits, and a manager role approves large withdrawals. The two roles are kept apart so that one person cannot both make and approve a transfer.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>RBAC gives privileges to roles and roles to users. A user can have many roles.</li>
+              <li>The three parts are users, roles and permissions.</li>
+              <li>In a role hierarchy, a senior role inherits the privileges of junior roles.</li>
+              <li>Separation of duties keeps conflicting roles, such as entry and approval, apart.</li>
+              <li>MySQL 8.4: <code>CREATE ROLE</code>, <code>GRANT ... TO role</code>, <code>GRANT role TO user</code>, then <code>SET DEFAULT ROLE</code> or <code>SET ROLE</code>.</li>
+              <li>RBAC is easier to manage at scale than DAC and more flexible than MAC.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit V question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="5.12"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="5.12"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 30, Section 30.3.2 “Role-Based Access Control”.</li>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 4, Section 4.7.2 “Roles”.</li>
+            <li>The MySQL 8.4 Reference Manual, “Using Roles”.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-5.js"></script>
+  <script src="../../data/quizzes/unit-5.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+</body>
+</html>
