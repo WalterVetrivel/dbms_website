@@ -136,5 +136,5 @@ DBMS.topics = [
   { id: "5.12", unit: 5, slug: "role-based-access-control", title: "Role Based Access Control", level: "L2", textbooks: ["S4", "E30"], covers: "Roles and role hierarchies", status: "published", prereqs: ["5.11"], related: ["5.10", "5.11"] },
   { id: "5.13", unit: 5, slug: "sql-injection", title: "SQL Injection", level: "L2", textbooks: ["S9", "E30"], covers: "How SQL injection works and how to prevent it", status: "published", prereqs: ["5.10", "5.11"], related: ["5.10", "5.14"], widgets: ["V34"] },
   { id: "5.14", unit: 5, slug: "encryption-and-public-key-infrastructures", title: "Encryption and Public Key Infrastructures", level: "L2", textbooks: ["S9", "E30"], covers: "Encryption, digital signatures, certificates and PKI", status: "published", prereqs: ["5.10"], related: ["5.10", "5.13", "5.15"] },
-  { id: "5.15", unit: 5, slug: "database-security-challenges", title: "Challenges", level: "L2", textbooks: ["E30"], covers: "Privacy, data quality and other open problems in database security", status: "planned", prereqs: [], related: [] }
+  { id: "5.15", unit: 5, slug: "database-security-challenges", title: "Challenges", level: "L2", textbooks: ["E30"], covers: "Privacy, data quality and other open problems in database security", status: "published", prereqs: ["5.10", "5.14"], related: ["5.10", "5.14"] }
 ];

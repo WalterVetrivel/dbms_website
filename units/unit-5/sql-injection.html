@@ -187,7 +187,7 @@ UNION SELECT username, password FROM users -- %'</code></pre>
             <li><strong>Prepared statements (parameterized queries):</strong> the main defense. The SQL is sent with <code>?</code> placeholders, and the values are sent separately. The database never reads a value as code, whatever quotes or dashes it contains.</li>
             <li><strong>Stored procedures</strong> that use parameters, not joined strings, inside them.</li>
             <li><strong>Input validation with allow-lists:</strong> accept only what is expected. A roll number must be digits only; a sort column must be one of a fixed list.</li>
-            <li><strong>Least privilege:</strong> the web app's MySQL account gets only the privileges it needs (topic 5.11). A login page does not need <code>DROP</code>.</li>
+            <li><strong>Least privilege:</strong> the web app's MySQL account gets only the privileges it needs (<a href="access-control-based-on-privileges.html">topic 5.11</a>). A login page does not need <code>DROP</code>.</li>
             <li><strong>Hide database errors</strong> from users and log them for the developers instead.</li>
             <li><strong>Escaping</strong> special characters, only when nothing else is possible. It is easy to get wrong.</li>
             <li><strong>A web application firewall (WAF)</strong> that blocks known attack patterns, as an extra layer.</li>

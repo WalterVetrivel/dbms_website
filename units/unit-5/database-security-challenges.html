@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Database Security: Challenges | DBMS Study Guide</title>
+  <meta name="description" content="Learn the challenges in database security: data quality, intellectual property rights and watermarking, database survivability, privacy and anonymization with a k-anonymity example, and newer challenges such as cloud databases, insider threats, ransomware and NoSQL defaults.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="5" data-topic="5.15" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-5">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-5">Unit V</span>
+            <span class="badge badge-level" title="Topic number">Topic 5.15</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO5</span>
+          </div>
+          <h1>Challenges in Database Security</h1>
+          <p class="lead">Access control, SQL injection defenses and encryption solve many problems, but database security is never finished. This page explains the main challenges that remain, and what organizations do about them.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Explain the challenges of data quality and intellectual property rights.</li>
+              <li>Describe database survivability and its five steps.</li>
+              <li>Explain privacy and how to make data anonymous.</li>
+              <li>Name newer challenges such as the cloud, insiders and ransomware.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#overview">Why security is never finished</a></li>
+            <li><a href="#quality">Data quality</a></li>
+            <li><a href="#ip">Intellectual property rights</a></li>
+            <li><a href="#survivability">Database survivability</a></li>
+            <li><a href="#ransomware">Worked example: surviving a ransomware attack</a></li>
+            <li><a href="#privacy">Privacy</a></li>
+            <li><a href="#k-anon">Worked example: making data anonymous</a></li>
+            <li><a href="#emerging">Newer challenges</a></li>
+            <li><a href="#summary">Challenges at a glance</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="overview" class="topic-section" aria-labelledby="overview-title">
+          <h2 id="overview-title">Why security is never finished</h2>
+          <p>Attackers keep finding new tricks. Data moves to the cloud and to mobile apps. Laws on personal data get stricter. So the tools from <a href="database-security-issues.html">topics 5.10</a> to <a href="encryption-and-public-key-infrastructures.html">5.14</a> are needed, but they are not enough on their own.</p>
+          <p>Elmasri and Navathe name three main challenges: <strong>data quality</strong>, <strong>intellectual property rights</strong> and <strong>database survivability</strong>. To these we add <strong>privacy</strong> and some <strong>newer challenges</strong>.</p>
+        </section>
+
+        <section id="quality" class="topic-section" aria-labelledby="quality-title">
+          <h2 id="quality-title">Data quality</h2>
+          <p>Users need to know that data is <strong>correct</strong>, <strong>complete</strong> and from a <strong>trusted source</strong>. Wrong data is a security problem too. Bad decisions made on it can harm people.</p>
+          <ul>
+            <li><strong>Quality checks:</strong> constraints, validation rules and regular audits catch wrong or missing values.</li>
+            <li><strong>Quality labels:</strong> data can carry a note about where it came from (its <strong>source</strong> or provenance) and how reliable it is.</li>
+            <li><strong>Cleaning and matching:</strong> duplicate and conflicting records are found and fixed.</li>
+          </ul>
+          <div class="callout callout-example">
+            <div class="callout-title">Example</div>
+            <p>A scholarship list is built from two databases. One spells a student “Mohamed Iqbal” and the other “Mohammed Ikbal”. Without matching, the student is either paid twice or left out.</p>
+          </div>
+        </section>
+
+        <section id="ip" class="topic-section" aria-labelledby="ip-title">
+          <h2 id="ip-title">Intellectual property rights</h2>
+          <p>A database can be valuable property, such as a map database, a product catalog or a question bank. Once it is shared or sold, copies can leak. The owner needs a way to prove the data is theirs. They also need a way to find who leaked a copy.</p>
+          <ul>
+            <li><strong>Watermarking:</strong> hidden, harmless changes are added to the data, such as tiny changes in the last digit of some numbers. The pattern proves ownership, but does not spoil the data.</li>
+            <li><strong>Fingerprinting:</strong> each buyer gets a copy with a different watermark. If a copy leaks, its fingerprint shows which buyer it came from.</li>
+            <li><strong>Licenses and contracts:</strong> legal terms say how the data may be used.</li>
+          </ul>
+        </section>
+
+        <section id="survivability" class="topic-section" aria-labelledby="survivability-title">
+          <h2 id="survivability-title">Database survivability</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Database survivability</strong> is the ability of a database to <strong>keep doing its main work</strong>, perhaps at a lower level, <strong>during an attack</strong>, and to recover fully afterwards.</p>
+          </div>
+          <p>A survivable system follows five steps.</p>
+          <ol>
+            <li><strong>Confinement:</strong> stop the damage from spreading. Block the attacker's account or cut off the affected part.</li>
+            <li><strong>Damage assessment:</strong> find out which data and functions were harmed.</li>
+            <li><strong>Reconfiguration:</strong> rearrange the system so that its main work goes on, perhaps in a reduced mode.</li>
+            <li><strong>Repair:</strong> restore the damaged data and fix the broken functions.</li>
+            <li><strong>Fault treatment:</strong> find the weakness that was used and fix it so the attack cannot happen again.</li>
+          </ol>
+          <p>The tools from Unit III help here. The log and backups are used to undo bad transactions and bring the data back to a correct state.</p>
+        </section>
+
+        <section id="ransomware" class="topic-section" aria-labelledby="ransomware-title">
+          <h2 id="ransomware-title">Worked example: surviving a ransomware attack</h2>
+          <p>At 2 a.m., ransomware encrypts the main MySQL server of a college. The attackers ask for money. Follow the five steps.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>The five survivability steps in a ransomware attack</caption>
+              <thead><tr><th scope="col">Step</th><th scope="col">What the college does</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Confinement</th><td>Disconnect the server from the network and disable the stolen admin account, so the replica and backups are not touched.</td></tr>
+                <tr><th scope="row">Damage assessment</th><td>Find that the main server's files are encrypted, but the read-only replica in another building and last night's offline backup are safe.</td></tr>
+                <tr><th scope="row">Reconfiguration</th><td>Point the results website to the replica in read-only mode. Students can still see results; changes wait.</td></tr>
+                <tr><th scope="row">Repair</th><td>Build a clean server, restore last night's backup and replay the binary log up to just before 2 a.m.</td></tr>
+                <tr><th scope="row">Fault treatment</th><td>Find that the attacker used a leaked admin password. Turn on two-factor login, change all passwords and patch the server.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>A backup that stays connected to the same network can be encrypted too. At least one backup should be <strong>offline</strong> or unchangeable, and restoring it should be tested often.</p>
+          </div>
+        </section>
+
+        <section id="privacy" class="topic-section" aria-labelledby="privacy-title">
+          <h2 id="privacy-title">Privacy</h2>
+          <p><strong>Privacy</strong> is a person's right to decide how data about them is collected and used. Security keeps outsiders away from data. Privacy also limits what the organization itself may do with it.</p>
+          <ul>
+            <li><strong>Laws:</strong> India's Digital Personal Data Protection Act, 2023 and Europe's GDPR require consent, a clear purpose and safe handling of personal data.</li>
+            <li><strong>Collect less:</strong> store only the data the purpose needs. A canteen app does not need a student's Aadhaar number.</li>
+            <li><strong>Anonymize before sharing:</strong> remove or blur details that identify a person, before data is used for research or reports.</li>
+          </ul>
+          <p>Removing names is not enough. Other columns together can still point to one person. This is the same danger as the <a href="database-security-issues.html#inference">inference attack in topic 5.10</a>.</p>
+        </section>
+
+        <section id="k-anon" class="topic-section" aria-labelledby="k-anon-title">
+          <h2 id="k-anon-title">Worked example: making data anonymous</h2>
+          <p>A hospital shares this table for research. Names were removed.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Before: names removed, but people can still be found</caption>
+              <thead><tr><th scope="col">Age</th><th scope="col">PIN code</th><th scope="col">Disease</th></tr></thead>
+              <tbody>
+                <tr><td>21</td><td>638052</td><td>Flu</td></tr>
+                <tr><td>23</td><td>638056</td><td>Diabetes</td></tr>
+                <tr><td>34</td><td>636007</td><td>Asthma</td></tr>
+                <tr><td>37</td><td>636004</td><td>Flu</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Your 23-year-old neighbor lives in PIN code 638056. Only one row matches, so you now know the neighbor has diabetes. Age and PIN code together act like a name. Such columns are called <strong>quasi-identifiers</strong>.</p>
+          <p>Fix it by <strong>generalizing</strong> them: ages become ranges, and the last digits of PIN codes are hidden.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>After: every row matches at least 2 people (2-anonymous)</caption>
+              <thead><tr><th scope="col">Age</th><th scope="col">PIN code</th><th scope="col">Disease</th></tr></thead>
+              <tbody>
+                <tr><td>20–29</td><td>6380**</td><td>Flu</td></tr>
+                <tr><td>20–29</td><td>6380**</td><td>Diabetes</td></tr>
+                <tr><td>30–39</td><td>6360**</td><td>Asthma</td></tr>
+                <tr><td>30–39</td><td>6360**</td><td>Flu</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Now each combination of age range and PIN code fits at least 2 people. This is called <strong>k-anonymity</strong> with k = 2. Real data uses a larger k, such as 5 or 10. The cost is that the data becomes less exact, so research results are rougher.</p>
+        </section>
+
+        <section id="emerging" class="topic-section" aria-labelledby="emerging-title">
+          <h2 id="emerging-title">Newer challenges</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Cloud databases</h3>
+              <p class="muted">Data sits on someone else's servers. A wrong setting, such as a storage bucket left public, can expose millions of records. Security is shared between the provider and the customer.</p>
+            </div>
+            <div class="card">
+              <h3>Insider threats</h3>
+              <p class="muted">Staff with real access misuse it or are tricked into sharing passwords. Least privilege, audit logs and separation of duties reduce the risk.</p>
+            </div>
+            <div class="card">
+              <h3>Ransomware</h3>
+              <p class="muted">Attackers encrypt the database and ask for money. Offline backups and survivability plans are the main defense.</p>
+            </div>
+            <div class="card">
+              <h3>NoSQL and big data</h3>
+              <p class="muted">Some NoSQL systems once shipped with no password by default, and many were found open on the internet. Large, spread-out systems are harder to protect.</p>
+            </div>
+            <div class="card">
+              <h3>Mobile and IoT devices</h3>
+              <p class="muted">Phones and sensors hold copies of data and connect from anywhere. Each device is one more door to protect.</p>
+            </div>
+            <div class="card">
+              <h3>AI and data</h3>
+              <p class="muted">AI tools trained on or connected to databases can leak private data in their answers. Access rules must cover these tools too.</p>
+            </div>
+          </div>
+          <p>Through all of this, the balance between <strong>security</strong> and <strong>ease of use</strong> remains a challenge. Rules that are too strict make people find unsafe shortcuts.</p>
+        </section>
+
+        <section id="summary" class="topic-section" aria-labelledby="summary-title">
+          <h2 id="summary-title">Challenges at a glance</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Database security challenges and the main responses</caption>
+              <thead><tr><th scope="col">Challenge</th><th scope="col">The problem</th><th scope="col">Main responses</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Data quality</th><td>Wrong, missing or untrusted data</td><td>Constraints, validation, audits, source labels</td></tr>
+                <tr><th scope="row">Intellectual property</th><td>Copies of valuable data are leaked or resold</td><td>Watermarking, fingerprinting, licenses</td></tr>
+                <tr><th scope="row">Survivability</th><td>Attacks stop the main work</td><td>Confine, assess, reconfigure, repair, treat the fault</td></tr>
+                <tr><th scope="row">Privacy</th><td>Personal data is misused or people are re-identified</td><td>Consent, collect less, anonymization (k-anonymity)</td></tr>
+                <tr><th scope="row">Newer challenges</th><td>Cloud settings, insiders, ransomware, NoSQL defaults, devices, AI</td><td>Least privilege, audits, offline backups, secure defaults</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>The 16-mark question pairs encryption and PKI (<a href="encryption-and-public-key-infrastructures.html">topic 5.14</a>) with challenges. For the challenges half, explain data quality, intellectual property and the five survivability steps. Then add privacy and two newer challenges.</p>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Database security is never finished, because attacks, systems and laws keep changing.</li>
+              <li>Data quality: users must be able to trust that data is right, complete and from a known source.</li>
+              <li>Intellectual property: hidden marks in the data (watermarks and fingerprints) prove who owns it and trace leaks.</li>
+              <li>Survivability: confinement, damage assessment, reconfiguration, repair and fault treatment.</li>
+              <li>Privacy: removing names is not enough. Blur ages, PIN codes and similar details so each person looks like several others (k-anonymity).</li>
+              <li>Newer challenges include cloud settings, insiders, ransomware, NoSQL defaults, devices and AI.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit V question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="5.15"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="5.15"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 30, Section 30.8 “Challenges to Maintaining Database Security”.</li>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 9, Section 9.8 (audit trails and privacy).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-5.js"></script>
+  <script src="../../data/quizzes/unit-5.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+</body>
+</html>

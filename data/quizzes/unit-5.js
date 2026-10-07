@@ -912,6 +912,65 @@
       answer: 0,
       explain: "This is hybrid encryption: the slow public key method shares a fresh AES key, and fast AES encrypts the data.",
       link: "#asymmetric"
+    },
+    /* 5.15 Database Security: Challenges */
+    {
+      id: "q5.15-01",
+      topic: "5.15",
+      type: "order",
+      question: "Put the steps of database survivability in order.",
+      options: ["Confinement", "Damage assessment", "Reconfiguration", "Repair", "Fault treatment"],
+      explain: "First stop the spread, then find the damage, keep the main work going, repair the data, and finally fix the weakness.",
+      link: "#survivability"
+    },
+    {
+      id: "q5.15-02",
+      topic: "5.15",
+      type: "mcq",
+      question: "A company gives each buyer of its map database a copy with a different hidden mark, so a leaked copy shows who leaked it. What is this called?",
+      options: ["Encryption", "Fingerprinting", "Normalization", "Replication"],
+      answer: 1,
+      explain: "Fingerprinting gives each copy its own watermark, so a leak can be traced to one buyer.",
+      link: "#ip"
+    },
+    {
+      id: "q5.15-03",
+      topic: "5.15",
+      type: "mcq",
+      question: "Names were removed from a medical table, but age and PIN code together still point to one person. What are age and PIN code here?",
+      options: ["Primary keys", "Quasi-identifiers", "Foreign keys", "Encrypted columns"],
+      answer: 1,
+      explain: "Quasi-identifiers are columns that together can identify a person, even without a name.",
+      link: "#k-anon"
+    },
+    {
+      id: "q5.15-04",
+      topic: "5.15",
+      type: "tf",
+      question: "In a 2-anonymous table, every combination of quasi-identifier values matches at least 2 rows.",
+      answer: true,
+      explain: "k-anonymity means each person is hidden among at least k people who look the same on the quasi-identifiers.",
+      link: "#k-anon"
+    },
+    {
+      id: "q5.15-05",
+      topic: "5.15",
+      type: "mcq",
+      question: "During an attack, a college moves its results site to a read-only replica so students can still see results. Which survivability step is this?",
+      options: ["Confinement", "Damage assessment", "Reconfiguration", "Fault treatment"],
+      answer: 2,
+      explain: "Reconfiguration rearranges the system so its main work continues, perhaps in a reduced mode.",
+      link: "#ransomware"
+    },
+    {
+      id: "q5.15-06",
+      topic: "5.15",
+      type: "multi",
+      question: "Which of these are database security challenges? Select all that apply.",
+      options: ["Data quality", "Intellectual property rights", "Database survivability", "Privacy", "Choosing a primary key"],
+      answer: [0, 1, 2, 3],
+      explain: "Data quality, intellectual property, survivability and privacy are the main challenges. Choosing a primary key is a design task.",
+      link: "#summary"
     }
   ]);
 })();
