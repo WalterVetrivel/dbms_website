@@ -118,7 +118,53 @@ for (const p of D.pages || []) {
   }
 }
 
-// 4. Readability (Flesch reading ease). A warning only.
+// 4. Question bank data.
+// Questions are mapped to units only, never to a test paper (spec FR-3.1).
+const testPattern = new RegExp("\\b" + ["I", "A", "T"].join("") + "\\b");
+for (const f of textFiles) {
+  if (testPattern.test(fs.readFileSync(f, "utf8"))) err(rel(f), "mentions an internal test paper; map questions to units only");
+}
+const qDir = path.join(ROOT, "data", "questions");
+const qFiles = fs.existsSync(qDir) ? fs.readdirSync(qDir).filter((f) => f.endsWith(".js")).sort() : [];
+for (const f of qFiles) vm.runInContext(fs.readFileSync(path.join(qDir, f), "utf8"), ctx, { filename: f });
+const questions = D.questions || [];
+const ROMAN = ["", "I", "II", "III", "IV", "V"];
+const qIds = new Set();
+const numbered = {};
+const mapped = new Set();
+for (const q of questions) {
+  const where = `data/questions [${q.id}]`;
+  const m = /^u([1-5])-([ab])(\d+)$/.exec(q.id || "");
+  if (!m) { err(where, "bad id (expected u<unit>-<a|b><number>)"); continue; }
+  if (qIds.has(q.id)) err(where, "duplicate id");
+  qIds.add(q.id);
+  if (q.unit !== Number(m[1])) err(where, "unit does not match id");
+  if (q.part !== m[2].toUpperCase()) err(where, "part does not match id");
+  if (q.marks !== (q.part === "A" ? 2 : 16)) err(where, `marks ${q.marks} do not match Part ${q.part}`);
+  if (!q.question || !q.original) err(where, "missing question or original wording");
+  if (!Array.isArray(q.topics) || !q.topics.length) err(where, "has no topic");
+  for (const t of q.topics || []) {
+    if (!ids.has(t)) err(where, `refers to unknown topic ${t}`);
+    mapped.add(t);
+  }
+  if (q.part === "A" && !q.answer) err(where, "2-mark question has no answer");
+  for (const s of q.sources || []) {
+    if (s.bank !== "Unit " + ROMAN[q.unit]) err(where, `source "${s.bank}" is not its own unit bank`);
+    if (!s.extra) (numbered[q.unit + q.part] = numbered[q.unit + q.part] || []).push(s.no);
+  }
+  if (!(q.sources || []).length) err(where, "has no source");
+}
+// The numbered questions of each unit bank run 1, 2, 3 ... with no gaps.
+for (const [key, nos] of Object.entries(numbered)) {
+  nos.sort((x, y) => x - y).forEach((n, i) => {
+    if (n !== i + 1) err("data/questions", `Unit ${ROMAN[key[0]]} Part ${key[1]}: expected question ${i + 1}, found ${n}`);
+  });
+}
+for (const t of topics) {
+  if (questions.length && !mapped.has(t.id)) warn(`data/topics.js [${t.id}]`, "no question bank item is mapped to this topic");
+}
+
+// 5. Readability (Flesch reading ease). A warning only.
 function syllables(word) {
   word = word.toLowerCase().replace(/[^a-z]/g, "");
   if (!word) return 0;
@@ -155,7 +201,7 @@ for (const f of htmlFiles) {
 
 console.log("Reading ease (higher is easier):");
 for (const [f, s] of report.sort((a, b) => a[1] - b[1])) console.log(`  ${s.toFixed(0).padStart(4)}  ${f}`);
-console.log(`\nChecked ${htmlFiles.length} pages, ${textFiles.length} text files, ${topics.length} topics.`);
+console.log(`\nChecked ${htmlFiles.length} pages, ${textFiles.length} text files, ${topics.length} topics, ${questions.length} questions.`);
 for (const w of warnings) console.log(`warning  ${w}`);
 for (const e of errors) console.log(`error    ${e}`);
 console.log(`\n${errors.length} errors, ${warnings.length} warnings`);

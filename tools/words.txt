@@ -22,10 +22,13 @@ Raghu
 Rajesh
 Ramakrishnan
 Ramez
+Ravi
+Savepoints
 serializability
 Shamkant
 Silberschatz
 styleguide
 Sudarshan
+superkey
 Swamynathan
 Vetrivel

@@ -878,6 +878,84 @@ a.chip:hover {
   font-size: var(--fs-sm);
 }
 
+/* Code in an answer scrolls inside its own box on small screens. */
+.q-item pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.q-num {
+  flex: 0 0 auto;
+  min-width: 2.25rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.q-parts {
+  margin: 0 0 var(--sp-3);
+  font-weight: 500;
+}
+
+.q-include {
+  margin: 0 0 var(--sp-3);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.q-topics {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.q-topics-label {
+  font-weight: 600;
+}
+
+/* Question bank toolbar: part filter and print button */
+.q-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin: 0 0 var(--sp-6);
+}
+
+/* Segmented control: a row of buttons where one is selected (aria-pressed="true") */
+.seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.seg-btn {
+  min-height: 44px;
+  padding: var(--sp-2) var(--sp-4);
+  border: 0;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.seg-btn + .seg-btn {
+  border-left: 1px solid var(--border-strong);
+}
+
+.seg-btn:hover {
+  background: var(--surface-2);
+}
+
+.seg-btn[aria-pressed="true"] {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
 /* Quiz extras */
 .quiz-num {
   color: var(--primary);

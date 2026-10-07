@@ -84,6 +84,7 @@
     "list-checks": '<path d="M13 5h8"/><path d="M13 12h8"/><path d="M13 19h8"/><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/>',
     "graduation-cap": '<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>',
     "file-question": '<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M12 17h.01"/><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/>',
+    printer: '<path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/>',
     layers: '<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/>'
   };
 
@@ -339,7 +340,12 @@
     var crumbs = ['<li><a href="' + url("index.html") + '">Home</a></li>'];
     var u = unitByNumber(UNIT);
     var t = topicById(TOPIC);
-    if (u && t) {
+    var qb = pageById("question-bank");
+    if (PAGE === "question-bank" && u) {
+      // A unit question bank: Home / Question Banks / Unit IV
+      crumbs.push('<li><a href="' + url(qb.href) + '">' + esc(qb.title) + "</a></li>");
+      crumbs.push('<li aria-current="page">Unit ' + u.roman + "</li>");
+    } else if (u && t) {
       crumbs.push('<li><a href="' + url(unitHref(u)) + '">Unit ' + u.roman + "</a></li>");
       crumbs.push('<li aria-current="page">' + esc(t.title) + "</li>");
     } else if (u) {
@@ -624,8 +630,10 @@
         .map(function (x) {
           var p = pageById(x.id);
           var live = isPublished(p);
+          // The question bank has one page per unit; other pages are hubs for now.
+          var href = x.id === "question-bank" ? "question-bank/" + u.slug + ".html" : p.href;
           var inner = '<span class="card-icon">' + icon(x.icon) + "</span><h3>" + esc(x.title) + "</h3>" + (live ? "" : '<span class="badge badge-soon">Coming soon</span>');
-          return live ? '<a class="card" href="' + url(p.href) + '">' + inner + "</a>" : '<div class="card is-disabled">' + inner + "</div>";
+          return live ? '<a class="card" href="' + url(href) + '">' + inner + "</a>" : '<div class="card is-disabled">' + inner + "</div>";
         })
         .join("");
     }

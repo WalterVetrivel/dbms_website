@@ -10,6 +10,7 @@ Live site: https://waltervetrivel.github.io/dbms_website/
 - Shared parts of each page (header, menu, breadcrumbs, footer and search) are drawn by `assets/js/layout.js`.
 - The list of units and topics lives in `data/topics.js`. A topic shows in the menus only when its `status` is `published`.
 - Site settings and the list of main pages live in `data/site.js`.
+- Question bank items and their 2-mark answers live in `data/questions/unit-1.js` to `unit-5.js`. `assets/js/questions.js` shows them on topic pages and question bank pages, so each answer is written once.
 - `styleguide.html` shows every building block. Use it when you write a new page.
 
 ## Folders
@@ -19,8 +20,9 @@ Live site: https://waltervetrivel.github.io/dbms_website/
 | `assets/css` | Design tokens, base styles, layout, components and print styles |
 | `assets/js` | Page scripts |
 | `assets/img` | Images and icons |
-| `data` | Units, topics and site settings |
-| `units/unit-1` to `units/unit-5` | Unit pages and, later, topic pages |
+| `data` | Units, topics, site settings, question bank items and quiz items |
+| `units/unit-1` to `units/unit-5` | Unit pages and topic pages |
+| `question-bank` | The question bank hub and one page per unit |
 | `tools` | Check scripts. These are not part of the website. |
 
 ## Run it on your computer
