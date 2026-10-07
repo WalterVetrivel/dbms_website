@@ -648,6 +648,66 @@
       answer: [0, 1, 2, 3],
       explain: "The DBA creates accounts, grants and revokes privileges, and assigns security levels.",
       link: "#dba"
+    },
+    /* 5.11 Access Control Based on Privileges */
+    {
+      id: "q5.11-01",
+      topic: "5.11",
+      type: "mcq",
+      question: "In discretionary access control (DAC), who decides who may use a table?",
+      options: ["The operating system", "The owner of the table", "A security level chosen by the government", "Any user who can log in"],
+      answer: 1,
+      explain: "In DAC, the owner grants and revokes privileges at their own discretion.",
+      link: "#what"
+    },
+    {
+      id: "q5.11-02",
+      topic: "5.11",
+      type: "mcq",
+      question: "In the access matrix, what do the rows stand for?",
+      options: ["Objects such as tables", "Subjects such as users and programs", "Privileges", "Security levels"],
+      answer: 1,
+      explain: "Rows are subjects, columns are objects, and each cell lists the privileges of that subject on that object.",
+      link: "#matrix"
+    },
+    {
+      id: "q5.11-03",
+      topic: "5.11",
+      type: "mcq",
+      question: "Which statement lets Ravi read the marks table and also pass that right to others?",
+      options: ["GRANT SELECT ON college.marks TO 'ravi'@'localhost';", "GRANT SELECT ON college.marks TO 'ravi'@'localhost' WITH GRANT OPTION;", "REVOKE SELECT ON college.marks FROM 'ravi'@'localhost';", "CREATE USER 'ravi'@'localhost';"],
+      answer: 1,
+      explain: "WITH GRANT OPTION allows the receiver to grant the same privilege to other users.",
+      link: "#propagation"
+    },
+    {
+      id: "q5.11-04",
+      topic: "5.11",
+      type: "mcq",
+      question: "DBA grants SELECT to A with grant option; A grants it to B; the DBA also grants it directly to B. The DBA revokes from A with CASCADE. What happens to B?",
+      options: ["B loses SELECT", "B keeps SELECT, because of the direct grant from the DBA", "B gets the grant option", "The REVOKE fails"],
+      answer: 1,
+      explain: "CASCADE removes privileges that depended only on A. B still holds SELECT through the DBA's direct grant.",
+      link: "#chain"
+    },
+    {
+      id: "q5.11-05",
+      topic: "5.11",
+      type: "mcq",
+      question: "Under Bell-LaPadula, a user with Secret clearance asks to write into an Unclassified table. What is the decision?",
+      options: ["Allowed, because Secret is higher", "Denied, because of the no write down rule", "Allowed only with GRANT OPTION", "Denied, because of the no read up rule"],
+      answer: 1,
+      explain: "The star property forbids writing down, so secret data cannot leak into a lower level.",
+      link: "#blp"
+    },
+    {
+      id: "q5.11-06",
+      topic: "5.11",
+      type: "tf",
+      question: "In MySQL, a GRANT can name chosen rows of a table directly, such as only CSE students.",
+      answer: false,
+      explain: "GRANT works on databases, tables, columns and views. To limit rows, create a view with a WHERE clause and grant on the view.",
+      link: "#grant"
     }
   ]);
 })();

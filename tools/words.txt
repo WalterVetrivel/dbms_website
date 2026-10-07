@@ -12,6 +12,7 @@ bname
 Boyce
 bplus
 cascadeless
+cgpa
 Charan
 Charu
 chev
@@ -49,6 +50,7 @@ Karthik
 Kavin
 KIOT
 Korth
+LaPadula
 Manoj
 Meena
 multidatabase
@@ -61,6 +63,7 @@ Narang
 Navathe
 NPTEL
 Ooty
+Padula
 Prakash
 prereqs
 Priya
