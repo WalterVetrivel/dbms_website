@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Static Hashing | DBMS Study Guide</title>
+  <meta name="description" content="Learn static hashing: hash functions, buckets, insertion and search, bucket overflow and its causes, overflow chaining (closed hashing) and open hashing with linear probing. Includes an interactive static hashing widget.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="4" data-topic="4.8" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-4">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-4">Unit IV</span>
+            <span class="badge badge-level" title="Topic number">Topic 4.8</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO4</span>
+          </div>
+          <h1>Static Hashing</h1>
+          <p class="lead">Hashing finds a record by computing where it is, instead of searching for it. In static hashing, the number of buckets is fixed when the file is created.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Explain hash functions and buckets.</li>
+              <li>Insert and search keys in a static hash file.</li>
+              <li>Explain bucket overflow and its causes.</li>
+              <li>Compare overflow chaining (closed hashing) with open hashing (linear probing).</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#idea">The idea of hashing</a></li>
+            <li><a href="#operations">Insert, search and delete</a></li>
+            <li><a href="#hash-function">A good hash function</a></li>
+            <li><a href="#overflow">Bucket overflow</a></li>
+            <li><a href="#hash-index">Hash files and hash indices</a></li>
+            <li><a href="#range">Why hashing is poor for range queries</a></li>
+            <li><a href="#merits">Merits and demerits (advantages and disadvantages)</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="idea" class="topic-section" aria-labelledby="idea-title">
+          <h2 id="idea-title">The idea of hashing</h2>
+          <p>A college hostel has 10 rooms for parcels, numbered 0 to 9. The rule is simple: a parcel goes to the room numbered by the <strong>last digit</strong> of the student's roll number. To collect a parcel, a student goes straight to one room. No list and no search are needed.</p>
+          <p>Hashing works the same way.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definitions</div>
+            <p>A <strong>bucket</strong> is a unit of storage that holds one or more records. Usually a bucket is one disk block.</p>
+            <p>A <strong>hash function</strong> h maps every search-key value K to a bucket address h(K).</p>
+            <p>In <strong>static hashing</strong>, the set of bucket addresses is <strong>fixed</strong>: the number of buckets B does not change as the file grows or shrinks.</p>
+          </div>
+          <p>A common hash function for numbers is <strong>h(K) = K mod B</strong>. With B = 10, h(34789) = 34789 mod 10 = 9, so the record for RollNo 34789 always goes into bucket 9.</p>
+          <dl class="facts">
+            <dt>Collision</dt>
+            <dd>Two different keys hash to the same bucket, for example 25 and 55 with h(K) = K mod 10.</dd>
+            <dt>Synonyms</dt>
+            <dd>Keys that hash to the same bucket. 25 and 55 are synonyms.</dd>
+            <dt>Probe</dt>
+            <dd>One calculation of an address and one check of that bucket.</dd>
+          </dl>
+        </section>
+
+        <section id="operations" class="topic-section" aria-labelledby="operations-title">
+          <h2 id="operations-title">Insert, search and delete</h2>
+          <ul>
+            <li><strong>Insert:</strong> compute h(K) and put the record in that bucket, if there is space.</li>
+            <li><strong>Search:</strong> compute h(K), read that bucket and look through its records for K. Records of other keys may be in the same bucket, so each one is checked.</li>
+            <li><strong>Delete:</strong> search for the record as above, then remove it from the bucket.</li>
+          </ul>
+          <div class="callout callout-example">
+            <div class="callout-title">Example: h(K) = K mod 5, two records per bucket</div>
+            <p>Insert 10, 22, 15 and 37. h(10) = 0, h(22) = 2, h(15) = 0 and h(37) = 2. So bucket 0 holds 10 and 15, and bucket 2 holds 22 and 37. To find 15, compute h(15) = 0 and read only bucket 0.</p>
+          </div>
+          <p>For a search on the hash key, the DBMS reads about <strong>one block</strong>, however large the file is. This is the main merit of hashing.</p>
+        </section>
+
+        <section id="hash-function" class="topic-section" aria-labelledby="hash-function-title">
+          <h2 id="hash-function-title">A good hash function</h2>
+          <p>The worst hash function sends every key to the same bucket. Then a search reads the whole file. A good hash function spreads the keys well. It is:</p>
+          <ul>
+            <li><strong>Uniform:</strong> each bucket gets about the same number of possible search-key values.</li>
+            <li><strong>Random:</strong> each bucket gets about the same number of the <strong>actual</strong> records, whatever pattern the data has.</li>
+          </ul>
+          <p>For example, a hash function on names that uses only the first letter is poor: many names start with S, and very few start with X. For strings, a hash function usually combines the codes of all the characters and then takes the result mod B.</p>
+        </section>
+
+        <section id="overflow" class="topic-section" aria-labelledby="overflow-title">
+          <h2 id="overflow-title">Bucket overflow</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Bucket overflow</strong> happens when a new record hashes to a bucket that is <strong>already full</strong>.</p>
+          </div>
+          <p>There are two causes:</p>
+          <ol>
+            <li><strong>Too few buckets.</strong> The number of buckets B should be more than n<sub>r</sub> / f<sub>r</sub>. Here n<sub>r</sub> is the number of records and f<sub>r</sub> is the number of records that fit in a bucket. Designers usually add about 20% more buckets than this (a “fudge factor”).</li>
+            <li><strong>Skew.</strong> Some buckets get many more records than others, because many records have the same search-key value, or because the hash function spreads the keys unevenly.</li>
+          </ol>
+          <p>Overflow can be made rare, but not impossible. So every hash file needs a way to handle it.</p>
+
+          <h3>Overflow chaining (closed hashing)</h3>
+          <p>When a bucket is full, the new record goes into an <strong>overflow bucket</strong>. All the overflow buckets of one bucket are linked in a list called an <strong>overflow chain</strong>.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>h(K) = K mod 5, two records per bucket, after inserting 10, 22, 15, 37, 20, 41, 25 and 13</caption>
+              <thead><tr><th scope="col">Bucket</th><th scope="col">Records</th><th scope="col">Overflow chain</th></tr></thead>
+              <tbody>
+                <tr><td>0</td><td>10, 15</td><td>→ [20, 25]</td></tr>
+                <tr><td>1</td><td>41</td><td></td></tr>
+                <tr><td>2</td><td>22, 37</td><td></td></tr>
+                <tr><td>3</td><td>13</td><td></td></tr>
+                <tr><td>4</td><td><em>empty</em></td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>A search for 25 computes h(25) = 0, reads bucket 0, and then follows the chain to the overflow bucket. The records of one bucket are found by following its chain, so the set of buckets stays fixed. Silberschatz calls this form <strong>closed hashing</strong>.</p>
+
+          <h3>Open hashing (linear probing)</h3>
+          <p>In <strong>open hashing</strong>, there are no overflow chains. When a bucket is full, the record goes into <strong>another bucket</strong> that has space. With <strong>linear probing</strong>, the DBMS tries the next bucket, then the one after it, and so on, going back to bucket 0 after the last bucket.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example from the class notes: insert 105 with h(K) = K mod 10</div>
+            <p>Each bucket holds one record. Buckets 5, 6 and 7 already hold 25, 55 and 36. h(105) = 5, but bucket 5 is full. The next bucket, 6, is full, and so is bucket 7. Bucket 8 is empty, so 105 goes into bucket 8.</p>
+          </div>
+          <p>A search for 105 must follow the same path: 5, 6, 7, 8. A search for a missing key stops at the first bucket that has free space.</p>
+          <ul>
+            <li><strong>Merits (advantages):</strong> simple and fast when the table is mostly empty; no extra overflow blocks.</li>
+            <li><strong>Demerits (disadvantages):</strong> full buckets form <strong>clusters</strong>, so searches get longer. When every bucket is full, no record can be added. Deletion is hard, because removing a record can break the probe path of other keys.</li>
+          </ul>
+          <p>Because deletion is hard, database systems use <strong>overflow chaining</strong>. Open hashing is used for in-memory tables, for example in compilers.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Note on terms</div>
+            <p>Some books swap these two names: they call chaining “open hashing” and probing “closed hashing”. In the exam, name the method too (overflow chaining or linear probing), so the meaning is clear.</p>
+          </div>
+        </section>
+
+        <section id="hash-index" class="topic-section" aria-labelledby="hash-index-title">
+          <h2 id="hash-index-title">Hash files and hash indices</h2>
+          <ul>
+            <li>In a <strong>hash file organization</strong> (topic 4.2), the buckets hold the <strong>records themselves</strong>.</li>
+            <li>In a <strong>hash index</strong>, the buckets hold <strong>index entries</strong>: search keys with pointers to the records, which are stored in some other file. A hash index is always a secondary index.</li>
+          </ul>
+        </section>
+
+        <section id="range" class="topic-section" aria-labelledby="range-title">
+          <h2 id="range-title">Why hashing is poor for range queries</h2>
+          <p>Suppose a query asks for all students with RollNo from 120 to 130. With h(K) = K mod 10, these keys are spread over every one of the 10 buckets. The hash value of 120 tells nothing about where 121 is. So the DBMS has to read <strong>all the buckets</strong>.</p>
+          <p>A good hash function spreads keys <strong>randomly</strong> on purpose. That is why it is fast for one exact key, and also why it cannot keep keys in order. For range queries, use an ordered index such as a B+ tree (topic 4.6).</p>
+        </section>
+
+        <section id="merits" class="topic-section" aria-labelledby="merits-title">
+          <h2 id="merits-title">Merits and demerits (advantages and disadvantages)</h2>
+          <h3>Merits (advantages)</h3>
+          <ul>
+            <li>A search on the hash key needs about one disk access.</li>
+            <li>Simple to build: no index tree to keep balanced.</li>
+            <li>Inserts and deletes are fast while there is no overflow.</li>
+          </ul>
+          <h3>Demerits (disadvantages)</h3>
+          <ul>
+            <li>The number of buckets is fixed. If the database <strong>grows</strong>, buckets overflow and searches get slower. If it starts with many spare buckets, space is <strong>wasted</strong>. If it <strong>shrinks</strong>, space is wasted too.</li>
+            <li>Changing the number of buckets means choosing a new hash function and moving every record, which takes a long time.</li>
+            <li>Range queries and sorted output are slow.</li>
+          </ul>
+          <p>Dynamic hashing (topic 4.9) removes the first two problems by letting the number of buckets change.</p>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>Choose the number of buckets, the bucket size and the way to handle a full bucket. Insert keys and search for them. Each step shows the hash calculation.</p>
+          <div class="widget" data-widget="static-hash" data-preset="chaining">
+            <noscript><p class="widget-narration">The static hashing widget needs JavaScript. The examples above show the same steps.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Load the open hashing example and search for 105, then for 65. Count the probes.</li>
+              <li>With 5 buckets, insert 5, 10, 15, 20, 25 and 30. This is skew: every key hashes to bucket 0.</li>
+              <li>Repeat the same keys with 7 buckets. Why does a prime number of buckets often spread keys better?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Locker room at an exam hall</h3>
+              <p class="muted">Bags go into lockers by the last two digits of the hall ticket number. Finding your bag takes one step. But if many students share the same last two digits, that locker overflows, just like a bucket.</p>
+            </div>
+            <div class="card">
+              <h3>Login sessions</h3>
+              <p class="muted">A website checks your login token on every page you open. It always looks for one exact token, so it keeps sessions in a hash table, which finds the token in one step.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>A hash function h maps each search-key value to a bucket; a bucket is usually one disk block.</li>
+              <li>In static hashing, the number of buckets is fixed, for example h(K) = K mod B.</li>
+              <li>A search on the hash key reads about one block.</li>
+              <li>A good hash function is uniform and random.</li>
+              <li>Bucket overflow is caused by too few buckets or by skew.</li>
+              <li>Overflow chaining (closed hashing) links overflow buckets to a full bucket; databases use this method.</li>
+              <li>Open hashing with linear probing puts the record in the next bucket with space; it causes clustering and makes deletion hard.</li>
+              <li>Static hashing cannot grow or shrink well, and it is poor for range queries.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit IV question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="4.8"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="4.8"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 14, Section 14.5 “Hash Indices”.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 16, the section “Hashing Techniques”.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/index-btree-hash.html" target="_blank" rel="noopener">Comparison of B-Tree and Hash Indexes</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-4.js"></script>
+  <script src="../../data/quizzes/unit-4.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/static-hash.js"></script>
+</body>
+</html>

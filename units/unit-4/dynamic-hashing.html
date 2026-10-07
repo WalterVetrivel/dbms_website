@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dynamic Hashing | DBMS Study Guide</title>
+  <meta name="description" content="Learn dynamic hashing through extendible hashing: the bucket address table (directory), global and local depth, bucket splits, directory doubling and deletion, with the class notes example worked step by step and an interactive widget.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="4" data-topic="4.9" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-4">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-4">Unit IV</span>
+            <span class="badge badge-level" title="Topic number">Topic 4.9</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO4</span>
+          </div>
+          <h1>Dynamic Hashing</h1>
+          <p class="lead">Static hashing has a fixed number of buckets, so a growing file overflows. Dynamic hashing lets the number of buckets grow and shrink with the data, one bucket at a time.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Explain why dynamic hashing is needed.</li>
+              <li>Describe the directory, global depth and local depth in extendible hashing.</li>
+              <li>Insert keys with bucket splits and directory doubling.</li>
+              <li>Distinguish between static hashing and dynamic hashing.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#why">Why we need dynamic hashing</a></li>
+            <li><a href="#extendible">Extendible hashing: the structure</a></li>
+            <li><a href="#operations">Search, insertion and deletion</a></li>
+            <li><a href="#worked-example">Worked example from the class notes</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#compare">Static hashing compared with dynamic hashing</a></li>
+            <li><a href="#merits">Merits and demerits (advantages and disadvantages)</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="why" class="topic-section" aria-labelledby="why-title">
+          <h2 id="why-title">Why we need dynamic hashing</h2>
+          <p>Static hashing (topic 4.8) fixes the number of buckets when the file is created. A database usually grows, so there are three poor choices:</p>
+          <ol>
+            <li>Choose buckets for the current size. As the file grows, buckets overflow and searches slow down.</li>
+            <li>Choose buckets for the size expected in some years. Much space is wasted at first.</li>
+            <li>Reorganize from time to time with a new hash function and more buckets. Every record must move, and the file cannot be used while this happens.</li>
+          </ol>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Dynamic hashing</strong> is hashing in which the <strong>number of buckets changes</strong> as the database grows or shrinks. Buckets are added or removed <strong>one at a time</strong>, when needed. The most common form is <strong>extendible hashing</strong>.</p>
+          </div>
+        </section>
+
+        <section id="extendible" class="topic-section" aria-labelledby="extendible-title">
+          <h2 id="extendible-title">Extendible hashing: the structure</h2>
+          <p>The hash function gives a value written as a string of bits, for example h(17) = 10001. Extendible hashing does not use all the bits at once. It uses only as many bits as it needs now, and more bits later as the file grows.</p>
+          <dl class="facts">
+            <dt>Directory (bucket address table)</dt>
+            <dd>A table of pointers to buckets. To find a key, the DBMS takes the <strong>last d bits</strong> of its hash value and follows that entry of the directory. The directory has 2<sup>d</sup> entries.</dd>
+            <dt>Global depth (d)</dt>
+            <dd>The number of bits the directory uses. It belongs to the whole directory.</dd>
+            <dt>Local depth (d′)</dt>
+            <dd>The number of bits that all the keys in one bucket share. Each bucket has its own local depth, and it is never more than the global depth.</dd>
+          </dl>
+          <p>If a bucket's local depth is less than the global depth, <strong>several directory entries point to the same bucket</strong>. For example, with d = 3, a bucket of local depth 2 for the bits 00 is pointed to by both 000 and 100. The number of entries that point to a bucket is 2<sup>d − d′</sup>.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Note on bits</div>
+            <p>The class notes, and this page, use the <strong>last</strong> bits of the hash value. Silberschatz uses the <strong>first</strong> bits of a 32-bit hash value. The method is the same; only the end of the bit string differs.</p>
+          </div>
+        </section>
+
+        <section id="operations" class="topic-section" aria-labelledby="operations-title">
+          <h2 id="operations-title">Search, insertion and deletion</h2>
+          <h3>Search</h3>
+          <p>Compute h(K), take its last d bits, follow that directory entry to a bucket and look for K there. A search reads the directory entry and one bucket.</p>
+          <h3>Insertion</h3>
+          <ol class="steps">
+            <li>Find the bucket for the key, as in a search. If it has room, put the key there. Done.</li>
+            <li>If the bucket is full and its <strong>local depth is less than the global depth</strong>, <strong>split the bucket</strong>. Make a new bucket and increase the local depth of both by 1. Move each key to the bucket that matches its next bit. Point half of the directory entries that pointed to the old bucket at the new one.</li>
+            <li>If the bucket is full and its <strong>local depth equals the global depth</strong>, first <strong>double the directory</strong>. Add 1 to the global depth, and give each new entry the same pointer as its partner entry. Then split the bucket as in step 2.</li>
+            <li>Try to insert the key again. (Rarely, all the keys go to one side and a further split is needed.)</li>
+          </ol>
+          <h3>Deletion</h3>
+          <p>Find the key and remove it. If its bucket becomes empty, merge it with its <strong>split image</strong> (the bucket that differs only in the last bit of its local depth). The directory entries now point to the remaining bucket, and its local depth goes down by 1. If no bucket uses all d bits any more, the directory can be halved.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Not every split doubles the directory. The directory doubles only when the full bucket's local depth <strong>equals</strong> the global depth. Otherwise only the bucket splits.</p>
+          </div>
+        </section>
+
+        <section id="worked-example" class="topic-section" aria-labelledby="worked-title">
+          <h2 id="worked-title">Worked example from the class notes</h2>
+          <div class="callout callout-tip">
+            <div class="callout-title">Problem</div>
+            <p>The key values 1, 3, 5, 8, 9, 12, 17 and 28 are organized with extendible hashing. The hash function is h(x) = x mod 8, and a bucket holds three records. Show the structure, then show how it changes for: insert 2, insert 24, delete 5, delete 12.</p>
+          </div>
+          <p><strong>Hash values.</strong> x mod 8 keeps the last three bits of x:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Last three bits of each key</caption>
+              <thead><tr><th scope="col">Key</th><th scope="col">1</th><th scope="col">3</th><th scope="col">5</th><th scope="col">8</th><th scope="col">9</th><th scope="col">12</th><th scope="col">17</th><th scope="col">28</th><th scope="col">2</th><th scope="col">24</th></tr></thead>
+              <tbody><tr><th scope="row">Bits</th><td>001</td><td>011</td><td>101</td><td>000</td><td>001</td><td>100</td><td>001</td><td>100</td><td>010</td><td>000</td></tr></tbody>
+            </table>
+          </div>
+          <p>Start with global depth 2: four directory entries (00, 01, 10, 11), each pointing to its own bucket of local depth 2.</p>
+          <div class="table-wrap">
+            <table class="worked">
+              <caption>Building and changing the extendible hash structure</caption>
+              <thead><tr><th scope="col">Step</th><th scope="col">What happens</th><th scope="col">Buckets (local depth): keys</th></tr></thead>
+              <tbody>
+                <tr><td>Insert 1 to 12</td><td>Using the last 2 bits: 1, 5 and 9 end in 01; 8 and 12 end in 00; 3 ends in 11. Bucket 01 is now full.</td><td>00 (2): 8, 12<br>01 (2): 1, 5, 9<br>10 (2): empty<br>11 (2): 3</td></tr>
+                <tr><td>Insert 17</td><td>17 ends in 01, but bucket 01 is full. Its local depth 2 equals the global depth 2, so the <strong>directory doubles</strong> to global depth 3. Then bucket 01 splits on the third bit: 1 and 9 (001) stay, 5 (101) moves to a new bucket. 17 (001) goes into bucket 001.</td><td>00 (2): 8, 12<br>001 (3): 1, 9, 17<br>101 (3): 5<br>10 (2): empty<br>11 (2): 3</td></tr>
+                <tr><td>Insert 28</td><td>28 ends in 100. Entries 000 and 100 both point to bucket 00, which has room.</td><td>00 (2): 8, 12, 28<br>001 (3): 1, 9, 17<br>101 (3): 5<br>10 (2): empty<br>11 (2): 3</td></tr>
+                <tr><td>Insert 2</td><td>2 ends in 010, so it goes to bucket 10, which is empty.</td><td>… 10 (2): 2 …</td></tr>
+                <tr><td>Insert 24</td><td>24 ends in 000. Bucket 00 is full, but its local depth 2 is less than the global depth 3. So the bucket <strong>splits without doubling</strong>: 8 (000) stays, and 12 and 28 (100) move to a new bucket. 24 goes into bucket 000.</td><td>000 (3): 8, 24<br>100 (3): 12, 28<br>001 (3): 1, 9, 17<br>101 (3): 5<br>10 (2): 2<br>11 (2): 3</td></tr>
+                <tr><td>Delete 5</td><td>Bucket 101 becomes empty, so it merges with its split image, bucket 001. Entries 001 and 101 both point to it, and its local depth drops to 2. The directory stays at depth 3, because buckets 000 and 100 still use 3 bits.</td><td>000 (3): 8, 24<br>100 (3): 12, 28<br>01 (2): 1, 9, 17<br>10 (2): 2<br>11 (2): 3</td></tr>
+                <tr><td>Delete 12</td><td>Remove 12 from bucket 100. The bucket is not empty, so nothing merges.</td><td>000 (3): 8, 24<br>100 (3): 28<br>01 (2): 1, 9, 17<br>10 (2): 2<br>11 (2): 3</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Load the class notes example in the widget below to see each of these steps drawn with the directory and its pointers.</p>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>Draw the directory on the left with its bit strings and the global depth on top. Draw the buckets on the right with their local depth. Draw a pointer from every directory entry, even when two entries point to the same bucket.</p>
+          </div>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>Insert and delete keys and watch the directory and the buckets change. The narration shows the bits used at each step.</p>
+          <div class="widget" data-widget="extendible-hash" data-preset="notes">
+            <noscript><p class="widget-narration">The extendible hashing widget needs JavaScript. The worked example above shows the same steps.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Load “Watch the directory grow”. All the keys end in 00, so the directory keeps doubling.</li>
+              <li>After loading the class notes example, insert 11. Does the directory double this time?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="compare" class="topic-section" aria-labelledby="compare-title">
+          <h2 id="compare-title">Static hashing compared with dynamic hashing</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Static hashing compared with dynamic (extendible) hashing</caption>
+              <thead><tr><th scope="col">Static hashing</th><th scope="col">Dynamic hashing</th></tr></thead>
+              <tbody>
+                <tr><td>The number of buckets is fixed when the file is created.</td><td>The number of buckets grows and shrinks with the data.</td></tr>
+                <tr><td>The hash function never changes.</td><td>The function uses more or fewer bits of the hash value.</td></tr>
+                <tr><td>A growing file causes bucket overflow and long chains.</td><td>A full bucket splits, so overflow is rare.</td></tr>
+                <tr><td>Growing means reorganizing the whole file.</td><td>Growing changes only one bucket (and sometimes doubles the directory).</td></tr>
+                <tr><td>Simple; no directory.</td><td>Needs a directory (bucket address table), one extra step on each lookup.</td></tr>
+                <tr><td>Wastes space if built large for the future.</td><td>Uses space in step with the data.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="merits" class="topic-section" aria-labelledby="merits-title">
+          <h2 id="merits-title">Merits and demerits (advantages and disadvantages)</h2>
+          <h3>Merits (advantages)</h3>
+          <ul>
+            <li>Performance does not fall as the file grows.</li>
+            <li>Little wasted space: buckets are added only when needed.</li>
+            <li>No full reorganization: a split moves only the keys of one bucket.</li>
+          </ul>
+          <h3>Demerits (disadvantages)</h3>
+          <ul>
+            <li>Each lookup goes through the directory first, which is one more step.</li>
+            <li>Doubling the directory is costly when the directory is large.</li>
+            <li>If many keys share the same last bits, the directory can grow very large for a few buckets.</li>
+            <li>Like all hashing, it is poor for range queries.</li>
+          </ul>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>A growing shop</h3>
+              <p class="muted">A new online shop starts with a few hundred customers. On sale days, thousands join every hour. Dynamic hashing adds buckets as customers join, without stopping the site to rebuild its files.</p>
+            </div>
+            <div class="card">
+              <h3>A growing hostel</h3>
+              <p class="muted">A hostel puts students in rooms by the last digit of the roll number. When one room is full, it opens a new room and splits that group by the last two digits. Only that one group moves.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Dynamic hashing changes the number of buckets as the data grows or shrinks; extendible hashing is the common form.</li>
+              <li>The directory (bucket address table) uses the last d bits of the hash value; d is the global depth.</li>
+              <li>Each bucket has a local depth d′; 2<sup>d − d′</sup> directory entries point to it.</li>
+              <li>A full bucket with d′ &lt; d splits; the directory does not change size.</li>
+              <li>A full bucket with d′ = d first doubles the directory (d increases by 1), then splits.</li>
+              <li>When a bucket becomes empty, it merges with its split image, and the directory may halve.</li>
+              <li>Dynamic hashing avoids overflow chains and full reorganization, at the cost of one directory lookup.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit IV question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="4.9"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="4.9"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: the sections on dynamic hashing and extendible hashing.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 16, the section “Hashing Techniques”, on dynamic and extendible hashing.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-4.js"></script>
+  <script src="../../data/quizzes/unit-4.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/extendible-hash.js"></script>
+</body>
+</html>

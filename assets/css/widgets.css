@@ -243,3 +243,717 @@
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
 }
+
+/* ---------- Shared parts of the Unit IV widgets (player.js) ---------- */
+
+.wp-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.wp-field select,
+.wp-field input[type="text"] {
+  min-height: 44px;
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 400;
+}
+
+.wp-grow {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.wp-grow select {
+  width: 100%;
+  text-overflow: ellipsis;
+}
+
+.widget-controls {
+  align-items: flex-end;
+}
+
+.wp-speed input {
+  min-height: 44px;
+  width: 7rem;
+}
+
+.wp-step {
+  margin-left: auto;
+  align-self: center;
+  font-size: var(--fs-xs);
+}
+
+.wp-check {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 44px;
+  font-size: var(--fs-sm);
+}
+
+.wp-check input {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.wp-meta {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-4);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.widget-stage table {
+  font-size: var(--fs-sm);
+}
+
+/* ---------- V23 RAID simulator ---------- */
+
+.raid-table {
+  border-collapse: separate;
+  border-spacing: 6px;
+  margin: 0 auto;
+}
+
+.raid-table th {
+  background: transparent;
+  border: 0;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  font-weight: 600;
+  text-align: center;
+  padding: 0 var(--sp-1);
+}
+
+.raid-table thead th {
+  vertical-align: bottom;
+}
+
+.raid-table tbody th {
+  vertical-align: middle;
+}
+
+.raid-disk {
+  display: block;
+  margin-bottom: var(--sp-1);
+  color: var(--text);
+}
+
+.raid-disk.is-failed {
+  color: var(--danger);
+}
+
+.raid-fail {
+  min-height: 36px;
+  padding: 0 var(--sp-3);
+  font-size: var(--fs-xs);
+}
+
+.raid-cell {
+  min-width: 4.5rem;
+  height: 3.1rem;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-align: center;
+  font-family: var(--font-mono);
+  line-height: 1.2;
+}
+
+.raid-name,
+.raid-val {
+  display: block;
+}
+
+.raid-name {
+  font-weight: 600;
+  font-size: var(--fs-sm);
+}
+
+.raid-val {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.raid-cell.kind-data {
+  background: var(--accent-soft);
+}
+
+.raid-cell.kind-mirror {
+  background: var(--accent-soft);
+  border-style: dashed;
+}
+
+.raid-cell.kind-p,
+.raid-cell.kind-q {
+  background: var(--primary-soft);
+}
+
+.raid-cell.is-free {
+  background: var(--bg);
+  border-style: dotted;
+  color: var(--danger);
+}
+
+.raid-cell.is-new {
+  border-color: var(--primary);
+}
+
+.raid-cell.on-failed,
+.raid-cell.is-lost {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+  opacity: 0.75;
+}
+
+.raid-cell.is-lost .raid-val,
+.raid-cell.on-failed .raid-val {
+  text-decoration: line-through;
+}
+
+.raid-cell.is-computed,
+.raid-cell.is-rebuilt {
+  background: var(--success-soft);
+  border-color: var(--success);
+  opacity: 1;
+}
+
+.raid-cell.is-computed .raid-val {
+  text-decoration: none;
+}
+
+.raid-cell.is-empty {
+  background: var(--bg);
+  border-style: dashed;
+}
+
+.raid-table tr.is-current th[scope="row"] {
+  color: var(--primary);
+}
+
+.raid-ok {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.raid-warn {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.raid-bad {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* ---------- V24 Record and page layout ---------- */
+
+.rec-header {
+  margin: 0 0 var(--sp-3);
+  font-size: var(--fs-sm);
+}
+
+.rec-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--sp-3);
+}
+
+.rec-table caption {
+  text-align: left;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  padding-bottom: var(--sp-1);
+}
+
+.rec-table th,
+.rec-table td {
+  padding: var(--sp-1) var(--sp-2);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.rec-table tr.is-free td {
+  color: var(--text-muted);
+  background: var(--bg);
+}
+
+.rec-table tr.is-focus td,
+.rec-table tr.is-focus th {
+  background: var(--warning-soft);
+}
+
+.rec-table tr.is-moved td,
+.rec-table tr.is-moved th {
+  background: var(--primary-soft);
+}
+
+.rec-del {
+  font-family: var(--font-sans);
+  min-height: 34px;
+  padding: 0 var(--sp-3);
+  font-size: var(--fs-xs);
+}
+
+.slot-bar {
+  position: relative;
+  height: 3rem;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.slot-part {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: left var(--dur) var(--ease), width var(--dur) var(--ease);
+}
+
+.slot-head {
+  background: var(--primary-soft);
+  border-right: 2px solid var(--primary);
+}
+
+.slot-free {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.slot-gap {
+  background: repeating-linear-gradient(45deg, var(--danger-soft), var(--danger-soft) 6px, transparent 6px, transparent 12px);
+}
+
+.slot-rec {
+  background: var(--accent-soft);
+  border-left: 2px solid var(--accent);
+  font-family: var(--font-mono);
+}
+
+.slot-rec.is-focus {
+  background: var(--warning-soft);
+  border-left-color: var(--warning);
+}
+
+.slot-rec.is-moved {
+  background: var(--primary-soft);
+}
+
+.slot-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* ---------- V25 Dense and sparse index lookup ---------- */
+
+.idx-cols {
+  display: flex;
+  gap: var(--sp-5);
+  align-items: flex-start;
+  min-width: max-content;
+}
+
+.idx-col h4 {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.idx-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.idx-list li {
+  display: flex;
+  gap: var(--sp-2);
+  justify-content: space-between;
+  padding: 2px var(--sp-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.idx-list li:last-child {
+  border-bottom: 0;
+}
+
+.idx-list li.is-path {
+  background: var(--primary-soft);
+  font-weight: 700;
+}
+
+.idx-list li.is-near {
+  background: var(--danger-soft);
+}
+
+.idx-ptr {
+  color: var(--text-muted);
+}
+
+.idx-iblock,
+.idx-block {
+  position: relative;
+  margin-bottom: var(--sp-3);
+  padding-left: 1.8rem;
+}
+
+.idx-bname {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.idx-iblock.is-path .idx-list {
+  border-color: var(--primary);
+}
+
+.idx-block table {
+  border-collapse: collapse;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.idx-block td {
+  padding: 2px var(--sp-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.idx-block.is-read table {
+  border-color: var(--primary);
+}
+
+.idx-block tr.is-check td {
+  background: var(--warning-soft);
+}
+
+.idx-block tr.is-found td {
+  background: var(--success-soft);
+  font-weight: 700;
+}
+
+.idx-block tr.is-missing td {
+  background: var(--danger-soft);
+}
+
+/* ---------- V28 Static hashing ---------- */
+
+.sh-table {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  min-width: max-content;
+}
+
+.sh-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 3px var(--sp-2);
+  border-radius: var(--radius);
+}
+
+.sh-label {
+  width: 5.5rem;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.sh-bucket {
+  display: inline-flex;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.sh-bucket.is-overflow {
+  border-style: dashed;
+}
+
+.sh-slot {
+  min-width: 3.6rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  background: var(--accent-soft);
+}
+
+.sh-slot + .sh-slot {
+  border-left: 1px solid var(--border-strong);
+}
+
+.sh-slot.is-free {
+  background: transparent;
+}
+
+.sh-slot.is-new {
+  box-shadow: inset 0 0 0 2px var(--primary);
+}
+
+.sh-slot.is-found {
+  background: var(--success-soft);
+  box-shadow: inset 0 0 0 2px var(--success);
+}
+
+.sh-arrow {
+  color: var(--text-muted);
+}
+
+.sh-row.is-current {
+  background: var(--primary-soft);
+}
+
+.sh-row.is-probed {
+  background: var(--warning-soft);
+}
+
+.sh-row.is-full,
+.sh-row.is-missing {
+  background: var(--danger-soft);
+}
+
+/* ---------- V29 Extendible hashing ---------- */
+
+.eh-svg,
+.qt-svg {
+  display: block;
+  max-width: none;
+  margin: 0 auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.eh-title {
+  fill: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.eh-dir,
+.eh-box {
+  fill: var(--surface);
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+}
+
+.eh-dir.is-path {
+  fill: var(--primary-soft);
+  stroke: var(--primary);
+  stroke-width: 2.5;
+}
+
+.eh-bits,
+.eh-key {
+  fill: var(--text);
+  font-weight: 600;
+}
+
+.eh-key.is-new {
+  fill: var(--primary);
+  text-decoration: underline;
+}
+
+.eh-div {
+  stroke: var(--border-strong);
+}
+
+.eh-link {
+  stroke: var(--border-strong);
+  stroke-width: 1.2;
+}
+
+.eh-link.is-path {
+  stroke: var(--primary);
+  stroke-width: 2.5;
+}
+
+.eh-bucket .eh-box {
+  fill: var(--accent-soft);
+}
+
+.eh-bucket.is-path .eh-box {
+  stroke: var(--primary);
+  stroke-width: 2.5;
+}
+
+.eh-bucket.is-changed .eh-box {
+  fill: var(--warning-soft);
+  stroke: var(--warning);
+  stroke-width: 2.5;
+}
+
+.eh-bucket.is-full .eh-box,
+.eh-bucket.is-missing .eh-box {
+  fill: var(--danger-soft);
+  stroke: var(--danger);
+  stroke-width: 2.5;
+}
+
+.eh-name {
+  fill: var(--text);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.eh-depth,
+.eh-over {
+  fill: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 12px;
+}
+
+/* ---------- V27 B tree: comparison panel ---------- */
+
+.bt-compare {
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- V30 Query tree optimizer ---------- */
+
+.qt-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-xs);
+}
+
+.qt-sql {
+  flex: 1 1 16rem;
+  margin: 0;
+  padding: var(--sp-3);
+  border-radius: var(--radius);
+  background: var(--code-bg);
+  color: var(--code-text);
+  font-size: var(--fs-xs);
+  overflow-x: auto;
+}
+
+.qt-stats {
+  flex: 1 1 16rem;
+}
+
+.qt-stats table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.qt-stats caption {
+  text-align: left;
+  font-weight: 600;
+  padding-bottom: var(--sp-1);
+}
+
+.qt-stats th,
+.qt-stats td {
+  padding: 2px var(--sp-2);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.qt-conds {
+  margin: var(--sp-2) 0 0;
+  padding-left: var(--sp-4);
+}
+
+.qt-rule {
+  border-top: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+}
+
+.qt-edge {
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+}
+
+.qt-box {
+  fill: var(--surface);
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+}
+
+.qt-rel .qt-box {
+  fill: var(--accent-soft);
+}
+
+.qt-sel .qt-box {
+  fill: var(--warning-soft);
+}
+
+.qt-proj .qt-box {
+  fill: var(--primary-soft);
+}
+
+.qt-prod .qt-box {
+  fill: var(--danger-soft);
+  stroke: var(--danger);
+}
+
+.qt-label {
+  fill: var(--text);
+  font-weight: 600;
+}
+
+.qt-size {
+  fill: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 11px;
+}
+
+.qt-text {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-xs);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+@media print {
+  .wp-player,
+  .widget-controls,
+  .bpt-text summary {
+    display: none;
+  }
+}

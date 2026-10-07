@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Organization of Records in Files | DBMS Study Guide</title>
+  <meta name="description" content="Learn how records are stored inside a file: fixed-length records and the free list, variable-length records and the slotted-page structure, data dictionary storage and column-oriented storage. Includes an interactive record and page layout widget.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="4" data-topic="4.3" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-4">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-4">Unit IV</span>
+            <span class="badge badge-level" title="Topic number">Topic 4.3</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO4</span>
+          </div>
+          <h1>Organization of Records in Files</h1>
+          <p class="lead">Inside a file, each record needs a place in a block. Fixed-length records are simple to place. Variable-length records need a smarter layout called the slotted page.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Differentiate between fixed-length and variable-length records.</li>
+              <li>Explain how a free list reuses the space of deleted records.</li>
+              <li>Describe the slotted-page structure.</li>
+              <li>Explain what the data dictionary stores and why column-oriented storage helps analytics.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#fixed">Fixed-length records</a></li>
+            <li><a href="#variable">Variable-length records</a></li>
+            <li><a href="#slotted">The slotted-page structure</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#dictionary">Data dictionary storage</a></li>
+            <li><a href="#columnar">Column-oriented storage</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="fixed" class="topic-section" aria-labelledby="fixed-title">
+          <h2 id="fixed-title">Fixed-length records</h2>
+          <p>Look at this record type for employees. Every field has a fixed size, so every record has the same size.</p>
+          <div class="code-block">
+            <span class="code-label">Record type</span>
+            <pre><code>type employee = record
+  EmpNo   char(4);
+  Ename   char(10);
+  Salary  numeric(5);
+  Phone   char(10);
+end</code></pre>
+          </div>
+          <p>Each record takes 4 + 10 + 5 + 10 = <strong>29 bytes</strong>. A short name such as “Arun” is <strong>padded</strong> with spaces to fill its 10 bytes.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A file has <strong>fixed-length records</strong> when every record in it has the <strong>same size</strong>. If each record takes n bytes, record i starts at byte <strong>n × (i − 1)</strong>.</p>
+          </div>
+          <p>So the DBMS can find record 5 at once: it starts at byte 29 × 4 = 116. This makes access fast and simple. But there are two problems.</p>
+          <ol>
+            <li><strong>Records can cross block boundaries.</strong> If the block size is not a multiple of 29, part of a record is in one block and the rest is in the next. Reading that record needs two block reads. The fix is to store only as many whole records as fit in a block and leave the few bytes at the end empty.</li>
+            <li><strong>Deletion leaves a hole.</strong> When a record is deleted, its space must be filled or remembered.</li>
+          </ol>
+
+          <h3>Handling deleted records</h3>
+          <p>There are three ways to deal with the hole left by a deleted record.</p>
+          <ul>
+            <li><strong>Move every following record up</strong> by one place. This needs many disk writes, so it is a poor choice.</li>
+            <li><strong>Move the last record</strong> of the file into the hole. Only one record moves.</li>
+            <li><strong>Keep a free list</strong> and do not move any record. This is the usual method.</li>
+          </ul>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>free list</strong> is a linked list of the deleted records. A <strong>file header</strong> at the start of the file holds the address of the first deleted record. Each deleted record holds the address of the next deleted record.</p>
+          </div>
+          <p>On an insert, the DBMS puts the new record in the place the header points to, and the header moves on to the next free record. If the free list is empty, the new record goes at the end of the file.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example: delete records 1, 3 and 5</div>
+            <p>After the three deletes, the free list is: header → record 5 → record 3 → record 1 → end. The newest deleted record is at the front. The next insert uses record 5.</p>
+          </div>
+        </section>
+
+        <section id="variable" class="topic-section" aria-labelledby="variable-title">
+          <h2 id="variable-title">Variable-length records</h2>
+          <p>Real tables use VARCHAR fields, so records have different sizes. Variable-length records arise in three ways:</p>
+          <ul>
+            <li>Fields whose length can change, such as VARCHAR.</li>
+            <li>Fields that repeat, such as arrays or multisets.</li>
+            <li>Records of more than one type stored in the same file (as in multitable clustering, topic 4.2).</li>
+          </ul>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A file has <strong>variable-length records</strong> when records in it can have <strong>different sizes</strong>.</p>
+          </div>
+          <h3>How one variable-length record is stored</h3>
+          <p>The record has two parts:</p>
+          <ol>
+            <li>An <strong>initial part of fixed size</strong>. Fixed-length fields (such as Salary) are stored here directly. Each variable-length field is stored here as an <strong>(offset, length)</strong> pair: where its data starts in the record, and how many bytes it takes.</li>
+            <li>The <strong>data of the variable-length fields</strong>, one after the other.</li>
+          </ol>
+          <p>A <strong>null bitmap</strong> sits between the two parts. It has one bit for each field; a 1 means that the field is null.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>The record (E101, Arun, CSE, 42000) as a variable-length record</caption>
+              <thead><tr><th scope="col">Bytes</th><th scope="col">Content</th><th scope="col">Meaning</th></tr></thead>
+              <tbody>
+                <tr><td>0 to 3</td><td>(21, 4)</td><td>EmpNo starts at byte 21 and is 4 bytes long</td></tr>
+                <tr><td>4 to 7</td><td>(25, 4)</td><td>Ename starts at byte 25 and is 4 bytes long</td></tr>
+                <tr><td>8 to 11</td><td>(29, 3)</td><td>Dept starts at byte 29 and is 3 bytes long</td></tr>
+                <tr><td>12 to 19</td><td>42000</td><td>Salary (fixed size, stored directly)</td></tr>
+                <tr><td>20</td><td>0000</td><td>Null bitmap: no field is null</td></tr>
+                <tr><td>21 to 31</td><td>E101 Arun CSE</td><td>Data of the variable-length fields</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Fixed-length and variable-length records compared</h3>
+          <div class="table-wrap">
+            <table>
+              <caption>Fixed-length compared with variable-length records</caption>
+              <thead><tr><th scope="col">Fixed-length records</th><th scope="col">Variable-length records</th></tr></thead>
+              <tbody>
+                <tr><td>Every record has the same size.</td><td>Records can have different sizes.</td></tr>
+                <tr><td>Record i starts at byte n × (i − 1), so it is easy to find.</td><td>Needs (offset, length) pairs and a slotted page to find each record.</td></tr>
+                <tr><td>Short values are padded, so space is wasted.</td><td>Uses only the space it needs.</td></tr>
+                <tr><td>Example: CHAR(10) fields.</td><td>Example: VARCHAR(50) fields.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="slotted" class="topic-section" aria-labelledby="slotted-title">
+          <h2 id="slotted-title">The slotted-page structure</h2>
+          <p>Variable-length records must be placed inside a block. The common way is the <strong>slotted-page structure</strong>.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>In the <strong>slotted-page structure</strong>, each block starts with a <strong>block header</strong> that holds:</p>
+            <ol>
+              <li>the <strong>number of record entries</strong> in the block,</li>
+              <li>the <strong>end of free space</strong> in the block, and</li>
+              <li>an <strong>array of entries</strong>, one per record, giving the <strong>location and size</strong> of the record.</li>
+            </ol>
+            <p>The records are stored <strong>together at the end</strong> of the block. The free space is in one piece, between the header and the records.</p>
+          </div>
+          <ul>
+            <li><strong>Insert:</strong> the new record takes space at the end of the free space, and a new entry is added to the header.</li>
+            <li><strong>Delete:</strong> the record's space is freed and its entry is marked as deleted. The records before it are moved so that the free space stays in one piece, and their entries are updated.</li>
+          </ul>
+          <p>Other parts of the database point to the <strong>header entry</strong> of a record, not to the record itself. So a record can move inside its block without breaking any pointer. Moving records inside one block is cheap, because the whole block is already in memory.</p>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>Draw the block as a long box: header on the left (entries and end of free space), free space in the middle, and records packed on the right. Draw an arrow from each header entry to its record.</p>
+          </div>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>Choose a layout. In the fixed-length file, delete records and watch the free list grow; then insert and see which place is reused. In the slotted page, insert and delete records and watch the header entries change.</p>
+          <div class="widget" data-widget="records" data-mode="slotted">
+            <noscript><p class="widget-narration">The record and page layout widget needs JavaScript. The sections above describe the same steps.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>In the fixed-length file, delete records 1, 3 and 5, then insert two records.</li>
+              <li>In the slotted page, delete the middle record. Which records move, and which header entries change?</li>
+              <li>Keep inserting until the block is full. Why does the header also need space?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="dictionary" class="topic-section" aria-labelledby="dictionary-title">
+          <h2 id="dictionary-title">Data dictionary storage</h2>
+          <p>To run any query, the DBMS must know the tables, their columns and their indices. This “data about data” is called <strong>metadata</strong>.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>The <strong>data dictionary</strong> (also called the <strong>system catalog</strong>) is where the DBMS stores metadata about the database.</p>
+          </div>
+          <p>The data dictionary stores:</p>
+          <ul>
+            <li>the names of the relations, and the names, types and lengths of their attributes,</li>
+            <li>views, integrity constraints and indices,</li>
+            <li>users, their roles and their access rights (authorization),</li>
+            <li>statistics, such as the number of tuples in each relation (used by the query optimizer, topic 4.11),</li>
+            <li>physical details, such as how each relation is stored and where.</li>
+          </ul>
+          <p>Most systems store the data dictionary as <strong>relations</strong> too, so the DBMS can use its own code to read it.</p>
+          <h3>Active and passive data dictionaries</h3>
+          <div class="table-wrap">
+            <table>
+              <caption>Active compared with passive data dictionary</caption>
+              <thead><tr><th scope="col">Active data dictionary</th><th scope="col">Passive data dictionary</th></tr></thead>
+              <tbody>
+                <tr><td>Managed by the DBMS itself.</td><td>Managed separately, by people.</td></tr>
+                <tr><td>Updated automatically whenever the database structure changes.</td><td>Updated by hand, so it can become out of date.</td></tr>
+                <tr><td>Always matches the current database.</td><td>Used only for documentation.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>-- Read column metadata from MySQL's data dictionary.
+SELECT column_name, data_type, character_maximum_length
+FROM information_schema.columns
+WHERE table_schema = DATABASE() AND table_name = 'student';</code></pre>
+          </div>
+        </section>
+
+        <section id="columnar" class="topic-section" aria-labelledby="columnar-title">
+          <h2 id="columnar-title">Column-oriented storage</h2>
+          <p>So far, each record is stored with all its fields together. This is <strong>row-oriented storage</strong>.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>In <strong>column-oriented storage</strong> (columnar storage), the values of <strong>each attribute are stored together</strong>, in a separate file or area for each column.</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>The same three rows stored by row and by column</caption>
+              <thead><tr><th scope="col">Row-oriented</th><th scope="col">Column-oriented</th></tr></thead>
+              <tbody>
+                <tr><td>(101, Anitha, CSE, 82)<br>(104, Bharath, ECE, 75)<br>(108, Charan, MECH, 68)</td><td>RollNo: 101, 104, 108<br>Name: Anitha, Bharath, Charan<br>Dept: CSE, ECE, MECH<br>Marks: 82, 75, 68</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li><strong>Merits (advantages):</strong> a query such as “average marks of all students” reads only the Marks column, so it reads far fewer blocks. Values in one column are similar, so they <strong>compress</strong> well.</li>
+            <li><strong>Demerits (disadvantages):</strong> reading or inserting one whole record touches every column, so it is slower.</li>
+          </ul>
+          <p>Column-oriented storage is used for <strong>data analytics</strong>, business intelligence and data warehouses. Row-oriented storage suits <strong>transaction processing</strong>, where whole records are read and written.</p>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Online shopping addresses</h3>
+              <p class="muted">One customer lives at “12, Gandhi Road”, and another at a long address with a flat number, street, area and landmark. Storing addresses as variable-length records means short addresses do not waste space.</p>
+            </div>
+            <div class="card">
+              <h3>Sales reports</h3>
+              <p class="muted">An online shop asks, “What were the total sales in each state last Diwali?” This reads only the state, date and amount columns of millions of orders. So analytics systems keep such data in column-oriented storage.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Fixed-length records all have the same size n; record i starts at byte n × (i − 1).</li>
+              <li>Deleted fixed-length records are linked in a free list that starts at the file header.</li>
+              <li>Variable-length records store an (offset, length) pair for each variable field, a null bitmap and then the field data.</li>
+              <li>The slotted page has a header with the number of entries, the end of free space and the location and size of each record.</li>
+              <li>In a slotted page, records are packed at the end of the block and may move; pointers point to header entries.</li>
+              <li>The data dictionary (system catalog) stores metadata: schemas, constraints, users, indices and statistics.</li>
+              <li>Column-oriented storage keeps each attribute together; it suits analytics, while row storage suits transactions.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit IV question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="4.3"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="4.3"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 13, Section 13.2 “File Organization”, Section 13.4 “Data-Dictionary Storage” and Section 13.6 “Column-Oriented Storage”.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 16, the section on placing file records on disk.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/data-dictionary.html" target="_blank" rel="noopener">MySQL Data Dictionary</a> and <a href="https://dev.mysql.com/doc/refman/8.4/en/information-schema-columns-table.html" target="_blank" rel="noopener">The INFORMATION_SCHEMA COLUMNS Table</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-4.js"></script>
+  <script src="../../data/quizzes/unit-4.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/records.js"></script>
+</body>
+</html>
