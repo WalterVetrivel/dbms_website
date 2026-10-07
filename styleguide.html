@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Style guide | DBMS Study Guide</title>
+  <meta name="description" content="The building blocks used on every page of the DBMS Study Guide.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="" data-page="styleguide">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content-wide">
+        <span class="eyebrow">For authors</span>
+        <h1>Style guide</h1>
+        <p class="lead">This page shows every building block of the site. Use these blocks when you write a new page, so that all pages look the same.</p>
+
+        <section class="section" aria-labelledby="sg-colors">
+          <h2 id="sg-colors">Colors</h2>
+          <p>Each unit has its own color. The same color is used for the unit's cards, badges and links.</p>
+          <div class="swatches">
+            <div class="swatch"><span style="background:var(--primary)"></span><p>Primary</p></div>
+            <div class="swatch"><span style="background:var(--accent)"></span><p>Accent</p></div>
+            <div class="swatch"><span style="background:var(--success)"></span><p>Success</p></div>
+            <div class="swatch"><span style="background:var(--warning)"></span><p>Warning</p></div>
+            <div class="swatch"><span style="background:var(--danger)"></span><p>Danger</p></div>
+            <div class="swatch"><span style="background:var(--u1)"></span><p>Unit I</p></div>
+            <div class="swatch"><span style="background:var(--u2)"></span><p>Unit II</p></div>
+            <div class="swatch"><span style="background:var(--u3)"></span><p>Unit III</p></div>
+            <div class="swatch"><span style="background:var(--u4)"></span><p>Unit IV</p></div>
+            <div class="swatch"><span style="background:var(--u5)"></span><p>Unit V</p></div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="sg-type">
+          <h2 id="sg-type">Text</h2>
+          <h3>Heading level 3</h3>
+          <h4>Heading level 4</h4>
+          <p>This is a normal paragraph. A <strong>key term</strong> is shown in bold the first time it appears. Code inside a sentence looks like <code>SELECT name FROM student;</code>. Keys look like <kbd>Ctrl</kbd> + <kbd>K</kbd>.</p>
+          <p class="muted">This is muted text. Use it for small notes.</p>
+        </section>
+
+        <section class="section" aria-labelledby="sg-buttons">
+          <h2 id="sg-buttons">Buttons and badges</h2>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary">Main action</button>
+            <button type="button" class="btn">Other action</button>
+            <button type="button" class="btn" data-open-search>Open search</button>
+          </div>
+          <p>
+            <span class="badge badge-unit u-1">Unit I</span>
+            <span class="badge badge-unit u-2">Unit II</span>
+            <span class="badge badge-unit u-3">Unit III</span>
+            <span class="badge badge-unit u-4">Unit IV</span>
+            <span class="badge badge-unit u-5">Unit V</span>
+            <span class="badge badge-level">Apply</span>
+            <span class="badge badge-marks">2 marks</span>
+            <span class="badge badge-iat">IAT 1</span>
+            <span class="badge badge-soon">Coming soon</span>
+            <span class="badge badge-done">Done</span>
+          </p>
+        </section>
+
+        <section class="section" aria-labelledby="sg-callouts">
+          <h2 id="sg-callouts">Callouts</h2>
+          <div class="callout callout-definition"><div class="callout-title">Definition</div><p>A <strong>relation</strong> is a table with rows and columns.</p></div>
+          <div class="callout callout-example"><div class="callout-title">Example</div><p>The <code>student</code> table has one row for each student.</p></div>
+          <div class="callout callout-realworld"><div class="callout-title">In real life</div><p>A bank keeps one row for each account.</p></div>
+          <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Always draw a small table to explain your answer.</p></div>
+          <div class="callout callout-mistake"><div class="callout-title">Common mistake</div><p>A primary key can never be null.</p></div>
+          <div class="callout callout-note"><div class="callout-title">Note</div><p>This topic is also used in Unit II.</p></div>
+        </section>
+
+        <section class="section" aria-labelledby="sg-cards">
+          <h2 id="sg-cards">Cards</h2>
+          <div class="grid grid-sm">
+            <div class="card"><h4>Normal card</h4><p class="muted">A short summary goes here.</p></div>
+            <div class="card is-disabled"><h4>Disabled card</h4><p class="muted">This item is coming soon.</p></div>
+          </div>
+          <h3>Progress bar</h3>
+          <div class="progress-bar" role="progressbar" aria-label="Example progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><span style="width:40%"></span></div>
+        </section>
+
+        <section class="section" aria-labelledby="sg-tables">
+          <h2 id="sg-tables">Tables and code</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>The student relation</caption>
+              <thead><tr><th scope="col">roll_no</th><th scope="col">name</th><th scope="col">dept</th></tr></thead>
+              <tbody>
+                <tr><td>101</td><td>Anitha</td><td>CSE</td></tr>
+                <tr><td>102</td><td>Bala</td><td>ECE</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT name
+FROM student
+WHERE dept = 'CSE';</code></pre>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="sg-reveal">
+          <h2 id="sg-reveal">Accordion and tabs</h2>
+          <details class="accordion">
+            <summary>What is a primary key? (2 marks)</summary>
+            <div class="accordion-body"><p>A primary key is a column, or a set of columns, that identifies each row of a table. No two rows can have the same value, and the value cannot be null.</p></div>
+          </details>
+          <div class="tabs" data-tabs>
+            <div class="tab-list">
+              <button type="button">Question</button>
+              <button type="button">Answer</button>
+            </div>
+            <div class="tab-panel"><p>Find the names of all students in the CSE department.</p></div>
+            <div class="tab-panel"><p>Use a <code>SELECT</code> query with a <code>WHERE</code> clause.</p></div>
+          </div>
+          <ul class="chips">
+            <li class="chip">Primary key</li>
+            <li class="chip">Foreign key</li>
+            <li class="chip">Candidate key</li>
+          </ul>
+        </section>
+
+        <section class="section" aria-labelledby="sg-lists">
+          <h2 id="sg-lists">Steps, facts and key points</h2>
+          <ol class="steps">
+            <li>Find all the attributes.</li>
+            <li>Find the functional dependencies.</li>
+            <li>Find the candidate keys.</li>
+          </ol>
+          <dl class="facts">
+            <dt>Full form</dt><dd>Database Management System</dd>
+            <dt>Example</dt><dd>MySQL</dd>
+          </dl>
+          <div class="key-points">
+            <h3>Key points</h3>
+            <ul>
+              <li>A database stores related data.</li>
+              <li>A DBMS is the software that manages the database.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="sg-widget">
+          <h2 id="sg-widget">Interactive widget frame</h2>
+          <div class="widget">
+            <div class="widget-head"><strong>Widget title</strong></div>
+            <div class="widget-stage"><p class="muted">The diagram is drawn here.</p></div>
+            <div class="widget-controls">
+              <button type="button" class="btn">Back</button>
+              <button type="button" class="btn btn-primary">Next step</button>
+            </div>
+            <p class="widget-narration" aria-live="polite">Each step is explained here in one or two short sentences.</p>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="sg-quiz">
+          <h2 id="sg-quiz">Quiz question</h2>
+          <form class="quiz-card" onsubmit="return false">
+            <fieldset>
+              <legend>Which key can never be null?</legend>
+              <label class="quiz-option is-correct"><input type="radio" name="sg-q1" checked> Primary key</label>
+              <label class="quiz-option"><input type="radio" name="sg-q1"> Foreign key</label>
+              <label class="quiz-option"><input type="radio" name="sg-q1"> Alternate key</label>
+            </fieldset>
+            <p class="quiz-feedback">Correct. A primary key must have a value in every row.</p>
+          </form>
+        </section>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="data/site.js"></script>
+  <script src="data/topics.js"></script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+// Site checks. Run with: node tools/check.mjs
+// No dependencies. Errors make the script exit with code 1. Warnings do not.
+import fs from "node:fs";
+import path from "node:path";
+import vm from "node:vm";
+import { fileURLToPath } from "node:url";
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const SKIP_DIRS = new Set([".git", "node_modules", "tools", ".github"]);
+const errors = [];
+const warnings = [];
+const err = (file, msg) => errors.push(`${file}: ${msg}`);
+const warn = (file, msg) => warnings.push(`${file}: ${msg}`);
+
+function walk(dir, out = []) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (SKIP_DIRS.has(entry.name)) continue;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) walk(full, out);
+    else out.push(full);
+  }
+  return out;
+}
+
+const rel = (f) => path.relative(ROOT, f).split(path.sep).join("/");
+const files = walk(ROOT);
+const textFiles = files.filter((f) => /\.(html|js|css|json|md|txt|svg|xml)$/i.test(f));
+const htmlFiles = files.filter((f) => f.endsWith(".html"));
+
+// 1. The course code must never appear on the site.
+// The pattern is built from parts so that this file does not contain the code itself.
+const codePattern = new RegExp(["BE", "\\s*23", "\\s*CS", "\\s*405"].join(""), "i");
+for (const f of textFiles) {
+  if (codePattern.test(fs.readFileSync(f, "utf8"))) err(rel(f), "contains the course code");
+}
+
+// 2. Page structure.
+const stripTags = (s) => s.replace(/<[^>]+>/g, " ");
+for (const f of htmlFiles) {
+  const name = rel(f);
+  const html = fs.readFileSync(f, "utf8");
+  if (!/^<!doctype html>/i.test(html)) err(name, "missing <!doctype html>");
+  if (!/<html[^>]*\slang="en"/.test(html)) err(name, 'missing <html lang="en">');
+  if (!/<title>[^<]+<\/title>/.test(html)) err(name, "missing <title>");
+  if (!/<meta name="viewport"/.test(html)) err(name, "missing viewport meta tag");
+  if (!/<meta name="description" content="[^"]+"/.test(html)) warn(name, "missing meta description");
+  const h1 = (html.match(/<h1[\s>]/g) || []).length;
+  if (h1 !== 1) err(name, `has ${h1} <h1> elements (expected 1)`);
+
+  const rootMatch = html.match(/<body[^>]*\sdata-root="([^"]*)"/);
+  if (!rootMatch) err(name, "body has no data-root");
+  else if (name !== "404.html") {
+    const depth = name.split("/").length - 1;
+    const expected = "../".repeat(depth);
+    if (rootMatch[1] !== expected) err(name, `data-root is "${rootMatch[1]}" (expected "${expected}")`);
+  }
+
+  // Local links and sources must point to files that exist.
+  if (name === "404.html") continue; // uses an absolute site root
+  for (const m of html.matchAll(/\s(?:href|src)="([^"]+)"/g)) {
+    const target = m[1];
+    if (/^(https?:|mailto:|tel:|#|data:|javascript:)/i.test(target)) continue;
+    const clean = target.split("#")[0].split("?")[0];
+    if (!clean) continue;
+    const resolved = path.resolve(path.dirname(f), decodeURIComponent(clean));
+    if (!fs.existsSync(resolved)) err(name, `broken link: ${target}`);
+  }
+}
+
+// 3. Data registry.
+const ctx = { console };
+ctx.window = ctx;
+vm.createContext(ctx);
+for (const file of ["data/site.js", "data/topics.js"]) {
+  vm.runInContext(fs.readFileSync(path.join(ROOT, file), "utf8"), ctx, { filename: file });
+}
+const D = ctx.DBMS || {};
+const units = D.units || [];
+const topics = D.topics || [];
+const STATUSES = new Set(["planned", "draft", "published"]);
+const EXPECTED = { 1: 13, 2: 17, 3: 14, 4: 11, 5: 15 };
+
+if (units.length !== 5) err("data/topics.js", `has ${units.length} units (expected 5)`);
+if (topics.length !== 70) err("data/topics.js", `has ${topics.length} topics (expected 70)`);
+for (const [u, n] of Object.entries(EXPECTED)) {
+  const count = topics.filter((t) => t.unit === Number(u)).length;
+  if (count !== n) err("data/topics.js", `unit ${u} has ${count} topics (expected ${n})`);
+}
+const ids = new Set();
+const slugs = new Set();
+for (const t of topics) {
+  const where = `data/topics.js [${t.id}]`;
+  if (ids.has(t.id)) err(where, "duplicate id");
+  ids.add(t.id);
+  const key = `${t.unit}/${t.slug}`;
+  if (slugs.has(key)) err(where, `duplicate slug ${t.slug}`);
+  slugs.add(key);
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(t.slug || "")) err(where, `bad slug "${t.slug}"`);
+  if (!t.title) err(where, "missing title");
+  if (!STATUSES.has(t.status)) err(where, `bad status "${t.status}"`);
+  if (String(t.id).split(".")[0] !== String(t.unit)) err(where, "id does not match unit");
+  if (t.status === "published") {
+    const page = path.join(ROOT, "units", `unit-${t.unit}`, `${t.slug}.html`);
+    if (!fs.existsSync(page)) err(where, `published but ${rel(page)} is missing`);
+  }
+}
+for (const t of topics) {
+  for (const field of ["prereqs", "related"]) {
+    for (const ref of t[field] || []) {
+      if (!ids.has(ref)) err(`data/topics.js [${t.id}]`, `${field} refers to unknown topic ${ref}`);
+    }
+  }
+}
+for (const p of D.pages || []) {
+  if (!STATUSES.has(p.status)) err(`data/site.js [${p.id}]`, `bad status "${p.status}"`);
+  if (p.status === "published" && !fs.existsSync(path.join(ROOT, p.href))) {
+    err(`data/site.js [${p.id}]`, `published but ${p.href} is missing`);
+  }
+}
+
+// 4. Readability (Flesch reading ease). A warning only.
+function syllables(word) {
+  word = word.toLowerCase().replace(/[^a-z]/g, "");
+  if (!word) return 0;
+  if (word.length <= 3) return 1;
+  word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, "").replace(/^y/, "");
+  const groups = word.match(/[aeiouy]{1,2}/g);
+  return Math.max(1, groups ? groups.length : 1);
+}
+function flesch(text) {
+  const sentences = text.split(/[.!?]+(?:\s|$)/).filter((s) => s.trim().split(/\s+/).length > 2);
+  const words = text.split(/\s+/).filter((w) => /[a-z]/i.test(w));
+  if (sentences.length < 3 || words.length < 50) return null;
+  const syl = words.reduce((n, w) => n + syllables(w), 0);
+  return 206.835 - 1.015 * (words.length / sentences.length) - 84.6 * (syl / words.length);
+}
+const report = [];
+for (const f of htmlFiles) {
+  const html = fs.readFileSync(f, "utf8");
+  const main = (html.match(/<main[\s\S]*?<\/main>/) || [""])[0]
+    .replace(/<(pre|code|table|script|style|noscript)[\s\S]*?<\/\1>/g, " ");
+  const paras = [...main.matchAll(/<(p|li|dd)[^>]*>([\s\S]*?)<\/\1>/g)].map((m) => stripTags(m[2]));
+  const text = paras.map((p) => p.trim().replace(/[^.!?]$/, "$&.")).join(" ").replace(/&[a-z]+;/g, " ");
+  const score = flesch(text);
+  if (score === null) continue;
+  report.push([rel(f), score]);
+  if (score < 60) warn(rel(f), `reading ease ${score.toFixed(0)} (aim for 60 or more)`);
+  for (const p of paras) {
+    for (const s of p.split(/(?<=[.!?])\s+/)) {
+      const n = s.split(/\s+/).filter(Boolean).length;
+      if (n > 30) warn(rel(f), `long sentence (${n} words): "${s.trim().slice(0, 60)}..."`);
+    }
+  }
+}
+
+console.log("Reading ease (higher is easier):");
+for (const [f, s] of report.sort((a, b) => a[1] - b[1])) console.log(`  ${s.toFixed(0).padStart(4)}  ${f}`);
+console.log(`\nChecked ${htmlFiles.length} pages, ${textFiles.length} text files, ${topics.length} topics.`);
+for (const w of warnings) console.log(`warning  ${w}`);
+for (const e of errors) console.log(`error    ${e}`);
+console.log(`\n${errors.length} errors, ${warnings.length} warnings`);
+process.exit(errors.length ? 1 : 0);
