@@ -207,6 +207,76 @@
       answer: 0,
       explain: "3PC adds a pre-commit phase. If the coordinator fails, a new coordinator can use the pre-commit records to decide, so the sites do not block.",
       link: "#three-phase"
+    },
+    /* 5.4 NoSQL Introduction */
+    {
+      id: "q5.4-01",
+      topic: "5.4",
+      type: "mcq",
+      question: "What does “NoSQL” stand for?",
+      options: ["No SQL at all", "Not only SQL", "New SQL", "Non-standard query language"],
+      answer: 1,
+      explain: "NoSQL means “not only SQL”: tables are not the only way to store data. Some NoSQL systems even have SQL-like languages.",
+      link: "#what"
+    },
+    {
+      id: "q5.4-02",
+      topic: "5.4",
+      type: "mcq",
+      question: "A website adds more ordinary servers and spreads its data across them. What is this called?",
+      options: ["Vertical scaling (scale up)", "Horizontal scaling (scale out)", "Normalization", "Indexing"],
+      answer: 1,
+      explain: "Adding more servers is horizontal scaling. Buying one bigger server is vertical scaling.",
+      link: "#scaling"
+    },
+    {
+      id: "q5.4-03",
+      topic: "5.4",
+      type: "multi",
+      question: "Which of these are features of NoSQL databases? Select all that apply.",
+      options: ["Flexible schema", "Data spread across many servers", "Joins through foreign keys are the main way to link data", "Handles semi-structured data", "A fixed schema must be defined first"],
+      answer: [0, 1, 3],
+      explain: "NoSQL databases have a flexible schema, run across many servers and handle semi-structured data. Foreign keys and a fixed schema belong to relational databases.",
+      link: "#features"
+    },
+    {
+      id: "q5.4-04",
+      topic: "5.4",
+      type: "mcq",
+      question: "In BASE, what does the “E” stand for?",
+      options: ["Exact consistency", "Eventual consistency", "Every read is correct", "Error handling"],
+      answer: 1,
+      explain: "BASE is basically available, soft state and eventual consistency: copies agree after some time when writes stop.",
+      link: "#base"
+    },
+    {
+      id: "q5.4-05",
+      topic: "5.4",
+      type: "tf",
+      question: "A short delay before every user sees the new number of likes on a post is an example of eventual consistency.",
+      answer: true,
+      explain: "The copies differ for a moment and then all show the same count. That is eventual consistency.",
+      link: "#base"
+    },
+    {
+      id: "q5.4-06",
+      topic: "5.4",
+      type: "mcq",
+      question: "Which kind of data is the best fit for a relational database with ACID rather than a BASE NoSQL store?",
+      options: ["Likes on posts", "Bank account balances", "Website click logs", "Product page views"],
+      answer: 1,
+      explain: "A bank balance must always be correct, so it needs ACID. Likes, logs and view counts can be a little old for a moment.",
+      link: "#base"
+    },
+    {
+      id: "q5.4-07",
+      topic: "5.4",
+      type: "mcq",
+      question: "Which pair is a NoSQL type matched with a correct example?",
+      options: ["Graph: Redis", "Document: MongoDB", "Key-value: Neo4j", "Column-based: MySQL"],
+      answer: 1,
+      explain: "MongoDB is a document database. Redis is key-value, Neo4j is a graph database and MySQL is relational.",
+      link: "#types"
     }
   ]);
 })();
