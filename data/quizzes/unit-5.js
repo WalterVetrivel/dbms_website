@@ -527,6 +527,66 @@
       answer: 1,
       explain: "A write is added to a commit log and a sorted table in memory, then flushed as a new file. Appending is much faster than updating in place.",
       link: "#writes"
+    },
+    /* 5.9 Graph Databases */
+    {
+      id: "q5.9-01",
+      topic: "5.9",
+      type: "multi",
+      question: "Which are parts of the property graph model? Select all that apply.",
+      options: ["Nodes", "Relationships (edges)", "Properties", "Column families"],
+      answer: [0, 1, 2],
+      explain: "A property graph has nodes, relationships and properties on both. Column families belong to wide-column stores.",
+      link: "#model"
+    },
+    {
+      id: "q5.9-02",
+      topic: "5.9",
+      type: "mcq",
+      question: "Why can a graph database follow links faster than a relational database?",
+      options: ["It keeps all data in one table", "Each node stores direct pointers to its relationships (index-free adjacency)", "It never writes to disk", "It uses SQL joins internally"],
+      answer: 1,
+      explain: "Links are stored directly, so the database follows pointers instead of searching a table with joins.",
+      link: "#why"
+    },
+    {
+      id: "q5.9-03",
+      topic: "5.9",
+      type: "mcq",
+      question: "In the Cypher pattern (a:Person)-[:KNOWS]->(b:Person), what is :KNOWS?",
+      options: ["A node label", "A relationship type", "A property", "A table name"],
+      answer: 1,
+      explain: "Square brackets inside an arrow hold the relationship. KNOWS is its type; :Person is a node label.",
+      link: "#cypher"
+    },
+    {
+      id: "q5.9-04",
+      topic: "5.9",
+      type: "mcq",
+      question: "Which application suits a graph database best?",
+      options: ["Storing login sessions", "Suggesting friends of friends", "Storing sensor readings every second", "Caching a results page"],
+      answer: 1,
+      explain: "Friend suggestions follow links two hops away, which is what graph databases do best.",
+      link: "#uses"
+    },
+    {
+      id: "q5.9-05",
+      topic: "5.9",
+      type: "mcq",
+      question: "Which of these is a graph database?",
+      options: ["Neo4j", "Redis", "MongoDB", "Cassandra"],
+      answer: 0,
+      explain: "Neo4j is a graph database. Redis is key-value, MongoDB is a document store and Cassandra is wide-column.",
+      link: "#uses"
+    },
+    {
+      id: "q5.9-06",
+      topic: "5.9",
+      type: "tf",
+      question: "In SQL, each extra hop in a friends-of-friends query usually adds more joins.",
+      answer: true,
+      explain: "Each hop joins the friendship table again. In Cypher, the pattern just gets one more relationship.",
+      link: "#sql"
     }
   ]);
 })();
