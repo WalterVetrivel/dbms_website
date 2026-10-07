@@ -59,7 +59,7 @@
             <li><a href="#worked-example">Worked example (n = 3)</a></li>
             <li><a href="#deletion">Deletion</a></li>
             <li><a href="#fan-out">Fan-out and height</a></li>
-            <li><a href="#merits">Merits and demerits</a></li>
+            <li><a href="#merits">Merits and demerits (advantages and disadvantages)</a></li>
             <li><a href="#mysql">B+ trees in MySQL</a></li>
             <li><a href="#try-it">Try it yourself</a></li>
             <li><a href="#real-world">In real life</a></li>
@@ -191,7 +191,7 @@
         <section id="worked-example" class="topic-section" aria-labelledby="worked-title">
           <h2 id="worked-title">Worked example (n = 3)</h2>
           <div class="callout callout-tip">
-            <div class="callout-title">Question bank, IAT-2 (16 marks)</div>
+            <div class="callout-title">Question bank, Unit IV (16 marks)</div>
             <p>Construct a B+ tree for the following set of key values: (2, 3, 5, 7, 11, 17, 19, 23, 29, 31). Assume that the tree is initially empty and the values are inserted in ascending order. Each node can contain a maximum of three pointers.</p>
           </div>
           <p><strong>Given:</strong> n = 3 pointers, so each node holds at most <strong>2 keys</strong>. A leaf needs at least 1 key, and an internal node needs at least 2 pointers.</p>
@@ -218,7 +218,7 @@
             <div data-bpt-static data-n="3" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31">
               <noscript><p>Root: [11]. Level 2: [5] and [19]. Level 3: [3], [7], [17] and [23 | 29]. Leaves: [2] → [3] → [5] → [7] → [11] → [17] → [19] → [23] → [29 | 31].</p></noscript>
             </div>
-            <figcaption>The final B+ tree for the IAT-2 question (n = 3). It has four levels. Every key is in a leaf, and the leaves are linked in order.</figcaption>
+            <figcaption>The final B+ tree for the question bank problem (n = 3). It has four levels. Every key is in a leaf, and the leaves are linked in order.</figcaption>
           </figure>
           <div class="callout callout-tip">
             <div class="callout-title">Exam tip</div>
@@ -288,8 +288,8 @@
         </section>
 
         <section id="merits" class="topic-section" aria-labelledby="merits-title">
-          <h2 id="merits-title">Merits and demerits</h2>
-          <h3>Merits</h3>
+          <h2 id="merits-title">Merits and demerits (advantages and disadvantages)</h2>
+          <h3>Merits (advantages)</h3>
           <ul>
             <li>The tree is always balanced, so every search reads the same number of nodes.</li>
             <li>Inserts and deletes change only a few nodes. The index never needs a full rebuild.</li>
@@ -297,7 +297,7 @@
             <li>The leaves are linked, so range queries and sorted reads are fast.</li>
             <li>The tree supports both random access (one key) and sequential access (keys in order).</li>
           </ul>
-          <h3>Demerits</h3>
+          <h3>Demerits (disadvantages)</h3>
           <ul>
             <li>Splits and merges add extra work to inserts and deletes.</li>
             <li>Some keys are stored twice (in a leaf and in an internal node), and nodes may be only half full. This takes extra space.</li>
@@ -328,7 +328,7 @@ WHERE marks BETWEEN 60 AND 80;</code></pre>
         <section id="try-it" class="topic-section" aria-labelledby="try-title">
           <h2 id="try-title">Try it yourself</h2>
           <p>Insert, delete and search for keys, and watch every step. Choose an example to replay the question bank answer or the examples from the class notes. You can type several keys at once, for example <kbd>4, 9, 13</kbd>.</p>
-          <div class="widget" data-widget="bplus-tree" data-n="3" data-preset="iat2">
+          <div class="widget" data-widget="bplus-tree" data-n="3" data-preset="qb-unit4">
             <noscript><p class="widget-narration">The B+ tree visualizer needs JavaScript. The worked example above shows the same steps.</p></noscript>
           </div>
           <ul class="bpt-legend" aria-label="Colors used in the drawing">
@@ -379,7 +379,7 @@ WHERE marks BETWEEN 60 AND 80;</code></pre>
 
         <section id="questions" class="topic-section" aria-labelledby="questions-title">
           <h2 id="questions-title">Important questions</h2>
-          <p>These questions are from the Unit IV and IAT-2 question banks. Open a 2-mark question to see a sample answer.</p>
+          <p>These questions are from the Unit IV question bank. Open a 2-mark question to see a sample answer.</p>
           <div data-questions data-topic="4.6"></div>
         </section>
 

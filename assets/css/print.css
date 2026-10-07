@@ -16,6 +16,8 @@
   .copy-btn,
   .widget-controls,
   .search-dialog,
+  .toc-rail,
+  .toc-fab,
   .no-print {
     display: none !important;
   }

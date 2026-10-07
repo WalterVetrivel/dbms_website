@@ -1,7 +1,12 @@
 /* Unit IV question bank items.
-   "original" keeps the wording from the source bank; "question" is the corrected
-   wording shown on the site. Sources: "Unit IV" is the unit question bank, and
-   "IAT-1" and "IAT-2" are the internal assessment banks. */
+   Every question is mapped to its unit, never to a test or exam paper, because
+   test papers change each semester.
+   id: "u4-a7" is Unit IV, Part A, question 7 of the unit question bank. A question
+   that is not in the unit bank takes the next free number in its part (for
+   example "u4-b11"), and its source is { bank: "Unit IV", extra: true }.
+   "original" keeps the source wording; "question" is the corrected wording shown
+   on the site. "answer" is the 2-mark answer (HTML), or null. "outline" links a
+   16-mark question to the worked answer on a topic page, or is null. */
 (function () {
   var D = (window.DBMS = window.DBMS || {});
   D.questions = (D.questions || []).concat([
@@ -48,12 +53,12 @@
       outline: null
     },
     {
-      id: "iat2-b6",
+      id: "u4-b11",
       unit: 4,
       part: "B",
       marks: 16,
       topics: ["4.6"],
-      sources: [{ bank: "IAT-2", no: 6 }],
+      sources: [{ bank: "Unit IV", extra: true }],
       original: "Construct a B+ Tree for the following set of key values: (2, 3, 5, 7, 11, 17, 19, 23, 29, 31). Assume that the tree is initially empty and the values are inserted in ascending order. Consider that each node can contain a maximum of Three pointers.",
       question: "Construct a B+ tree for the following set of key values: (2, 3, 5, 7, 11, 17, 19, 23, 29, 31). Assume that the tree is initially empty and the values are inserted in ascending order. Each node can contain a maximum of three pointers.",
       answer: null,

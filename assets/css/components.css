@@ -85,7 +85,7 @@
   border-color: transparent;
 }
 
-.badge-iat {
+.badge-source {
   background: var(--warning-soft);
   color: var(--warning);
   border-color: transparent;
@@ -969,6 +969,146 @@ a.chip:hover {
   columns: 2 14rem;
   margin: var(--sp-2) 0 0;
   padding-left: 1.2rem;
+}
+
+/* Section menu: a sticky rail on wide screens, a button and panel on smaller ones */
+.toc-rail {
+  position: fixed;
+  z-index: 58;
+  right: var(--sp-4);
+  bottom: calc(var(--sp-4) + 3.5rem);
+  width: min(20rem, calc(100vw - 2 * var(--sp-4)));
+  max-height: min(70vh, 32rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--fs-sm);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease), visibility var(--dur);
+}
+
+.toc-rail.is-open {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+}
+
+.toc-rail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+
+.toc-rail ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.toc-rail ol a {
+  display: block;
+  padding: var(--sp-1) var(--sp-3);
+  border-left: 2px solid var(--border);
+  color: var(--text-muted);
+  text-decoration: none;
+  line-height: var(--lh-tight);
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+
+.toc-rail ol a:hover {
+  color: var(--text);
+  border-left-color: var(--border-strong);
+}
+
+.toc-rail ol a[aria-current] {
+  color: var(--primary);
+  border-left-color: var(--primary);
+  font-weight: 600;
+}
+
+.toc-top {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin-top: var(--sp-3);
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.toc-top .icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.toc-fab {
+  position: fixed;
+  z-index: 57;
+  right: var(--sp-4);
+  bottom: var(--sp-4);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--primary);
+  color: var(--on-primary);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease), visibility var(--dur);
+}
+
+.toc-fab.is-shown,
+.toc-fab[aria-expanded="true"] {
+  visibility: visible;
+  opacity: 1;
+}
+
+.toc-fab .icon {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+@media (min-width: 1280px) {
+  .toc-rail {
+    position: sticky;
+    z-index: 1;
+    top: calc(var(--header-h) + var(--sp-6));
+    right: auto;
+    bottom: auto;
+    align-self: flex-start;
+    flex: none;
+    width: 14rem;
+    max-height: calc(100vh - var(--header-h) - 2 * var(--sp-6));
+    margin: var(--sp-6) var(--sp-4) 0 0;
+    padding: 0 0 var(--sp-4);
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .toc-close,
+  .toc-fab {
+    display: none;
+  }
 }
 
 .topic-section {

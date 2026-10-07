@@ -77,6 +77,7 @@
     "chevron-right": '<path d="m9 18 6-6-6-6"/>',
     check: '<path d="M20 6 9 17l-5-5"/>',
     x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+    "list": '<path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/>',
     "external-link": '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
     "book-open": '<path d="M12 5v16"/><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"/>',
     flask: '<path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"/><path d="M6.453 15h11.094"/><path d="M8.5 2h7"/>',
@@ -770,6 +771,101 @@
     });
   }
 
+  /* ---------- Section menu (topic pages) ----------
+     Copies the "On this page" links into a sticky rail on the right on wide
+     screens, and into a "Sections" button and panel on smaller screens. The
+     link for the section being read is highlighted. */
+
+  function renderSectionMenu() {
+    var toc = document.querySelector(".on-this-page");
+    var page = document.querySelector(".page");
+    if (!toc || !page) return;
+    var items = Array.prototype.map.call(toc.querySelectorAll("a[href^='#']"), function (a) {
+      return { id: a.getAttribute("href").slice(1), text: a.textContent };
+    }).filter(function (x) {
+      return document.getElementById(x.id);
+    });
+    if (!items.length) return;
+
+    var rail = document.createElement("aside");
+    rail.className = "toc-rail";
+    rail.id = "toc-rail";
+    rail.setAttribute("aria-label", "Sections of this page");
+    rail.innerHTML =
+      '<div class="toc-rail-head"><strong>On this page</strong>' +
+      '<button type="button" class="icon-btn toc-close" aria-label="Close sections menu">' + icon("x") + "</button></div>" +
+      "<ol>" + items.map(function (x) {
+        return '<li><a href="#' + esc(x.id) + '">' + esc(x.text) + "</a></li>";
+      }).join("") + "</ol>" +
+      '<a class="toc-top" href="#main">' + icon("chevron-up") + "Back to top</a>";
+    page.appendChild(rail);
+
+    var fab = document.createElement("button");
+    fab.type = "button";
+    fab.className = "toc-fab";
+    fab.setAttribute("aria-controls", "toc-rail");
+    fab.setAttribute("aria-expanded", "false");
+    fab.innerHTML = icon("list") + "<span>Sections</span>";
+    document.body.appendChild(fab);
+
+    var setOpen = function (open) {
+      rail.classList.toggle("is-open", open);
+      fab.setAttribute("aria-expanded", open ? "true" : "false");
+      if (open) {
+        var cur = rail.querySelector("[aria-current]") || rail.querySelector("a");
+        if (cur) cur.focus();
+      }
+    };
+    fab.addEventListener("click", function () {
+      setOpen(!rail.classList.contains("is-open"));
+    });
+    rail.querySelector(".toc-close").addEventListener("click", function () {
+      setOpen(false);
+      fab.focus();
+    });
+    rail.addEventListener("click", function (e) {
+      if (e.target.closest("a")) setOpen(false);
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && rail.classList.contains("is-open")) {
+        setOpen(false);
+        fab.focus();
+      }
+    });
+    document.addEventListener("click", function (e) {
+      if (rail.classList.contains("is-open") && !rail.contains(e.target) && !fab.contains(e.target)) setOpen(false);
+    });
+
+    var links = rail.querySelectorAll("ol a");
+    var sections = items.map(function (x) {
+      return document.getElementById(x.id);
+    });
+    var ticking = false;
+    var update = function () {
+      ticking = false;
+      var line = Math.min(220, window.innerHeight / 3);
+      var active = -1;
+      for (var i = 0; i < sections.length; i++) {
+        if (sections[i].getBoundingClientRect().top <= line) active = i;
+      }
+      // At the very bottom of the page, the last section counts as read.
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) active = sections.length - 1;
+      for (var j = 0; j < links.length; j++) {
+        if (j === active) links[j].setAttribute("aria-current", "true");
+        else links[j].removeAttribute("aria-current");
+      }
+      // The button appears once the reader has scrolled past the top list.
+      fab.classList.toggle("is-shown", toc.getBoundingClientRect().bottom < 0);
+    };
+    window.addEventListener("scroll", function () {
+      if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(update);
+      }
+    }, { passive: true });
+    update();
+  }
+
   /* ---------- Start ---------- */
 
   renderHeader();
@@ -778,7 +874,10 @@
   renderFooter();
   if (PAGE === "home") renderHome();
   if (PAGE === "unit") renderUnit();
-  if (PAGE === "topic") renderTopic();
+  if (PAGE === "topic") {
+    renderTopic();
+    renderSectionMenu();
+  }
   enhanceCodeBlocks();
   enhanceTabs();
   enhanceSearchButtons();

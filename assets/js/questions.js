@@ -10,9 +10,8 @@
   function sourceBadges(q) {
     return q.sources
       .map(function (s) {
-        var label = /^IAT/.test(s.bank) ? s.bank : "Unit QB";
-        var title = /^IAT/.test(s.bank) ? s.bank + " question bank, question " + s.no : s.bank + " question bank, Part " + q.part + ", question " + s.no;
-        return '<span class="badge badge-iat" title="' + esc(title) + '">' + esc(label) + "</span>";
+        var title = s.extra ? s.bank + " question bank, extra question" : s.bank + " question bank, Part " + q.part + ", question " + s.no;
+        return '<span class="badge badge-source" title="' + esc(title) + '">' + esc(s.bank) + " QB</span>";
       })
       .join("");
   }
