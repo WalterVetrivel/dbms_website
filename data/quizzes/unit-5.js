@@ -842,6 +842,76 @@
       answer: [0, 1, 2],
       explain: "Parameters, validation and least privilege all help. Showing full errors helps attackers, so errors should be hidden and logged.",
       link: "#prevention"
+    },
+    /* 5.14 Encryption and Public Key Infrastructures */
+    {
+      id: "q5.14-01",
+      topic: "5.14",
+      type: "mcq",
+      question: "In symmetric encryption, which key decrypts the data?",
+      options: ["The receiver's public key", "The same key that encrypted it", "The sender's private key", "No key is needed"],
+      answer: 1,
+      explain: "Symmetric encryption, such as AES, uses one shared secret key for both encryption and decryption.",
+      link: "#symmetric"
+    },
+    {
+      id: "q5.14-02",
+      topic: "5.14",
+      type: "mcq",
+      question: "Asha wants to send Ravi a secret message using public key encryption. Which key does she encrypt with?",
+      options: ["Asha's private key", "Ravi's public key", "Ravi's private key", "A key both of them chose in public"],
+      answer: 1,
+      explain: "Anyone can encrypt with Ravi's public key, and only Ravi's private key can decrypt it.",
+      link: "#asymmetric"
+    },
+    {
+      id: "q5.14-03",
+      topic: "5.14",
+      type: "mcq",
+      question: "In RSA with p = 3, q = 11 and e = 3, what is n?",
+      options: ["14", "20", "33", "7"],
+      answer: 2,
+      explain: "n = p × q = 3 × 11 = 33. φ(n) = 20, and the private exponent d is 7.",
+      link: "#rsa"
+    },
+    {
+      id: "q5.14-04",
+      topic: "5.14",
+      type: "mcq",
+      question: "How is a digital signature made?",
+      options: ["Encrypt the message hash with the sender's private key", "Encrypt the message with the receiver's public key", "Hash the password with a salt", "Send the private key with the message"],
+      answer: 0,
+      explain: "The sender encrypts the hash with their private key. Anyone can check it with the sender's public key.",
+      link: "#signatures"
+    },
+    {
+      id: "q5.14-05",
+      topic: "5.14",
+      type: "multi",
+      question: "Which are parts of a public key infrastructure (PKI)? Select all that apply.",
+      options: ["Certificate authority", "Registration authority", "Certificate revocation list", "Column family"],
+      answer: [0, 1, 2],
+      explain: "A PKI has CAs, RAs, certificates, repositories and revocation lists. Column families belong to wide-column NoSQL stores.",
+      link: "#pki"
+    },
+    {
+      id: "q5.14-06",
+      topic: "5.14",
+      type: "tf",
+      question: "Passwords should be stored encrypted with AES so the DBA can read them when needed.",
+      answer: false,
+      explain: "Passwords are hashed with a salt, which cannot be reversed. Encrypted passwords could all be read by anyone with the key.",
+      link: "#hashing"
+    },
+    {
+      id: "q5.14-07",
+      topic: "5.14",
+      type: "mcq",
+      question: "Why do TLS connections use both asymmetric and symmetric encryption?",
+      options: ["Asymmetric shares a key safely; symmetric then encrypts the data fast", "Symmetric is used only for certificates", "Asymmetric is faster for large data", "It is required by SQL"],
+      answer: 0,
+      explain: "This is hybrid encryption: the slow public key method shares a fresh AES key, and fast AES encrypts the data.",
+      link: "#asymmetric"
     }
   ]);
 })();
