@@ -452,3 +452,13 @@
 .site-footer .license {
   margin: 0;
 }
+
+.ai-note {
+  max-width: 40rem;
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
