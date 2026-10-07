@@ -212,16 +212,16 @@
         '<text x="' + (x + 55) + '" y="' + (yy + 5) + '" text-anchor="middle" class="nm-g-name">' + name + "</text>";
     };
     var edge = function (from, to, marks, t) {
-      var x1 = 150, y1 = y[from], x2 = 370, y2 = y[to];
+      var x1 = 120, y1 = y[from], x2 = 290, y2 = y[to];
       var lx = x1 + (x2 - x1) * t, ly = y1 + (y2 - y1) * t - 6;
       return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + (x2 - 4) + '" y2="' + y2 + '" class="nm-g-edge" marker-end="url(#nm-arrow)"/>' +
         '<text x="' + lx + '" y="' + ly + '" text-anchor="middle" class="nm-g-edge-label">marks: ' + marks + "</text>";
     };
-    return '<svg viewBox="0 0 520 210" width="520" role="img" aria-label="Graph: Anitha is enrolled in DBMS with marks 86 and in OS with marks 78. Bala is enrolled in DBMS with marks 72." style="max-width:100%;height:auto">' +
+    return '<svg viewBox="0 0 410 210" width="410" role="img" aria-label="Graph: Anitha is enrolled in DBMS with marks 86 and in OS with marks 78. Bala is enrolled in DBMS with marks 72." style="max-width:100%;height:auto">' +
       '<defs><marker id="nm-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="nm-g-head"/></marker></defs>' +
-      edge("Anitha", "DBMS", 86, 0.5) + edge("Anitha", "OS", 78, 0.3) + edge("Bala", "DBMS", 72, 0.7) +
-      box(40, "Anitha", "Student", "nm-g-student") + box(40, "Bala", "Student", "nm-g-student") +
-      box(370, "DBMS", "Course", "nm-g-course") + box(370, "OS", "Course", "nm-g-course") +
+      edge("Anitha", "DBMS", 86, 0.5) + edge("Anitha", "OS", 78, 0.2) + edge("Bala", "DBMS", 72, 0.8) +
+      box(10, "Anitha", "Student", "nm-g-student") + box(10, "Bala", "Student", "nm-g-student") +
+      box(290, "DBMS", "Course", "nm-g-course") + box(290, "OS", "Course", "nm-g-course") +
       "</svg>";
   }
 

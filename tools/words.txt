@@ -22,6 +22,7 @@ Deepa
 Dinesh
 disjointness
 Divya
+dpet
 Edureka
 Elango
 Elmasri
@@ -43,9 +44,11 @@ infographics
 Janani
 Kannan
 Karthik
+Kavin
 KIOT
 Korth
 Manoj
+Meena
 multidatabase
 multisets
 multitable
@@ -55,8 +58,10 @@ Nandhini
 Narang
 Navathe
 NPTEL
+Ooty
 Prakash
 prereqs
+Priya
 Raghu
 Rajesh
 Ramakrishnan
@@ -78,3 +83,4 @@ superkey
 Swamynathan
 Venkataraman
 Vetrivel
+Yercaud

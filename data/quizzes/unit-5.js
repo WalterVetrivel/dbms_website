@@ -347,6 +347,66 @@
       answer: [0, 1, 3],
       explain: "AP systems stay available and allow old reads; copies agree later. Refusing requests is what CP systems do.",
       link: "#choices"
+    },
+    /* 5.6 Document Based Systems */
+    {
+      id: "q5.6-01",
+      topic: "5.6",
+      type: "mcq",
+      question: "In a document database, what is a collection?",
+      options: ["A single field and its value", "A group of documents, like a table", "A list of values inside a document", "The unique key of a document"],
+      answer: 1,
+      explain: "A collection groups similar documents, much like a table groups rows. The documents need not have the same fields.",
+      link: "#terms"
+    },
+    {
+      id: "q5.6-02",
+      topic: "5.6",
+      type: "multi",
+      question: "Which are document-based NoSQL databases? Select all that apply.",
+      options: ["MongoDB", "Apache CouchDB", "Neo4j", "Redis"],
+      answer: [0, 1],
+      explain: "MongoDB and CouchDB store documents. Neo4j is a graph database and Redis is a key-value store.",
+      link: "#systems"
+    },
+    {
+      id: "q5.6-03",
+      topic: "5.6",
+      type: "mcq",
+      question: "Which MongoDB command matches SELECT * FROM students WHERE dept = 'CSE'?",
+      options: ["db.students.insertOne({ dept: \"CSE\" })", "db.students.find({ dept: \"CSE\" })", "db.students.updateOne({ dept: \"CSE\" })", "db.students.createIndex({ dept: 1 })"],
+      answer: 1,
+      explain: "find() with a query document returns the matching documents, like SELECT with WHERE.",
+      link: "#crud"
+    },
+    {
+      id: "q5.6-04",
+      topic: "5.6",
+      type: "mcq",
+      question: "A post has a few comments that are always shown with it. How should the comments be stored?",
+      options: ["Embedded in the post document", "In a separate collection, referenced by _id", "In a relational table", "As separate keys in a key-value store"],
+      answer: 0,
+      explain: "The comments belong to one post and are read with it, so embedding them gives one fast read.",
+      link: "#design"
+    },
+    {
+      id: "q5.6-05",
+      topic: "5.6",
+      type: "tf",
+      question: "In a MongoDB collection, every document must have exactly the same fields.",
+      answer: false,
+      explain: "Document databases have a flexible schema. A mouse and a T-shirt can be in the same products collection with different fields.",
+      link: "#terms"
+    },
+    {
+      id: "q5.6-06",
+      topic: "5.6",
+      type: "mcq",
+      question: "Which is a demerit of document databases?",
+      options: ["They cannot store arrays", "Embedded data may be copied in many documents", "Every query needs a join", "New fields need ALTER TABLE"],
+      answer: 1,
+      explain: "Embedding copies data, so a change may have to be made in many documents. Arrays are allowed and joins are often not needed.",
+      link: "#merits"
     }
   ]);
 })();
