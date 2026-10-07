@@ -70,6 +70,8 @@ serializability
 Shamkant
 Silberschatz
 styleguide
+subtransaction
+subtransactions
 Sudarshan
 superkey
 Swamynathan

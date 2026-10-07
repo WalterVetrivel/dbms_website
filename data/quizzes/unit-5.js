@@ -132,6 +132,81 @@
       answer: false,
       explain: "False. Sites in a homogeneous system give up part of their autonomy, such as the right to change the schema or software on their own.",
       link: "#homogeneous"
+    },
+    /* 5.3 Transaction Processing */
+    {
+      id: "q5.3-01",
+      topic: "5.3",
+      type: "mcq",
+      question: "Transaction T starts at site S1 and updates data at S2 and S3. What is S1 called?",
+      options: ["The coordinating site", "A participating site", "A partitioned site", "A replica site"],
+      answer: 0,
+      explain: "The site where a transaction starts is the coordinating site. S2 and S3, where its subtransactions run, are participating sites.",
+      link: "#basics"
+    },
+    {
+      id: "q5.3-02",
+      topic: "5.3",
+      type: "order",
+      question: "Put the steps of two-phase commit in order for a transaction that commits.",
+      options: [
+        "The coordinator logs <prepare T> and sends prepare T",
+        "Each site logs <ready T> and replies ready T",
+        "The coordinator logs <commit T> and sends commit T",
+        "Each site logs <commit T> and sends an acknowledgment",
+        "The coordinator logs <complete T>"
+      ],
+      explain: "Phase 1 collects the votes. Phase 2 sends the decision, and the coordinator finishes with <complete T>.",
+      link: "#two-phase"
+    },
+    {
+      id: "q5.3-03",
+      topic: "5.3",
+      type: "mcq",
+      question: "In 2PC, the coordinator gets “ready T” from Site 2 but no reply from Site 3 before the timeout. What does it decide?",
+      options: ["Commit T", "Abort T", "Wait forever for Site 3", "Commit T at Site 2 only"],
+      answer: 1,
+      explain: "T can commit only if every site votes ready. A missing vote is treated as abort.",
+      link: "#two-phase"
+    },
+    {
+      id: "q5.3-04",
+      topic: "5.3",
+      type: "mcq",
+      question: "The coordinator fails. Every active site has <ready T> in its log and no other record for T. What must the sites do?",
+      options: ["Commit T", "Abort T", "Wait for the coordinator to recover", "Restart T from the beginning"],
+      answer: 2,
+      explain: "The sites cannot know whether the coordinator decided commit or abort, so they must wait. This is the blocking problem of 2PC.",
+      link: "#handling"
+    },
+    {
+      id: "q5.3-05",
+      topic: "5.3",
+      type: "tf",
+      question: "A participating site recovers and finds no log record at all for T. It can safely abort T.",
+      answer: true,
+      explain: "True. With no <ready T>, the site never voted ready, so the coordinator cannot have committed T.",
+      link: "#handling"
+    },
+    {
+      id: "q5.3-06",
+      topic: "5.3",
+      type: "multi",
+      question: "Which of these are failure modes of a distributed system? Choose all that apply.",
+      options: ["Failure of a site", "Loss of messages", "Network partition", "A query with a syntax error"],
+      answer: [0, 1, 2],
+      explain: "The four failure modes are site failure, lost messages, link failure and network partition. A syntax error is not a system failure.",
+      link: "#failures"
+    },
+    {
+      id: "q5.3-07",
+      topic: "5.3",
+      type: "mcq",
+      question: "What does three-phase commit add to two-phase commit?",
+      options: ["A pre-commit phase", "A second voting phase", "A phase that copies all the data", "A phase that removes the log"],
+      answer: 0,
+      explain: "3PC adds a pre-commit phase. If the coordinator fails, a new coordinator can use the pre-commit records to decide, so the sites do not block.",
+      link: "#three-phase"
     }
   ]);
 })();

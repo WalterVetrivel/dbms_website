@@ -79,7 +79,7 @@
           <p>Each site handles two kinds of work:</p>
           <ul>
             <li>A <strong>local transaction</strong> uses data only at the site where it starts.</li>
-            <li>A <strong>global transaction</strong> uses data at more than one site. See Transaction Processing, topic 5.3.</li>
+            <li>A <strong>global transaction</strong> uses data at more than one site. See <a href="distributed-transaction-processing.html">Transaction Processing</a>.</li>
           </ul>
         </section>
 
@@ -126,7 +126,7 @@
             <li><strong>Sites:</strong> each site has users, a local DBMS and a local database.</li>
             <li><strong>Communication network:</strong> carries queries, results and control messages between sites.</li>
             <li><strong>Global schema and catalog:</strong> describe all the data of the whole system, and record which site stores which part. The DDBMS uses the catalog to find data.</li>
-            <li><strong>Transaction manager and transaction coordinator:</strong> each site has both. They run transactions and keep them atomic across sites (see Transaction Processing, topic 5.3).</li>
+            <li><strong>Transaction manager and transaction coordinator:</strong> each site has both. They run transactions and keep them atomic across sites (see <a href="distributed-transaction-processing.html">Transaction Processing</a>).</li>
           </ul>
 
           <h3>How a request is answered</h3>

@@ -1071,3 +1071,124 @@
   font-size: var(--fs-xs);
   color: var(--text-muted);
 }
+
+/* ---------- V32 Commit protocol animation ---------- */
+
+.cp-stage {
+  max-height: 34rem;
+  overflow: auto;
+}
+
+.cp-top {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface);
+  width: max-content;
+  margin: 0 auto;
+}
+
+.cp-svg {
+  display: block;
+  margin: 0 auto;
+  font-family: var(--font-sans);
+}
+
+.cp-site {
+  fill: var(--surface-2);
+  stroke: var(--border-strong);
+  stroke-width: 2;
+}
+
+.cp-site.is-failed {
+  fill: var(--danger-soft);
+  stroke: var(--danger);
+}
+
+.cp-name {
+  fill: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cp-status {
+  fill: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cp-log {
+  fill: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.cp-log.is-empty {
+  fill: var(--text-muted);
+  font-family: var(--font-sans);
+}
+
+.cp-lane {
+  stroke: var(--border-strong);
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
+}
+
+.cp-lane.is-failed {
+  stroke: var(--danger);
+}
+
+.cp-head {
+  fill: var(--text-muted);
+}
+
+.cp-msg {
+  stroke: var(--text-muted);
+  stroke-width: 2;
+}
+
+.cp-msg.kind-yes {
+  stroke: var(--success);
+}
+
+.cp-msg.kind-no {
+  stroke: var(--danger);
+}
+
+.cp-msg.is-lost {
+  stroke: var(--danger);
+  stroke-dasharray: 5 4;
+}
+
+.cp-msg.is-new {
+  stroke-width: 3;
+}
+
+.cp-label {
+  fill: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.cp-label.is-new {
+  font-weight: 600;
+}
+
+.cp-x {
+  fill: var(--danger);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cp-note {
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 5px;
+  fill: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cp-note.is-new {
+  fill: var(--primary);
+}
