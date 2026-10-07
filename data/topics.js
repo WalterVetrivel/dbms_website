@@ -122,7 +122,7 @@ DBMS.topics = [
   { id: "4.11", unit: 4, slug: "query-optimization", title: "Query Optimization using Heuristics and Cost Estimation", level: "L3", textbooks: ["S16", "E19"], covers: "Equivalence rules, query trees, heuristic rules, catalog statistics and choosing a plan by cost", status: "published", prereqs: ["4.10", "1.9"], related: ["4.5", "4.6"], widgets: ["V30"] },
 
   // Unit V
-  { id: "5.1", unit: 5, slug: "distributed-database-architecture", title: "Distributed Databases: Architecture", level: "L2", textbooks: ["S20", "S21", "E23"], covers: "Sites, replication and fragmentation", status: "planned", prereqs: [], related: [] },
+  { id: "5.1", unit: 5, slug: "distributed-database-architecture", title: "Distributed Databases: Architecture", level: "L2", textbooks: ["S20", "S21", "E23"], covers: "Sites, replication and fragmentation", status: "published", prereqs: ["1.6", "1.9"], related: ["5.2", "5.3"], widgets: ["V31"] },
   { id: "5.2", unit: 5, slug: "types-of-distributed-databases", title: "Types of Distributed Databases", level: "L2", textbooks: ["S20", "E23"], covers: "Homogeneous, heterogeneous and federated databases", status: "planned", prereqs: [], related: [] },
   { id: "5.3", unit: 5, slug: "distributed-transaction-processing", title: "Transaction Processing", level: "L2", textbooks: ["S23", "E23"], covers: "Coordinators, types of failure, and two-phase and three-phase commit", status: "planned", prereqs: [], related: [] },
   { id: "5.4", unit: 5, slug: "nosql-introduction", title: "NoSQL Databases: Introduction", level: "L2", textbooks: ["S10", "E24"], covers: "Why NoSQL is needed, its features, and relational databases compared with NoSQL", status: "planned", prereqs: [], related: [] },

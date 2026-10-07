@@ -10,12 +10,16 @@ Boyce
 bplus
 cascadeless
 Charan
+Charu
 chev
 Chitra
 cmptext
 Codd
 conds
+DDBMS
 Deepa
+Dinesh
+disjointness
 Divya
 Edureka
 Elango
@@ -40,6 +44,7 @@ Karthik
 KIOT
 Korth
 Manoj
+multidatabase
 multisets
 multitable
 multivalued

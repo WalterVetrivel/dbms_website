@@ -957,3 +957,117 @@
     display: none;
   }
 }
+
+/* ---------- V31 Fragmentation and replication ---------- */
+
+.frag-stage {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.frag-table {
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  margin: 0 auto;
+}
+
+.frag-table caption {
+  caption-side: top;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: var(--fs-xs);
+  color: var(--text);
+  padding-bottom: var(--sp-1);
+  text-align: left;
+}
+
+.frag-table th,
+.frag-table td {
+  border: 1px solid var(--border-strong);
+  padding: 2px 6px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.frag-table th {
+  background: var(--surface-2);
+}
+
+.frag-1 {
+  background: var(--accent-soft);
+}
+
+.frag-2 {
+  background: var(--primary-soft);
+}
+
+.frag-3 {
+  background: var(--warning-soft);
+}
+
+.frag-key {
+  background: repeating-linear-gradient(135deg, var(--accent-soft), var(--accent-soft) 6px, var(--primary-soft) 6px, var(--primary-soft) 12px);
+  font-weight: 600;
+}
+
+.frag-ok {
+  background: var(--success-soft);
+}
+
+.frag-new {
+  outline: 2px solid var(--danger);
+  outline-offset: -2px;
+  font-weight: 600;
+}
+
+.frag-net {
+  text-align: center;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  border-top: 2px dashed var(--border-strong);
+  padding-top: var(--sp-1);
+}
+
+.frag-sites {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--sp-3);
+}
+
+.frag-site {
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: var(--sp-2);
+  background: var(--surface);
+  display: grid;
+  gap: var(--sp-2);
+  align-content: start;
+}
+
+.frag-site.is-failed {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+  opacity: 0.7;
+}
+
+.frag-site-name {
+  font-weight: 600;
+  font-size: var(--fs-sm);
+}
+
+.frag-piece {
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+  padding: var(--sp-1);
+}
+
+.frag-piece.is-focus {
+  outline: 2px solid var(--primary);
+}
+
+.frag-empty {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
