@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DBMS Study Guide</title>
+  <meta name="description" content="A simple study guide for Database Management System, with topic notes, interactive diagrams, question bank answers, labs and quizzes.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="" data-page="home">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content-wide">
+        <section class="hero">
+          <span class="eyebrow">Study guide</span>
+          <h1>Database Management System</h1>
+          <p class="lead">Learn every topic of your DBMS course in simple steps. See how things work with interactive diagrams. Practice with questions from the question banks.</p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="units/unit-1/index.html">Start with Unit I</a>
+            <button type="button" class="btn" data-open-search>Search topics</button>
+          </div>
+          <div id="continue" class="callout callout-tip" hidden>
+            <div class="callout-title">Continue where you left off</div>
+            <p><a href="index.html"><span class="continue-title"></span></a></p>
+          </div>
+        </section>
+
+        <section class="section" id="units" aria-labelledby="units-title">
+          <div class="section-head">
+            <h2 id="units-title">Units</h2>
+            <span class="muted">5 units, 70 topics</span>
+          </div>
+          <div id="unit-cards" class="grid"></div>
+          <noscript><ul><li><a href="units/unit-1/index.html">Unit I: Introduction to Relational Database</a></li><li><a href="units/unit-2/index.html">Unit II: Database Design</a></li><li><a href="units/unit-3/index.html">Unit III: Transaction Management</a></li><li><a href="units/unit-4/index.html">Unit IV: Implementation Techniques</a></li><li><a href="units/unit-5/index.html">Unit V: Advanced Topics</a></li></ul></noscript>
+        </section>
+
+        <section class="section" aria-labelledby="why-title">
+          <h2 id="why-title">Why do we study databases?</h2>
+          <p>Every college, bank and shop keeps data about people, places and things. A <strong>database</strong> stores this data in an organized way. A <strong>database management system (DBMS)</strong> is the software that stores the data, finds it quickly and keeps it safe.</p>
+          <ul>
+            <li>It gives one clear view of all the data.</li>
+            <li>It avoids unnecessary copies of the same data.</li>
+            <li>It keeps the data correct and secure.</li>
+            <li>It hides the details of how the data is stored on the disk.</li>
+          </ul>
+          <h3>Where you see databases every day</h3>
+          <div class="grid grid-sm">
+            <div class="card"><h4>Mark sheets</h4><p class="muted">Your marks for every subject are stored in a database. Your mark sheet is printed from it.</p></div>
+            <div class="card"><h4>Electricity bill</h4><p class="muted">The electricity board stores every meter reading and uses it to work out your bill.</p></div>
+            <div class="card"><h4>Online shopping</h4><p class="muted">The shop stores its products, prices and stock, and every order you place.</p></div>
+            <div class="card"><h4>Library</h4><p class="muted">The library stores every book and the name of the person who borrowed it.</p></div>
+            <div class="card"><h4>Banking</h4><p class="muted">The bank stores every account and every deposit and withdrawal.</p></div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="more-title">
+          <h2 id="more-title">More ways to learn</h2>
+          <div id="quick-links" class="grid"></div>
+        </section>
+
+        <section class="section" aria-labelledby="links-title">
+          <h2 id="links-title">How this course connects</h2>
+          <dl class="facts">
+            <dt>Learn before</dt>
+            <dd>Problem Solving using C++</dd>
+            <dt>Helps later in</dt>
+            <dd>Data Science, Cloud Computing, Big Data Analytics and Business Intelligence</dd>
+          </dl>
+        </section>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="data/site.js"></script>
+  <script src="data/topics.js"></script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+/* Print layout: content only, answers expanded, no navigation. */
+@media print {
+  :root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --text: #000000;
+    --text-muted: #333333;
+  }
+
+  .site-header,
+  .sidebar,
+  .sidebar-backdrop,
+  .skip-link,
+  .breadcrumbs,
+  .pager,
+  .copy-btn,
+  .widget-controls,
+  .search-dialog,
+  .no-print {
+    display: none !important;
+  }
+
+  .main {
+    padding: 0;
+  }
+
+  .content,
+  .content-wide {
+    max-width: none;
+  }
+
+  .card,
+  .key-points,
+  .callout,
+  .accordion,
+  .table-wrap {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  details > :not(summary) {
+    display: block !important;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .site-footer {
+    border: 0;
+    padding: 0;
+  }
+
+  .kiot-banner {
+    width: 320px;
+    border: 0;
+  }
+}

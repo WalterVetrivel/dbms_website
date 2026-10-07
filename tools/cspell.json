@@ -1,0 +1,39 @@
+{
+  "version": "0.2",
+  "language": "en-US",
+  "globRoot": "..",
+  "files": [
+    "**/*.html",
+    "data/**/*.js",
+    "assets/js/**/*.js",
+    "README.md"
+  ],
+  "ignorePaths": [
+    ".git/**",
+    "node_modules/**",
+    "tools/**",
+    "assets/img/**"
+  ],
+  "dictionaryDefinitions": [
+    {
+      "name": "site-words",
+      "path": "./words.txt",
+      "addWords": true
+    }
+  ],
+  "dictionaries": [
+    "site-words",
+    "html",
+    "css",
+    "sql",
+    "softwareTerms",
+    "companies",
+    "en_US"
+  ],
+  "ignoreRegExpList": [
+    "/https?:\\/\\/[^\\s\"'<>)]+/g",
+    "/<svg[\\s\\S]*?<\\/svg>/g",
+    "/href=\"[^\"]*\"/g",
+    "/src=\"[^\"]*\"/g"
+  ]
+}

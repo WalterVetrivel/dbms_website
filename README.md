@@ -1,3 +1,51 @@
 # DBMS Study Guide
 
-A free study website for the Database Management System course.
+A free study website for the Database Management System course. It covers all five units of the syllabus in simple English. It has topic notes, interactive diagrams, question bank answers, lab explanations and quizzes.
+
+Live site: https://waltervetrivel.github.io/dbms_website/
+
+## How the site is built
+
+- Plain HTML, CSS and JavaScript. There is no build step and no framework.
+- Shared parts of each page (header, menu, breadcrumbs, footer and search) are drawn by `assets/js/layout.js`.
+- The list of units and topics lives in `data/topics.js`. A topic shows in the menus only when its `status` is `published`.
+- Site settings and the list of main pages live in `data/site.js`.
+- `styleguide.html` shows every building block. Use it when you write a new page.
+
+## Folders
+
+| Folder | What it holds |
+| --- | --- |
+| `assets/css` | Design tokens, base styles, layout, components and print styles |
+| `assets/js` | Page scripts |
+| `assets/img` | Images and icons |
+| `data` | Units, topics and site settings |
+| `units/unit-1` to `units/unit-5` | Unit pages and, later, topic pages |
+| `tools` | Check scripts. These are not part of the website. |
+
+## Run it on your computer
+
+Open `index.html` in a browser. Everything works without a server.
+
+To run the checks, install Node.js 22 or later and run:
+
+```
+node tools/check.mjs
+npx cspell@10 --config tools/cspell.json
+```
+
+The checks look for broken links, page structure problems, mistakes in the topic list, spelling mistakes and hard-to-read text. They run on every pull request.
+
+## Writing rules
+
+- Use simple English. Keep sentences short. Explain each new term the first time it appears.
+- Use American spelling and the terms used in the textbooks.
+- Do not put the course code on any page.
+
+## Credits
+
+Created by Walter Vetrivel S, Assistant Professor, Department of CSE, Knowledge Institute of Technology, Salem.
+
+## License
+
+The content is shared under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. See [LICENSE](LICENSE).

@@ -1,0 +1,19 @@
+name: Site checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Structure, links, registry and readability
+        run: node tools/check.mjs
+      - name: Spelling (American English)
+        run: npx --yes cspell@10 --config tools/cspell.json --no-progress --show-suggestions
