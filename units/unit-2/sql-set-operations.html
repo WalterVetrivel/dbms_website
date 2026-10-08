@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SQL Set Operations | DBMS Study Guide</title>
+  <meta name="description" content="Learn the SQL set operations UNION, UNION ALL, INTERSECT and EXCEPT (MINUS): their rules, syntax and results on sample tables, how they handle duplicates, how to write them in MySQL, and how they relate to relational algebra, with an interactive visualizer.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="2" data-topic="2.11" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-2">Unit II</span>
+            <span class="badge badge-level" title="Topic number">Topic 2.11</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO2</span>
+          </div>
+          <h1>SQL Set Operations</h1>
+          <p class="lead">A set operation combines the results of two SELECT queries into one result. SQL has four: UNION, UNION ALL, INTERSECT and EXCEPT. This page shows what each one returns, how each treats duplicate rows, and how to write them in MySQL.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>State the rules two queries must follow to be combined.</li>
+              <li>Write UNION, UNION ALL, INTERSECT and EXCEPT queries and predict their results.</li>
+              <li>Explain how each operation handles duplicate rows.</li>
+              <li>Write EXCEPT and INTERSECT in MySQL, and their older equivalents.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#rules">Rules for set operations</a></li>
+            <li><a href="#sample">The sample tables</a></li>
+            <li><a href="#union">UNION</a></li>
+            <li><a href="#union-all">UNION ALL</a></li>
+            <li><a href="#intersect">INTERSECT</a></li>
+            <li><a href="#except">EXCEPT (MINUS)</a></li>
+            <li><a href="#order">Sorting and combining operations</a></li>
+            <li><a href="#compare">The four operations compared</a></li>
+            <li><a href="#try">Try it: set operations</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="rules" class="topic-section" aria-labelledby="rules-title">
+          <h2 id="rules-title">Rules for set operations</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>set operation</strong> combines the rows returned by two SELECT statements into one result. The general form is:</p>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>SELECT column_list FROM table1
+{UNION | UNION ALL | INTERSECT | EXCEPT}
+SELECT column_list FROM table2;</code></pre>
+          </div>
+          <p>The two queries must be <strong>union compatible</strong>:</p>
+          <ol>
+            <li>They return the <strong>same number of columns</strong>.</li>
+            <li>Matching columns have <strong>compatible data types</strong> (for example, both numbers or both text).</li>
+            <li>Columns are matched by <strong>position</strong>, not by name. The result takes its column names from the first query.</li>
+          </ol>
+          <p>These are the SQL versions of the relational algebra operations ∪, ∩ and − (see <a href="../unit-1/relational-algebra.html">Relational Algebra</a>).</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>MySQL checks the number of columns, but it converts types silently. <code>SELECT NAME FROM First UNION SELECT ID FROM Second</code> runs without an error and mixes names with numbers in one column. Make sure matching columns mean the same thing.</p>
+          </div>
+        </section>
+
+        <section id="sample" class="topic-section" aria-labelledby="sample-title">
+          <h2 id="sample-title">The sample tables</h2>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE First (
+  ID   INT,
+  NAME VARCHAR(20)
+);
+CREATE TABLE Second (
+  ID   INT,
+  NAME VARCHAR(20)
+);
+INSERT INTO First VALUES (1, 'Jack'), (2, 'Harry'), (3, 'Jackson');
+INSERT INTO Second VALUES (3, 'Jackson'), (4, 'Stephan'), (5, 'David');</code></pre>
+          </div>
+          <div class="grid grid-sm">
+            <div class="table-wrap">
+              <table>
+                <caption>First</caption>
+                <thead><tr><th scope="col">ID</th><th scope="col">NAME</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>Jack</td></tr>
+                  <tr><td>2</td><td>Harry</td></tr>
+                  <tr><td>3</td><td>Jackson</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <caption>Second</caption>
+                <thead><tr><th scope="col">ID</th><th scope="col">NAME</th></tr></thead>
+                <tbody>
+                  <tr><td>3</td><td>Jackson</td></tr>
+                  <tr><td>4</td><td>Stephan</td></tr>
+                  <tr><td>5</td><td>David</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p>The row (3, Jackson) is in both tables.</p>
+        </section>
+
+        <section id="union" class="topic-section" aria-labelledby="union-title">
+          <h2 id="union-title">UNION</h2>
+          <p><strong>UNION</strong> returns every row that is in the first result, the second result, or both. It <strong>removes duplicates</strong>, so each row appears once.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT * FROM First
+UNION
+SELECT * FROM Second
+ORDER BY ID;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+------+---------+
+| ID   | NAME    |
++------+---------+
+|    1 | Jack    |
+|    2 | Harry   |
+|    3 | Jackson |
+|    4 | Stephan |
+|    5 | David   |
++------+---------+</code></pre>
+          </div>
+          <p>Jackson is in both tables but appears once. UNION is the same as UNION DISTINCT.</p>
+        </section>
+
+        <section id="union-all" class="topic-section" aria-labelledby="ua-title">
+          <h2 id="ua-title">UNION ALL</h2>
+          <p><strong>UNION ALL</strong> returns all the rows of both results and <strong>keeps duplicates</strong>.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT * FROM First
+UNION ALL
+SELECT * FROM Second
+ORDER BY ID;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+------+---------+
+| ID   | NAME    |
++------+---------+
+|    1 | Jack    |
+|    2 | Harry   |
+|    3 | Jackson |
+|    3 | Jackson |
+|    4 | Stephan |
+|    5 | David   |
++------+---------+</code></pre>
+          </div>
+          <ul>
+            <li>The number of rows is always the sum: 3 + 3 = 6.</li>
+            <li>UNION ALL is faster than UNION, because it does not have to look for duplicates.</li>
+            <li>Use it when duplicates cannot occur, or when you want to count them.</li>
+          </ul>
+        </section>
+
+        <section id="intersect" class="topic-section" aria-labelledby="int-title">
+          <h2 id="int-title">INTERSECT</h2>
+          <p><strong>INTERSECT</strong> returns only the rows that appear in <strong>both</strong> results, without duplicates.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT * FROM First
+INTERSECT
+SELECT * FROM Second;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+------+---------+
+| ID   | NAME    |
++------+---------+
+|    3 | Jackson |
++------+---------+</code></pre>
+          </div>
+          <p>MySQL supports INTERSECT from version 8.0.31. In older versions, write it with IN or EXISTS:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT * FROM First f
+WHERE EXISTS (SELECT * FROM Second s WHERE s.ID = f.ID AND s.NAME = f.NAME);</code></pre>
+          </div>
+        </section>
+
+        <section id="except" class="topic-section" aria-labelledby="exc-title">
+          <h2 id="exc-title">EXCEPT (MINUS)</h2>
+          <p><strong>EXCEPT</strong> returns the rows of the first result that are <strong>not</strong> in the second, without duplicates. Order matters: A EXCEPT B is not the same as B EXCEPT A.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT * FROM First
+EXCEPT
+SELECT * FROM Second
+ORDER BY ID;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+------+-------+
+| ID   | NAME  |
++------+-------+
+|    1 | Jack  |
+|    2 | Harry |
++------+-------+</code></pre>
+          </div>
+          <p>MySQL supports EXCEPT from version 8.0.31. In older versions, use NOT EXISTS:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT * FROM First f
+WHERE NOT EXISTS (SELECT * FROM Second s WHERE s.ID = f.ID AND s.NAME = f.NAME)
+ORDER BY ID;</code></pre>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes use the keyword <strong>MINUS</strong>. MINUS is Oracle's name for this operation. The SQL standard, MySQL, PostgreSQL and SQL Server all call it <strong>EXCEPT</strong>. In MySQL, <code>SELECT ... MINUS SELECT ...</code> is a syntax error.</p>
+          </div>
+        </section>
+
+        <section id="order" class="topic-section" aria-labelledby="order-title">
+          <h2 id="order-title">Sorting and combining operations</h2>
+          <ul>
+            <li><strong>ORDER BY</strong> goes once, at the very end. It sorts the whole combined result. Use the column names of the first query.</li>
+            <li>Without ORDER BY, the order of the rows is <strong>not guaranteed</strong> by any of the four operations.</li>
+            <li>You can chain operations: <code>q1 UNION q2 EXCEPT q3</code>. INTERSECT binds more tightly than UNION and EXCEPT, just as × binds more tightly than + in arithmetic. Use brackets to make the order clear.</li>
+            <li>MySQL also has INTERSECT ALL and EXCEPT ALL, which keep duplicates, as UNION ALL does.</li>
+          </ul>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes say INTERSECT and MINUS “arrange the data in ascending order by default”. That is not promised. Some systems happen to sort while removing duplicates, but the order can change between versions or plans. Always add ORDER BY when order matters.</p>
+          </div>
+        </section>
+
+        <section id="compare" class="topic-section" aria-labelledby="cmp-title">
+          <h2 id="cmp-title">The four operations compared</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>UNION, UNION ALL, INTERSECT and EXCEPT</caption>
+              <thead><tr><th scope="col">Operation</th><th scope="col">Returns rows that are</th><th scope="col">Duplicates</th><th scope="col">Rows with the sample tables</th><th scope="col">Algebra</th></tr></thead>
+              <tbody>
+                <tr><td>UNION</td><td>In either result</td><td>Removed</td><td>5</td><td>A ∪ B</td></tr>
+                <tr><td>UNION ALL</td><td>In either result</td><td>Kept</td><td>6</td><td>(bag union)</td></tr>
+                <tr><td>INTERSECT</td><td>In both results</td><td>Removed</td><td>1</td><td>A ∩ B</td></tr>
+                <tr><td>EXCEPT</td><td>In the first but not the second</td><td>Removed</td><td>2</td><td>A − B</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: set operations</h2>
+          <p>Pick the tables and an operation, then press Play. Rows found in both tables are tinted. Watch which rows are kept and which are dropped.</p>
+          <div class="widget" data-widget="set-agg" data-mode="set" data-op="UNION">
+            <noscript><p class="widget-narration">The visualizer needs JavaScript. First UNION Second gives 5 rows, UNION ALL gives 6, INTERSECT gives (3, Jackson), and EXCEPT gives (1, Jack) and (2, Harry).</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Choose Depositor and Borrower. Ravi appears twice in Depositor. How many Ravi rows do UNION and UNION ALL return?</li>
+              <li>Run EXCEPT on Depositor and Borrower. Who has an account but no loan?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Mailing list</h3>
+              <p class="muted">A college sends one circular to everyone: students UNION staff gives one list of email addresses with no repeats.</p>
+            </div>
+            <div class="card">
+              <h3>Bank offers</h3>
+              <p class="muted">Customers with a savings account INTERSECT customers with a loan gives the people who have both, for a combined offer.</p>
+            </div>
+            <div class="card">
+              <h3>Exam hall tickets</h3>
+              <p class="muted">Registered students EXCEPT students with fee dues gives the list of students who get a hall ticket.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Set operations combine two SELECT results with the same number of columns and compatible types.</li>
+              <li>UNION: rows in either result, duplicates removed. UNION ALL keeps duplicates.</li>
+              <li>INTERSECT: rows in both results. EXCEPT: rows in the first but not the second.</li>
+              <li>MySQL uses EXCEPT, not MINUS. INTERSECT and EXCEPT need MySQL 8.0.31 or later.</li>
+              <li>Put one ORDER BY at the end. Without it, the order is not guaranteed.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit II question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="2.11"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="2.11"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 3, Section 3.5 (set operations).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 6, Section 6.3.4 (tables as sets in SQL).</li>
+            <li>MySQL 8.4 Reference Manual: Section 15.2.14 (set operations with UNION, INTERSECT and EXCEPT).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-2.js"></script>
+  <script src="../../data/quizzes/unit-2.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/set-agg.js"></script>
+</body>
+</html>

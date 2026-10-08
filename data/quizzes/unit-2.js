@@ -717,6 +717,74 @@
       options: ["1NF", "2NF", "3NF", "BCNF", "4NF", "5NF"],
       explain: "Each normal form includes all the ones before it.",
       link: "#summary"
+    },
+    {
+      id: "q2.11-01",
+      topic: "2.11",
+      type: "multi",
+      question: "Two SELECT queries are combined with UNION. What must be true? Select all that apply.",
+      options: ["They return the same number of columns", "Matching columns have compatible types", "The columns have the same names", "Both queries read the same table"],
+      answer: [0, 1],
+      explain: "Columns are matched by position, so names do not matter. The result takes its names from the first query.",
+      link: "#rules"
+    },
+    {
+      id: "q2.11-02",
+      topic: "2.11",
+      type: "mcq",
+      question: "First has 3 rows and Second has 3 rows. One row is in both. How many rows does First UNION ALL Second return?",
+      options: ["5", "6", "1", "3"],
+      answer: 1,
+      explain: "UNION ALL keeps every row, so the count is always 3 + 3 = 6. UNION would return 5.",
+      link: "#union-all"
+    },
+    {
+      id: "q2.11-03",
+      topic: "2.11",
+      type: "mcq",
+      question: "Which operation returns the rows of the first query that are not in the second?",
+      options: ["UNION", "INTERSECT", "EXCEPT", "UNION ALL"],
+      answer: 2,
+      explain: "EXCEPT (called MINUS in Oracle) is set difference: A − B.",
+      link: "#except"
+    },
+    {
+      id: "q2.11-04",
+      topic: "2.11",
+      type: "tf",
+      question: "In MySQL, SELECT * FROM First MINUS SELECT * FROM Second; is a valid query.",
+      answer: false,
+      explain: "False. MINUS is Oracle syntax. MySQL uses EXCEPT, available from version 8.0.31.",
+      link: "#except"
+    },
+    {
+      id: "q2.11-05",
+      topic: "2.11",
+      type: "tf",
+      question: "INTERSECT always returns its rows in ascending order.",
+      answer: false,
+      explain: "False. No set operation promises an order. Add ORDER BY at the end when order matters.",
+      link: "#order"
+    },
+    {
+      id: "q2.11-06",
+      topic: "2.11",
+      type: "mcq",
+      question: "Depositor has Asha, Ravi, Meena, Ravi. Borrower has Ravi, Kumar, Asha. What does Depositor INTERSECT Borrower return?",
+      options: ["Ravi", "Asha, Ravi", "Asha, Ravi, Ravi", "Meena"],
+      answer: 1,
+      explain: "Asha and Ravi are in both tables. INTERSECT removes duplicates, so Ravi appears once.",
+      link: "#try"
+    },
+    {
+      id: "q2.11-07",
+      topic: "2.11",
+      type: "mcq",
+      question: "Where does ORDER BY go in a query that uses UNION?",
+      options: ["In each SELECT", "Only in the first SELECT", "Once, at the end of the whole query", "ORDER BY cannot be used with UNION"],
+      answer: 2,
+      explain: "One ORDER BY at the end sorts the whole combined result.",
+      link: "#order"
     }
   ]);
 })();

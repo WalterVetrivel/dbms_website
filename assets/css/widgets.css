@@ -3685,3 +3685,37 @@
   color: var(--danger);
   font-weight: 700;
 }
+
+/* Set operations and aggregates (V12) */
+.sa-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-3);
+}
+
+.sa-sql {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-sm);
+  background: var(--code-bg);
+  color: var(--code-text);
+  font-size: var(--fs-sm);
+  overflow-x: auto;
+}
+
+.so-table tr.sa-both td {
+  background: var(--accent-soft);
+}
+
+.so-table tr.sa-keep td {
+  background: var(--success-soft);
+  font-weight: 700;
+}
+
+.sa-work {
+  margin: 0;
+  padding-left: var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  overflow-wrap: anywhere;
+}
