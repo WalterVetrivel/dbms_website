@@ -94,7 +94,7 @@ DBMS.topics = [
 
   // Unit III
   { id: "3.1", unit: 3, slug: "transaction-concepts", title: "Transaction Concepts", level: "L2", textbooks: ["S17", "E20"], covers: "Read and write operations, commit and abort, and the states of a transaction", status: "published", prereqs: [], related: ["3.2", "3.9", "5.3"], widgets: ["V15"] },
-  { id: "3.2", unit: 3, slug: "acid-properties", title: "ACID Properties", level: "L2", textbooks: ["S17", "E20"], covers: "Atomicity, consistency, isolation and durability", status: "planned", prereqs: [], related: [] },
+  { id: "3.2", unit: 3, slug: "acid-properties", title: "ACID Properties", level: "L2", textbooks: ["S17", "E20"], covers: "Atomicity, consistency, isolation and durability, with the funds-transfer example", status: "published", prereqs: ["3.1"], related: ["3.5", "3.9", "3.11"] },
   { id: "3.3", unit: 3, slug: "schedules", title: "Schedules", level: "L3", textbooks: ["S17", "E20"], covers: "Serial, concurrent, recoverable and cascadeless schedules", status: "planned", prereqs: [], related: [] },
   { id: "3.4", unit: 3, slug: "serializability", title: "Serializability", level: "L3", textbooks: ["S17", "E20"], covers: "Conflict and view serializability, and the precedence graph test", status: "planned", prereqs: [], related: [] },
   { id: "3.5", unit: 3, slug: "concurrency-control", title: "Concurrency Control and Need for Concurrency", level: "L2", textbooks: ["S18", "E21"], covers: "Lost update, dirty read, unrepeatable read and phantom problems", status: "planned", prereqs: [], related: [] },

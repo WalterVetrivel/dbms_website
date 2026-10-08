@@ -81,6 +81,76 @@
       answer: false,
       explain: "False. After commit, the changes are permanent. Only a compensating transaction, such as a refund, can reverse its effect.",
       link: "#end"
+    },
+    /* 3.2 ACID Properties */
+    {
+      id: "q3.2-01",
+      topic: "3.2",
+      type: "mcq",
+      question: "The system crashes after write(A) but before write(B) in the funds transfer. Which property requires that write(A) be undone?",
+      options: ["Atomicity", "Consistency", "Isolation", "Durability"],
+      answer: 0,
+      explain: "Atomicity means all or nothing. A half-done transfer must be rolled back.",
+      link: "#atomicity"
+    },
+    {
+      id: "q3.2-02",
+      topic: "3.2",
+      type: "mcq",
+      question: "Which part of the DBMS is responsible for isolation?",
+      options: ["The recovery system", "The concurrency-control system", "The query optimizer", "The application programmer"],
+      answer: 1,
+      explain: "The concurrency-control system (for example, using locks) stops concurrent transactions from interfering.",
+      link: "#who"
+    },
+    {
+      id: "q3.2-03",
+      topic: "3.2",
+      type: "multi",
+      question: "Which properties does the recovery system ensure? Choose all that apply.",
+      options: ["Atomicity", "Consistency", "Isolation", "Durability"],
+      answer: [0, 3],
+      explain: "The recovery system undoes unfinished transactions (atomicity) and keeps or redoes committed ones (durability).",
+      link: "#who"
+    },
+    {
+      id: "q3.2-04",
+      topic: "3.2",
+      type: "mcq",
+      question: "In the transfer of ₹50 from A to B, what is the consistency requirement?",
+      options: ["A must never be read", "The sum A + B is unchanged", "B is written before A", "The transfer finishes within one second"],
+      answer: 1,
+      explain: "Money must not be created or destroyed, so A + B must be the same before and after.",
+      link: "#consistency"
+    },
+    {
+      id: "q3.2-05",
+      topic: "3.2",
+      type: "tf",
+      question: "The database is allowed to be inconsistent for a short time while a transaction is running.",
+      answer: true,
+      explain: "True. After write(A) and before write(B), A + B is wrong. It must be correct again when the transaction ends, and no one else may see the in-between state.",
+      link: "#consistency"
+    },
+    {
+      id: "q3.2-06",
+      topic: "3.2",
+      type: "mcq",
+      question: "A user is told “transfer successful”, and then the server loses power. The new balances are still there after restart. Which property is this?",
+      options: ["Atomicity", "Consistency", "Isolation", "Durability"],
+      answer: 3,
+      explain: "Durability: once a transaction commits, its changes survive failures.",
+      link: "#durability"
+    },
+    {
+      id: "q3.2-07",
+      topic: "3.2",
+      type: "mcq",
+      question: "T2 prints A + B while T1 is in the middle of the transfer, and shows ₹2950. Which property was broken?",
+      options: ["Atomicity", "Isolation", "Durability", "None; this is allowed"],
+      answer: 1,
+      explain: "T2 saw T1's unfinished work. Isolation requires that each transaction be unaware of others running at the same time.",
+      link: "#isolation"
     }
   ]);
 })();
