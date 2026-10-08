@@ -66,6 +66,21 @@
     return null;
   }
 
+  // A unit's question bank, quiz and revision sheet. live is false until that page is published.
+  function unitExtras(u) {
+    return [
+      { id: "question-bank", title: "Question bank", icon: "file-question" },
+      { id: "quizzes", title: "Quiz", icon: "list-checks" },
+      { id: "revision", title: "Revision sheet", icon: "layers" }
+    ].map(function (x) {
+      var p = pageById(x.id);
+      // The question bank has one page per unit; other pages are hubs for now.
+      x.href = x.id === "question-bank" ? "question-bank/" + u.slug + ".html" : p && p.href;
+      x.live = isPublished(p);
+      return x;
+    });
+  }
+
   // Icons are inline SVG paths from the Lucide icon set (ISC license).
   var ICONS = {
     menu: '<path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/>',
@@ -277,6 +292,14 @@
         if (!published.length) {
           items += '<li class="side-note">Topics for this unit are coming soon.</li>';
         }
+        unitExtras(u)
+          .filter(function (x) {
+            return x.live;
+          })
+          .forEach(function (x, i) {
+            var cur = PAGE === x.id && u.n === UNIT ? ' aria-current="page"' : "";
+            items += '<li class="side-extra' + (i === 0 ? " is-first" : "") + '"><a href="' + url(x.href) + '"' + cur + ">" + icon(x.icon, "side-icon") + "<span>" + esc(x.title) + "</span></a></li>";
+          });
         return (
           '<details class="side-unit u-' + u.n + '"' + open + ">" +
           '<summary><span class="unit-dot"></span><span>Unit ' + u.roman + ": " + esc(u.title) + "</span>" + icon("chevron-down", "chev") + "</summary>" +
@@ -621,19 +644,11 @@
 
     var more = document.getElementById("unit-more");
     if (more) {
-      var extras = [
-        { id: "question-bank", title: "Unit " + u.roman + " question bank", icon: "file-question" },
-        { id: "quizzes", title: "Unit " + u.roman + " quiz", icon: "list-checks" },
-        { id: "revision", title: "Unit " + u.roman + " revision sheet", icon: "layers" }
-      ];
-      more.innerHTML = extras
+      more.innerHTML = unitExtras(u)
         .map(function (x) {
-          var p = pageById(x.id);
-          var live = isPublished(p);
-          // The question bank has one page per unit; other pages are hubs for now.
-          var href = x.id === "question-bank" ? "question-bank/" + u.slug + ".html" : p.href;
-          var inner = '<span class="card-icon">' + icon(x.icon) + "</span><h3>" + esc(x.title) + "</h3>" + (live ? "" : '<span class="badge badge-soon">Coming soon</span>');
-          return live ? '<a class="card" href="' + url(href) + '">' + inner + "</a>" : '<div class="card is-disabled">' + inner + "</div>";
+          var title = "Unit " + u.roman + " " + x.title.toLowerCase();
+          var inner = '<span class="card-icon">' + icon(x.icon) + "</span><h3>" + esc(title) + "</h3>" + (x.live ? "" : '<span class="badge badge-soon">Coming soon</span>');
+          return x.live ? '<a class="card" href="' + url(x.href) + '">' + inner + "</a>" : '<div class="card is-disabled">' + inner + "</div>";
         })
         .join("");
     }
