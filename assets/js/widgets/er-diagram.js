@@ -76,7 +76,7 @@
         { id: "Customer", type: "entity", x: 150, y: 300, desc: "Customer is a strong entity set with the key CustID." },
         { id: "cu_id", label: "CustID", type: "attr", of: "Customer", key: "pk", x: 60, y: 200, desc: "CustID is the key attribute of Customer." },
         { id: "cu_name", label: "CName", type: "attr", of: "Customer", x: 175, y: 190, desc: "CName is a simple attribute of Customer." },
-        { id: "cu_phone", label: "Phone", type: "attr", of: "Customer", multi: true, x: 285, y: 215, desc: "Phone is a multivalued attribute. A customer can give more than one phone number." },
+        { id: "cu_phone", label: "Phone", type: "attr", of: "Customer", multi: true, x: 300, y: 300, desc: "Phone is a multivalued attribute. A customer can give more than one phone number." },
         { id: "cu_addr", label: "Address", type: "attr", of: "Customer", x: 85, y: 415, desc: "Address is a composite attribute made of Street and City." },
         { id: "cu_street", label: "Street", type: "attr", of: "cu_addr", x: 50, y: 515, desc: "Street is a sub-attribute of Address." },
         { id: "cu_city", label: "City", type: "attr", of: "cu_addr", x: 160, y: 530, desc: "City is a sub-attribute of Address." },
@@ -251,9 +251,9 @@
       if (hidden[r.id] || hidden[en.id]) return;
       var parts = e.total ? line(r, en, "er-line", 2.6) + line(r, en, "er-line", -2.6) : line(r, en, "er-line");
       var card = (opts.cards && opts.cards[i]) || e.card;
-      // The label sits two thirds of the way from the relationship to the entity.
-      var lx = r.x + (en.x - r.x) * 0.62;
-      var ly = r.y + (en.y - r.y) * 0.62;
+      // The label sits beside the middle of the line.
+      var lx = r.x + (en.x - r.x) * 0.5;
+      var ly = r.y + (en.y - r.y) * 0.5;
       var dx = en.x - r.x;
       var dy = en.y - r.y;
       var len = Math.sqrt(dx * dx + dy * dy) || 1;

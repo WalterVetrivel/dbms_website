@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>E-R Diagrams | DBMS Study Guide</title>
+  <meta name="description" content="Draw E-R diagrams in Chen notation step by step, with worked diagrams for a university, a bank and a car insurance company that you can explore symbol by symbol.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="2" data-topic="2.2" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-2">Unit II</span>
+            <span class="badge badge-level" title="Topic number">Topic 2.2</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO2</span>
+          </div>
+          <h1>E-R Diagrams</h1>
+          <p class="lead">An E-R diagram is the picture of an E-R model. This page gives a simple method to draw one from a problem statement. Then it works through three diagrams that exams often ask for: a university, a bank and a car insurance company.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Read every Chen notation symbol in an E-R diagram.</li>
+              <li>Draw an E-R diagram from a problem statement in seven steps.</li>
+              <li>Choose and state the cardinality and participation of each relationship.</li>
+              <li>Draw E-R diagrams for a university, a bank and a car insurance company.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#symbols">The symbols at a glance</a></li>
+            <li><a href="#method">How to draw an E-R diagram</a></li>
+            <li><a href="#university">Worked example 1: university</a></li>
+            <li><a href="#bank">Worked example 2: bank</a></li>
+            <li><a href="#insurance">Worked example 3: car insurance</a></li>
+            <li><a href="#reverse">From tables back to a diagram</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="symbols" class="topic-section" aria-labelledby="symbols-title">
+          <h2 id="symbols-title">The symbols at a glance</h2>
+          <p>This site uses <strong>Chen notation</strong>, as in your notes. Each symbol is explained on the <a href="entity-relationship-model.html">Entity-Relationship Model</a> page.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Chen notation</caption>
+              <thead><tr><th scope="col">Symbol</th><th scope="col">Stands for</th></tr></thead>
+              <tbody>
+                <tr><td>Rectangle</td><td>Entity set</td></tr>
+                <tr><td>Double rectangle</td><td>Weak entity set</td></tr>
+                <tr><td>Diamond</td><td>Relationship set</td></tr>
+                <tr><td>Double diamond</td><td>Identifying relationship (links a weak entity set to its owner)</td></tr>
+                <tr><td>Ellipse</td><td>Attribute</td></tr>
+                <tr><td>Ellipse with the name underlined</td><td>Key attribute</td></tr>
+                <tr><td>Ellipse with a dashed underline</td><td>Partial key (discriminator) of a weak entity set</td></tr>
+                <tr><td>Double ellipse</td><td>Multivalued attribute</td></tr>
+                <tr><td>Dashed ellipse</td><td>Derived attribute</td></tr>
+                <tr><td>Ellipses joined to an ellipse</td><td>Composite attribute and its parts</td></tr>
+                <tr><td>Single line</td><td>Partial participation</td></tr>
+                <tr><td>Double line</td><td>Total participation</td></tr>
+                <tr><td>1, N, M on the lines</td><td>Mapping cardinality</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="method" class="topic-section" aria-labelledby="method-title">
+          <h2 id="method-title">How to draw an E-R diagram</h2>
+          <p>Read the problem statement two or three times. Then follow these steps.</p>
+          <ol class="steps">
+            <li><strong>Find the entity sets.</strong> Look for the important nouns: student, course, customer, car. Draw a rectangle for each.</li>
+            <li><strong>Find the attributes.</strong> List the facts kept about each entity set. Underline the key. Mark composite, multivalued and derived attributes.</li>
+            <li><strong>Find the relationship sets.</strong> Look for verbs that join two entity sets: takes, owns, borrows. Draw a diamond for each and join it to its entity sets.</li>
+            <li><strong>Place the relationship attributes.</strong> A fact that needs both sides, such as a grade or a date, goes on the diamond.</li>
+            <li><strong>Mark the mapping cardinality.</strong> For each relationship, ask “one or many?” from both sides. Write 1, N or M on the lines.</li>
+            <li><strong>Mark the participation.</strong> Ask “must every entity take part?” If yes, draw a double line.</li>
+            <li><strong>Find the weak entity sets.</strong> An entity set with no key of its own gets a double rectangle, a double diamond to its owner and a partial key.</li>
+          </ol>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>Always write your <strong>assumptions</strong> under the diagram, for example “each car has one owner”. A problem statement never gives every rule. Examiners give marks for sensible, clearly stated assumptions.</p>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistakes</div>
+            <ul>
+              <li>Drawing a relationship as an entity set. “Takes” is a verb, so it is a diamond.</li>
+              <li>Putting a foreign key such as DeptID on an entity set. In an E-R diagram the link is the relationship line. Foreign keys appear only after mapping to tables.</li>
+              <li>Putting a relationship attribute, such as Grade, on one of the entity sets.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="university" class="topic-section" aria-labelledby="uni-title">
+          <h2 id="uni-title">Worked example 1: university</h2>
+          <p><strong>Problem:</strong> draw an E-R diagram for a university. Students take courses and get a grade. Instructors teach courses and advise students. Each course is offered in numbered sections.</p>
+          <ol>
+            <li><strong>Entity sets:</strong> Student, Course and Instructor. Section is a weak entity set, because “Section 2” is unique only within one course.</li>
+            <li><strong>Attributes:</strong> Student(<u>ID</u>, Name (First, Last), Phone (multivalued), DOB, Age (derived)). Course(<u>CourseID</u>, Title, Credits). Instructor(<u>InstID</u>, IName, Salary). Section(SecNo as partial key, Semester).</li>
+            <li><strong>Relationship sets:</strong> Takes (Student, Course), Advisor (Instructor, Student), Teaches (Instructor, Course) and the identifying relationship Sec_of (Course, Section).</li>
+            <li><strong>Relationship attribute:</strong> Grade on Takes.</li>
+            <li><strong>Cardinality:</strong> Takes is M : N. Teaches is M : N. Advisor is 1 : N (one instructor advises many students). Sec_of is 1 : N.</li>
+            <li><strong>Participation:</strong> every student has an advisor (total). Every section belongs to a course (total).</li>
+          </ol>
+          <div class="widget" data-widget="er-notation" data-model="university">
+            <noscript><p class="widget-narration">The diagram needs JavaScript. Its content is listed in the steps above.</p></noscript>
+          </div>
+          <p>The next topic, ER-to-Relational Mapping, turns this diagram into tables, step by step.</p>
+        </section>
+
+        <section id="bank" class="topic-section" aria-labelledby="bank-title">
+          <h2 id="bank-title">Worked example 2: bank</h2>
+          <p><strong>Problem:</strong> draw an E-R diagram for a banking system with customers, accounts, loans and branches. Customers repay loans in installments (payments).</p>
+          <ol>
+            <li><strong>Entity sets:</strong> Customer, Account, Loan and Branch. Payment is weak: payment number 1 exists for every loan.</li>
+            <li><strong>Attributes:</strong> Customer(<u>CustID</u>, CName, Address (Street, City), Phone (multivalued)). Account(<u>AccNo</u>, Balance). Loan(<u>LoanNo</u>, Amount). Branch(<u>BranchName</u>, City). Payment(PayNo as partial key, PayAmount).</li>
+            <li><strong>Relationship sets:</strong> Depositor (Customer, Account), Borrower (Customer, Loan), Acc_branch (Account, Branch), Loan_branch (Loan, Branch) and the identifying relationship Loan_pay (Loan, Payment).</li>
+            <li><strong>Cardinality:</strong> Depositor and Borrower are M : N, because joint accounts and joint loans are allowed. Each account and each loan belongs to one branch (N : 1).</li>
+            <li><strong>Participation:</strong> every account has a depositor, every loan has a borrower, and every account and loan has a branch. A customer may have no loan, so Customer is partial in Borrower.</li>
+          </ol>
+          <div class="widget" data-widget="er-notation" data-model="bank">
+            <noscript><p class="widget-narration">The diagram needs JavaScript. Its content is listed in the steps above.</p></noscript>
+          </div>
+          <div class="callout callout-note">
+            <div class="callout-title">Assumptions</div>
+            <ul>
+              <li>A customer can hold many accounts and take many loans.</li>
+              <li>An account or a loan can be shared by more than one customer.</li>
+              <li>Each account and each loan is handled by exactly one branch.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="insurance" class="topic-section" aria-labelledby="ins-title">
+          <h2 id="ins-title">Worked example 3: car insurance</h2>
+          <p><strong>Problem:</strong> draw an E-R diagram for a car insurance company. Customers own one or more cars each. Each car has zero or more recorded accidents. Each insurance policy covers one or more cars and has one or more premium payments. Each payment has a due date and the date it was received.</p>
+          <ol>
+            <li><strong>Entity sets:</strong> Customer, Car, Accident and Policy. Premium_payment is weak: payment 3 exists for every policy.</li>
+            <li><strong>Attributes:</strong> Customer(<u>CustID</u>, CName, Address). Car(<u>LicenseNo</u>, Model, Year). Accident(<u>ReportNo</u>, AccDate, Place). Policy(<u>PolicyID</u>). Premium_payment(PayNo as partial key, DueDate, PaidOn).</li>
+            <li><strong>Relationship sets:</strong> Owns (Customer, Car), Participated (Car, Accident), Covers (Policy, Car) and the identifying relationship Pays (Policy, Premium_payment).</li>
+            <li><strong>Relationship attribute:</strong> DamageAmt on Participated: the damage to one car in one accident.</li>
+            <li><strong>Cardinality:</strong> Owns is 1 : N. Participated is M : N, because one accident can involve two cars. Covers is 1 : N.</li>
+            <li><strong>Participation:</strong> “one or more cars each” makes Customer total in Owns. “Zero or more accidents” makes Car partial in Participated. “Covers one or more cars” makes Policy total in Covers.</li>
+          </ol>
+          <div class="widget" data-widget="er-notation" data-model="insurance">
+            <noscript><p class="widget-narration">The diagram needs JavaScript. Its content is listed in the steps above.</p></noscript>
+          </div>
+          <div class="callout callout-note">
+            <div class="callout-title">Assumptions</div>
+            <ul>
+              <li>Each car has exactly one owner and is covered by at most one policy.</li>
+              <li>Every recorded accident involves at least one of the company's cars.</li>
+              <li>A premium payment is numbered within its policy: 1, 2, 3 and so on.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="reverse" class="topic-section" aria-labelledby="rev-title">
+          <h2 id="rev-title">From tables back to a diagram</h2>
+          <p>Some questions give tables and ask for the E-R diagram. Example:</p>
+          <div class="code-block">
+            <span class="code-label">Schema</span>
+            <pre><code>Employee(empno, name, office, age)
+Books(isbn, title, authors, publisher)
+Loan(empno, isbn, date)</code></pre>
+          </div>
+          <ul>
+            <li>Employee and Books each have their own key, so they are <strong>entity sets</strong> with the keys empno and isbn.</li>
+            <li>Loan holds only the two keys and a date. It is a <strong>relationship set</strong> Loan between Employee and Books, with <strong>date</strong> as its attribute.</li>
+            <li>An employee can borrow many books, and a book can be borrowed by many employees over time, so Loan is <strong>M : N</strong>.</li>
+            <li>A book can have many authors, so <strong>authors</strong> is a multivalued attribute (double ellipse).</li>
+          </ul>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>College admissions</h3>
+              <p class="muted">Applicant applies to Program is M : N, with Rank and Status on Applies. Each Program belongs to one Department (N : 1).</p>
+            </div>
+            <div class="card">
+              <h3>Hospital</h3>
+              <p class="muted">Patient and Doctor are entity sets. Each test done on a patient is a weak entity set Test, numbered within the patient, with Performed_by linking it to a doctor.</p>
+            </div>
+            <div class="card">
+              <h3>Food delivery app</h3>
+              <p class="muted">Customer places Order (1 : N), Order contains Item (M : N, with Quantity), and Restaurant prepares Order (1 : N).</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Nouns become entity sets (rectangles); verbs become relationship sets (diamonds).</li>
+              <li>Underline the key of every strong entity set; give a weak entity set a dashed-underlined partial key.</li>
+              <li>A fact that needs both sides of a relationship is an attribute of the relationship.</li>
+              <li>Write 1, N or M on each line, and use a double line for total participation.</li>
+              <li>No foreign keys in an E-R diagram: the relationship line is the link.</li>
+              <li>Always state your assumptions under the diagram.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit II question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="2.2"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="2.2"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 6, Sections 6.2 to 6.5 and 6.11 (E-R diagrams, design issues and alternative notations).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 3, Sections 3.6 and 3.7 (refining the COMPANY design and the ER diagram notation).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-2.js"></script>
+  <script src="../../data/quizzes/unit-2.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/er-diagram.js"></script>
+</body>
+</html>

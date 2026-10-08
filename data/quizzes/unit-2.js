@@ -83,6 +83,75 @@
       answer: 2,
       explain: "Grade describes one student in one course, so it is a descriptive attribute of Takes.",
       link: "#relationship"
+    },
+    /* 2.2 E-R Diagrams */
+    {
+      id: "q2.2-01",
+      topic: "2.2",
+      type: "mcq",
+      question: "A problem statement says: \"Students borrow books from the library.\" How is \"borrow\" drawn?",
+      options: ["As a rectangle", "As a diamond", "As an ellipse", "As a double ellipse"],
+      answer: 1,
+      explain: "A verb that joins two entity sets is a relationship set, drawn as a diamond.",
+      link: "#method"
+    },
+    {
+      id: "q2.2-02",
+      topic: "2.2",
+      type: "mcq",
+      question: "\"Each car has zero or more recorded accidents.\" What is the participation of Car in Participated?",
+      options: ["Total, so a double line", "Partial, so a single line", "It cannot be decided", "Car must be a weak entity set"],
+      answer: 1,
+      explain: "Zero accidents is allowed, so some cars do not take part. That is partial participation, a single line.",
+      link: "#insurance"
+    },
+    {
+      id: "q2.2-03",
+      topic: "2.2",
+      type: "mcq",
+      question: "In the bank diagram, why is Payment a weak entity set?",
+      options: ["It has no attributes", "Payment number 1 exists for every loan, so PayNo alone is not unique", "It is many to many with Loan", "It is a derived attribute"],
+      answer: 1,
+      explain: "PayNo is unique only within one loan, so Payment needs the owner's key: (LoanNo, PayNo).",
+      link: "#bank"
+    },
+    {
+      id: "q2.2-04",
+      topic: "2.2",
+      type: "tf",
+      question: "In an E-R diagram, the Student entity set should show DeptID as an attribute to link it to Department.",
+      answer: false,
+      explain: "False. The relationship line is the link. Foreign keys such as DeptID appear only when the diagram is mapped to tables.",
+      link: "#method"
+    },
+    {
+      id: "q2.2-05",
+      topic: "2.2",
+      type: "order",
+      question: "Put the steps for drawing an E-R diagram in order.",
+      options: ["Find the entity sets", "Find the attributes and keys", "Find the relationship sets", "Mark the mapping cardinality", "Mark the participation"],
+      explain: "Things first, then their facts, then the links, then how many and whether every entity must take part.",
+      link: "#method"
+    },
+    {
+      id: "q2.2-06",
+      topic: "2.2",
+      type: "mcq",
+      question: "Given Employee(empno, ...), Books(isbn, ...) and Loan(empno, isbn, date), what is Loan in the E-R diagram?",
+      options: ["An entity set with key date", "A weak entity set of Employee", "A relationship set between Employee and Books, with attribute date", "A multivalued attribute of Books"],
+      answer: 2,
+      explain: "Loan holds the keys of both entity sets plus one fact about the pair, so it is a relationship set with the attribute date.",
+      link: "#reverse"
+    },
+    {
+      id: "q2.2-07",
+      topic: "2.2",
+      type: "multi",
+      question: "In the car insurance diagram, which entity sets have total participation? Select all that apply.",
+      options: ["Customer in Owns", "Car in Participated", "Policy in Covers", "Premium_payment in Pays"],
+      answer: [0, 2, 3],
+      explain: "Every customer owns a car, every policy covers a car, and every payment belongs to a policy. A car may have no accident.",
+      link: "#insurance"
     }
   ]);
 })();
