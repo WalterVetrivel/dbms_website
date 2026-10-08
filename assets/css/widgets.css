@@ -3029,3 +3029,121 @@
   background: var(--surface-2);
   overflow-x: auto;
 }
+
+/* ---------- V5 SQL clause order animator ---------- */
+
+.so-order {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  margin: 0 0 var(--sp-4);
+  padding: 0;
+  list-style: none;
+  counter-reset: so;
+}
+
+.so-order li {
+  counter-increment: so;
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+
+.so-order li::before {
+  content: counter(so) ". ";
+  color: var(--text-muted);
+}
+
+.so-order li.is-done {
+  background: var(--surface-2);
+  color: var(--text-muted);
+}
+
+.so-order li.is-on {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+}
+
+.so-order li.is-on::before {
+  color: var(--on-primary);
+}
+
+.so-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-4);
+}
+
+@media (min-width: 860px) {
+  .so-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.so-sql {
+  margin: 0;
+  padding: var(--sp-3);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  overflow-x: auto;
+  font-size: var(--fs-xs);
+  line-height: 1.8;
+}
+
+.so-sql span.is-on {
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.so-cap {
+  margin-bottom: var(--sp-1);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.so-scroll {
+  overflow-x: auto;
+}
+
+.so-table {
+  margin: 0;
+  font-family: var(--font-mono);
+}
+
+.so-table th.is-col,
+.so-table td.is-col {
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 var(--primary);
+}
+
+.so-table tr.is-drop td {
+  text-decoration: line-through;
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.so-table tr.so-g0 td {
+  background: var(--primary-soft);
+}
+
+.so-table tr.so-g1 td {
+  background: var(--accent-soft);
+}
+
+.so-table tr.so-g2 td {
+  background: var(--warning-soft);
+}
+
+.so-table tr.is-drop.so-g0 td,
+.so-table tr.is-drop.so-g1 td,
+.so-table tr.is-drop.so-g2 td {
+  background: var(--danger-soft);
+}

@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Basic Structure of SQL Queries | DBMS Study Guide</title>
+  <meta name="description" content="Learn the SELECT-FROM-WHERE structure of SQL queries, how it maps to relational algebra, DISTINCT, queries on more than one table, AND, OR and NOT, IN, BETWEEN and LIKE, ORDER BY and the order in which clauses run, with an interactive animator.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="1" data-topic="1.11" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-1">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-1">Unit I</span>
+            <span class="badge badge-level" title="Topic number">Topic 1.11</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+          </div>
+          <h1>Basic Structure of SQL Queries</h1>
+          <p class="lead">Almost every SQL query has the shape SELECT … FROM … WHERE. This page explains each clause, joins two tables in one query, filters and sorts the result, and shows the order in which the DBMS actually runs the clauses.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Write a SELECT-FROM-WHERE query and say what each clause does.</li>
+              <li>Relate a query to the relational algebra operations π, σ and ×.</li>
+              <li>Query two tables together using a join condition.</li>
+              <li>Filter with AND, OR, NOT, IN, BETWEEN and LIKE, and sort with ORDER BY.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#structure">The SELECT-FROM-WHERE structure</a></li>
+            <li><a href="#sample">The sample table</a></li>
+            <li><a href="#select">SELECT and FROM</a></li>
+            <li><a href="#where">WHERE: choosing rows</a></li>
+            <li><a href="#multiple">Queries on more than one table</a></li>
+            <li><a href="#order-by">ORDER BY: sorting the result</a></li>
+            <li><a href="#order-of-evaluation">The order in which clauses run</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="structure" class="topic-section" aria-labelledby="structure-title">
+          <h2 id="structure-title">The SELECT-FROM-WHERE structure</h2>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>SELECT [DISTINCT] A1, A2, ..., An     -- target list: the columns you want
+FROM   r1, r2, ..., rm               -- relation list: the tables to read
+WHERE  P;                            -- qualification: the condition rows must meet</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>The three clauses</caption>
+              <thead><tr><th scope="col">Clause</th><th scope="col">What it does</th><th scope="col">Relational algebra</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">SELECT</th><td>Lists the attributes wanted in the result</td><td>Project π</td></tr>
+                <tr><th scope="row">FROM</th><td>Lists the relations to read. Several relations mean their Cartesian product</td><td>Cartesian product ×</td></tr>
+                <tr><th scope="row">WHERE</th><td>A predicate on the attributes, built with comparisons, AND, OR and NOT</td><td>Select σ</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>So a basic query is the same as this relational algebra expression:</p>
+          <div class="code-block">
+            <span class="code-label">Relational algebra</span>
+            <pre><code>π A1, A2, ..., An (σ P (r1 × r2 × ... × rm))</code></pre>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>The SQL keyword <strong>SELECT</strong> matches the <strong>project (π)</strong> operation, not the select (σ) operation. The <strong>WHERE</strong> clause matches σ.</p>
+          </div>
+        </section>
+
+        <section id="sample" class="topic-section" aria-labelledby="sample-title">
+          <h2 id="sample-title">The sample table</h2>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>CREATE TABLE student (
+  roll  INT PRIMARY KEY,
+  name  VARCHAR(20),
+  dept  VARCHAR(5),
+  city  VARCHAR(20),
+  marks INT
+);
+INSERT INTO student VALUES
+  (1, 'Anitha', 'CSE', 'Salem', 88),   (2, 'Bharath', 'IT', 'Chennai', 72),
+  (3, 'Charan', 'CSE', 'Salem', 65),   (4, 'Divya', 'ECE', 'Erode', 91),
+  (5, 'Ezhil', 'IT', 'Salem', 55),     (6, 'Farhan', 'CSE', 'Erode', 79),
+  (7, 'Gowri', 'ECE', 'Salem', 84),    (8, 'Hari', 'IT', 'Erode', 47);</code></pre>
+          </div>
+        </section>
+
+        <section id="select" class="topic-section" aria-labelledby="select-title">
+          <h2 id="select-title">SELECT and FROM</h2>
+          <p><strong>All columns:</strong> the star <code>*</code> means every attribute.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT * FROM student;</code></pre>
+          </div>
+          <p><strong>Some columns:</strong> list them, separated by commas.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT name, marks FROM student;</code></pre>
+          </div>
+          <h3>DISTINCT and ALL</h3>
+          <p>Unlike relational algebra, SQL <strong>keeps duplicate rows</strong> by default. Add <code>DISTINCT</code> to remove them. (<code>ALL</code>, the default, keeps them.)</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT city FROM student;           -- 8 rows, Salem four times
+SELECT DISTINCT city FROM student;  -- 3 rows: Salem, Chennai, Erode</code></pre>
+          </div>
+          <h3>Expressions and aliases</h3>
+          <p>The SELECT list can compute values. <code>AS</code> gives the result column a new name (an alias).</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT name, marks + 5 AS revised_marks FROM student;</code></pre>
+          </div>
+        </section>
+
+        <section id="where" class="topic-section" aria-labelledby="where-title">
+          <h2 id="where-title">WHERE: choosing rows</h2>
+          <p>WHERE keeps only the rows that make the condition true. Conditions use the comparison operators <code>=</code>, <code>&lt;&gt;</code> (not equal), <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code> and <code>&gt;=</code>.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT name FROM student WHERE marks &gt; 80;</code></pre>
+          </div>
+          <p>Result: Anitha, Divya and Gowri.</p>
+          <h3>Logical operators: AND, OR and NOT</h3>
+          <div class="table-wrap">
+            <table>
+              <caption>Logical operators</caption>
+              <thead><tr><th scope="col">Operator</th><th scope="col">A row is kept if</th><th scope="col">Example</th><th scope="col">Result</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">AND</th><td>All the conditions are true</td><td><code>dept = 'CSE' AND city = 'Salem'</code></td><td>Anitha, Charan</td></tr>
+                <tr><th scope="row">OR</th><td>At least one condition is true</td><td><code>city = 'Chennai' OR marks &gt; 90</code></td><td>Bharath, Divya</td></tr>
+                <tr><th scope="row">NOT</th><td>The condition is false</td><td><code>NOT city = 'Salem'</code></td><td>Bharath, Divya, Farhan, Hari</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT roll, name, city
+FROM student
+WHERE dept = 'CSE' AND city = 'Salem';</code></pre>
+          </div>
+          <h3>IN, BETWEEN and LIKE</h3>
+          <ul>
+            <li><code>IN</code> tests a list of values. It is a short form of several ORs: <code>WHERE roll IN (1, 3)</code> gives Anitha and Charan.</li>
+            <li><code>BETWEEN</code> tests a range, ends included: <code>WHERE marks BETWEEN 70 AND 85</code> gives Bharath, Farhan and Gowri.</li>
+            <li><code>LIKE</code> matches a text pattern. <code>%</code> means any number of characters and <code>_</code> means exactly one: <code>WHERE name LIKE 'D%'</code> gives Divya.</li>
+          </ul>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT name, marks FROM student WHERE marks BETWEEN 70 AND 85;</code></pre>
+          </div>
+        </section>
+
+        <section id="multiple" class="topic-section" aria-labelledby="multiple-title">
+          <h2 id="multiple-title">Queries on more than one table</h2>
+          <p>Often the answer needs data from two tables. Add a department table with each head of department (HOD):</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>CREATE TABLE department (
+  dept      VARCHAR(5) PRIMARY KEY,
+  dept_name VARCHAR(40),
+  hod       VARCHAR(20)
+);
+INSERT INTO department VALUES
+  ('CSE', 'Computer Science and Engineering', 'Dr. Raghu'),
+  ('IT',  'Information Technology',           'Dr. Janani'),
+  ('ECE', 'Electronics and Communication',    'Dr. Kannan');</code></pre>
+          </div>
+          <p><strong>Query:</strong> list each student from Salem with the name of their HOD.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT student.name, department.hod
+FROM student, department
+WHERE student.dept = department.dept
+  AND student.city = 'Salem';</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Result</caption>
+              <thead><tr><th scope="col">name</th><th scope="col">hod</th></tr></thead>
+              <tbody>
+                <tr><td>Anitha</td><td>Dr. Raghu</td></tr>
+                <tr><td>Charan</td><td>Dr. Raghu</td></tr>
+                <tr><td>Ezhil</td><td>Dr. Janani</td></tr>
+                <tr><td>Gowri</td><td>Dr. Kannan</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li><code>FROM student, department</code> forms the Cartesian product: 8 × 3 = 24 row pairs.</li>
+            <li><code>student.dept = department.dept</code> is the <strong>join condition</strong>. It keeps only the pairs that belong together. Without it, every student would be paired with every HOD.</li>
+            <li>Both tables have a dept column, so we write <code>student.dept</code> and <code>department.dept</code> to say which one we mean.</li>
+          </ul>
+          <h3>Tuple variables (table aliases)</h3>
+          <p>Short names make long queries easier to read. The same query, written with aliases and the <code>JOIN ... ON</code> form:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT s.name, d.hod
+FROM student AS s
+INNER JOIN department AS d ON s.dept = d.dept
+WHERE s.city = 'Salem';</code></pre>
+          </div>
+          <p>Both forms give the same result. LEFT, RIGHT and FULL joins keep unmatched rows, just like the outer joins of <a href="relational-algebra.html">Relational Algebra</a>. Unit II covers them under Joins.</p>
+        </section>
+
+        <section id="order-by" class="topic-section" aria-labelledby="order-title">
+          <h2 id="order-title">ORDER BY: sorting the result</h2>
+          <p>The rows of a result come in no fixed order unless you ask for one. <code>ORDER BY</code> sorts them. <code>ASC</code> (ascending, smallest first) is the default; <code>DESC</code> sorts largest first.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT name, dept, marks
+FROM student
+ORDER BY dept ASC, marks DESC;</code></pre>
+          </div>
+          <p>Rows are sorted by dept first. Within the same dept, the higher marks come first: CSE gives Anitha 88, Farhan 79, Charan 65.</p>
+        </section>
+
+        <section id="order-of-evaluation" class="topic-section" aria-labelledby="eval-title">
+          <h2 id="eval-title">The order in which clauses run</h2>
+          <p>We <strong>write</strong> SELECT first, but the DBMS <strong>runs</strong> it near the end. The logical order is:</p>
+          <ol>
+            <li><strong>FROM</strong>: get the rows of the tables (and join them).</li>
+            <li><strong>WHERE</strong>: remove rows that fail the condition.</li>
+            <li><strong>GROUP BY</strong>: put the remaining rows into groups.</li>
+            <li><strong>HAVING</strong>: remove groups that fail the group condition.</li>
+            <li><strong>SELECT</strong>: compute the output columns (then <strong>DISTINCT</strong> removes repeats).</li>
+            <li><strong>ORDER BY</strong>: sort the final rows.</li>
+          </ol>
+          <p>This explains a common error: an alias made in SELECT cannot be used in WHERE, because WHERE runs before SELECT. It <strong>can</strong> be used in ORDER BY, which runs after. GROUP BY and HAVING are covered in Unit II.</p>
+          <div class="widget" data-widget="sql-order" data-preset="basic">
+            <noscript><p class="widget-narration">The clause animator needs JavaScript. The numbered list above gives the order of evaluation.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>In “WHERE and ORDER BY”, how many rows are left after WHERE? Which clause decides that Gowri comes before Charan?</li>
+              <li>In “GROUP BY and HAVING”, which rows does WHERE remove, and which whole group does HAVING remove?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Rank list</h3>
+              <p class="muted">A college rank list is <code>SELECT name, marks FROM student WHERE dept = 'CSE' ORDER BY marks DESC</code>.</p>
+            </div>
+            <div class="card">
+              <h3>Food delivery filters</h3>
+              <p class="muted">“Vegetarian, rating above 4, sorted by delivery time” is a WHERE with AND, followed by ORDER BY.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Basic form: SELECT columns FROM tables WHERE condition.</li>
+              <li>SELECT ≈ π, FROM ≈ ×, WHERE ≈ σ.</li>
+              <li>SQL keeps duplicates unless you write DISTINCT.</li>
+              <li>With several tables in FROM, a join condition in WHERE (or JOIN ... ON) pairs the right rows.</li>
+              <li>AND needs all conditions true, OR needs one, NOT reverses a condition; IN, BETWEEN and LIKE are short forms.</li>
+              <li>ORDER BY sorts the result; ASC is the default, DESC is largest first.</li>
+              <li>Clauses run in the order FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit I question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="1.11"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="1.11"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 3, Sections 3.3 to 3.6.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 6, Section 6.3.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/select.html">SELECT statement</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-1.js"></script>
+  <script src="../../data/quizzes/unit-1.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/sql-order.js"></script>
+</body>
+</html>

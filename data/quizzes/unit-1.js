@@ -716,6 +716,77 @@
       answer: 1,
       explain: "IBM's System R project named it SEQUEL, Structured English Query Language.",
       link: "#history"
+    },
+    /* 1.11 Basic Structure of SQL Queries */
+    {
+      id: "q1.11-01",
+      topic: "1.11",
+      type: "mcq",
+      question: "Which relational algebra operation does the SQL WHERE clause match?",
+      options: ["Project (π)", "Select (σ)", "Cartesian product (×)", "Rename (ρ)"],
+      answer: 1,
+      explain: "WHERE keeps rows that satisfy a predicate, like σ. The SELECT list matches π, and FROM matches ×.",
+      link: "#structure"
+    },
+    {
+      id: "q1.11-02",
+      topic: "1.11",
+      type: "order",
+      question: "Put these clauses in the order the DBMS evaluates them.",
+      options: ["FROM", "WHERE", "GROUP BY", "HAVING", "SELECT", "ORDER BY"],
+      explain: "FROM gets the rows, WHERE filters rows, GROUP BY groups them, HAVING filters groups, SELECT computes the columns, and ORDER BY sorts last.",
+      link: "#order-of-evaluation"
+    },
+    {
+      id: "q1.11-03",
+      topic: "1.11",
+      type: "mcq",
+      question: "Predict the output: how many rows does SELECT city FROM student; return for the sample table?",
+      options: ["3", "4", "8", "1"],
+      answer: 2,
+      explain: "SQL keeps duplicates unless DISTINCT is used, so all 8 city values are returned.",
+      code: "SELECT city FROM student;",
+      link: "#select"
+    },
+    {
+      id: "q1.11-04",
+      topic: "1.11",
+      type: "mcq",
+      question: "Predict the output: which students does this query return?",
+      code: "SELECT name FROM student\nWHERE dept = 'CSE' AND city = 'Salem';",
+      options: ["Anitha and Charan", "Anitha, Charan, Ezhil and Gowri", "Only Anitha", "Anitha, Charan and Farhan"],
+      answer: 0,
+      explain: "AND needs both conditions. Only Anitha and Charan are in CSE and live in Salem.",
+      link: "#where"
+    },
+    {
+      id: "q1.11-05",
+      topic: "1.11",
+      type: "tf",
+      question: "In FROM student, department with no WHERE clause, every student row is paired with every department row.",
+      answer: true,
+      explain: "True. Several tables in FROM form a Cartesian product. A join condition is needed to keep only matching pairs.",
+      link: "#multiple"
+    },
+    {
+      id: "q1.11-06",
+      topic: "1.11",
+      type: "mcq",
+      question: "What is the default sort order of ORDER BY?",
+      options: ["Descending", "Ascending", "Random", "The order the rows were inserted"],
+      answer: 1,
+      explain: "ASC (ascending) is the default. Write DESC for largest first.",
+      link: "#order-by"
+    },
+    {
+      id: "q1.11-07",
+      topic: "1.11",
+      type: "mcq",
+      question: "Which condition is the same as WHERE roll = 1 OR roll = 3?",
+      options: ["WHERE roll IN (1, 3)", "WHERE roll BETWEEN 1 AND 3", "WHERE roll LIKE '1%3'", "WHERE NOT roll = 2"],
+      answer: 0,
+      explain: "IN tests a list of values. BETWEEN 1 AND 3 would also include roll 2.",
+      link: "#where"
     }
   ]);
 })();
