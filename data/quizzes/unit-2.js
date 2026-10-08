@@ -152,6 +152,76 @@
       answer: [0, 2, 3],
       explain: "Every customer owns a car, every policy covers a car, and every payment belongs to a policy. A car may have no accident.",
       link: "#insurance"
+    },
+    /* 2.3 ER-to-Relational Mapping */
+    {
+      id: "q2.3-01",
+      topic: "2.3",
+      type: "mcq",
+      question: "Advisor is 1 : N from Instructor to Student. Where does the foreign key go?",
+      options: ["InstID goes into Student", "ID goes into Instructor", "A new table Advisor is required", "Both tables get a foreign key"],
+      answer: 0,
+      explain: "The foreign key goes into the many side. Each student has one advisor, so Student stores InstID.",
+      link: "#one-many"
+    },
+    {
+      id: "q2.3-02",
+      topic: "2.3",
+      type: "mcq",
+      question: "What is the primary key of the table for the M : N relationship Takes(ID, CourseID, Grade)?",
+      options: ["ID", "CourseID", "(ID, CourseID)", "(ID, CourseID, Grade)"],
+      answer: 2,
+      explain: "The primary key of an M : N relationship table is the combination of the participating entity sets' keys.",
+      link: "#many-many"
+    },
+    {
+      id: "q2.3-03",
+      topic: "2.3",
+      type: "mcq",
+      question: "The weak entity set Payment (partial key PayNo) belongs to Loan (key LoanNo). What is the primary key of the Payment table?",
+      options: ["PayNo", "LoanNo", "(LoanNo, PayNo)", "A new surrogate key"],
+      answer: 2,
+      explain: "A weak entity set's primary key is the owner's key plus the partial key.",
+      link: "#weak"
+    },
+    {
+      id: "q2.3-04",
+      topic: "2.3",
+      type: "mcq",
+      question: "How is the multivalued attribute Phone of Student mapped?",
+      options: ["As a column that holds a comma-separated list", "As three columns Phone1, Phone2 and Phone3", "As a new table Student_Phone(ID, Phone)", "It is not stored"],
+      answer: 2,
+      explain: "A multivalued attribute gets its own table with the owner's key and the attribute; both form the primary key.",
+      link: "#multi"
+    },
+    {
+      id: "q2.3-05",
+      topic: "2.3",
+      type: "tf",
+      question: "A derived attribute such as Age becomes a column of the table.",
+      answer: false,
+      explain: "False. A derived attribute is not stored. It is calculated from DOB when needed.",
+      link: "#strong"
+    },
+    {
+      id: "q2.3-06",
+      topic: "2.3",
+      type: "multi",
+      question: "Which E-R constructs always need a new table of their own? Select all that apply.",
+      options: ["An M : N relationship set", "A 1 : N relationship set", "A multivalued attribute", "A composite attribute"],
+      answer: [0, 2],
+      explain: "M : N relationships and multivalued attributes need new tables. A 1 : N relationship is a foreign key, and a composite attribute becomes several columns.",
+      link: "#summary"
+    },
+    {
+      id: "q2.3-07",
+      topic: "2.3",
+      type: "mcq",
+      question: "A relationship table Works_In(EmpID, DeptID, EName, Salary, DeptName) is proposed. What is wrong with it?",
+      options: ["Nothing; relationship tables copy all attributes", "EName, Salary and DeptName belong to the entity tables and cause redundancy", "It must not have EmpID", "It needs Age as well"],
+      answer: 1,
+      explain: "A relationship table holds only the keys and the relationship's own attributes. Copying entity attributes repeats data.",
+      link: "#many-many"
     }
   ]);
 })();

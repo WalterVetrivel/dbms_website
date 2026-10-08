@@ -3295,3 +3295,53 @@
   padding: var(--sp-1) var(--sp-3);
   font-size: var(--fs-xs);
 }
+
+/* ---------- V7 ER-to-relational mapping stepper ---------- */
+
+.map-stage {
+  background: var(--bg);
+}
+
+.map-er {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.map-cap {
+  margin: var(--sp-4) 0 var(--sp-2);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.map-tables {
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.map-table {
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  overflow-wrap: anywhere;
+}
+
+.map-table.is-changed {
+  border-color: var(--warning);
+  box-shadow: inset 4px 0 0 var(--warning);
+}
+
+.map-name {
+  font-weight: 700;
+}
+
+.map-col.is-new {
+  padding: 0 2px;
+  border-radius: var(--radius-sm);
+  background: var(--warning-soft);
+}
