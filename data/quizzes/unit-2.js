@@ -222,6 +222,85 @@
       answer: 1,
       explain: "A relationship table holds only the keys and the relationship's own attributes. Copying entity attributes repeats data.",
       link: "#many-many"
+    },
+    /* 2.4 Functional Dependencies */
+    {
+      id: "q2.4-01",
+      topic: "2.4",
+      type: "mcq",
+      question: "In R, two rows have RollNo = 5. One has Name = Ravi and the other Name = Kavin. What does this show?",
+      options: ["RollNo → Name holds", "RollNo → Name does not hold", "Name → RollNo holds", "RollNo is a candidate key"],
+      answer: 1,
+      explain: "Rows that agree on RollNo disagree on Name, so the FD RollNo → Name fails on this table.",
+      link: "#what"
+    },
+    {
+      id: "q2.4-02",
+      topic: "2.4",
+      type: "mcq",
+      question: "Which FD is trivial?",
+      options: ["A → B", "AB → A", "A → AB", "AB → C"],
+      answer: 1,
+      explain: "An FD is trivial when the right side is a subset of the left side. {A} is a subset of {A, B}.",
+      link: "#types"
+    },
+    {
+      id: "q2.4-03",
+      topic: "2.4",
+      type: "mcq",
+      question: "Which rule says: if X → Y and Y → Z, then X → Z?",
+      options: ["Reflexivity", "Augmentation", "Transitivity", "Decomposition"],
+      answer: 2,
+      explain: "That is the transitivity rule, one of Armstrong's three axioms.",
+      link: "#axioms"
+    },
+    {
+      id: "q2.4-04",
+      topic: "2.4",
+      type: "mcq",
+      question: "R(A, B, C, D) with F = {A → B, B → C, C → D}. What is A+?",
+      options: ["{A, B}", "{A, B, C}", "{A, B, C, D}", "{A}"],
+      answer: 2,
+      explain: "A gives B, B gives C and C gives D, so A+ = {A, B, C, D}. A is a superkey.",
+      link: "#attr-closure"
+    },
+    {
+      id: "q2.4-05",
+      topic: "2.4",
+      type: "mcq",
+      question: "R(A, B, C) with F = {A → B, B → C}. Which is the only candidate key?",
+      options: ["A", "B", "AB", "C"],
+      answer: 0,
+      explain: "A never appears on a right side, so it is in every key, and A+ = {A, B, C}. So A is the only candidate key.",
+      link: "#keys"
+    },
+    {
+      id: "q2.4-06",
+      topic: "2.4",
+      type: "tf",
+      question: "In Marks(RegNo, CourseID, StudentName, Marks) with key {RegNo, CourseID}, the FD RegNo → StudentName is a partial dependency.",
+      answer: true,
+      explain: "True. StudentName is non-prime and depends on RegNo, which is only part of the key.",
+      link: "#types"
+    },
+    {
+      id: "q2.4-07",
+      topic: "2.4",
+      type: "mcq",
+      question: "F = {A → B, AB → C}. In AB → C, which attribute is extraneous?",
+      options: ["A", "B", "C", "None"],
+      answer: 1,
+      explain: "A+ = {A, B, C} using A → B, so A alone determines C. B is extraneous and the FD becomes A → C.",
+      link: "#cover"
+    },
+    {
+      id: "q2.4-08",
+      topic: "2.4",
+      type: "order",
+      question: "Put the steps for finding a canonical cover in order.",
+      options: ["Split every right side into single attributes", "Remove extraneous attributes from left sides", "Remove redundant FDs", "Combine FDs with the same left side"],
+      explain: "Split, simplify the left sides, drop redundant FDs, then combine with the union rule.",
+      link: "#cover"
     }
   ]);
 })();

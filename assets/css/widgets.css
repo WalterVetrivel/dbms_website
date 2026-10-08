@@ -3345,3 +3345,129 @@
   border-radius: var(--radius-sm);
   background: var(--warning-soft);
 }
+
+/* ---------- V8 Closure and key calculator ---------- */
+
+.fdc-setup {
+  border-top: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.fdc-fds {
+  flex: 1 1 100%;
+}
+
+.fdc-fds textarea {
+  min-height: 4.5rem;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  resize: vertical;
+}
+
+.fdc-setup input[type="text"] {
+  font-family: var(--font-mono);
+}
+
+.fdc-error {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: var(--fs-sm);
+}
+
+.fdc-error[hidden],
+[data-close-wrap][hidden] {
+  display: none;
+}
+
+.fdc-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-4);
+}
+
+@media (min-width: 760px) {
+  .fdc-grid {
+    grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+  }
+}
+
+.fdc-list {
+  margin: 0;
+  padding-left: 1.6rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.fdc-list li {
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-sm);
+}
+
+.fdc-list li.is-on {
+  background: var(--warning-soft);
+  font-weight: 700;
+}
+
+.fdc-list li.is-gone {
+  text-decoration: line-through;
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.fdc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fdc-chips li {
+  min-width: 2.4rem;
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  text-align: center;
+}
+
+.fdc-chips li.is-in {
+  border-style: solid;
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.fdc-chips li.is-new {
+  border-style: solid;
+  border-color: var(--warning);
+  background: var(--warning-soft);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.fdc-table tr.is-key td {
+  background: var(--success-soft);
+  font-weight: 700;
+}
+
+.fdc-table tr.is-hl td {
+  box-shadow: inset 0 -2px 0 var(--warning);
+}
+
+.fdc-keys {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--fs-sm);
+}

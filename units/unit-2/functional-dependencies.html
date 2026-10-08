@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Functional Dependencies | DBMS Study Guide</title>
+  <meta name="description" content="Learn functional dependencies: the definition, the types (trivial, full, partial, transitive), Armstrong's axioms, the closure of a set of FDs, attribute closure, candidate keys and the canonical cover, with a step-by-step calculator.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="2" data-topic="2.4" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-2">Unit II</span>
+            <span class="badge badge-level" title="Topic number">Topic 2.4</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO2</span>
+          </div>
+          <h1>Functional Dependencies</h1>
+          <p class="lead">A functional dependency is a rule such as “one roll number always has one name”. These rules decide the keys of a table and whether the table has redundancy. This page explains the rules, how to reason with them, and the three calculations asked in every exam: attribute closure, candidate keys and canonical cover.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define a functional dependency and check whether one holds on a table.</li>
+              <li>Name the types of functional dependencies with examples.</li>
+              <li>Use Armstrong's axioms to derive new dependencies.</li>
+              <li>Compute an attribute closure, find all candidate keys and find a canonical cover.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is a functional dependency?</a></li>
+            <li><a href="#types">Types of functional dependencies</a></li>
+            <li><a href="#axioms">Armstrong's axioms</a></li>
+            <li><a href="#closure-set">Closure of a set of FDs</a></li>
+            <li><a href="#attr-closure">Attribute closure</a></li>
+            <li><a href="#keys">Finding candidate keys</a></li>
+            <li><a href="#cover">Canonical cover</a></li>
+            <li><a href="#proof">Proving a key with the inference rules</a></li>
+            <li><a href="#try">Try it: closure and key calculator</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is a functional dependency?</h2>
+          <p>Look at this table. Every time RollNo is 1, Name is Anitha. One roll number never has two names.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Student</caption>
+              <thead><tr><th scope="col">RollNo</th><th scope="col">Name</th><th scope="col">Dept</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Anitha</td><td>CSE</td></tr>
+                <tr><td>2</td><td>Bharath</td><td>IT</td></tr>
+                <tr><td>3</td><td>Anitha</td><td>ECE</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>Let X and Y be sets of attributes of a relation R. The <strong>functional dependency</strong> X → Y holds on R if any two tuples that have the <strong>same value for X</strong> also have the <strong>same value for Y</strong>.</p>
+            <p>In symbols: if t1[X] = t2[X], then t1[Y] = t2[Y]. We read X → Y as “X functionally determines Y”. X is the <strong>determinant</strong> (left side) and Y is the <strong>dependent</strong> (right side).</p>
+          </div>
+          <ul>
+            <li><strong>RollNo → Name</strong> holds: a roll number gives exactly one name.</li>
+            <li><strong>Name → RollNo</strong> does not hold: “Anitha” has roll numbers 1 and 3.</li>
+            <li>If a table had two rows with RollNo 1, one with Anitha and one with Divya, then RollNo → Name would <strong>fail</strong> on that table.</li>
+          </ul>
+          <div class="callout callout-note">
+            <div class="callout-title">Note</div>
+            <p>An FD is a rule about <strong>every</strong> possible table, not only the rows you see today. We decide FDs from the meaning of the data. One table can show that an FD fails, but no table can prove that an FD holds.</p>
+          </div>
+          <p>An FD generalizes the idea of a key. K is a <strong>superkey</strong> of R exactly when K → R, that is, K determines every attribute.</p>
+        </section>
+
+        <section id="types" class="topic-section" aria-labelledby="types-title">
+          <h2 id="types-title">Types of functional dependencies</h2>
+          <p>We use Marks(RegNo, CourseID, StudentName, CourseName, Marks, Dept, HOD), where a student is in one department and each department has one HOD.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Types of FDs, with examples from Marks</caption>
+              <thead><tr><th scope="col">Type</th><th scope="col">Meaning</th><th scope="col">Example</th></tr></thead>
+              <tbody>
+                <tr><td>Trivial</td><td>Y is a subset of X. It always holds.</td><td>{RegNo, CourseID} → RegNo</td></tr>
+                <tr><td>Non-trivial</td><td>Y is not a subset of X.</td><td>RegNo → StudentName</td></tr>
+                <tr><td>Completely non-trivial</td><td>X and Y have no attribute in common.</td><td>CourseID → CourseName</td></tr>
+                <tr><td>Full</td><td>Y depends on the whole of X; remove any attribute from X and the FD fails.</td><td>{RegNo, CourseID} → Marks</td></tr>
+                <tr><td>Partial</td><td>A non-prime attribute depends on <strong>part</strong> of a candidate key.</td><td>RegNo → StudentName (RegNo is part of the key {RegNo, CourseID})</td></tr>
+                <tr><td>Transitive</td><td>X → Y and Y → Z give X → Z, where Y is not a key and Z is non-prime.</td><td>RegNo → Dept and Dept → HOD give RegNo → HOD</td></tr>
+                <tr><td>Multivalued</td><td>X determines a <strong>set</strong> of Y values (X →→ Y).</td><td>Covered in Multivalued Dependencies and Fourth Normal Form</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li>A <strong>prime attribute</strong> is part of some candidate key. A <strong>non-prime attribute</strong> is not part of any candidate key.</li>
+            <li>Partial dependencies break <strong>2NF</strong>, and transitive dependencies break <strong>3NF</strong>. See First, Second and Third Normal Forms.</li>
+          </ul>
+        </section>
+
+        <section id="axioms" class="topic-section" aria-labelledby="ax-title">
+          <h2 id="ax-title">Armstrong's axioms</h2>
+          <p>From some FDs we can <strong>infer</strong> (derive) others. Armstrong's axioms are three rules for this. X, Y, Z and W are sets of attributes.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Armstrong's axioms and the extra rules</caption>
+              <thead><tr><th scope="col">Rule</th><th scope="col">Statement</th><th scope="col">Example</th></tr></thead>
+              <tbody>
+                <tr><td>Reflexivity</td><td>If Y ⊆ X, then X → Y</td><td>AB → A</td></tr>
+                <tr><td>Augmentation</td><td>If X → Y, then XZ → YZ</td><td>A → B gives AC → BC</td></tr>
+                <tr><td>Transitivity</td><td>If X → Y and Y → Z, then X → Z</td><td>A → B and B → C give A → C</td></tr>
+                <tr><td>Union</td><td>If X → Y and X → Z, then X → YZ</td><td>A → B and A → C give A → BC</td></tr>
+                <tr><td>Decomposition</td><td>If X → YZ, then X → Y and X → Z</td><td>A → BC gives A → B</td></tr>
+                <tr><td>Pseudotransitivity</td><td>If X → Y and WY → Z, then WX → Z</td><td>A → B and CB → D give CA → D</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li>The first three are the <strong>axioms</strong>. The last three can be proved from them, so they are <strong>derived rules</strong>.</li>
+            <li>The axioms are <strong>sound</strong>: they never produce a false FD. They are <strong>complete</strong>: they produce every FD that follows from F.</li>
+          </ul>
+        </section>
+
+        <section id="closure-set" class="topic-section" aria-labelledby="cs-title">
+          <h2 id="cs-title">Closure of a set of FDs</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>The <strong>closure</strong> of a set of FDs F, written <strong>F<sup>+</sup></strong>, is the set of all FDs that can be inferred from F.</p>
+          </div>
+          <p>F<sup>+</sup> is very large, because it contains every trivial FD too. With 5 attributes it has thousands of FDs. So in practice we do not list F<sup>+</sup>. Instead we compute the closure of an <strong>attribute set</strong>, which answers the same questions much faster.</p>
+          <p>Two sets of FDs F and G are <strong>equivalent</strong> if F<sup>+</sup> = G<sup>+</sup>. A canonical cover is a smaller set equivalent to F.</p>
+        </section>
+
+        <section id="attr-closure" class="topic-section" aria-labelledby="ac-title">
+          <h2 id="ac-title">Attribute closure</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>The <strong>closure of an attribute set</strong> X under F, written <strong>X<sup>+</sup></strong>, is the set of all attributes that X determines.</p>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Algorithm</span>
+            <pre><code>result := X
+repeat
+  for each FD  Y → Z  in F do
+    if Y ⊆ result then result := result ∪ Z
+until result does not change
+return result</code></pre>
+          </div>
+          <h3>Worked example</h3>
+          <p>R(A, B, C, D, E) with F = {A → BC, CD → E, B → D, E → A}. Find A<sup>+</sup>.</p>
+          <div class="table-wrap">
+            <table class="worked">
+              <caption>Computing A<sup>+</sup></caption>
+              <thead><tr><th scope="col">Step</th><th scope="col">FD used</th><th scope="col">Result</th></tr></thead>
+              <tbody>
+                <tr><td>Start</td><td>Reflexivity</td><td>{A}</td></tr>
+                <tr><td>1</td><td>A → BC</td><td>{A, B, C}</td></tr>
+                <tr><td>2</td><td>B → D</td><td>{A, B, C, D}</td></tr>
+                <tr><td>3</td><td>CD → E</td><td>{A, B, C, D, E}</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>A<sup>+</sup> contains every attribute, so A is a superkey. In the same way, B<sup>+</sup> = {B, D}, C<sup>+</sup> = {C} and D<sup>+</sup> = {D}. Both E<sup>+</sup> and (CD)<sup>+</sup> are {A, B, C, D, E}.</p>
+          <h3>Uses of attribute closure</h3>
+          <ul>
+            <li><strong>Superkey test:</strong> X is a superkey if X<sup>+</sup> contains all attributes of R.</li>
+            <li><strong>FD test:</strong> X → Y is in F<sup>+</sup> if Y ⊆ X<sup>+</sup>.</li>
+            <li><strong>Computing F<sup>+</sup>:</strong> for each subset X, every Y ⊆ X<sup>+</sup> gives X → Y.</li>
+          </ul>
+        </section>
+
+        <section id="keys" class="topic-section" aria-labelledby="keys-title">
+          <h2 id="keys-title">Finding candidate keys</h2>
+          <p>A candidate key is a minimal set X with X<sup>+</sup> = all attributes. A quick method:</p>
+          <ol class="steps">
+            <li>An attribute that never appears on a <strong>right side</strong> must be in <strong>every</strong> key, because nothing else determines it.</li>
+            <li>An attribute that appears <strong>only</strong> on right sides is never needed in a key.</li>
+            <li>Start with the attributes from step 1. If their closure is everything, that is the only key.</li>
+            <li>Otherwise, add the other attributes one at a time, then two at a time, and test each closure. Skip any set that contains a key already found.</li>
+          </ol>
+          <p>For F = {A → BC, CD → E, B → D, E → A}, every attribute is on some right side. Testing single attributes gives the keys <strong>A</strong> and <strong>E</strong>. Testing pairs without A or E gives <strong>BC</strong> and <strong>CD</strong>:</p>
+          <ul>
+            <li>(BC)<sup>+</sup>: B → D gives BCD, CD → E gives BCDE, E → A gives ABCDE. So BC is a key.</li>
+            <li>(BD)<sup>+</sup> = {B, D} and (DE)<sup>+</sup> contains E, which is already a key.</li>
+          </ul>
+          <p>The candidate keys are <strong>A, E, BC and CD</strong>. All five attributes are prime.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>The notes' solution for this example lists D<sup>+</sup> as {ABCDE} and (CD)<sup>+</sup> as {ABCD}. The correct values are D<sup>+</sup> = {D} and (CD)<sup>+</sup> = {ABCDE}. The notes also miss the candidate key <strong>BC</strong>. Always test every combination, not just the ones in the FDs.</p>
+          </div>
+        </section>
+
+        <section id="cover" class="topic-section" aria-labelledby="cover-title">
+          <h2 id="cover-title">Canonical cover</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definitions</div>
+            <ul>
+              <li>An attribute of an FD is <strong>extraneous</strong> if we can remove it without changing F<sup>+</sup>.</li>
+              <li>A <strong>canonical cover</strong> F<sub>c</sub> (minimal cover) is a set of FDs equivalent to F. It has no extraneous attribute and no redundant FD, and no two of its FDs have the same left side.</li>
+            </ul>
+          </div>
+          <p>A canonical cover lets the DBMS check fewer, smaller FDs on every update. To find one:</p>
+          <ol class="steps">
+            <li><strong>Split</strong> every right side into single attributes (decomposition rule).</li>
+            <li><strong>Remove extraneous left-side attributes.</strong> In XA → B, A is extraneous if B ⊆ X<sup>+</sup>.</li>
+            <li><strong>Remove redundant FDs.</strong> X → B is redundant if B ⊆ X<sup>+</sup> computed <strong>without</strong> that FD.</li>
+            <li><strong>Combine</strong> FDs with the same left side (union rule).</li>
+          </ol>
+          <h3>Worked example</h3>
+          <p>F = {A → C, AC → D, B → ADE}.</p>
+          <div class="table-wrap">
+            <table class="worked">
+              <caption>Finding the canonical cover</caption>
+              <thead><tr><th scope="col">Step</th><th scope="col">Work</th><th scope="col">FDs</th></tr></thead>
+              <tbody>
+                <tr><td>1. Split</td><td>B → ADE becomes three FDs</td><td>A → C, AC → D, B → A, B → D, B → E</td></tr>
+                <tr><td>2. Left sides</td><td>In AC → D: A<sup>+</sup> = {A, C, D} contains D, so C is extraneous</td><td>A → C, A → D, B → A, B → D, B → E</td></tr>
+                <tr><td>3. Redundant</td><td>Without B → D: B<sup>+</sup> = {A, B, C, D, E} still has D, so remove it. The others are needed.</td><td>A → C, A → D, B → A, B → E</td></tr>
+                <tr><td>4. Combine</td><td>Union rule</td><td>A → CD, B → AE</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>So F<sub>c</sub> = {<strong>A → CD, B → AE</strong>}.</p>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>Remove extraneous left-side attributes <strong>before</strong> you remove redundant FDs. Doing it the other way can leave a redundant FD in the answer. Your notes remove redundant FDs first; in this example both orders give the same answer.</p>
+          </div>
+        </section>
+
+        <section id="proof" class="topic-section" aria-labelledby="proof-title">
+          <h2 id="proof-title">Proving a key with the inference rules</h2>
+          <p>R(A, B, C, D, E, F, G, H, I, J) with F = {AB → C, A → DE, B → F, F → GH, D → IJ}. Show that AB is a key.</p>
+          <ol>
+            <li>A → DE (given), so A → D and A → E (decomposition).</li>
+            <li>D → IJ (given) and A → D give A → IJ (transitivity).</li>
+            <li>A → DEIJ (union), and A → A (reflexivity), so A → ADEIJ (union).</li>
+            <li>B → F (given) and F → GH (given) give B → GH (transitivity), so B → BFGH (union with B → B and B → F).</li>
+            <li>From steps 3 and 4: AB → ADEIJ and AB → BFGH (augmentation), and AB → C (given).</li>
+            <li>Union: <strong>AB → ABCDEFGHIJ</strong>, so AB is a superkey.</li>
+            <li>A<sup>+</sup> = {A, D, E, I, J} and B<sup>+</sup> = {B, F, G, H}. Neither alone is a superkey, so AB is minimal: a <strong>candidate key</strong>.</li>
+          </ol>
+          <p>The page First, Second and Third Normal Forms splits this relation into 2NF and then 3NF tables.</p>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: closure and key calculator</h2>
+          <p>Pick an example from your notes or type your own relation and FDs. Choose what to compute, press Compute, then step through the work. Single-letter attributes can be typed together (ABCDE); longer names need commas.</p>
+          <div class="widget" data-widget="fd-calc" data-mode="closure">
+            <noscript><p class="widget-narration">The calculator needs JavaScript. For R(ABCDE) with A → BC, CD → E, B → D and E → A, the candidate keys are A, E, BC and CD.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Close X = BC for the first example. Which FD adds A?</li>
+              <li>Choose “Candidate keys” for the R(ABCD) example. Which attributes are prime?</li>
+              <li>Choose “Canonical cover” for the second example and compare it with the worked example above.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>PIN code</h3>
+              <p class="muted">PIN code → District and District → State. So PIN code → State is a transitive dependency. Postal software stores the state only once for each district.</p>
+            </div>
+            <div class="card">
+              <h3>IFSC</h3>
+              <p class="muted">IFSC → BankName, Branch, City. A payment form only asks for the IFSC and fills in the rest, because the FD guarantees one answer.</p>
+            </div>
+            <div class="card">
+              <h3>Train number</h3>
+              <p class="muted">TrainNo → TrainName, but (TrainNo, Date) → Status. The status depends on the whole key, not on the train number alone.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>X → Y: tuples that agree on X must agree on Y. FDs come from the meaning of the data.</li>
+              <li>Types: trivial, non-trivial, full, partial (on part of a key) and transitive (through a non-key).</li>
+              <li>Armstrong's axioms: reflexivity, augmentation and transitivity. Union, decomposition and pseudotransitivity are derived from them.</li>
+              <li>F<sup>+</sup> is every FD implied by F. X<sup>+</sup> is every attribute X determines.</li>
+              <li>X is a superkey if X<sup>+</sup> is all attributes; a candidate key if it is also minimal.</li>
+              <li>Attributes never on a right side are in every candidate key.</li>
+              <li>Canonical cover: split right sides, remove extraneous left-side attributes, remove redundant FDs, combine.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit II question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="2.4"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="2.4"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 7, Section 7.2.1 (functional dependencies) and Section 7.4 (functional dependency theory).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 14, Section 14.2 “Functional Dependencies”, and Chapter 15, Section 15.1 (inference rules, equivalence and minimal sets of FDs).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-2.js"></script>
+  <script src="../../data/quizzes/unit-2.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/fd.js"></script>
+  <script src="../../assets/js/widgets/fd-calc.js"></script>
+</body>
+</html>
