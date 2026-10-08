@@ -7,8 +7,8 @@
    "original" keeps the source wording; "question" is the corrected wording shown
    on the site. "parts" lists the a), b) sub-questions and "include" is the hint
    printed under some 16-mark questions; both are optional. "answer" is the 2-mark
-   answer (HTML), or null. "outline" links a 16-mark question to the worked answer
-   on a topic page, or is null. */
+   answer (HTML), or null. "outline" is true when a 16-mark question
+   has an answer outline in data/outlines, or null. */
 (function () {
   var D = (window.DBMS = window.DBMS || {});
   D.questions = (D.questions || []).concat([
@@ -254,7 +254,7 @@
       original: "Explain the architecture of distributed databases with a neat diagram.",
       question: "Explain the architecture of distributed databases with a neat diagram.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u5-b2",
@@ -266,7 +266,7 @@
       original: "Discuss the types of distributed databases (homogeneous, heterogeneous, federated, etc.) with examples.",
       question: "Discuss the types of distributed databases (homogeneous, heterogeneous, federated and others) with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u5-b3",
@@ -278,7 +278,7 @@
       original: "Describe transaction management in distributed databases. Explain the two-phase commit protocol.",
       question: "Describe transaction management in distributed databases. Explain the two-phase commit protocol.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u5-b4",
@@ -290,7 +290,7 @@
       original: "Explain the CAP theorem in detail. How does it apply to distributed systems?",
       question: "Explain the CAP theorem in detail. How does it apply to distributed systems?",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u5-b5",
@@ -302,7 +302,7 @@
       original: "Compare and contrast the four main types of NoSQL databases (document, key-value, column-based, graph) with examples.",
       question: "Compare and contrast the four main types of NoSQL databases (document, key-value, column-based and graph) with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u5-b6",
@@ -314,7 +314,7 @@
       original: "Explain document-based NoSQL databases. How do they differ from relational databases?",
       question: "Explain document-based NoSQL databases. How do they differ from relational databases?",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u5-b7",
@@ -326,7 +326,7 @@
       original: "Explain database security issues in detail.",
       question: "Explain database security issues in detail.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u5-b8",
@@ -338,7 +338,7 @@
       original: "Describe access control based on privileges and Role-Based Access Control (RBAC).",
       question: "Describe access control based on privileges and role-based access control (RBAC).",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u5-b9",
@@ -350,7 +350,7 @@
       original: "What is SQL injection? Explain its types, impacts, and prevention techniques.",
       question: "What is SQL injection? Explain its types, impacts and prevention techniques, with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u5-b10",
@@ -362,7 +362,7 @@
       original: "Explain encryption and public key infrastructures used in databases. What challenges are involved in database security?",
       question: "Explain encryption and the public key infrastructures used in databases. What challenges are involved in database security?",
       answer: null,
-      outline: null
+      outline: true
     }
   ]);
 })();

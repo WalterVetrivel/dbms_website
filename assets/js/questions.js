@@ -59,8 +59,13 @@
         '<div class="accordion-body">' + extra + '<p class="q-label">Sample answer</p>' + q.answer + (bank ? topicLinks(q) : "") + "</div></details>"
       );
     }
-    var more = q.outline
+    // outline: true links to the question's plan on its unit outline page;
+    // an { href, text } object links to a worked answer on a topic page.
+    var more = q.outline && q.outline.href
       ? '<a href="' + url(q.outline.href) + '">' + esc(q.outline.text) + "</a>"
+      : q.outline
+      ? '<a href="' + url("outlines/unit-" + q.unit + ".html#" + q.id) + '">' + D.icon("file-text") + "Open the answer outline</a>" +
+        ' <span class="muted">(a plan to fill in, not an answer: write about 5 pages)</span>'
       : '<span class="muted">An answer outline is coming soon.</span>';
     return (
       '<div class="q-item q-plain" id="q-' + q.id + '" data-part="' + q.part + '"><div class="q-head">' + head + "</div>" +

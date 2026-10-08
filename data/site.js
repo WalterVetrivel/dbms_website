@@ -1,5 +1,6 @@
 /* Site-wide settings and the list of main pages.
-   A page appears in the menus only when its status is "published". */
+   A page appears in the menus only when its status is "published".
+   navTitle, when given, is the shorter label used in the header. */
 window.DBMS = window.DBMS || {};
 
 DBMS.site = {
@@ -20,6 +21,7 @@ DBMS.site = {
 DBMS.pages = [
   { id: "home", title: "Home", href: "index.html", status: "published", nav: true },
   { id: "question-bank", title: "Question Banks", href: "question-bank/index.html", status: "published", nav: true, icon: "file-question", summary: "Important questions from every unit, with model answers for 2-mark questions." },
+  { id: "outlines", title: "16-Mark Outlines", navTitle: "Outlines", href: "outlines/index.html", status: "published", nav: true, icon: "file-text", summary: "A plan for every 16-mark question: the headings, diagrams, tables and examples to include." },
   { id: "labs", title: "Labs", href: "labs/index.html", status: "planned", nav: true, icon: "flask", summary: "All 10 lab exercises, with each sample solution explained step by step." },
   { id: "quizzes", title: "Quizzes", href: "quizzes/index.html", status: "published", nav: true, icon: "list-checks", summary: "A quiz for every topic and a 20-question quiz for every unit." },
   { id: "revision", title: "Revision", href: "revision/index.html", status: "published", nav: true, icon: "layers", summary: "A revision sheet for each unit with the key points of every topic." },

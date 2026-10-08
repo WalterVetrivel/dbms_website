@@ -7,8 +7,8 @@
    "original" keeps the source wording; "question" is the corrected wording shown
    on the site. "parts" lists the a), b) sub-questions and "include" is the hint
    printed under some 16-mark questions; both are optional. "answer" is the 2-mark
-   answer (HTML), or null. "outline" links a 16-mark question to the worked answer
-   on a topic page, or is null. */
+   answer (HTML), or null. "outline" is true when a 16-mark question
+   has an answer outline in data/outlines, or null. */
 (function () {
   var D = (window.DBMS = window.DBMS || {});
   D.questions = (D.questions || []).concat([
@@ -243,7 +243,7 @@
       original: "Draw an ER diagram for a university database system and map it into a relational schema.",
       question: "Draw an E-R diagram for a university database system and map it into a relational schema.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b2",
@@ -255,7 +255,7 @@
       original: "Explain in detail the steps in ER-to-relational mapping with suitable examples.",
       question: "Explain in detail the steps in ER-to-relational mapping with suitable examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b3",
@@ -267,7 +267,7 @@
       original: "Define functional dependency. Explain different types of functional dependencies with examples.",
       question: "Define functional dependency. Explain the different types of functional dependencies with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b4",
@@ -279,7 +279,7 @@
       original: "Discuss non-loss decomposition and dependency preservation with examples.",
       question: "Discuss non-loss decomposition and dependency preservation with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b5",
@@ -291,7 +291,7 @@
       original: "Explain 1NF, 2NF, 3NF, and BCNF with suitable examples.",
       question: "Explain 1NF, 2NF, 3NF and BCNF with suitable examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b6",
@@ -304,7 +304,7 @@
       question: "Write short notes on:",
       parts: ["Multivalued dependencies and 4NF", "Join dependencies and 5NF"],
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b7",
@@ -316,7 +316,7 @@
       original: "Discuss various SQL set operations with examples.",
       question: "Discuss the various SQL set operations with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b8",
@@ -328,7 +328,7 @@
       original: "Explain aggregate functions in SQL with examples.",
       question: "Explain aggregate functions in SQL with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b9",
@@ -341,7 +341,7 @@
       question: "Write SQL queries for the following:",
       parts: ["Using GROUP BY and HAVING", "Performing joins (inner, left, right and full)"],
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b10",
@@ -353,7 +353,7 @@
       original: "Explain subqueries in SQL with examples (single-row, multiple-row, correlated subqueries).",
       question: "Explain subqueries in SQL with examples (single-row, multiple-row and correlated subqueries).",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b11",
@@ -365,7 +365,7 @@
       original: "Define a view in SQL. Explain creation, modification, and deletion of views with examples.",
       question: "Define a view in SQL. Explain the creation, modification and deletion of views with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b12",
@@ -377,7 +377,7 @@
       original: "What are triggers? Explain types of triggers in SQL with syntax and examples.",
       question: "What are triggers? Explain the types of triggers in SQL with syntax and examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b13",
@@ -389,7 +389,7 @@
       original: "Compare and contrast different normal forms up to BCNF.",
       question: "Compare and contrast the different normal forms up to BCNF.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b14",
@@ -401,7 +401,7 @@
       original: "Write and explain the steps for converting an ER diagram into normalized relations.",
       question: "Write and explain the steps for converting an E-R diagram into normalized relations.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b15",
@@ -413,7 +413,7 @@
       original: "Explain dependency preservation and lossless join with examples.",
       question: "Explain dependency preservation and lossless join with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b16",
@@ -425,7 +425,7 @@
       original: "Draw an E-R diagram for a car-insurance company whose customers own one or more cars each. Each car has associated with it zero to any number of recorded accidents. State any assumptions you make.",
       question: "Draw an E-R diagram for a car insurance company whose customers own one or more cars each. Each car has zero or more recorded accidents. State any assumptions you make.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u2-b17",
@@ -437,7 +437,7 @@
       original: "Consider a relation R(StudentID, StudentName, CourseID, CourseName, Instructor). Identify partial and transitive dependencies and normalize R into 2NF, 3NF and BCNF with examples.",
       question: "Consider a relation R(StudentID, StudentName, CourseID, CourseName, Instructor). Identify the partial and transitive dependencies, and normalize R into 2NF, 3NF and BCNF with examples.",
       answer: null,
-      outline: null
+      outline: true
     }
   ]);
 })();

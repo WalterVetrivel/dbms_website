@@ -1349,3 +1349,153 @@ a.chip:hover {
   background: var(--danger-soft);
   font-size: var(--fs-sm);
 }
+
+/* 16-mark answer outlines */
+.q-more .icon {
+  margin-right: var(--sp-1);
+  vertical-align: -0.15em;
+}
+
+.ol-contents {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: var(--sp-4);
+  margin-bottom: var(--sp-6);
+}
+
+.ol-contents h2 {
+  margin-top: 0;
+  font-size: var(--fs-lg);
+}
+
+.ol-contents ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ol-contents li {
+  padding: var(--sp-1) 0;
+}
+
+.ol-contents a {
+  display: inline-flex;
+  gap: var(--sp-2);
+}
+
+.ol-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  padding: var(--sp-5);
+  margin-bottom: var(--sp-6);
+  scroll-margin-top: calc(var(--header-h) + var(--sp-4));
+}
+
+.ol-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+
+.ol-question {
+  flex: 1 1 20rem;
+  margin: 0;
+  font-size: var(--fs-md);
+  line-height: var(--lh-tight);
+}
+
+.ol-warn {
+  border-left: 4px solid var(--danger);
+  background: var(--danger-soft);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--fs-sm);
+}
+
+.ol-aim-label {
+  font-weight: 700;
+}
+
+.ol-see {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.ol-plan {
+  font-size: var(--fs-sm);
+}
+
+.ol-plan caption {
+  caption-side: top;
+  text-align: left;
+  font-weight: 600;
+  padding-bottom: var(--sp-2);
+}
+
+.ol-tag-draw { color: var(--primary); }
+.ol-tag-table { color: var(--accent); }
+.ol-tag-example { color: var(--warning); }
+
+.ol-sections {
+  list-style: none;
+  padding: 0;
+  margin: var(--sp-5) 0 0;
+}
+
+.ol-section {
+  border-top: 1px solid var(--border);
+  padding-top: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+
+.ol-section h3 {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-base);
+}
+
+.ol-sec-num {
+  color: var(--primary);
+}
+
+.ol-space {
+  font-weight: 400;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.ol-extra {
+  border-left: 3px solid var(--c, var(--border-strong));
+  padding-left: var(--sp-3);
+  margin: var(--sp-2) 0;
+}
+
+.ol-extra ul {
+  margin: 0;
+}
+
+.ol-extra-label {
+  margin: 0;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c, var(--text-muted));
+}
+
+.ol-draw { --c: var(--primary); }
+.ol-table { --c: var(--accent); }
+.ol-example { --c: var(--warning); }
+
+.ol-back {
+  margin: var(--sp-4) 0 0;
+  font-size: var(--fs-sm);
+}
+
+.ol-soon .ol-head {
+  margin-bottom: 0;
+}

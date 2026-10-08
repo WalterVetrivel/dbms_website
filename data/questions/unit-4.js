@@ -7,8 +7,8 @@
    "original" keeps the source wording; "question" is the corrected wording shown
    on the site. "parts" lists the a), b) sub-questions and "include" is the hint
    printed under some 16-mark questions; both are optional. "answer" is the 2-mark
-   answer (HTML), or null. "outline" links a 16-mark question to the worked answer
-   on a topic page, or is null. */
+   answer (HTML), or null. "outline" is true when a 16-mark question
+   has an answer outline in data/outlines, or null. */
 (function () {
   var D = (window.DBMS = window.DBMS || {});
   D.questions = (D.questions || []).concat([
@@ -291,7 +291,7 @@
       original: "Explain the different RAID levels (RAID 0 to RAID 6) with their advantages and disadvantages.",
       question: "Explain the different RAID levels (RAID 0 to RAID 6) with their advantages and disadvantages.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u4-b2",
@@ -303,7 +303,7 @@
       original: "Describe the various file organization techniques (heap, sequential, hashing, and clustered) and their use cases.",
       question: "Describe the various file organization techniques (heap, sequential, hashing and clustered) and their use cases.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u4-b3",
@@ -315,7 +315,7 @@
       original: "Explain how records are organized in files. Discuss fixed-length vs. variable-length records with examples.",
       question: "Explain how records are organized in files. Discuss fixed-length and variable-length records with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u4-b4",
@@ -327,7 +327,7 @@
       original: "With neat diagrams, explain the structure and operations (insertion, deletion, search) of a B-tree index file.",
       question: "With neat diagrams, explain the structure and operations (insertion, deletion and search) of a B tree index file.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u4-b5",
@@ -339,7 +339,7 @@
       original: "Compare B-tree and B+ tree index files. Illustrate with examples where B+ tree is preferred.",
       question: "Compare B tree and B+ tree index files. Illustrate with examples where a B+ tree is preferred.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u4-b6",
@@ -351,7 +351,7 @@
       original: "Explain ordered indices. Discuss primary, secondary, dense, and sparse indices with examples.",
       question: "Explain ordered indices. Discuss primary, secondary, dense and sparse indices with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u4-b7",
@@ -363,7 +363,7 @@
       original: "Explain static and dynamic hashing techniques. Illustrate how dynamic hashing resolves bucket overflow.",
       question: "Explain static and dynamic hashing techniques. Illustrate how dynamic hashing resolves bucket overflow.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u4-b8",
@@ -375,7 +375,7 @@
       original: "With an example, explain query processing steps from high-level SQL query to low-level execution plan.",
       question: "With an example, explain the query processing steps from a high-level SQL query to a low-level execution plan.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u4-b9",
@@ -387,7 +387,7 @@
       original: "Discuss heuristic-based query optimization rules with examples.",
       question: "Discuss heuristic-based query optimization rules with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u4-b10",
@@ -399,7 +399,7 @@
       original: "Explain cost-based query optimization. Show how cost estimation helps in selecting the best query execution plan.",
       question: "Explain cost-based query optimization. Show how cost estimation helps in selecting the best query execution plan.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u4-b11",
@@ -411,7 +411,7 @@
       original: "Construct a B+ Tree for the following set of key values: (2, 3, 5, 7, 11, 17, 19, 23, 29, 31). Assume that the tree is initially empty and the values are inserted in ascending order. Consider that each node can contain a maximum of Three pointers.",
       question: "Construct a B+ tree for the following set of key values: (2, 3, 5, 7, 11, 17, 19, 23, 29, 31). Assume that the tree is initially empty and the values are inserted in ascending order. Each node can contain a maximum of three pointers.",
       answer: null,
-      outline: { href: "units/unit-4/b-plus-tree-index-files.html#worked-example", text: "See the worked answer, step by step" }
+      outline: true
     }
   ]);
 })();

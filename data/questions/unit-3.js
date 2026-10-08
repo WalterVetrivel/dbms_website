@@ -7,8 +7,8 @@
    "original" keeps the source wording; "question" is the corrected wording shown
    on the site. "parts" lists the a), b) sub-questions and "include" is the hint
    printed under some 16-mark questions; both are optional. "answer" is the 2-mark
-   answer (HTML), or null. "outline" links a 16-mark question to the worked answer
-   on a topic page, or is null. */
+   answer (HTML), or null. "outline" is true when a 16-mark question
+   has an answer outline in data/outlines, or null. */
 (function () {
   var D = (window.DBMS = window.DBMS || {});
   D.questions = (D.questions || []).concat([
@@ -267,7 +267,7 @@
       original: "Explain ACID properties of a transaction with examples.",
       question: "Explain the ACID properties of a transaction with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b2",
@@ -279,7 +279,7 @@
       original: "What is serializability? Explain conflict and view serializability with examples.",
       question: "What is serializability? Explain conflict and view serializability with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b3",
@@ -291,7 +291,7 @@
       original: "Discuss the need for concurrency control and types of problems it addresses.",
       question: "Discuss the need for concurrency control and the types of problems it addresses.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b4",
@@ -303,7 +303,7 @@
       original: "Explain in detail the two-phase locking protocol and its types.",
       question: "Explain in detail the two phase locking protocol and its types.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b5",
@@ -315,7 +315,7 @@
       original: "What is a deadlock? Explain deadlock prevention, avoidance, and detection methods.",
       question: "What is a deadlock? Explain the deadlock prevention, avoidance and detection methods.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b6",
@@ -327,7 +327,7 @@
       original: "Explain transaction recovery techniques in detail.",
       question: "Explain transaction recovery techniques in detail.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b7",
@@ -340,7 +340,7 @@
       question: "Write short notes on:",
       parts: ["Savepoints", "Isolation levels"],
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b8",
@@ -352,7 +352,7 @@
       original: "Discuss SQL facilities for concurrency control and recovery with examples.",
       question: "Discuss the SQL facilities for concurrency control and recovery with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b9",
@@ -364,7 +364,7 @@
       original: "Explain backup and recovery systems in DBMS with techniques.",
       question: "Explain backup and recovery systems in a DBMS and their techniques.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b10",
@@ -376,7 +376,7 @@
       original: "Explain and give examples for DCL commands in SQL.",
       question: "Explain the DCL commands in SQL with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b11",
@@ -388,7 +388,7 @@
       original: "Explain and give examples for TCL commands in SQL.",
       question: "Explain the TCL commands in SQL with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b12",
@@ -400,7 +400,7 @@
       original: "Describe different isolation levels supported in SQL with examples.",
       question: "Describe the different isolation levels supported in SQL with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b13",
@@ -412,7 +412,7 @@
       original: "Write and explain the steps for transaction rollback and commit using SQL.",
       question: "Write and explain the steps for transaction rollback and commit using SQL.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b14",
@@ -424,7 +424,7 @@
       original: "Discuss types of schedules and their role in transaction processing.",
       question: "Discuss the types of schedules and their role in transaction processing, with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b15",
@@ -436,7 +436,7 @@
       original: "Explain shadow paging and log-based recovery.",
       question: "Explain shadow paging and log-based recovery.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b16",
@@ -448,7 +448,7 @@
       original: "Explain scheduling and serializability with examples.",
       question: "Explain schedules and serializability with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b17",
@@ -460,7 +460,7 @@
       original: "Explain how a deadlock can occur during the transaction management process with the help of an example.",
       question: "Explain with an example how a deadlock can occur during transaction processing.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u3-b18",
@@ -472,7 +472,7 @@
       original: "Describe the types of DCL and TCL commands in SQL and illustrate their usage with examples.",
       question: "Describe the types of DCL and TCL commands in SQL and illustrate their use with examples.",
       answer: null,
-      outline: null
+      outline: true
     }
   ]);
 })();

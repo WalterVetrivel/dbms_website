@@ -7,8 +7,8 @@
    "original" keeps the source wording; "question" is the corrected wording shown
    on the site. "parts" lists the a), b) sub-questions and "include" is the hint
    printed under some 16-mark questions; both are optional. "answer" is the 2-mark
-   answer (HTML), or null. "outline" links a 16-mark question to the worked answer
-   on a topic page, or is null. */
+   answer (HTML), or null. "outline" is true when a 16-mark question
+   has an answer outline in data/outlines, or null. */
 (function () {
   var D = (window.DBMS = window.DBMS || {});
   D.questions = (D.questions || []).concat([
@@ -284,7 +284,7 @@
       question: "Explain in detail the purpose of database systems and the views of data.",
       include: "Include data abstraction, data independence and the levels of architecture.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u1-b2",
@@ -297,7 +297,7 @@
       question: "Describe the types of data models in a DBMS with examples.",
       include: "Include the hierarchical, network, relational and object-based models.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u1-b3",
@@ -309,7 +309,7 @@
       original: "Illustrate the architecture of a DBMS with a neat diagram. Explain each component.",
       question: "Illustrate the architecture of a DBMS with a neat diagram. Explain each component.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u1-b4",
@@ -322,7 +322,7 @@
       question: "Explain the relational model in detail.",
       include: "Include terms such as tuples, attributes, domains, keys and integrity constraints.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u1-b5",
@@ -334,7 +334,7 @@
       original: "Explain in detail about relational algebra. With example.",
       question: "Explain relational algebra in detail with examples.",
       answer: null,
-      outline: null
+      outline: true
     },
     {
       id: "u1-b6",
@@ -347,7 +347,7 @@
       question: "Write and explain the basic structure of SQL queries. Also illustrate DDL and DML commands with examples.",
       include: "Include the CREATE, ALTER, INSERT, UPDATE, DELETE and SELECT statements.",
       answer: null,
-      outline: null
+      outline: true
     }
   ]);
 })();
