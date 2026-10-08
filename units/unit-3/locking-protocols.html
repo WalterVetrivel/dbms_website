@@ -156,7 +156,7 @@
             <div class="callout-title">Common mistake</div>
             <p>“Using locks” is not enough for serializability. <strong>When</strong> locks are released matters. A rule about lock and unlock timing, such as <a href="two-phase-locking.html">two phase locking</a>, is needed.</p>
           </div>
-          <p>If instead T1 and T2 delay their unlocks to the end, the wrong total cannot happen. But then a <strong>deadlock</strong> becomes possible: T1 holds X on B and waits for A, while T2 holds S on A and waits for B. See Deadlock.</p>
+          <p>If instead T1 and T2 delay their unlocks to the end, the wrong total cannot happen. But then a <strong>deadlock</strong> becomes possible: T1 holds X on B and waits for A, while T2 holds S on A and waits for B. See <a href="deadlock.html">Deadlock</a>.</p>
         </section>
 
         <section id="protocol" class="topic-section" aria-labelledby="protocol-title">

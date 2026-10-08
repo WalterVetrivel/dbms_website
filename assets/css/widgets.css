@@ -2245,3 +2245,117 @@
   fill: var(--danger);
   font-size: 10px;
 }
+
+/* ---------- V19 Deadlock simulator ---------- */
+
+.dl-table tr.is-ok td {
+  color: var(--success);
+}
+
+.dl-state {
+  display: inline-block;
+  margin-left: var(--sp-1);
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.dl-state.is-waiting {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.dl-state.is-aborted {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.dl-state.is-done {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.dl-graph-box {
+  flex-basis: 100%;
+}
+
+.dl-graph {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  font-family: var(--font-sans);
+}
+
+.dl-node circle {
+  fill: var(--surface);
+  stroke: var(--border-strong);
+  stroke-width: 2;
+}
+
+.dl-node.is-ready circle {
+  stroke: var(--u3);
+}
+
+.dl-node.is-waiting circle {
+  fill: var(--warning-soft);
+  stroke: var(--warning);
+}
+
+.dl-node.is-aborted circle {
+  fill: var(--danger-soft);
+  stroke: var(--danger);
+  stroke-dasharray: 4 3;
+}
+
+.dl-node.is-done circle {
+  fill: var(--success-soft);
+  stroke: var(--success);
+}
+
+.dl-name {
+  fill: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.dl-ts {
+  fill: var(--text-muted);
+  font-size: 10px;
+}
+
+.dl-edge {
+  fill: none;
+  stroke: var(--warning);
+  stroke-width: 2;
+}
+
+.dl-edge.is-bad {
+  stroke: var(--danger);
+  stroke-width: 3;
+}
+
+.dl-head {
+  fill: var(--warning);
+}
+
+.dl-head.is-bad {
+  fill: var(--danger);
+}
+
+.dl-label {
+  fill: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.dl-edges {
+  margin: var(--sp-1) 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}

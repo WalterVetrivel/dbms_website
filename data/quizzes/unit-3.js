@@ -519,6 +519,76 @@
       answer: true,
       explain: "True. An upgrade acts like getting a new lock, so it belongs to the growing phase. A downgrade belongs to the shrinking phase.",
       link: "#conversion"
+    },,
+    /* 3.8 Deadlock */
+    {
+      id: "q3.8-01",
+      topic: "3.8",
+      type: "mcq",
+      question: "Which condition is NOT one of the four conditions needed for deadlock?",
+      options: ["Mutual exclusion", "Hold and wait", "Circular wait", "Cascading rollback"],
+      answer: 3,
+      explain: "The four conditions are mutual exclusion, hold and wait, no preemption and circular wait. Cascading rollback is a different problem.",
+      link: "#what"
+    },
+    {
+      id: "q3.8-02",
+      topic: "3.8",
+      type: "mcq",
+      question: "In wait-die, an older transaction asks for a lock held by a younger one. What happens?",
+      options: ["The older one waits", "The older one dies", "The younger one is rolled back", "Both are rolled back"],
+      answer: 0,
+      explain: "In wait-die an older requester is allowed to wait. Only a younger requester dies.",
+      link: "#timestamps"
+    },
+    {
+      id: "q3.8-03",
+      topic: "3.8",
+      type: "mcq",
+      question: "In wound-wait, an older transaction asks for a lock held by a younger one. What happens?",
+      options: ["The older one waits", "The older one is rolled back", "The younger one is rolled back", "The lock is shared"],
+      answer: 2,
+      explain: "The older transaction wounds the younger holder, which is rolled back. The older one then gets the lock.",
+      link: "#timestamps"
+    },
+    {
+      id: "q3.8-04",
+      topic: "3.8",
+      type: "tf",
+      question: "In a wait-for graph, the system is in a deadlock if and only if the graph has a cycle.",
+      answer: true,
+      explain: "True. A cycle means each transaction on it waits for the next, so none can go on.",
+      link: "#detection"
+    },
+    {
+      id: "q3.8-05",
+      topic: "3.8",
+      type: "mcq",
+      question: "In wait-die and wound-wait, why does a rolled back transaction keep its old timestamp?",
+      options: ["To save disk space", "So it does not starve", "To make it younger", "So it can skip logging"],
+      answer: 1,
+      explain: "With its old timestamp, it becomes the oldest transaction in time and is no longer rolled back, so it cannot starve.",
+      link: "#timestamps"
+    },
+    {
+      id: "q3.8-06",
+      topic: "3.8",
+      type: "mcq",
+      question: "The system keeps picking the same transaction as the deadlock victim, so it restarts and is rolled back again and again. What is this called?",
+      options: ["Deadlock", "Livelock", "Lock point", "Lock conversion"],
+      answer: 1,
+      explain: "The transaction keeps changing state but never makes progress. This is livelock, a special case of starvation.",
+      link: "#livelock"
+    },
+    {
+      id: "q3.8-07",
+      topic: "3.8",
+      type: "mcq",
+      question: "What is the main demerit of the timeout scheme?",
+      options: ["It needs a wait-for graph", "It is hard to choose the waiting time", "It never rolls back anything", "It needs timestamps"],
+      answer: 1,
+      explain: "Too long a time leaves a deadlock in place; too short rolls back transactions that were only waiting.",
+      link: "#timeout"
     },
   ]);
 })();

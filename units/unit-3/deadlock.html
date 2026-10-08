@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deadlock | DBMS Study Guide</title>
+  <meta name="description" content="Learn what a deadlock is, with an example from two phase locking, and how a DBMS handles it: prevention (ordered locking, wait-die, wound-wait, timeout), detection with a wait-for graph, recovery by victim selection and rollback, and livelock and starvation. Includes a deadlock simulator.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="3" data-topic="3.8" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-3">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-3">Unit III</span>
+            <span class="badge badge-level" title="Topic number">Topic 3.8</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO3</span>
+          </div>
+          <h1>Deadlock</h1>
+          <p class="lead">Locking keeps schedules correct, but it lets transactions wait for each other. When they wait in a circle, none can ever go on. This page shows how a DBMS prevents such deadlocks, or finds and breaks them.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define deadlock and show how one forms between two transactions that use locks.</li>
+              <li>Apply the wait-die and wound-wait rules to decide which transaction waits and which is rolled back.</li>
+              <li>Draw a wait-for graph and use it to detect a deadlock.</li>
+              <li>Explain victim selection, rollback, starvation and livelock.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is a deadlock?</a></li>
+            <li><a href="#example">How a deadlock occurs</a></li>
+            <li><a href="#handling">Ways to handle deadlock</a></li>
+            <li><a href="#prevention">Deadlock prevention</a></li>
+            <li><a href="#timestamps">Wait-die and wound-wait</a></li>
+            <li><a href="#timeout">Timeout</a></li>
+            <li><a href="#detection">Detection with a wait-for graph</a></li>
+            <li><a href="#recovery">Recovery from deadlock</a></li>
+            <li><a href="#livelock">Starvation and livelock</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is a deadlock?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>deadlock</strong> is a state in which two or more transactions are each waiting for another to release a lock, in a circular chain. Every transaction in the set waits for some other transaction in the set, so none of them can ever go on.</p>
+          </div>
+          <p>A deadlock can form only when all four of these conditions hold at the same time:</p>
+          <ol>
+            <li><strong>Mutual exclusion:</strong> at least one lock cannot be shared. An exclusive (X) lock is held by one transaction only.</li>
+            <li><strong>Hold and wait:</strong> a transaction holds some locks while it waits for another.</li>
+            <li><strong>No preemption:</strong> a lock cannot be taken away from a transaction. It is released only by its holder.</li>
+            <li><strong>Circular wait:</strong> T<sub>0</sub> waits for T<sub>1</sub>, T<sub>1</sub> waits for T<sub>2</sub>, and so on, and the last waits for T<sub>0</sub>.</li>
+          </ol>
+          <p>Breaking any one condition prevents deadlock. Deadlocks are hard to avoid in general, so every DBMS that uses locks needs a plan for them.</p>
+        </section>
+
+        <section id="example" class="topic-section" aria-labelledby="example-title">
+          <h2 id="example-title">How a deadlock occurs</h2>
+          <p>Take T3 and T4 from <a href="two-phase-locking.html#demerits">Two Phase Locking</a>. T3 moves ₹50 from account B to account A. T4 reads A and B to display their total. Both follow two phase locking, but they lock the items in opposite order.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>T3 and T4 in deadlock</caption>
+              <thead><tr><th scope="col">Step</th><th scope="col">T3</th><th scope="col">T4</th><th scope="col">What happens</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td><code>lock-X(B)</code></td><td></td><td>Granted</td></tr>
+                <tr><td>2</td><td><code>read(B); B := B − 50; write(B)</code></td><td></td><td></td></tr>
+                <tr><td>3</td><td></td><td><code>lock-S(A)</code></td><td>Granted</td></tr>
+                <tr><td>4</td><td></td><td><code>read(A)</code></td><td></td></tr>
+                <tr><td>5</td><td></td><td><code>lock-S(B)</code></td><td>T3 holds X on B, so T4 waits for T3</td></tr>
+                <tr><td>6</td><td><code>lock-X(A)</code></td><td></td><td>T4 holds S on A, so T3 waits for T4</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>After step 6, T3 waits for T4 and T4 waits for T3. Neither can continue, and neither will ever release its lock. This is a deadlock. The system must roll back one of them; the other then gets its lock and finishes.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Note</div>
+            <p>Deadlock is the price of locking. If T3 had unlocked B before asking for A, there would be no deadlock, but T4 might see an inconsistent total. Rolling back a transaction from time to time is better than letting it see wrong data.</p>
+          </div>
+        </section>
+
+        <section id="handling" class="topic-section" aria-labelledby="handling-title">
+          <h2 id="handling-title">Ways to handle deadlock</h2>
+          <p>There are two main approaches:</p>
+          <ol>
+            <li><strong>Deadlock prevention:</strong> make sure the system never enters a deadlock. The DBMS inspects the operations a transaction is about to run. If an operation could create a deadlock, it is not allowed to wait; instead some transaction is rolled back at once. This works well when the chance of deadlock is high.</li>
+            <li><strong>Deadlock detection and recovery:</strong> let deadlocks happen, check for them from time to time, and break any that form. This works well when deadlocks are rare.</li>
+          </ol>
+          <p>Both approaches may roll back transactions. Prevention often rolls back a transaction even when no deadlock would have happened. Detection costs time to keep and check the wait-for graph.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Note on the word “avoidance”</div>
+            <p>Some notes call checking the wait-for graph “deadlock avoidance”, since the system watches every new wait. In textbooks, avoidance means deciding, before granting a request, whether it could ever lead to a deadlock. Wait-die and wound-wait are often called avoidance schemes for this reason. In an exam answer on prevention, avoidance and detection, use these three headings and explain each scheme under one of them.</p>
+          </div>
+        </section>
+
+        <section id="prevention" class="topic-section" aria-labelledby="prevention-title">
+          <h2 id="prevention-title">Deadlock prevention</h2>
+          <p>Prevention schemes break one of the four conditions.</p>
+          <ul>
+            <li><strong>Lock everything at the start (conservative 2PL).</strong> Each transaction locks all the items it needs before it begins, all or nothing. This removes hold and wait. It is hard to know all items in advance, and items stay locked for a long time.</li>
+            <li><strong>Lock items in a fixed order.</strong> Number all data items, and let each transaction lock items only in increasing order. A circular wait can then never form. In the example above, if both T3 and T4 had to lock A before B, there would be no deadlock.</li>
+            <li><strong>Preemption with timestamps.</strong> When a transaction must wait, compare timestamps and roll back one of the two transactions instead of letting a cycle form. This is wait-die and wound-wait, below.</li>
+            <li><strong>Timeout.</strong> Let a transaction wait only for a fixed time, then roll it back.</li>
+          </ul>
+        </section>
+
+        <section id="timestamps" class="topic-section" aria-labelledby="timestamps-title">
+          <h2 id="timestamps-title">Wait-die and wound-wait</h2>
+          <p>Each transaction gets a unique <strong>timestamp</strong> TS when it enters the system. A smaller timestamp means an <strong>older</strong> transaction. Suppose T<sub>i</sub> asks for a lock on an item that T<sub>j</sub> holds in a conflicting mode.</p>
+          <h3>Wait-die scheme (non-preemptive)</h3>
+          <ul>
+            <li>If TS(T<sub>i</sub>) &lt; TS(T<sub>j</sub>), that is T<sub>i</sub> is older, T<sub>i</sub> is allowed to <strong>wait</strong>.</li>
+            <li>If TS(T<sub>i</sub>) &gt; TS(T<sub>j</sub>), that is T<sub>i</sub> is younger, T<sub>i</sub> <strong>dies</strong>: it is rolled back and restarted later with the same timestamp.</li>
+          </ul>
+          <p>An older transaction may wait for a younger one, but a younger one never waits for an older one.</p>
+          <h3>Wound-wait scheme (preemptive)</h3>
+          <ul>
+            <li>If TS(T<sub>i</sub>) &lt; TS(T<sub>j</sub>), that is T<sub>i</sub> is older, T<sub>i</sub> <strong>wounds</strong> T<sub>j</sub>: T<sub>j</sub> is rolled back and restarted later with the same timestamp, and T<sub>i</sub> gets the lock.</li>
+            <li>If TS(T<sub>i</sub>) &gt; TS(T<sub>j</sub>), that is T<sub>i</sub> is younger, T<sub>i</sub> <strong>waits</strong>.</li>
+          </ul>
+          <p>A younger transaction may wait for an older one, but an older one never waits for a younger one.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>What happens when T<sub>i</sub> asks for a lock held by T<sub>j</sub></caption>
+              <thead><tr><th scope="col">Requester T<sub>i</sub> is</th><th scope="col">Wait-die</th><th scope="col">Wound-wait</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Older than T<sub>j</sub></th><td>T<sub>i</sub> waits</td><td>T<sub>j</sub> is rolled back (wounded)</td></tr>
+                <tr><th scope="row">Younger than T<sub>j</sub></th><td>T<sub>i</sub> is rolled back (dies)</td><td>T<sub>i</sub> waits</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>Why no deadlock?</strong> In wait-die, every wait goes from an older to a younger transaction; in wound-wait, every wait goes from a younger to an older one. Timestamps only increase along any chain of waits, so the chain can never loop back to its start.</p>
+          <p><strong>Why no starvation?</strong> In both schemes, it is always the <strong>younger</strong> transaction that is rolled back, and it keeps its <strong>old timestamp</strong> when it restarts. In time it becomes the oldest transaction in the system and is never rolled back again.</p>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>Read the names as what the <em>older</em> transaction does when it meets a younger one. Wait-die: the old one waits, the young one dies. Wound-wait: the old one wounds, the young one waits. In wait-die a young transaction may die many times before it gets its lock; wound-wait usually causes fewer rollbacks.</p>
+          </div>
+          <p><strong>Applied to T3 and T4.</strong> T3 entered first, so TS(T3) = 1 and TS(T4) = 2.</p>
+          <ul>
+            <li>Wait-die: at step 5, T4 (younger) asks for B, held by T3. T4 dies and releases A. T3 then gets A and finishes.</li>
+            <li>Wound-wait: at step 5, T4 (younger) waits. At step 6, T3 (older) asks for A, held by T4. T3 wounds T4, which is rolled back, and T3 gets A.</li>
+          </ul>
+        </section>
+
+        <section id="timeout" class="topic-section" aria-labelledby="timeout-title">
+          <h2 id="timeout-title">Timeout</h2>
+          <p>In the <strong>lock timeout</strong> scheme, a transaction that has waited for a lock longer than a fixed time is rolled back and restarted. If there was a deadlock, the rollback breaks it.</p>
+          <ul>
+            <li><strong>Merits:</strong> very simple; no graph or timestamps to keep.</li>
+            <li><strong>Demerits:</strong> it is hard to choose the time. Too long, and a deadlock blocks work for that long. Too short, and transactions that were only waiting behind a slow transaction are rolled back for nothing. Starvation is also possible.</li>
+          </ul>
+        </section>
+
+        <section id="detection" class="topic-section" aria-labelledby="detection-title">
+          <h2 id="detection-title">Detection with a wait-for graph</h2>
+          <p>The system keeps a directed <strong>wait-for graph</strong>:</p>
+          <ul>
+            <li>There is one node for each active transaction.</li>
+            <li>When T<sub>i</sub> asks for a lock on an item that T<sub>j</sub> holds, an edge T<sub>i</sub> → T<sub>j</sub> is added. It means “T<sub>i</sub> waits for T<sub>j</sub>”.</li>
+            <li>When T<sub>j</sub> releases the item and T<sub>i</sub> gets the lock, the edge is removed.</li>
+          </ul>
+          <div class="callout callout-definition">
+            <div class="callout-title">Rule</div>
+            <p>The system is in a deadlock <strong>if and only if</strong> the wait-for graph contains a cycle. Every transaction on the cycle is deadlocked.</p>
+          </div>
+          <figure class="figure">
+            <div class="widget-stage" tabindex="0">
+              <svg viewBox="0 0 400 200" width="400" role="img" aria-labelledby="wfg-svg-title" style="max-width:100%;height:auto">
+                <title id="wfg-svg-title">Wait-for graph with edges T1 to T2, T1 to T3, T3 to T2 and T2 to T4. A new edge T4 to T3, drawn in red, creates the cycle T2, T4, T3, T2.</title>
+                <defs>
+                  <marker id="wfg-arrow" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--text-muted)"/></marker>
+                  <marker id="wfg-arrow-bad" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--danger)"/></marker>
+                </defs>
+                <g style="stroke:var(--text-muted);stroke-width:2">
+                  <line x1="82" y1="91" x2="172" y2="52" marker-end="url(#wfg-arrow)"/>
+                  <line x1="82" y1="109" x2="172" y2="148" marker-end="url(#wfg-arrow)"/>
+                  <line x1="200" y1="136" x2="200" y2="70" marker-end="url(#wfg-arrow)"/>
+                  <line x1="222" y1="49" x2="312" y2="88" marker-end="url(#wfg-arrow)"/>
+                </g>
+                <line x1="318" y1="109" x2="228" y2="148" marker-end="url(#wfg-arrow-bad)" style="stroke:var(--danger);stroke-width:3;stroke-dasharray:6 4"/>
+                <g style="fill:var(--surface);stroke:var(--u3);stroke-width:2">
+                  <circle cx="60" cy="100" r="24"/>
+                  <circle cx="200" cy="40" r="24"/>
+                  <circle cx="200" cy="160" r="24"/>
+                  <circle cx="340" cy="100" r="24"/>
+                </g>
+                <g style="font:600 14px var(--font-sans);fill:var(--text)" text-anchor="middle">
+                  <text x="60" y="105">T1</text>
+                  <text x="200" y="45">T2</text>
+                  <text x="200" y="165">T3</text>
+                  <text x="340" y="105">T4</text>
+                </g>
+                <g style="font:12px var(--font-sans);fill:var(--danger)">
+                  <text x="290" y="150">new edge</text>
+                </g>
+              </svg>
+            </div>
+            <figcaption>T1 waits for T2 and T3, T3 waits for T2, and T2 waits for T4. There is no cycle, so no deadlock. When T4 asks for an item held by T3, the edge T4 → T3 closes the cycle T2 → T4 → T3 → T2, so T2, T3 and T4 are deadlocked. T1 is waiting, but it is not part of the deadlock.</figcaption>
+          </figure>
+          <p><strong>When to run the check?</strong> The detection algorithm can run each time a transaction must wait, or every few seconds. If deadlocks are frequent, it should run often; otherwise transactions stay blocked longer and the cycle may grow to include more transactions.</p>
+        </section>
+
+        <section id="recovery" class="topic-section" aria-labelledby="recovery-title">
+          <h2 id="recovery-title">Recovery from deadlock</h2>
+          <p>When a cycle is found, the system breaks it by rolling back one or more transactions in the cycle. Three steps are needed.</p>
+          <ol>
+            <li><strong>Select a victim.</strong> Choose the transaction whose rollback costs least. The cost depends on how long it has run and how much is left. It also depends on how many data items it has used, how many more it needs, and how many other transactions would be rolled back with it. The chosen transaction is called the <strong>victim</strong>, and this step is called <strong>victim selection</strong>.</li>
+            <li><strong>Roll back.</strong> A <strong>total rollback</strong> aborts the victim and restarts it from the beginning. A <strong>partial rollback</strong> undoes the victim only as far as needed to release the lock that breaks the cycle, and resumes from there. Partial rollback needs more information about the order of lock requests.</li>
+            <li><strong>Avoid starvation.</strong> If the same transaction is picked as the victim every time, it never finishes. The usual fix is to include the number of rollbacks in the cost, so a transaction can be picked only a few times.</li>
+          </ol>
+          <div class="callout callout-note">
+            <div class="callout-title">Note</div>
+            <p>It is not always right to roll back the younger transaction. It may be more important than the older one, or it may have done more work. The cost formula decides.</p>
+          </div>
+        </section>
+
+        <section id="livelock" class="topic-section" aria-labelledby="livelock-title">
+          <h2 id="livelock-title">Starvation and livelock</h2>
+          <p><strong>Starvation</strong> happens when a transaction waits for a lock forever, or is rolled back over and over, while others keep making progress. For example, a transaction waiting for an X lock may be passed over again and again while new transactions keep getting S locks on the same item.</p>
+          <p><strong>Livelock</strong> is a special case of starvation. It is like a deadlock, except that the transactions involved keep changing state: they are not blocked, yet none of them makes progress. Examples:</p>
+          <ul>
+            <li>The system keeps selecting the same transaction as the deadlock victim, so it restarts, deadlocks again and is rolled back again, forever.</li>
+            <li>Two transactions keep running into each other, both back off, both retry at the same moment, and collide again.</li>
+          </ul>
+          <div class="table-wrap">
+            <table>
+              <caption>Deadlock, livelock and starvation</caption>
+              <thead><tr><th scope="col"></th><th scope="col">Deadlock</th><th scope="col">Livelock</th><th scope="col">Starvation</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">State of the transactions</th><td>Blocked, waiting</td><td>Running, but no progress</td><td>One waits or restarts while others progress</td></tr>
+                <tr><th scope="row">Who is affected</th><td>All transactions in the cycle</td><td>The transactions that keep colliding</td><td>Usually one transaction</td></tr>
+                <tr><th scope="row">Cure</th><td>Prevention, or detection and rollback</td><td>Random delay before restart; fair victim choice</td><td>Fair lock queue; count rollbacks in victim cost; keep old timestamps</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Wait-die and wound-wait restart a transaction after a random delay and with its old timestamp. This prevents both livelock and starvation.</p>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>The widget starts with T3 and T4 and the wait-for graph. Press <strong>Play</strong> and watch the edges T4 → T3 and T3 → T4 form a cycle, and see which transaction is chosen as the victim. Then switch the scheme to wait-die or wound-wait and play the same transactions again.</p>
+          <div class="widget" data-widget="deadlock" data-scenario="two" data-scheme="detect">
+            <noscript><p class="widget-narration">The deadlock simulator needs JavaScript. The tables above show the same examples.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>With T3 and T4, which transaction is rolled back under wait-die, and which under wound-wait? At which step does each happen?</li>
+              <li>Choose “Three transactions wait in a circle” with detection. How long is the cycle, and which transaction is the victim?</li>
+              <li>Choose “Waiting in a chain, with no deadlock” and try every scheme. Which schemes roll back a transaction even though there was no deadlock?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>MySQL InnoDB</h3>
+              <p class="muted">InnoDB detects deadlocks automatically and rolls back the smaller transaction, the one that has changed fewer rows. The application gets error 1213, “Deadlock found when trying to get lock; try restarting transaction”, and should retry. A lock wait that is not a deadlock ends after <code>innodb_lock_wait_timeout</code>, 50 seconds by default.</p>
+            </div>
+            <div class="card">
+              <h3>A narrow lane</h3>
+              <p class="muted">Two cars enter a one-car lane from opposite ends and meet in the middle. Each waits for the other to back out, so neither moves: a deadlock. One driver must reverse (roll back). If both keep reversing and entering at the same moment, it is a livelock.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-points-title">
+          <h2 id="key-points-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Deadlock: a set of transactions each waiting for another in the set, in a circle.</li>
+              <li>Four conditions: mutual exclusion, hold and wait, no preemption, circular wait.</li>
+              <li>Prevention: lock all at start, lock in a fixed order, wait-die, wound-wait, timeout.</li>
+              <li>Wait-die: older waits, younger dies. Wound-wait: older wounds, younger waits.</li>
+              <li>The rolled back transaction keeps its old timestamp, so it does not starve.</li>
+              <li>Wait-for graph: edge T<sub>i</sub> → T<sub>j</sub> when T<sub>i</sub> waits for T<sub>j</sub>. A cycle means deadlock.</li>
+              <li>Recovery: select a victim, roll it back (total or partial), and avoid starvation.</li>
+              <li>Livelock: transactions keep changing state but never progress.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit III question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="3.8"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="3.8"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 18, Section 18.2 (deadlock handling: prevention, detection and recovery).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 21, Section 21.1.3 (dealing with deadlock and starvation).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-3.js"></script>
+  <script src="../../data/quizzes/unit-3.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/deadlock.js"></script>
+</body>
+</html>
