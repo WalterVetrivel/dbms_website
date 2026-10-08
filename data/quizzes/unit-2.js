@@ -854,6 +854,74 @@
       answer: 1,
       explain: "Text is compared character by character. 'Item9' is greater than 'Item10' because 9 comes after 1.",
       link: "#minmax"
+    },
+    {
+      id: "q2.13-01",
+      topic: "2.13",
+      type: "mcq",
+      question: "What does GROUP BY COMPANY do?",
+      options: ["Sorts rows by company", "Puts rows with the same company into one group, giving one result row per group", "Removes rows with NULL company", "Counts the companies"],
+      answer: 1,
+      explain: "GROUP BY forms groups. Aggregates in SELECT are then computed for each group. It does not promise any order.",
+      link: "#group-by"
+    },
+    {
+      id: "q2.13-02",
+      topic: "2.13",
+      type: "mcq",
+      question: "Which clause filters groups using an aggregate, such as SUM(COST) > 150?",
+      options: ["WHERE", "HAVING", "ORDER BY", "GROUP BY"],
+      answer: 1,
+      explain: "HAVING runs after grouping, so it can use aggregates. WHERE runs before groups exist.",
+      link: "#having"
+    },
+    {
+      id: "q2.13-03",
+      topic: "2.13",
+      type: "order",
+      question: "Put the clauses in the order the database runs them.",
+      options: ["FROM", "WHERE", "GROUP BY", "HAVING", "SELECT", "ORDER BY"],
+      explain: "Rows are read, filtered, grouped, groups are filtered, output columns are computed, then sorted.",
+      link: "#order"
+    },
+    {
+      id: "q2.13-04",
+      topic: "2.13",
+      type: "mcq",
+      question: "PRODUCT_MAST totals are Com1 335, Com2 165 and Com3 170. Which companies does HAVING SUM(COST) >= 170 keep?",
+      options: ["Com1 only", "Com1 and Com3", "Com1, Com2 and Com3", "Com3 only"],
+      answer: 1,
+      explain: "335 and 170 are at least 170; 165 is not.",
+      link: "#having"
+    },
+    {
+      id: "q2.13-05",
+      topic: "2.13",
+      type: "tf",
+      question: "SELECT COMPANY, PRODUCT, SUM(COST) FROM PRODUCT_MAST GROUP BY COMPANY; runs in MySQL 8.4 with default settings.",
+      answer: false,
+      explain: "False. PRODUCT is neither grouped nor aggregated, and the default ONLY_FULL_GROUP_BY mode rejects it.",
+      link: "#rules"
+    },
+    {
+      id: "q2.13-06",
+      topic: "2.13",
+      type: "multi",
+      question: "Which statements about WHERE and HAVING are true? Select all that apply.",
+      options: ["WHERE filters rows before grouping", "HAVING filters groups after grouping", "WHERE can use COUNT(*)", "A plain-column condition is better placed in WHERE"],
+      answer: [0, 1, 3],
+      explain: "WHERE cannot use aggregates. Plain-column conditions belong in WHERE, so fewer rows are grouped.",
+      link: "#where-having"
+    },
+    {
+      id: "q2.13-07",
+      topic: "2.13",
+      type: "mcq",
+      question: "SELECT COMPANY, SUM(COST) FROM PRODUCT_MAST WHERE QTY > 3 GROUP BY COMPANY; What is the result?",
+      options: ["Com1 150, Com2 170", "Com1 150, Com3 170", "Com1 335, Com3 170", "Com3 320"],
+      answer: 1,
+      explain: "Only Item4 (Com3, 50), Item7 (Com1, 150) and Item10 (Com3, 120) have QTY > 3. Com3's total is 50 + 120 = 170.",
+      link: "#group-by"
     }
   ]);
 })();

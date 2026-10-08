@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GROUP BY and HAVING | DBMS Study Guide</title>
+  <meta name="description" content="Learn how GROUP BY splits rows into groups so aggregate functions give one result per group, how HAVING filters those groups, how WHERE and HAVING differ, and the order in which SQL runs each clause, with tested MySQL examples and an animated clause-order demo.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="2" data-topic="2.13" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-2">Unit II</span>
+            <span class="badge badge-level" title="Topic number">Topic 2.13</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO2</span>
+          </div>
+          <h1>GROUP BY and HAVING</h1>
+          <p class="lead">Aggregate functions summarize a whole table. GROUP BY lets them summarize each part of it, such as the total cost per company or the average mark per department. HAVING then keeps only the groups you want. This page shows both, and the difference between HAVING and WHERE.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Write queries that use GROUP BY with one or more columns.</li>
+              <li>Filter groups with HAVING and explain how it differs from WHERE.</li>
+              <li>List the order in which SQL runs FROM, WHERE, GROUP BY, HAVING, SELECT and ORDER BY.</li>
+              <li>Spot and fix common GROUP BY errors.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#group-by">GROUP BY</a></li>
+            <li><a href="#rules">Rules for GROUP BY</a></li>
+            <li><a href="#having">HAVING</a></li>
+            <li><a href="#where-having">WHERE and HAVING compared</a></li>
+            <li><a href="#order">The order SQL runs the clauses</a></li>
+            <li><a href="#full">A full example</a></li>
+            <li><a href="#try">Try it: watch a query run</a></li>
+            <li><a href="#more">Grouping by several columns</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="group-by" class="topic-section" aria-labelledby="gb-title">
+          <h2 id="gb-title">GROUP BY</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>GROUP BY</strong> puts rows that have the same value in the given columns into one <strong>group</strong>. Each aggregate function in SELECT is then applied to each group separately, and the query returns <strong>one row per group</strong>.</p>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>SELECT column, aggregate_function(column)
+FROM table
+[WHERE condition]
+GROUP BY column
+[HAVING group_condition]
+[ORDER BY column];</code></pre>
+          </div>
+          <p>We use the PRODUCT_MAST table from <a href="aggregate-functions.html#sample">Aggregate Functions</a>: ten products of three companies.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT COMPANY, COUNT(*)
+FROM PRODUCT_MAST
+GROUP BY COMPANY
+ORDER BY COMPANY;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+----------+
+| COMPANY | COUNT(*) |
++---------+----------+
+| Com1    |        5 |
+| Com2    |        3 |
+| Com3    |        2 |
++---------+----------+</code></pre>
+          </div>
+          <p>The ten rows form three groups, so the result has three rows.</p>
+          <h3>GROUP BY with WHERE</h3>
+          <p>WHERE removes rows <strong>before</strong> they are grouped:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT COMPANY, SUM(COST)
+FROM PRODUCT_MAST
+WHERE QTY > 3
+GROUP BY COMPANY
+ORDER BY COMPANY;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+-----------+
+| COMPANY | SUM(COST) |
++---------+-----------+
+| Com1    |       150 |
+| Com3    |       170 |
++---------+-----------+</code></pre>
+          </div>
+          <p>Only Item4 (Com3, 50), Item7 (Com1, 150) and Item10 (Com3, 120) have QTY &gt; 3. Com2 has no such row, so it has no group at all.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes write this query without COMPANY in the SELECT list, and show the result as Com1 150 and Com2 170. Two things are wrong. Without COMPANY in SELECT, the output has no company column at all. And the second group is <strong>Com3</strong> (50 + 120 = 170), not Com2.</p>
+          </div>
+        </section>
+
+        <section id="rules" class="topic-section" aria-labelledby="rules-title">
+          <h2 id="rules-title">Rules for GROUP BY</h2>
+          <ol>
+            <li>Every column in SELECT must either be in GROUP BY or be inside an aggregate function. <code>SELECT COMPANY, PRODUCT, SUM(COST) ... GROUP BY COMPANY</code> is an error in MySQL 8.4: a group has five products, so which one should it show?</li>
+            <li>A column in GROUP BY does not have to appear in SELECT, but the result is hard to read without it.</li>
+            <li>All NULL values in a grouping column form <strong>one</strong> group.</li>
+            <li>GROUP BY does not promise any order. Add ORDER BY to sort the groups.</li>
+          </ol>
+          <div class="callout callout-tip">
+            <div class="callout-title">GROUP BY without aggregates</div>
+            <p><code>SELECT COMPANY FROM PRODUCT_MAST GROUP BY COMPANY;</code> returns each company once. It does the same job as <code>SELECT DISTINCT COMPANY</code>.</p>
+          </div>
+        </section>
+
+        <section id="having" class="topic-section" aria-labelledby="having-title">
+          <h2 id="having-title">HAVING</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>HAVING</strong> filters <strong>groups</strong> after GROUP BY has formed them. Its condition can use aggregate functions.</p>
+          </div>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT COMPANY, COUNT(*)
+FROM PRODUCT_MAST
+GROUP BY COMPANY
+HAVING COUNT(*) > 2
+ORDER BY COMPANY;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+----------+
+| COMPANY | COUNT(*) |
++---------+----------+
+| Com1    |        5 |
+| Com2    |        3 |
++---------+----------+</code></pre>
+          </div>
+          <p>Com3 has only 2 products, so its group is removed.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT COMPANY, SUM(COST)
+FROM PRODUCT_MAST
+GROUP BY COMPANY
+HAVING SUM(COST) >= 170
+ORDER BY COMPANY;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+-----------+
+| COMPANY | SUM(COST) |
++---------+-----------+
+| Com1    |       335 |
+| Com3    |       170 |
++---------+-----------+</code></pre>
+          </div>
+          <p>The totals are Com1 335, Com2 165 and Com3 170. Com2 is below 170, so it is removed.</p>
+        </section>
+
+        <section id="where-having" class="topic-section" aria-labelledby="wh-title">
+          <h2 id="wh-title">WHERE and HAVING compared</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>WHERE compared with HAVING</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">WHERE</th><th scope="col">HAVING</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Filters</th><td>Individual rows</td><td>Groups</td></tr>
+                <tr><th scope="row">Runs</th><td>Before GROUP BY</td><td>After GROUP BY</td></tr>
+                <tr><th scope="row">Aggregate functions</th><td>Not allowed</td><td>Allowed</td></tr>
+                <tr><th scope="row">Needs GROUP BY</th><td>No</td><td>Usually used with it (without it, the whole table is one group)</td></tr>
+                <tr><th scope="row">Example</th><td><code>WHERE RATE &gt;= 20</code></td><td><code>HAVING SUM(COST) &gt; 150</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>A condition on a plain column, such as <code>COMPANY = 'Com1'</code>, works in either place. Put it in WHERE: fewer rows are grouped, so the query is faster.</p>
+        </section>
+
+        <section id="order" class="topic-section" aria-labelledby="order-title">
+          <h2 id="order-title">The order SQL runs the clauses</h2>
+          <p>We write SELECT first, but the database runs it almost last:</p>
+          <ol class="steps">
+            <li><strong>FROM</strong>: take the rows of the table.</li>
+            <li><strong>WHERE</strong>: keep only the rows that pass the condition.</li>
+            <li><strong>GROUP BY</strong>: put the remaining rows into groups.</li>
+            <li><strong>HAVING</strong>: keep only the groups that pass the condition.</li>
+            <li><strong>SELECT</strong>: compute the output columns and aggregates.</li>
+            <li><strong>ORDER BY</strong>: sort the result.</li>
+          </ol>
+          <p>This order explains the rules. WHERE runs before groups exist, so it cannot use SUM. ORDER BY runs after SELECT, so it can use a column alias such as <code>total</code>. (MySQL also lets HAVING use an alias, but the SQL standard does not.)</p>
+        </section>
+
+        <section id="full" class="topic-section" aria-labelledby="full-title">
+          <h2 id="full-title">A full example</h2>
+          <p>For products with a rate of at least 20, show each company's number of items and total cost. Keep only companies whose total is over 150, largest first.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT COMPANY, COUNT(*) AS items, SUM(COST) AS total
+FROM PRODUCT_MAST
+WHERE RATE >= 20
+GROUP BY COMPANY
+HAVING SUM(COST) > 150
+ORDER BY total DESC;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+-------+-------+
+| COMPANY | items | total |
++---------+-------+-------+
+| Com1    |     3 |   285 |
+| Com2    |     3 |   165 |
++---------+-------+-------+</code></pre>
+          </div>
+          <ol class="steps">
+            <li>WHERE keeps the 7 products with RATE ≥ 20.</li>
+            <li>GROUP BY makes three groups: Com1 (Item3, Item6, Item7), Com2 (Item2, Item5, Item9) and Com3 (Item10).</li>
+            <li>The totals are 285, 165 and 120. HAVING removes Com3.</li>
+            <li>ORDER BY sorts by total, largest first.</li>
+          </ol>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: watch a query run</h2>
+          <p>This demo runs a GROUP BY and HAVING query on a student table, one clause at a time, in the order the database runs them.</p>
+          <div class="widget" data-widget="sql-order" data-preset="group">
+            <noscript><p class="widget-narration">The demo needs JavaScript. The query keeps students with marks of 50 or more, groups them by department, keeps departments whose average is over 70, and sorts by the average: ECE 87.5, then CSE 77.3.</p></noscript>
+          </div>
+          <p>The aggregate visualizer works on PRODUCT_MAST. Turn GROUP BY on and off, and change the filter, to see how the groups change.</p>
+          <div class="widget" data-widget="set-agg" data-mode="agg" data-fn="SUM" data-col="COST" data-group="1">
+            <noscript><p class="widget-narration">The visualizer needs JavaScript. SUM(COST) grouped by COMPANY gives Com1 335, Com2 165 and Com3 170.</p></noscript>
+          </div>
+        </section>
+
+        <section id="more" class="topic-section" aria-labelledby="more-title">
+          <h2 id="more-title">Grouping by several columns</h2>
+          <p>With two columns in GROUP BY, rows go into the same group only when <strong>both</strong> values match.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT COMPANY, RATE, COUNT(*) AS items, SUM(COST) AS total
+FROM PRODUCT_MAST
+GROUP BY COMPANY, RATE
+ORDER BY COMPANY, RATE;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+------+-------+-------+
+| COMPANY | RATE | items | total |
++---------+------+-------+-------+
+| Com1    |   10 |     2 |    50 |
+| Com1    |   25 |     1 |    75 |
+| Com1    |   30 |     2 |   210 |
+| Com2    |   20 |     1 |    40 |
+| Com2    |   25 |     2 |   125 |
+| Com3    |   10 |     1 |    50 |
+| Com3    |   30 |     1 |   120 |
++---------+------+-------+-------+</code></pre>
+          </div>
+          <p>Com1 now splits into three groups, one for each of its rates.</p>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Placement report</h3>
+              <p class="muted">GROUP BY dept counts the students placed in each department. HAVING COUNT(*) &gt;= 50 lists the departments that met the target.</p>
+            </div>
+            <div class="card">
+              <h3>Sales dashboard</h3>
+              <p class="muted">A shop groups sales by month to see monthly revenue, and uses HAVING to flag months with revenue below a goal.</p>
+            </div>
+            <div class="card">
+              <h3>Attendance</h3>
+              <p class="muted">GROUP BY roll number with HAVING AVG(present) &lt; 0.75 lists students who are short of attendance.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>GROUP BY forms groups of rows with equal values; aggregates then give one result per group.</li>
+              <li>Each SELECT column must be in GROUP BY or inside an aggregate.</li>
+              <li>HAVING filters groups and can use aggregates; WHERE filters rows and cannot.</li>
+              <li>Order of execution: FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY.</li>
+              <li>Put plain-column conditions in WHERE, so fewer rows are grouped.</li>
+              <li>GROUP BY does not sort; use ORDER BY.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit II question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="2.13"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="2.13"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 3, Section 3.7.2 (aggregation with grouping) and Section 3.7.3 (the having clause).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 7, Section 7.1.8 (grouping: the GROUP BY and HAVING clauses).</li>
+            <li>MySQL 8.4 Reference Manual: Section 14.19.3 (MySQL handling of GROUP BY).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-2.js"></script>
+  <script src="../../data/quizzes/unit-2.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/sql-order.js"></script>
+  <script src="../../assets/js/widgets/set-agg.js"></script>
+</body>
+</html>
