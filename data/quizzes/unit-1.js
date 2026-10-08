@@ -291,6 +291,71 @@
       answer: 0,
       explain: "The buffer manager fetches blocks into memory and decides what to cache.",
       link: "#storage-manager"
+    },
+    /* 1.5 Introduction to Relational Databases */
+    {
+      id: "q1.5-01",
+      topic: "1.5",
+      type: "mcq",
+      question: "A relational database is:",
+      options: [
+        "A collection of tables, each with a unique name",
+        "A tree of records linked by pointers",
+        "A single text file with all the data",
+        "A set of XML documents"
+      ],
+      answer: 0,
+      explain: "A relational database keeps all its data in tables, and each table has a unique name.",
+      link: "#what"
+    },
+    {
+      id: "q1.5-02",
+      topic: "1.5",
+      type: "mcq",
+      question: "How are two tables linked in a relational database?",
+      options: ["By pointers stored in each row", "By common values in matching columns", "By the order of their rows", "By storing both in one file"],
+      answer: 1,
+      explain: "Tables are linked only by matching values, such as the same RollNo in Student and Admission.",
+      link: "#linking"
+    },
+    {
+      id: "q1.5-03",
+      topic: "1.5",
+      type: "tf",
+      question: "If the rows of a table are shuffled, the table means something different.",
+      answer: false,
+      explain: "False. The order of rows in a table does not matter.",
+      link: "#tables"
+    },
+    {
+      id: "q1.5-04",
+      topic: "1.5",
+      type: "multi",
+      question: "Which of these are relational database management systems? Select all that apply.",
+      options: ["MySQL", "PostgreSQL", "Microsoft Excel", "Oracle Database"],
+      answer: [0, 1, 3],
+      explain: "MySQL, PostgreSQL and Oracle Database are RDBMS products. Excel is a spreadsheet, not a DBMS.",
+      link: "#products"
+    },
+    {
+      id: "q1.5-05",
+      topic: "1.5",
+      type: "mcq",
+      question: "Using the Student, Admission and Course tables on this page, which course did student 002 join?",
+      options: ["Computer Science", "Mechanical", "Civil", "None"],
+      answer: 1,
+      explain: "Admission has (002, 101), and course 101 is Mechanical.",
+      link: "#linking"
+    },
+    {
+      id: "q1.5-06",
+      topic: "1.5",
+      type: "mcq",
+      question: "Who proposed the relational model?",
+      options: ["Charles Bachman", "E. F. Codd", "Peter Chen", "Dennis Ritchie"],
+      answer: 1,
+      explain: "E. F. Codd of IBM proposed the relational model in 1970.",
+      link: "#what"
     }
   ]);
 })();
