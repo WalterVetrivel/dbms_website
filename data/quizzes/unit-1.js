@@ -356,6 +356,76 @@
       answer: 1,
       explain: "E. F. Codd of IBM proposed the relational model in 1970.",
       link: "#what"
+    },
+    /* 1.6 Relational Model */
+    {
+      id: "q1.6-01",
+      topic: "1.6",
+      type: "mcq",
+      question: "In the relational model, what is a row of a table called?",
+      options: ["Attribute", "Domain", "Tuple", "Schema"],
+      answer: 2,
+      explain: "A row is a tuple. A column is an attribute.",
+      link: "#terms"
+    },
+    {
+      id: "q1.6-02",
+      topic: "1.6",
+      type: "mcq",
+      question: "A relation has 5 columns and 20 rows. What are its degree and cardinality?",
+      options: ["Degree 20, cardinality 5", "Degree 5, cardinality 20", "Degree 25, cardinality 100", "Degree 5, cardinality 5"],
+      answer: 1,
+      explain: "Degree is the number of attributes (5). Cardinality is the number of tuples (20).",
+      link: "#definitions"
+    },
+    {
+      id: "q1.6-03",
+      topic: "1.6",
+      type: "mcq",
+      question: "What is the domain of an attribute?",
+      options: ["The name of the attribute", "The set of permitted values for the attribute", "The number of rows", "The table the attribute belongs to"],
+      answer: 1,
+      explain: "A domain is the set of values an attribute is allowed to take.",
+      link: "#definitions"
+    },
+    {
+      id: "q1.6-04",
+      topic: "1.6",
+      type: "tf",
+      question: "A NULL in a Salary column means the salary is zero.",
+      answer: false,
+      explain: "False. NULL means the value is unknown or does not apply. Zero is a known value.",
+      link: "#definitions"
+    },
+    {
+      id: "q1.6-05",
+      topic: "1.6",
+      type: "mcq",
+      question: "Which one changes often: the relation schema or the relation instance?",
+      options: ["The relation schema", "The relation instance", "Both change equally often", "Neither ever changes"],
+      answer: 1,
+      explain: "The instance changes with every insert, delete or update. The schema (the structure) changes rarely.",
+      link: "#definitions"
+    },
+    {
+      id: "q1.6-06",
+      topic: "1.6",
+      type: "multi",
+      question: "Which are properties of a relation? Select all that apply.",
+      options: ["No two tuples are identical", "The order of tuples does not matter", "Each cell may hold a list of values", "Each attribute name is unique in the relation"],
+      answer: [0, 1, 3],
+      explain: "Each cell holds a single atomic value, so a list of values is not allowed. The others are properties of every relation.",
+      link: "#properties"
+    },
+    {
+      id: "q1.6-07",
+      topic: "1.6",
+      type: "mcq",
+      question: "A Phone attribute stores “98400 12345, 94430 11111” in one cell. Why is this a problem?",
+      options: ["The value is not atomic", "The value is NULL", "The degree is too high", "The cardinality is zero"],
+      answer: 0,
+      explain: "The cell holds two phone numbers, so the value can be split. The relational model expects atomic values.",
+      link: "#definitions"
     }
   ]);
 })();

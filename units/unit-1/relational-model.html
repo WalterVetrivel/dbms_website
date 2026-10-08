@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Relational Model | DBMS Study Guide</title>
+  <meta name="description" content="Learn the terms of the relational model: relation, tuple, attribute, domain, atomic values, relation schema and instance, degree, cardinality and NULL, with a labeled table and a worked example.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="1" data-topic="1.6" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-1">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-1">Unit I</span>
+            <span class="badge badge-level" title="Topic number">Topic 1.6</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+          </div>
+          <h1>Relational Model</h1>
+          <p class="lead">The relational model has its own names for the parts of a table. This page labels each part on one table, works through the Staff table example, and lists the properties every relation has.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define relation, tuple, attribute and domain.</li>
+              <li>Tell a relation schema from a relation instance.</li>
+              <li>Find the degree and cardinality of a relation.</li>
+              <li>Explain NULL values and atomic domains.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#terms">The parts of a relation</a></li>
+            <li><a href="#definitions">Each term in detail</a></li>
+            <li><a href="#worked">Worked example: the Staff table</a></li>
+            <li><a href="#properties">Properties of a relation</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="terms" class="topic-section" aria-labelledby="terms-title">
+          <h2 id="terms-title">The parts of a relation</h2>
+          <p>In the relational model, a table is called a <strong>relation</strong>. The figure names every part of the Student relation.</p>
+          <figure class="figure">
+            <svg viewBox="0 0 620 250" width="620" height="250" role="img" aria-labelledby="rel-fig-title" style="max-width:100%;height:auto">
+              <title id="rel-fig-title">The Student relation with four attributes: RollNo, Name, Marks and Phone. The header row is the relation schema. Each row is a tuple. Each column is an attribute. The set of rows is the relation instance. There are four columns (degree 4) and three rows (cardinality 3).</title>
+              <g font-family="Inter, system-ui, sans-serif" font-size="13">
+                <text x="20" y="22" font-weight="700" style="fill:var(--text)">Student</text>
+                <rect x="20" y="34" width="440" height="34" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <g font-weight="700" style="fill:var(--text)">
+                  <text x="34" y="56">RollNo</text><text x="134" y="56">Name</text><text x="254" y="56">Marks</text><text x="354" y="56">Phone</text>
+                </g>
+                <rect x="20" y="68" width="440" height="102" style="fill:var(--surface);stroke:var(--border-strong)"/>
+                <rect x="20" y="102" width="440" height="34" stroke-width="2" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <rect x="240" y="34" width="100" height="136" fill="none" stroke-width="2.5" stroke-dasharray="6 4" style="stroke:var(--warning)"/>
+                <g style="fill:var(--text)">
+                  <text x="34" y="90">1</text><text x="134" y="90">Anitha</text><text x="254" y="90">88</text><text x="354" y="90">98400 12345</text>
+                  <text x="34" y="124">2</text><text x="134" y="124">Bharath</text><text x="254" y="124">83</text><text x="354" y="124">94430 67890</text>
+                  <text x="34" y="158">3</text><text x="134" y="158">Charan</text><text x="254" y="158">98</text><text x="354" y="158">90030 24680</text>
+                </g>
+                <g font-size="12" style="fill:var(--text-muted)">
+                  <text x="476" y="56">← relation schema</text>
+                  <text x="476" y="124">← a tuple (row)</text>
+                  <text x="476" y="160">rows 1–3: instance</text>
+                  <text x="240" y="194">↑ an attribute (column)</text>
+                  <text x="20" y="222">Degree = 4 attributes · Cardinality = 3 tuples</text>
+                </g>
+              </g>
+            </svg>
+            <figcaption>The header is the schema; the rows are the instance.</figcaption>
+          </figure>
+          <div class="table-wrap">
+            <table>
+              <caption>Relational model terms and everyday names</caption>
+              <thead><tr><th scope="col">Formal term</th><th scope="col">Everyday name</th><th scope="col">Meaning</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Relation</th><td>Table</td><td>A set of tuples that share the same attributes</td></tr>
+                <tr><th scope="row">Tuple</th><td>Row or record</td><td>One entry in the table: a set of related values</td></tr>
+                <tr><th scope="row">Attribute</th><td>Column or field</td><td>A named property, such as Marks</td></tr>
+                <tr><th scope="row">Domain</th><td>Allowed values</td><td>The set of values an attribute may take</td></tr>
+                <tr><th scope="row">Degree</th><td>Number of columns</td><td>How many attributes the relation has</td></tr>
+                <tr><th scope="row">Cardinality</th><td>Number of rows</td><td>How many tuples the relation has right now</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="definitions" class="topic-section" aria-labelledby="def-title">
+          <h2 id="def-title">Each term in detail</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definitions</div>
+            <ul>
+              <li><strong>Relation (table):</strong> a collection of data items arranged in rows and columns. A relation cannot have two identical rows.</li>
+              <li><strong>Tuple (row, record):</strong> a single entry in the table. It holds a set of related data. (2, Bharath, 83, 94430 67890) is one tuple.</li>
+              <li><strong>Attribute (column):</strong> one part of every record. Student has four attributes: RollNo, Name, Marks and Phone.</li>
+              <li><strong>Domain:</strong> for each attribute, the set of permitted values. The domain of Marks is the whole numbers from 0 to 100.</li>
+            </ul>
+          </div>
+          <h3>Relation schema and relation instance</h3>
+          <ul>
+            <li>A <strong>relation schema</strong> describes the structure of a relation: its name, its attributes and their types. It is written as <code>Student(RollNo, Name, Marks, Phone)</code>.</li>
+            <li>A <strong>relation instance</strong> is the set of tuples in the relation at one moment. It changes as rows are added, deleted or updated.</li>
+          </ul>
+          <p>The rows of Student with marks above 85 form a smaller set of tuples. That set is also an instance of the same schema.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Tuples of Student with Marks above 85</caption>
+              <thead><tr><th scope="col">RollNo</th><th scope="col">Name</th><th scope="col">Marks</th><th scope="col">Phone</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Anitha</td><td>88</td><td>98400 12345</td></tr>
+                <tr><td>3</td><td>Charan</td><td>98</td><td>90030 24680</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Atomic domains</h3>
+          <p>A domain is <strong>atomic</strong> if its values are treated as single units that cannot be divided. Marks (88) is atomic. A Phone attribute that holds two numbers, such as “98400 12345, 94430 11111”, is <strong>not atomic</strong>, because it can be split into parts. The relational model expects atomic values. This rule is the basis of First Normal Form in Unit II.</p>
+          <h3>NULL values</h3>
+          <p><strong>NULL</strong> is a special value that means <strong>unknown</strong> or <strong>does not apply</strong>. It is not zero and not a blank space.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Salary table with a NULL</caption>
+              <thead><tr><th scope="col">EmpID</th><th scope="col">Name</th><th scope="col">Salary</th></tr></thead>
+              <tbody>
+                <tr><td>E1</td><td>Divya</td><td>45000</td></tr>
+                <tr><td>E2</td><td>Ezhil</td><td>NULL</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Ezhil has just joined and the salary is not fixed yet, so it is unknown. A salary of 0 would mean something different: “works for free”.</p>
+          <h3>Degree and cardinality</h3>
+          <ul>
+            <li><strong>Degree</strong> = the number of attributes (columns). Student has degree 4.</li>
+            <li><strong>Cardinality</strong> = the number of tuples (rows). Student has cardinality 3.</li>
+          </ul>
+          <p>The degree is fixed by the schema. The cardinality changes as rows are inserted and deleted.</p>
+        </section>
+
+        <section id="worked" class="topic-section" aria-labelledby="worked-title">
+          <h2 id="worked-title">Worked example: the Staff table</h2>
+          <p>Find the number of columns, the number of tuples, the attributes, the degree and the cardinality of this relation.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Staff</caption>
+              <thead><tr><th scope="col">StaffID</th><th scope="col">Name</th><th scope="col">Sex</th><th scope="col">Designation</th><th scope="col">Salary</th><th scope="col">DOJ</th></tr></thead>
+              <tbody>
+                <tr><td>S101</td><td>Raghu</td><td>M</td><td>Professor</td><td>95000</td><td>2012-06-01</td></tr>
+                <tr><td>S102</td><td>Janani</td><td>F</td><td>Assistant Professor</td><td>60000</td><td>2019-07-15</td></tr>
+                <tr><td>S103</td><td>Kannan</td><td>M</td><td>Lab Assistant</td><td>25000</td><td>2021-01-04</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-example">
+            <div class="callout-title">Solution</div>
+            <ol>
+              <li>Number of columns = 6.</li>
+              <li>Number of tuples = 3.</li>
+              <li>Attributes: StaffID, Name, Sex, Designation, Salary and DOJ (date of joining).</li>
+              <li>Degree = number of columns = <strong>6</strong>.</li>
+              <li>Cardinality = number of rows = <strong>3</strong>.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="properties" class="topic-section" aria-labelledby="prop-title">
+          <h2 id="prop-title">Properties of a relation</h2>
+          <ol>
+            <li>Each relation has a <strong>unique name</strong> in the database.</li>
+            <li>Each attribute has a <strong>unique name</strong> within the relation.</li>
+            <li>Each cell holds a single, <strong>atomic</strong> value.</li>
+            <li>All values in a column come from the <strong>same domain</strong>.</li>
+            <li>There are <strong>no duplicate tuples</strong>: a relation is a set.</li>
+            <li>The <strong>order of tuples</strong> does not matter.</li>
+            <li>The <strong>order of attributes</strong> does not matter, as long as each value stays with its attribute.</li>
+          </ol>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>For “Explain the relational model in detail”, cover these terms with the labeled table, then add Keys (topic 1.7) and Constraints (topic 1.8) (entity and referential integrity). That covers all the points the question lists.</p>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Exam results sheet</h3>
+              <p class="muted">The result sheet on the notice board is a relation. Its column headings are the schema, each student's line is a tuple, and a student who was absent has a NULL mark, not zero.</p>
+            </div>
+            <div class="card">
+              <h3>Train chart</h3>
+              <p class="muted">The reservation chart has columns for coach, berth, name and age. Its degree stays the same every day, but its cardinality depends on how many people booked.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Relation = table, tuple = row, attribute = column.</li>
+              <li>A domain is the set of permitted values of an attribute; atomic values cannot be divided.</li>
+              <li>The relation schema is the structure; the relation instance is the set of tuples at one moment.</li>
+              <li>Degree = number of attributes; cardinality = number of tuples.</li>
+              <li>NULL means unknown or not applicable; it is not zero or blank.</li>
+              <li>A relation has no duplicate tuples, and the order of tuples does not matter.</li>
+            </ul>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Students often swap degree and cardinality. For the degree, count the column headings. For the cardinality, count the rows.</p>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit I question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="1.6"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="1.6"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 2, Sections 2.1 to 2.3.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 5, Section 5.1 (domains, attributes, tuples and relations; characteristics of relations).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-1.js"></script>
+  <script src="../../data/quizzes/unit-1.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+</body>
+</html>
