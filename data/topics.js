@@ -74,7 +74,7 @@ DBMS.topics = [
   { id: "1.13", unit: 1, slug: "dml", title: "DML", level: "L3", textbooks: ["S3", "E6"], covers: "INSERT, UPDATE, DELETE and SELECT", status: "published", prereqs: ["1.10", "1.12"], related: ["1.11", "2.12"] },
 
   // Unit II
-  { id: "2.1", unit: 2, slug: "entity-relationship-model", title: "Entity-Relationship Model", level: "L2", textbooks: ["S6", "E3"], covers: "Entities, attributes, relationships, mapping cardinality, participation and weak entity sets", status: "planned", prereqs: [], related: [] },
+  { id: "2.1", unit: 2, slug: "entity-relationship-model", title: "Entity-Relationship Model", level: "L2", textbooks: ["S6", "E3"], covers: "Entities, attributes, relationships, mapping cardinality, participation and weak entity sets", status: "published", prereqs: ["1.3"], related: ["2.2", "2.3", "1.7"], widgets: ["V6"] },
   { id: "2.2", unit: 2, slug: "er-diagrams", title: "E-R Diagrams", level: "L3", textbooks: ["S6", "E3"], covers: "E-R symbols and worked diagrams for a university, a bank and a car insurance company", status: "planned", prereqs: [], related: [] },
   { id: "2.3", unit: 2, slug: "er-to-relational-mapping", title: "ER-to-Relational Mapping", level: "L3", textbooks: ["S6", "E9"], covers: "Turning entities, relationships and attributes into tables", status: "planned", prereqs: [], related: [] },
   { id: "2.4", unit: 2, slug: "functional-dependencies", title: "Functional Dependencies", level: "L3", textbooks: ["S7", "E14"], covers: "Armstrong's axioms, closures, canonical cover and the types of dependencies", status: "planned", prereqs: [], related: [] },

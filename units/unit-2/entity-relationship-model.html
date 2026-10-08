@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entity-Relationship Model | DBMS Study Guide</title>
+  <meta name="description" content="Learn the E-R model: entities, entity sets, the types of attributes, relationship sets, mapping cardinality, participation and weak entity sets, with an interactive E-R notation explorer.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="2" data-topic="2.1" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-2">Unit II</span>
+            <span class="badge badge-level" title="Topic number">Topic 2.1</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO2</span>
+          </div>
+          <h1>Entity-Relationship Model</h1>
+          <p class="lead">Before we build tables, we draw a picture of the data. The Entity-Relationship (E-R) model describes the things a college or a bank keeps data about, and how those things are related. This page explains every part of the model, and the explorer shows each symbol on a university diagram.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Place the E-R model in the steps of database design.</li>
+              <li>Explain entities, entity sets, attributes and relationship sets with examples.</li>
+              <li>Tell the types of attributes apart: simple, composite, single-valued, multivalued, derived and key.</li>
+              <li>Explain mapping cardinality, participation and weak entity sets.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#design">Where the E-R model fits</a></li>
+            <li><a href="#entity">Entities and entity sets</a></li>
+            <li><a href="#attributes">Attributes and their types</a></li>
+            <li><a href="#relationship">Relationship sets</a></li>
+            <li><a href="#cardinality">Mapping cardinality</a></li>
+            <li><a href="#participation">Participation constraints</a></li>
+            <li><a href="#weak">Weak entity sets</a></li>
+            <li><a href="#try">Try it: E-R notation explorer</a></li>
+            <li><a href="#merits">Merits and demerits (advantages and disadvantages)</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="design" class="topic-section" aria-labelledby="design-title">
+          <h2 id="design-title">Where the E-R model fits</h2>
+          <p>A database is designed in steps. The E-R model is used in the first three.</p>
+          <ol class="steps">
+            <li><strong>Requirement analysis:</strong> talk to the users. Find out what data they need and what they do with it.</li>
+            <li><strong>Conceptual design:</strong> draw an <strong>E-R diagram</strong>. It is a simple, high-level picture of the data.</li>
+            <li><strong>Logical design:</strong> turn the E-R diagram into tables (relations). See ER-to-Relational Mapping, the third topic of this unit.</li>
+            <li><strong>Schema refinement:</strong> check the tables for redundancy and fix them by <strong>normalization</strong>.</li>
+            <li><strong>Physical design:</strong> choose indexes and file structures for speed.</li>
+            <li><strong>Application and security design:</strong> decide which users and programs may see or change which data.</li>
+          </ol>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>The <strong>Entity-Relationship (E-R) model</strong> is a high-level, conceptual data model. It describes the data as <strong>entities</strong>, their <strong>attributes</strong> and the <strong>relationships</strong> among them.</p>
+          </div>
+          <p>The E-R model has three basic ideas: entity sets, relationship sets and attributes.</p>
+        </section>
+
+        <section id="entity" class="topic-section" aria-labelledby="entity-title">
+          <h2 id="entity-title">Entities and entity sets</h2>
+          <p>Think of your college. Priya, a student with register number 7110231001, is one thing the college keeps data about. The course “Database Management System” is another.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definitions</div>
+            <ul>
+              <li>An <strong>entity</strong> is a real-world thing or object that can be told apart from all other objects. Example: the student Priya.</li>
+              <li>An <strong>entity set</strong> is a set of entities of the same type that share the same attributes. Example: all the students of the college.</li>
+            </ul>
+          </div>
+          <ul>
+            <li>An entity can be <strong>concrete</strong>, such as a person, a book or a car. It can also be <strong>abstract</strong>, such as a course, a loan or a holiday.</li>
+            <li>Entity sets do not have to be disjoint. A person can be in both the Student set and the Employee set, for example a research scholar who also teaches.</li>
+            <li>In an E-R diagram, an entity set is drawn as a <strong>rectangle</strong> with its name inside.</li>
+          </ul>
+          <p>Elmasri and Navathe call an entity set an <strong>entity type</strong>. This site uses the Silberschatz term, entity set.</p>
+        </section>
+
+        <section id="attributes" class="topic-section" aria-labelledby="attr-title">
+          <h2 id="attr-title">Attributes and their types</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>An <strong>attribute</strong> is a property that describes each entity of an entity set. Example: RollNo, Name and Phone of a student. The set of allowed values of an attribute is its <strong>domain</strong>.</p>
+          </div>
+          <p>In a diagram, an attribute is an <strong>ellipse</strong> joined to its entity set by a line. Attributes are of these types:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Types of attributes</caption>
+              <thead><tr><th scope="col">Type</th><th scope="col">Meaning</th><th scope="col">Example</th><th scope="col">Symbol</th></tr></thead>
+              <tbody>
+                <tr><td>Simple</td><td>Cannot be divided into smaller parts</td><td>RollNo, Age</td><td>Ellipse</td></tr>
+                <tr><td>Composite</td><td>Made of smaller sub-attributes</td><td>Name = First + Last; Address = Street + City + PIN</td><td>Ellipse with sub-attribute ellipses</td></tr>
+                <tr><td>Single-valued</td><td>One value for each entity</td><td>DOB of a student</td><td>Ellipse</td></tr>
+                <tr><td>Multivalued</td><td>A set of values for one entity</td><td>Phone numbers; degrees (BSc, MTech, PhD)</td><td>Double ellipse</td></tr>
+                <tr><td>Stored</td><td>The value is kept in the database</td><td>DOB</td><td>Ellipse</td></tr>
+                <tr><td>Derived</td><td>The value is calculated from other attributes</td><td>Age, from DOB</td><td>Dashed ellipse</td></tr>
+                <tr><td>Key</td><td>Different for every entity in the set</td><td>RegNo</td><td>Ellipse, name underlined</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li>An attribute can have the value <strong>NULL</strong> when a value does not apply (a student with no middle name) or is not known yet.</li>
+            <li>The types can combine. Address is composite <strong>and</strong> single-valued. Phone is simple <strong>and</strong> multivalued.</li>
+          </ul>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>Age is the standard example of a derived attribute. If you store Age, it is wrong next year. Store DOB and calculate Age when you need it.</p>
+          </div>
+        </section>
+
+        <section id="relationship" class="topic-section" aria-labelledby="rel-title">
+          <h2 id="rel-title">Relationship sets</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definitions</div>
+            <ul>
+              <li>A <strong>relationship</strong> is an association among two or more entities. Example: Priya <em>takes</em> the DBMS course.</li>
+              <li>A <strong>relationship set</strong> is a set of relationships of the same type. Example: Takes, the set of all (student, course) pairs where the student takes the course.</li>
+            </ul>
+          </div>
+          <ul>
+            <li>A relationship set is drawn as a <strong>diamond</strong>, joined by lines to the entity sets that take part. We say these entity sets <strong>participate</strong> in it.</li>
+            <li>The <strong>degree</strong> of a relationship set is the number of entity sets in it. Most are <strong>binary</strong> (degree 2).</li>
+            <li>A relationship set can have its own <strong>descriptive attributes</strong>. Grade belongs to Takes: it is the grade of one student in one course.</li>
+            <li>The job an entity does in a relationship is its <strong>role</strong>. Roles matter when one entity set appears twice, as in a <strong>recursive</strong> relationship. Example: in Prerequisite, one course is the main course and another is its prerequisite.</li>
+          </ul>
+          <h3>Ternary relationships</h3>
+          <p>A <strong>ternary</strong> relationship joins three entity sets. Suppose the price of a product depends on the product, the supplier <strong>and</strong> the customer. Then Price needs all three to identify it. We draw one diamond, Sells, joined to Product, Supplier and Customer, with Price as its attribute. Three separate binary relationships cannot store which supplier sold which product to which customer.</p>
+        </section>
+
+        <section id="cardinality" class="topic-section" aria-labelledby="card-title">
+          <h2 id="card-title">Mapping cardinality</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Mapping cardinality</strong> (cardinality ratio) is the number of entities to which another entity can be associated through a relationship set. It is used mostly for binary relationship sets.</p>
+          </div>
+          <figure class="figure">
+            <svg viewBox="0 0 640 190" width="640" height="190" role="img" aria-labelledby="card-fig-title" style="max-width:100%;height:auto">
+<title id="card-fig-title">Four mapping cardinalities shown as lines between entities of set A and set B.</title>
+<g font-family="Inter, system-ui, sans-serif" font-size="12">
+<rect x="10" y="28" width="140" height="150" rx="10" style="fill:var(--surface-2);stroke:var(--border)"/>
+<text x="80" y="18" text-anchor="middle" font-weight="700" style="fill:var(--text)">One to one (1 : 1)</text>
+<text x="40" y="48" text-anchor="middle" style="fill:var(--text-muted)">A</text><text x="120" y="48" text-anchor="middle" style="fill:var(--text-muted)">B</text>
+<line x1="40" y1="75" x2="120" y2="75" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="40" y1="115" x2="120" y2="115" style="stroke:var(--primary);stroke-width:2"/>
+<circle cx="40" cy="75" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="120" cy="75" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="40" cy="115" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="120" cy="115" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="40" cy="155" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="120" cy="155" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<rect x="170" y="28" width="140" height="150" rx="10" style="fill:var(--surface-2);stroke:var(--border)"/>
+<text x="240" y="18" text-anchor="middle" font-weight="700" style="fill:var(--text)">One to many (1 : N)</text>
+<text x="200" y="48" text-anchor="middle" style="fill:var(--text-muted)">A</text><text x="280" y="48" text-anchor="middle" style="fill:var(--text-muted)">B</text>
+<line x1="200" y1="75" x2="280" y2="75" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="200" y1="75" x2="280" y2="115" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="200" y1="115" x2="280" y2="155" style="stroke:var(--primary);stroke-width:2"/>
+<circle cx="200" cy="75" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="280" cy="75" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="200" cy="115" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="280" cy="115" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="200" cy="155" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="280" cy="155" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<rect x="330" y="28" width="140" height="150" rx="10" style="fill:var(--surface-2);stroke:var(--border)"/>
+<text x="400" y="18" text-anchor="middle" font-weight="700" style="fill:var(--text)">Many to one (N : 1)</text>
+<text x="360" y="48" text-anchor="middle" style="fill:var(--text-muted)">A</text><text x="440" y="48" text-anchor="middle" style="fill:var(--text-muted)">B</text>
+<line x1="360" y1="75" x2="440" y2="75" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="360" y1="115" x2="440" y2="75" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="360" y1="155" x2="440" y2="115" style="stroke:var(--primary);stroke-width:2"/>
+<circle cx="360" cy="75" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="440" cy="75" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="360" cy="115" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="440" cy="115" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="360" cy="155" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="440" cy="155" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<rect x="490" y="28" width="140" height="150" rx="10" style="fill:var(--surface-2);stroke:var(--border)"/>
+<text x="560" y="18" text-anchor="middle" font-weight="700" style="fill:var(--text)">Many to many (M : N)</text>
+<text x="520" y="48" text-anchor="middle" style="fill:var(--text-muted)">A</text><text x="600" y="48" text-anchor="middle" style="fill:var(--text-muted)">B</text>
+<line x1="520" y1="75" x2="600" y2="75" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="520" y1="75" x2="600" y2="115" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="520" y1="115" x2="600" y2="75" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="520" y1="115" x2="600" y2="155" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="520" y1="155" x2="600" y2="155" style="stroke:var(--primary);stroke-width:2"/>
+<circle cx="520" cy="75" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="600" cy="75" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="520" cy="115" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="600" cy="115" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="520" cy="155" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="600" cy="155" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+</g></svg>
+            <figcaption>Each line is one relationship between an entity of A and an entity of B.</figcaption>
+          </figure>
+          <div class="table-wrap">
+            <table>
+              <caption>The four mapping cardinalities, for a relationship between A and B</caption>
+              <thead><tr><th scope="col">Cardinality</th><th scope="col">Rule</th><th scope="col">Example</th></tr></thead>
+              <tbody>
+                <tr><td>One to one (1 : 1)</td><td>An entity in A is associated with <strong>at most one</strong> entity in B, and an entity in B with at most one entity in A.</td><td>A department has one head; a person heads at most one department.</td></tr>
+                <tr><td>One to many (1 : N)</td><td>An entity in A can be associated with <strong>any number</strong> of entities in B. An entity in B is associated with at most one entity in A.</td><td>One customer places many orders; each order belongs to one customer.</td></tr>
+                <tr><td>Many to one (N : 1)</td><td>An entity in A is associated with at most one entity in B. An entity in B can be associated with any number of entities in A.</td><td>Many students belong to one department.</td></tr>
+                <tr><td>Many to many (M : N)</td><td>An entity in A can be associated with any number of entities in B, and the other way round.</td><td>A student takes many courses; a course has many students.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>In Chen notation we write <strong>1</strong>, <strong>N</strong> or <strong>M</strong> on the lines. Silberschatz draws an <strong>arrow</strong> towards the “one” side and a plain line towards the “many” side. Both mean the same thing.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes define one to one as “associated with at least one entity”. The correct words are <strong>at most one</strong>. Cardinality gives the largest number of partners. Whether an entity must have a partner at all is a separate rule: participation.</p>
+          </div>
+        </section>
+
+        <section id="participation" class="topic-section" aria-labelledby="part-title">
+          <h2 id="part-title">Participation constraints</h2>
+          <ul>
+            <li><strong>Total participation:</strong> <strong>every</strong> entity in the entity set takes part in at least one relationship. Drawn with a <strong>double line</strong>. Example: every loan has a borrower, so Loan has total participation in Borrower.</li>
+            <li><strong>Partial participation:</strong> some entities may not take part. Drawn with a single line. Example: not every customer has a loan.</li>
+          </ul>
+          <p>Cardinality and participation together describe a relationship fully. “A customer has zero or more loans” is partial participation with the “many” cardinality.</p>
+        </section>
+
+        <section id="weak" class="topic-section" aria-labelledby="weak-title">
+          <h2 id="weak-title">Weak entity sets</h2>
+          <p>A college numbers the sections of each course as 1, 2 and 3. “Section 1” alone does not tell us which section we mean, because every course has a Section 1. We must say “Section 1 of course CS301”.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definitions</div>
+            <ul>
+              <li>A <strong>weak entity set</strong> is an entity set that does not have enough attributes to form a primary key. Its entities are identified through another entity set, the <strong>identifying</strong> (owner) entity set.</li>
+              <li>An entity set that has a primary key is a <strong>strong entity set</strong>.</li>
+              <li>The <strong>identifying relationship</strong> links the weak entity set to its owner.</li>
+              <li>The <strong>discriminator</strong> (partial key) is the set of attributes that tells apart the weak entities of one owner. Example: SecNo.</li>
+            </ul>
+          </div>
+          <ul>
+            <li>The primary key of a weak entity set is the <strong>primary key of the owner + the discriminator</strong>: (CourseID, SecNo).</li>
+            <li>A weak entity set always has <strong>total participation</strong> in its identifying relationship, and the relationship is many to one towards the owner.</li>
+            <li>Symbols: double rectangle for the weak entity set, double diamond for the identifying relationship, dashed underline for the discriminator.</li>
+          </ul>
+          <div class="table-wrap">
+            <table>
+              <caption>Strong and weak entity sets</caption>
+              <thead><tr><th scope="col">Strong entity set</th><th scope="col">Weak entity set</th></tr></thead>
+              <tbody>
+                <tr><td>Has a primary key of its own</td><td>Has only a partial key (discriminator)</td></tr>
+                <tr><td>Drawn as a single rectangle</td><td>Drawn as a double rectangle</td></tr>
+                <tr><td>Its key is underlined</td><td>Its discriminator has a dashed underline</td></tr>
+                <tr><td>Takes part in ordinary relationships (single diamond)</td><td>Joined to its owner by an identifying relationship (double diamond)</td></tr>
+                <tr><td>Participation may be total or partial</td><td>Always total participation in the identifying relationship</td></tr>
+                <tr><td>Example: Course</td><td>Example: Section of a course; Payment of a loan</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: E-R notation explorer</h2>
+          <p>This university diagram uses every symbol on this page. Tap a symbol type to highlight its shapes, or tap a shape to read what it means. Then change the cardinality of Advisor and read what each choice says about the college.</p>
+          <div class="widget" data-widget="er-notation" data-model="university">
+            <noscript><p class="widget-narration">The explorer needs JavaScript. The diagram has the entity sets Student, Course and Instructor, the weak entity set Section, and the relationship sets Takes, Advisor, Teaches and Sec_of.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Tap “Multivalued attribute”. Which attribute of Student can hold several values?</li>
+              <li>Tap the double line between Student and Advisor. What does it say about students?</li>
+              <li>Set Advisor to M : N. Which sentence in the narration changes?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="merits" class="topic-section" aria-labelledby="merits-title">
+          <h2 id="merits-title">Merits and demerits (advantages and disadvantages)</h2>
+          <h3>Merits (advantages)</h3>
+          <ul>
+            <li><strong>Easy to understand:</strong> the diagram is a simple picture. Users who are not experts can read it and find mistakes.</li>
+            <li><strong>Easy to convert to tables:</strong> each entity set and relationship set maps to relations in clear steps.</li>
+            <li><strong>Good for communication:</strong> designers, programmers and users discuss one shared picture.</li>
+            <li><strong>Independent of the DBMS:</strong> the same diagram can be built on MySQL, Oracle or any other system.</li>
+          </ul>
+          <h3>Demerits (disadvantages)</h3>
+          <ul>
+            <li>There is no single standard notation. Chen, crow's foot and UML diagrams all look different.</li>
+            <li>Some rules, such as “a student may take at most six courses”, cannot be shown in the diagram.</li>
+            <li>A diagram with hundreds of entity sets is hard to read.</li>
+          </ul>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Railway reservation</h3>
+              <p class="muted">Passenger, Train and Station are entity sets. Books links a passenger to a train, with the attributes PNR and Seat. A ticket's passenger list is a weak entity set: passenger 1, 2 and 3 of one PNR.</p>
+            </div>
+            <div class="card">
+              <h3>Online shopping</h3>
+              <p class="muted">Customer places Order is 1 : N. Order contains Product is M : N, with Quantity as an attribute of Contains.</p>
+            </div>
+            <div class="card">
+              <h3>EB bill</h3>
+              <p class="muted">A consumer has a service number (key) and a multivalued attribute Phone. Each monthly bill is a weak entity set of the service connection.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>The E-R model is a conceptual model built in the conceptual design step, before any table exists.</li>
+              <li>Entity set: rectangle. Attribute: ellipse. Relationship set: diamond.</li>
+              <li>Attribute types: simple or composite, single-valued or multivalued (double ellipse), stored or derived (dashed ellipse), and key (underlined).</li>
+              <li>Mapping cardinality: 1 : 1, 1 : N, N : 1 or M : N. It gives the largest number of partners.</li>
+              <li>Total participation (double line): every entity takes part. Partial (single line): some may not.</li>
+              <li>A weak entity set has no key of its own. Its key is the owner's key + its discriminator.</li>
+              <li>A relationship set can have descriptive attributes, such as Grade on Takes.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit II question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="2.1"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="2.1"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 6, Sections 6.1 to 6.5 (the E-R model, complex attributes, mapping cardinalities, primary keys and weak entity sets).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 3, Sections 3.1 to 3.5 (entity types, attributes, keys, relationship types and weak entity types).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-2.js"></script>
+  <script src="../../data/quizzes/unit-2.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/er-diagram.js"></script>
+</body>
+</html>
