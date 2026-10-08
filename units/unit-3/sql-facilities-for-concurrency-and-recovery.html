@@ -212,7 +212,7 @@ UNLOCK TABLES;</code></pre>
             <li><strong>ROLLBACK.</strong> InnoDB keeps the old version of each changed row in its <strong>undo log</strong>. ROLLBACK uses it to put the old values back.</li>
             <li><strong>SAVEPOINT.</strong> <a href="save-points.html">Savepoints</a> allow a partial rollback inside a transaction.</li>
             <li><strong>Automatic crash recovery.</strong> After a crash, InnoDB replays the redo log from the last checkpoint and rolls back transactions that had not committed, as soon as the server restarts. No command is needed.</li>
-            <li><strong>Backups and the binary log.</strong> For disk failures and human mistakes, use backups and the binary log. See Backup and Recovery System.</li>
+            <li><strong>Backups and the binary log.</strong> For disk failures and human mistakes, use backups and the binary log. See <a href="backup-and-recovery-system.html">Backup and Recovery System</a>.</li>
           </ul>
         </section>
 

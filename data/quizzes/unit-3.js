@@ -848,6 +848,66 @@
       answer: 1,
       explain: "InnoDB has rolled the transaction back to break the deadlock, so the program should retry it.",
       link: "#waits"
+    },,
+    /* 3.13 Backup and Recovery System */
+    {
+      id: "q3.13-01",
+      topic: "3.13",
+      type: "mcq",
+      question: "Which backup copies everything that changed since the last FULL backup?",
+      options: ["Full", "Incremental", "Differential", "Cold"],
+      answer: 2,
+      explain: "A differential backup is always compared with the last full backup. An incremental is compared with the last backup of any kind.",
+      link: "#types"
+    },
+    {
+      id: "q3.13-02",
+      topic: "3.13",
+      type: "mcq",
+      question: "Full backup on Sunday, incremental backups Monday to Wednesday, failure on Thursday. Which backups are restored?",
+      options: ["Sunday only", "Sunday and Wednesday", "Sunday, Monday, Tuesday and Wednesday", "Wednesday only"],
+      answer: 2,
+      explain: "With incremental backups you need the last full backup and every incremental after it, in order.",
+      link: "#example"
+    },
+    {
+      id: "q3.13-03",
+      topic: "3.13",
+      type: "tf",
+      question: "RAID 1 mirroring removes the need for backups.",
+      answer: false,
+      explain: "False. Mirroring copies every change at once, including mistakes like DROP TABLE, and does not protect against fire or theft.",
+      link: "#what"
+    },
+    {
+      id: "q3.13-04",
+      topic: "3.13",
+      type: "mcq",
+      question: "Someone dropped a table at 11:00. How do you get back every other change up to that moment?",
+      options: ["Restore the last full backup only", "Restore the last full backup, then replay the binary log up to just before 11:00", "Run ROLLBACK", "Restart the server"],
+      answer: 1,
+      explain: "This is point-in-time recovery: the backup gives the starting state and the binary log redoes the changes made after it.",
+      link: "#point-in-time"
+    },
+    {
+      id: "q3.13-05",
+      topic: "3.13",
+      type: "mcq",
+      question: "What does mysqldump --single-transaction do for InnoDB tables?",
+      options: ["Locks all tables during the backup", "Dumps from one consistent snapshot without blocking other users", "Backs up only one transaction", "Compresses the backup"],
+      answer: 1,
+      explain: "It starts a REPEATABLE READ transaction and reads from its snapshot, so the backup is consistent while others keep working.",
+      link: "#mysql"
+    },
+    {
+      id: "q3.13-06",
+      topic: "3.13",
+      type: "mcq",
+      question: "In a remote backup system, which commit level never loses a committed transaction but stops commits while either site is down?",
+      options: ["One-safe", "Two-safe", "Two-very-safe", "Hot-spare"],
+      answer: 2,
+      explain: "Two-very-safe commits only when the commit record is at both sites, so no commit can happen if one site is down.",
+      link: "#remote"
     },
   ]);
 })();

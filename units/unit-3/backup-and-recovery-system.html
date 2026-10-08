@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Backup and Recovery System | DBMS Study Guide</title>
+  <meta name="description" content="Learn how databases are backed up and restored: full, incremental and differential backups, logical and physical, hot and cold backups, the archival dump, the MySQL binary log, point-in-time recovery, and remote backup systems. Includes worked restore examples and MySQL commands.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="3" data-topic="3.13" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-3">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-3">Unit III</span>
+            <span class="badge badge-level" title="Topic number">Topic 3.13</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO3</span>
+          </div>
+          <h1>Backup and Recovery System</h1>
+          <p class="lead">Logs and crash recovery protect a database when memory is lost. They cannot help when the disk itself is destroyed, or when someone deletes a table by mistake. For that, a DBMS needs backups and a plan to restore them.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define backup and recovery, and list the failures that need a backup.</li>
+              <li>Compare full, incremental and differential backups, and work out which backups a restore needs.</li>
+              <li>Explain point-in-time recovery using a backup and the binary log.</li>
+              <li>Describe a remote backup system and how it takes over after a site failure.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">Backup and recovery</a></li>
+            <li><a href="#types">Full, incremental and differential backups</a></li>
+            <li><a href="#example">Worked example: a weekly plan</a></li>
+            <li><a href="#kinds">Other ways to classify backups</a></li>
+            <li><a href="#dump">Loss of non-volatile storage: the archival dump</a></li>
+            <li><a href="#point-in-time">Binary log and point-in-time recovery</a></li>
+            <li><a href="#mysql">Backup and restore in MySQL</a></li>
+            <li><a href="#remote">Remote backup systems</a></li>
+            <li><a href="#plan">A good backup plan</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">Backup and recovery</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>backup</strong> is a copy of the database, taken at a point in time and kept in a safe, separate place. <strong>Recovery</strong> is restoring the database to a correct, consistent state after a failure, using the backups and the logs.</p>
+          </div>
+          <p>Data can be lost in many ways:</p>
+          <ul>
+            <li><strong>Media failure:</strong> a disk or SSD breaks. <a href="../unit-4/raid.html">RAID</a> survives one failed disk, but not a fire, a theft or a failed controller.</li>
+            <li><strong>Human error:</strong> someone runs <code>DROP TABLE</code> or an <code>UPDATE</code> without a <code>WHERE</code> clause. The DBMS carries out the mistake and copies it to every replica at once.</li>
+            <li><strong>Software bugs and attacks:</strong> a faulty program or ransomware corrupts or encrypts the data.</li>
+            <li><strong>Disasters:</strong> flood, fire or power failure destroys a whole data centre.</li>
+          </ul>
+          <p>Crash recovery from <a href="transaction-recovery.html">Transaction Recovery</a> handles only the loss of main memory. Every failure above needs a backup.</p>
+          <p>Two numbers describe how good a backup plan is:</p>
+          <ul>
+            <li><strong>Recovery point objective (RPO):</strong> how much recent data you can afford to lose, for example “at most 15 minutes”.</li>
+            <li><strong>Recovery time objective (RTO):</strong> how long the restore may take, for example “back online within 1 hour”.</li>
+          </ul>
+        </section>
+
+        <section id="types" class="topic-section" aria-labelledby="types-title">
+          <h2 id="types-title">Full, incremental and differential backups</h2>
+          <ul>
+            <li>A <strong>full backup</strong> copies the whole database.</li>
+            <li>An <strong>incremental backup</strong> copies only what changed since the <strong>last backup of any kind</strong>, full or incremental.</li>
+            <li>A <strong>differential backup</strong> copies everything that changed since the <strong>last full backup</strong>.</li>
+          </ul>
+          <div class="table-wrap">
+            <table>
+              <caption>Backup types compared</caption>
+              <thead><tr><th scope="col"></th><th scope="col">Full</th><th scope="col">Incremental</th><th scope="col">Differential</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Copies</th><td>All data</td><td>Changes since the last backup</td><td>Changes since the last full backup</td></tr>
+                <tr><th scope="row">Backup time and space</th><td>Most</td><td>Least</td><td>Grows each day until the next full backup</td></tr>
+                <tr><th scope="row">To restore, you need</th><td>That one backup</td><td>The last full backup and every incremental after it, in order</td><td>The last full backup and the latest differential</td></tr>
+                <tr><th scope="row">Restore speed</th><td>Fastest</td><td>Slowest</td><td>Medium</td></tr>
+                <tr><th scope="row">Risk</th><td>Low</td><td>If one incremental is lost, later ones are useless</td><td>Low</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="example" class="topic-section" aria-labelledby="example-title">
+          <h2 id="example-title">Worked example: a weekly plan</h2>
+          <p>A college database takes a full backup every Sunday night and a smaller backup every other night. The disk fails on Thursday morning.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Which backups are needed to restore on Thursday morning?</caption>
+              <thead><tr><th scope="col">Plan</th><th scope="col">Sun</th><th scope="col">Mon</th><th scope="col">Tue</th><th scope="col">Wed</th><th scope="col">Backups to restore</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Full + incremental</th><td>Full</td><td>Changes of Mon</td><td>Changes of Tue</td><td>Changes of Wed</td><td>Sun full, then Mon, Tue and Wed incremental backups (4 backups)</td></tr>
+                <tr><th scope="row">Full + differential</th><td>Full</td><td>Changes of Mon</td><td>Changes of Mon–Tue</td><td>Changes of Mon–Wed</td><td>Sun full, then Wed differential (2 backups)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Either way, the changes made on Thursday morning before the failure are not in any backup. To get them back, apply the log, as in <a href="#point-in-time">point-in-time recovery</a> below.</p>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>Remember the difference by what each backup is compared with. Incremental: since the last backup. Differential: since the last full backup. A short table with the restore steps earns the marks.</p>
+          </div>
+        </section>
+
+        <section id="kinds" class="topic-section" aria-labelledby="kinds-title">
+          <h2 id="kinds-title">Other ways to classify backups</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Backup classifications</caption>
+              <thead><tr><th scope="col">Kind</th><th scope="col">Meaning</th><th scope="col">Example</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Logical</th><td>The data as SQL statements or text that can recreate it</td><td><code>mysqldump</code> output: CREATE TABLE and INSERT statements</td></tr>
+                <tr><th scope="row">Physical</th><td>An exact copy of the database files on disk</td><td>Copying the data directory; MySQL Enterprise Backup</td></tr>
+                <tr><th scope="row">Hot (online)</th><td>Taken while the database runs and accepts updates</td><td><code>mysqldump --single-transaction</code> on InnoDB tables</td></tr>
+                <tr><th scope="row">Cold (offline)</th><td>Taken after the database is shut down</td><td>Stop the server, copy the files, start it again</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Logical backups are portable between versions and machines but slow to restore for big databases. Physical backups are fast to restore but tied to the same product and version.</p>
+        </section>
+
+        <section id="dump" class="topic-section" aria-labelledby="dump-title">
+          <h2 id="dump-title">Loss of non-volatile storage: the archival dump</h2>
+          <p>The textbook method for surviving a disk failure is to <strong>dump</strong> the entire database to stable storage, such as tape or another site, from time to time. To take a dump, the system:</p>
+          <ol>
+            <li>Writes all log records in main memory to stable storage.</li>
+            <li>Writes all changed buffer blocks to disk.</li>
+            <li>Copies the contents of the database to stable storage.</li>
+            <li>Writes a <code>&lt;dump&gt;</code> record to the log on stable storage.</li>
+          </ol>
+          <p>After a disk failure, the system restores the database from the latest dump, then uses the log to <strong>redo</strong> every transaction that committed after the <code>&lt;dump&gt;</code> record. No undo is needed. This is the same idea as a full backup followed by the binary log.</p>
+          <p>A simple dump stops all transactions while it runs. A <strong>fuzzy dump</strong> lets transactions continue during the dump, and uses the log to fix up the changes made while copying.</p>
+        </section>
+
+        <section id="point-in-time" class="topic-section" aria-labelledby="point-in-time-title">
+          <h2 id="point-in-time-title">Binary log and point-in-time recovery</h2>
+          <p>MySQL writes every committed change to the <strong>binary log</strong>, a series of files on disk. It is separate from the InnoDB redo log. The redo log is for crash recovery and is reused in a circle; binary log files are kept as long as you need them. The binary log is turned on by default in MySQL 8.</p>
+          <p><strong>Point-in-time recovery</strong> brings the database back to its state at any chosen moment:</p>
+          <ol>
+            <li>Restore the latest full backup taken before that moment.</li>
+            <li>Replay the binary log from the point where the backup was taken, up to the chosen moment.</li>
+          </ol>
+          <p><strong>Example.</strong> The full backup was taken on Sunday at 23:00. On Wednesday at 11:00, someone runs <code>DROP TABLE marks;</code> by mistake. Restore the Sunday backup, then replay the binary log from Sunday 23:00 up to Wednesday 10:59:59, stopping just before the bad statement. Every other change up to that moment is kept.</p>
+          <div class="code-block">
+            <span class="code-label">Shell</span>
+            <pre><code>mysql -u root -p college &lt; sunday_full.sql
+mysqlbinlog --stop-datetime="2025-03-12 10:59:59" binlog.000041 binlog.000042 | mysql -u root -p</code></pre>
+          </div>
+          <p>The same log, sent to another server, keeps a <strong>replica</strong> up to date. That is how MySQL replication works.</p>
+        </section>
+
+        <section id="mysql" class="topic-section" aria-labelledby="mysql-title">
+          <h2 id="mysql-title">Backup and restore in MySQL</h2>
+          <div class="code-block">
+            <span class="code-label">Shell</span>
+            <pre><code># Logical full backup of one database, without locking InnoDB tables
+mysqldump -u root -p --single-transaction --routines --triggers college &gt; college_full.sql
+
+# Backup of every database
+mysqldump -u root -p --single-transaction --all-databases &gt; all_full.sql
+
+# Restore
+mysql -u root -p college &lt; college_full.sql</code></pre>
+          </div>
+          <ul>
+            <li><code>--single-transaction</code> starts a REPEATABLE READ transaction and dumps from its snapshot, so the backup is consistent and other users can keep working.</li>
+            <li><code>--routines</code> and <code>--triggers</code> also save stored procedures, functions and triggers.</li>
+            <li>For incremental backups in MySQL, save the binary log files written since the last full backup. Physical tools such as MySQL Enterprise Backup can also take incremental backups of the data files.</li>
+          </ul>
+        </section>
+
+        <section id="remote" class="topic-section" aria-labelledby="remote-title">
+          <h2 id="remote-title">Remote backup systems</h2>
+          <p>For high availability, the whole database is kept at a second site, the <strong>remote backup</strong>, far from the <strong>primary site</strong>. The primary sends its log records to the backup, which applies them to stay up to date. If the primary is destroyed, the backup takes over.</p>
+          <ul>
+            <li><strong>Detection of failure:</strong> the backup must know when the primary has failed, using several independent communication links so that a broken link is not mistaken for a failed site.</li>
+            <li><strong>Transfer of control:</strong> the backup becomes the new primary. When the old primary recovers, it can become the backup.</li>
+            <li><strong>Time to recover:</strong> the backup takes checkpoints of its own, so it has little log to process at takeover. A <strong>hot-spare</strong> backup applies log records as they arrive, so it can take over almost at once.</li>
+          </ul>
+          <p>When is a transaction committed? There is a trade-off between speed and safety:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Commit durability levels</caption>
+              <thead><tr><th scope="col">Level</th><th scope="col">Commits when the commit record is…</th><th scope="col">Risk</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">One-safe</th><td>Written to stable storage at the primary</td><td>Fastest; recent commits can be lost if the primary is destroyed</td></tr>
+                <tr><th scope="row">Two-very-safe</th><td>Written at both primary and backup</td><td>No loss, but no transaction can commit while either site is down</td></tr>
+                <tr><th scope="row">Two-safe</th><td>Written at both sites when both are up; at the primary alone when the backup is down</td><td>Good balance; used most often</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="plan" class="topic-section" aria-labelledby="plan-title">
+          <h2 id="plan-title">A good backup plan</h2>
+          <ul>
+            <li><strong>3-2-1 rule:</strong> keep at least <strong>3</strong> copies of the data, on <strong>2</strong> different kinds of storage, with <strong>1</strong> copy at another site.</li>
+            <li><strong>Automate</strong> backups on a schedule, and keep the binary logs between them.</li>
+            <li><strong>Test restores</strong> regularly. A backup that has never been restored may not work when it is needed.</li>
+            <li><strong>Protect</strong> backups with encryption and limited access, since they hold all the data.</li>
+            <li><strong>Remember:</strong> RAID and replication are not backups. They copy mistakes and deletions at once.</li>
+          </ul>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Banks</h3>
+              <p class="muted">Banks keep a disaster recovery site in another city. Log records flow to it all the time, so if the main data centre is lost, the other site can take over with little or no data lost.</p>
+            </div>
+            <div class="card">
+              <h3>Your phone</h3>
+              <p class="muted">A phone backs up to the cloud every night, but only the photos and chats that changed. That is an incremental backup. Restoring on a new phone downloads the full set plus every change since.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Backup: a copy of the database in a safe place. Recovery: restoring a correct state after failure.</li>
+              <li>Full copies everything; incremental copies changes since the last backup; differential copies changes since the last full backup.</li>
+              <li>Restore with incremental: full plus every incremental. With differential: full plus the latest differential.</li>
+              <li>Logical backups are SQL text; physical backups are file copies. Hot backups run while the database is in use.</li>
+              <li>Point-in-time recovery: restore the last full backup, then replay the binary log up to the chosen moment.</li>
+              <li>A remote backup site applies the primary's log and takes over if the primary fails.</li>
+              <li>RAID and replication are not backups.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit III question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="3.13"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="3.13"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 19, the sections on failure with loss of non-volatile storage and on remote backup systems.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 22, the section on database backup and recovery from catastrophic failures.</li>
+            <li>MySQL Reference Manual: the “Backup and Recovery” chapter, including “Point-in-Time (Incremental) Recovery”.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-3.js"></script>
+  <script src="../../data/quizzes/unit-3.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+</body>
+</html>
