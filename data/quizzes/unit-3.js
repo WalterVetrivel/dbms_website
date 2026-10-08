@@ -718,6 +718,76 @@
       answer: 1,
       explain: "COMMIT ends the transaction and removes all its savepoints, so SP1 no longer exists.",
       link: "#rules"
+    },,
+    /* 3.11 Isolation Levels */
+    {
+      id: "q3.11-01",
+      topic: "3.11",
+      type: "mcq",
+      question: "Which is the lowest isolation level that prevents dirty reads?",
+      options: ["READ UNCOMMITTED", "READ COMMITTED", "REPEATABLE READ", "SERIALIZABLE"],
+      answer: 1,
+      explain: "READ COMMITTED lets a transaction read only committed data, so dirty reads cannot happen.",
+      link: "#matrix"
+    },
+    {
+      id: "q3.11-02",
+      topic: "3.11",
+      type: "mcq",
+      question: "Which phenomenon can still occur at REPEATABLE READ in the SQL standard?",
+      options: ["Dirty read", "Non-repeatable read", "Phantom", "None"],
+      answer: 2,
+      explain: "Rows already read are locked, but new rows can be inserted into the range, so phantoms are possible.",
+      link: "#matrix"
+    },
+    {
+      id: "q3.11-03",
+      topic: "3.11",
+      type: "mcq",
+      question: "T1 counts the CSE students twice. Between the counts, T2 inserts a CSE student and commits. The second count is higher. What is this?",
+      options: ["Dirty read", "Non-repeatable read", "Phantom", "Lost update"],
+      answer: 2,
+      explain: "A new row now matches T1's condition. Such a row is a phantom.",
+      link: "#phenomena"
+    },
+    {
+      id: "q3.11-04",
+      topic: "3.11",
+      type: "tf",
+      question: "A higher isolation level gives more consistency but less concurrency.",
+      answer: true,
+      explain: "True. Stronger isolation needs more locking or checking, so transactions wait for each other more.",
+      link: "#what"
+    },
+    {
+      id: "q3.11-05",
+      topic: "3.11",
+      type: "mcq",
+      question: "What is the default isolation level in MySQL InnoDB?",
+      options: ["READ UNCOMMITTED", "READ COMMITTED", "REPEATABLE READ", "SERIALIZABLE"],
+      answer: 2,
+      explain: "InnoDB defaults to REPEATABLE READ and serves plain SELECT statements from a consistent snapshot.",
+      link: "#mysql"
+    },
+    {
+      id: "q3.11-06",
+      topic: "3.11",
+      type: "mcq",
+      question: "Which statement sets the isolation level for the next transaction?",
+      options: ["SET ISOLATION = 3;", "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;", "LOCK TABLE ISOLATION SERIALIZABLE;", "BEGIN SERIALIZABLE;"],
+      answer: 1,
+      explain: "SET TRANSACTION ISOLATION LEVEL is the SQL standard command.",
+      link: "#set"
+    },
+    {
+      id: "q3.11-07",
+      topic: "3.11",
+      type: "mcq",
+      question: "At READ COMMITTED, how long are shared (read) locks held in a lock-based system?",
+      options: ["Not taken at all", "Only while the row is being read", "Until the transaction ends", "Until the next checkpoint"],
+      answer: 1,
+      explain: "The shared lock is released straight after the read. That is why a second read may see a newer committed value.",
+      link: "#levels"
     },
   ]);
 })();
