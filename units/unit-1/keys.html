@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Keys | DBMS Study Guide</title>
+  <meta name="description" content="Learn the keys of the relational model: super key, candidate key, primary key, alternate key, composite key and foreign key, with one running example and an interactive key finder.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="1" data-topic="1.7" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-1">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-1">Unit I</span>
+            <span class="badge badge-level" title="Topic number">Topic 1.7</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+          </div>
+          <h1>Keys</h1>
+          <p class="lead">A key is how a database tells one row from another. This page builds every kind of key on one Student table, then links two tables with a foreign key. Use the key finder to test your own choices.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define super, candidate, primary, alternate, composite and foreign keys.</li>
+              <li>Find all candidate keys of a small relation.</li>
+              <li>Explain how the keys are related to each other.</li>
+              <li>Pick a suitable primary key and explain the choice.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#why">Why we need keys</a></li>
+            <li><a href="#super-key">Super key</a></li>
+            <li><a href="#candidate-key">Candidate key</a></li>
+            <li><a href="#primary-key">Primary key and alternate key</a></li>
+            <li><a href="#composite-key">Composite key</a></li>
+            <li><a href="#foreign-key">Foreign key</a></li>
+            <li><a href="#relation">How the keys fit together</a></li>
+            <li><a href="#try">Try it: key finder</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="why" class="topic-section" aria-labelledby="why-title">
+          <h2 id="why-title">Why we need keys</h2>
+          <p>Two students in your college can have the same name. If the office says “Change Priya's marks”, which Priya do they mean? The database needs a value, or a set of values, that is <strong>different for every row</strong>. That is a key.</p>
+          <p>We use this Student relation for every key on this page.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Student</caption>
+              <thead><tr><th scope="col">RegNo</th><th scope="col">RollNo</th><th scope="col">Dept</th><th scope="col">Name</th><th scope="col">Email</th></tr></thead>
+              <tbody>
+                <tr><td>7110231001</td><td>1</td><td>CSE</td><td>Priya</td><td>priya.k@kiot.in</td></tr>
+                <tr><td>7110231002</td><td>2</td><td>CSE</td><td>Arun</td><td>arun.s@kiot.in</td></tr>
+                <tr><td>7110231003</td><td>1</td><td>IT</td><td>Priya</td><td>priya.m@kiot.in</td></tr>
+                <tr><td>7110231004</td><td>2</td><td>IT</td><td>Meena</td><td>meena.v@kiot.in</td></tr>
+                <tr><td>7110231005</td><td>3</td><td>CSE</td><td>Arun</td><td>arun.r@kiot.in</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The college's rules: a register number (RegNo) and an email are never shared. Roll numbers start again at 1 in each department. Names can repeat.</p>
+        </section>
+
+        <section id="super-key" class="topic-section" aria-labelledby="super-title">
+          <h2 id="super-title">Super key</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>super key</strong> is a set of one or more attributes that, taken together, identify each tuple in the relation uniquely.</p>
+          </div>
+          <ul>
+            <li>{RegNo} is a super key. No two students share a register number.</li>
+            <li>{RegNo, Name} is also a super key. Adding Name to RegNo does not stop it from being unique.</li>
+            <li>{RollNo, Dept} is a super key. Roll number 1 appears twice, but only once in each department.</li>
+            <li>{Name} is <strong>not</strong> a super key. Rows 1 and 3 are both “Priya”.</li>
+            <li>{Dept, Name} is <strong>not</strong> a super key. Rows 2 and 5 are both “CSE, Arun”.</li>
+          </ul>
+          <p>Any set that contains a super key is also a super key. So a relation usually has many super keys, and the set of <strong>all</strong> attributes is always one.</p>
+        </section>
+
+        <section id="candidate-key" class="topic-section" aria-labelledby="cand-title">
+          <h2 id="cand-title">Candidate key</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>candidate key</strong> is a <strong>minimal</strong> super key: a super key from which no attribute can be removed without losing uniqueness.</p>
+          </div>
+          <p>Student has three candidate keys:</p>
+          <ol>
+            <li><strong>{RegNo}</strong></li>
+            <li><strong>{Email}</strong></li>
+            <li><strong>{RollNo, Dept}</strong>: remove either attribute and it is no longer unique.</li>
+          </ol>
+          <p>{RegNo, Name} is a super key but not a candidate key, because Name can be removed and RegNo alone is still unique.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Note</div>
+            <p>Every candidate key is a super key, but not every super key is a candidate key.</p>
+          </div>
+        </section>
+
+        <section id="primary-key" class="topic-section" aria-labelledby="pk-title">
+          <h2 id="pk-title">Primary key and alternate key</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definitions</div>
+            <ul>
+              <li><strong>Primary key:</strong> the candidate key chosen by the database designer as the main way to identify tuples in the relation.</li>
+              <li><strong>Alternate key:</strong> a candidate key that was <strong>not</strong> chosen as the primary key.</li>
+            </ul>
+          </div>
+          <p>The designer chooses <strong>RegNo</strong> as the primary key of Student. So {Email} and {RollNo, Dept} are alternate keys.</p>
+          <h3>Rules for a primary key</h3>
+          <ol>
+            <li>A relation has <strong>only one</strong> primary key.</li>
+            <li>A primary key may have one attribute or several.</li>
+            <li>Its value must be <strong>unique</strong> for every tuple.</li>
+            <li>Its value can <strong>never be NULL</strong> (the entity integrity rule, see Constraints, topic 1.8).</li>
+          </ol>
+          <h3>How to choose a good primary key</h3>
+          <ul>
+            <li>Pick a value that <strong>never changes</strong>. A student may change their email, but not their register number.</li>
+            <li>Pick a <strong>short</strong> key. It is copied into every table that refers to it.</li>
+            <li>Prefer one attribute to several when you can.</li>
+          </ul>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE student (
+  reg_no   CHAR(10)    PRIMARY KEY,         -- primary key
+  roll_no  INT         NOT NULL,
+  dept     VARCHAR(5)  NOT NULL,
+  name     VARCHAR(30) NOT NULL,
+  email    VARCHAR(40) NOT NULL UNIQUE,     -- alternate key
+  UNIQUE (roll_no, dept)                    -- alternate key (composite)
+);</code></pre>
+          </div>
+          <p>In SQL, the primary key is declared with <code>PRIMARY KEY</code>, and each alternate key with <code>UNIQUE</code>.</p>
+        </section>
+
+        <section id="composite-key" class="topic-section" aria-labelledby="comp-title">
+          <h2 id="comp-title">Composite key</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>composite key</strong> is a key made of <strong>two or more attributes</strong>. No single one of them is unique on its own, but together they are.</p>
+          </div>
+          <p>{RollNo, Dept} is a composite key. Another common example is a Marks table, where one student has marks in many courses:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Marks, with the composite primary key (RegNo, CourseID)</caption>
+              <thead><tr><th scope="col">RegNo</th><th scope="col">CourseID</th><th scope="col">Marks</th></tr></thead>
+              <tbody>
+                <tr><td>7110231001</td><td>CS301</td><td>88</td></tr>
+                <tr><td>7110231001</td><td>CS302</td><td>79</td></tr>
+                <tr><td>7110231002</td><td>CS301</td><td>91</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="foreign-key" class="topic-section" aria-labelledby="fk-title">
+          <h2 id="fk-title">Foreign key</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>foreign key</strong> is an attribute, or a set of attributes, in one relation that refers to the <strong>primary key of another relation</strong>.</p>
+          </div>
+          <p>The table that holds the foreign key is the <strong>child</strong> (referencing) table. The table it refers to is the <strong>parent</strong> (referenced) table.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Course (parent)</caption>
+              <thead><tr><th scope="col">CourseID (PK)</th><th scope="col">Title</th></tr></thead>
+              <tbody><tr><td>CS301</td><td>Database Management System</td></tr><tr><td>CS302</td><td>Operating Systems</td></tr></tbody>
+            </table>
+          </div>
+          <p>In the Marks table above, <strong>RegNo</strong> is a foreign key that refers to Student, and <strong>CourseID</strong> is a foreign key that refers to Course. Every CourseID in Marks must already exist in Course. You cannot enter marks for a course “CS999” that does not exist.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE marks (
+  reg_no    CHAR(10),
+  course_id CHAR(5),
+  marks     INT,
+  PRIMARY KEY (reg_no, course_id),
+  FOREIGN KEY (reg_no)    REFERENCES student (reg_no),
+  FOREIGN KEY (course_id) REFERENCES course (course_id)
+);</code></pre>
+          </div>
+          <p>Notice that RegNo is part of the primary key of Marks <strong>and</strong> a foreign key. A foreign key can repeat and, unless declared NOT NULL, can be NULL.</p>
+        </section>
+
+        <section id="relation" class="topic-section" aria-labelledby="rel-title">
+          <h2 id="rel-title">How the keys fit together</h2>
+          <figure class="figure">
+            <svg viewBox="0 0 520 230" width="520" height="230" role="img" aria-labelledby="keys-fig-title" style="max-width:100%;height:auto">
+              <title id="keys-fig-title">Nested sets: super keys contain candidate keys, which are split into one primary key and the alternate keys.</title>
+              <g font-family="Inter, system-ui, sans-serif" font-size="13">
+                <rect x="10" y="10" width="500" height="210" rx="16" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="26" y="34" font-weight="700" style="fill:var(--text)">Super keys</text>
+                <text x="26" y="54" font-size="12" style="fill:var(--text-muted)">for example {RegNo, Name}, {RegNo, Email, Dept}</text>
+                <rect x="40" y="70" width="440" height="136" rx="12" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="56" y="94" font-weight="700" style="fill:var(--text)">Candidate keys (minimal super keys)</text>
+                <rect x="60" y="110" width="150" height="80" rx="10" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="72" y="136" font-weight="700" style="fill:var(--text)">Primary key</text>
+                <text x="72" y="160" style="fill:var(--text)">{RegNo}</text>
+                <rect x="230" y="110" width="230" height="80" rx="10" style="fill:var(--surface);stroke:var(--primary)"/>
+                <text x="242" y="136" font-weight="700" style="fill:var(--text)">Alternate keys</text>
+                <text x="242" y="160" style="fill:var(--text)">{Email}, {RollNo, Dept}</text>
+              </g>
+            </svg>
+            <figcaption>Primary key ⊂ candidate keys ⊂ super keys.</figcaption>
+          </figure>
+          <ul>
+            <li><strong>Candidate keys</strong> = the minimal super keys.</li>
+            <li><strong>Primary key</strong> = the one candidate key the designer chooses.</li>
+            <li><strong>Alternate keys</strong> = candidate keys − primary key.</li>
+          </ul>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes write “candidate key = super key − primary key”. That is not right. Removing the primary key from the super keys leaves many non-minimal sets. The correct line is <strong>alternate keys = candidate keys − primary key</strong>. Also, a primary key such as (RollNo, Name) is not allowed if RollNo alone is unique, because a primary key must be a minimal key.</p>
+          </div>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: key finder</h2>
+          <p>Tick attributes of Student. The key finder says whether your set is a super key, a candidate key or neither. If it is not a key, it shows two rows that your set cannot tell apart.</p>
+          <div class="widget" data-widget="key-finder">
+            <noscript><p class="widget-narration">The key finder needs JavaScript. The candidate keys of Student are {RegNo}, {Email} and {RollNo, Dept}.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Tick RollNo and Name. Which two rows clash?</li>
+              <li>Tick RollNo, Dept and Name. Why is this a super key but not a candidate key?</li>
+            </ul>
+          </div>
+          <p>Keys come from the <strong>rules of the real world</strong>, not from one instance of the table. A set can look unique in a small table and still fail when a new student joins. If only rows 1, 2 and 4 existed, {Name} would look unique. But two students can have the same name, so Name is never a key. A key must stay unique for every row the college could ever add.</p>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Aadhaar and PAN</h3>
+              <p class="muted">A bank can identify a customer by Aadhaar number, PAN or account number. All three are candidate keys. The bank picks the account number as its primary key.</p>
+            </div>
+            <div class="card">
+              <h3>Train ticket</h3>
+              <p class="muted">The PNR identifies one booking. Within it, a passenger is identified by (PNR, passenger number): a composite key.</p>
+            </div>
+            <div class="card">
+              <h3>Online order</h3>
+              <p class="muted">An order row stores the customer ID, a foreign key that refers to the Customer table. The site cannot accept an order for a customer who does not exist.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Super key: one or more attributes that identify each tuple uniquely.</li>
+              <li>Candidate key: a minimal super key.</li>
+              <li>Primary key: the candidate key chosen by the designer; unique and never NULL; only one per relation.</li>
+              <li>Alternate key: a candidate key that is not the primary key.</li>
+              <li>Composite key: a key with two or more attributes.</li>
+              <li>Foreign key: attributes in a child table that refer to the primary key of a parent table.</li>
+              <li>Every candidate key is a super key; not every super key is a candidate key.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit I question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="1.7"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="1.7"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 2, Section 2.3 “Keys”.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 5, Section 5.2.2 (key constraints) and Section 5.2.4 (referential integrity and foreign keys).</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html">FOREIGN KEY constraints</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-1.js"></script>
+  <script src="../../data/quizzes/unit-1.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/key-finder.js"></script>
+</body>
+</html>

@@ -426,6 +426,76 @@
       answer: 0,
       explain: "The cell holds two phone numbers, so the value can be split. The relational model expects atomic values.",
       link: "#definitions"
+    },
+    /* 1.7 Keys */
+    {
+      id: "q1.7-01",
+      topic: "1.7",
+      type: "mcq",
+      question: "A candidate key is:",
+      options: ["Any set of attributes", "A minimal super key", "Any attribute that can be NULL", "A key that refers to another table"],
+      answer: 1,
+      explain: "A candidate key is a super key from which no attribute can be removed without losing uniqueness.",
+      link: "#candidate-key"
+    },
+    {
+      id: "q1.7-02",
+      topic: "1.7",
+      type: "mcq",
+      question: "In Student(RegNo, RollNo, Dept, Name, Email) on this page, what is {RegNo, Name}?",
+      options: ["A candidate key", "A super key but not a candidate key", "Not a super key", "A foreign key"],
+      answer: 1,
+      explain: "It identifies every student, so it is a super key. But Name can be removed and RegNo alone is still unique, so it is not minimal.",
+      link: "#candidate-key"
+    },
+    {
+      id: "q1.7-03",
+      topic: "1.7",
+      type: "mcq",
+      question: "A relation has the candidate keys {A}, {B} and {C, D}. The designer picks {A} as the primary key. What are {B} and {C, D}?",
+      options: ["Foreign keys", "Alternate keys", "Super keys only", "Not keys at all"],
+      answer: 1,
+      explain: "Candidate keys that are not chosen as the primary key are alternate keys.",
+      link: "#primary-key"
+    },
+    {
+      id: "q1.7-04",
+      topic: "1.7",
+      type: "tf",
+      question: "Every super key is a candidate key.",
+      answer: false,
+      explain: "False. Every candidate key is a super key, but a super key with extra attributes is not minimal, so it is not a candidate key.",
+      link: "#relation"
+    },
+    {
+      id: "q1.7-05",
+      topic: "1.7",
+      type: "mcq",
+      question: "CourseID in the Marks table refers to the primary key of the Course table. What is CourseID in Marks?",
+      options: ["An alternate key", "A foreign key", "A super key", "A candidate key of Course"],
+      answer: 1,
+      explain: "An attribute that refers to the primary key of another relation is a foreign key.",
+      link: "#foreign-key"
+    },
+    {
+      id: "q1.7-06",
+      topic: "1.7",
+      type: "multi",
+      question: "Which statements about a primary key are true? Select all that apply.",
+      options: ["Its value cannot be NULL", "A relation can have two primary keys", "It can have more than one attribute", "Its value is unique for every tuple"],
+      answer: [0, 2, 3],
+      explain: "A relation has only one primary key. It must be unique and not NULL, and it may be composite.",
+      link: "#primary-key"
+    },
+    {
+      id: "q1.7-07",
+      topic: "1.7",
+      type: "mcq",
+      question: "Which key is made of two or more attributes?",
+      options: ["Composite key", "Alternate key", "Foreign key", "Primary key"],
+      answer: 0,
+      explain: "A composite key has two or more attributes, such as {RollNo, Dept}. Other kinds of keys may or may not be composite.",
+      link: "#composite-key"
     }
   ]);
 })();

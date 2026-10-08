@@ -2843,3 +2843,87 @@
 [data-widget="architecture"] [hidden] {
   display: none;
 }
+
+/* ---------- V3 Key finder ---------- */
+
+.kf-rel {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+
+.kf-picks {
+  align-items: center;
+  border-top: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.kf-check {
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  cursor: pointer;
+}
+
+.kf-scroll {
+  overflow-x: auto;
+}
+
+.kf-table {
+  margin: 0;
+  font-family: var(--font-mono);
+}
+
+.kf-table th.is-sel,
+.kf-table td.is-sel {
+  background: var(--primary-soft);
+}
+
+.kf-table tr.is-clash td,
+.kf-table tr.is-clash th {
+  background: var(--danger-soft);
+}
+
+.kf-table tr.is-clash td.is-sel {
+  font-weight: 700;
+  color: var(--danger);
+}
+
+.kf-pk {
+  padding: 0 4px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--on-primary);
+  font-size: 10px;
+}
+
+.kf-verdict {
+  display: inline-block;
+  margin: var(--sp-3) 0 0;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.kf-no {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.kf-super {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.kf-candidate {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.kf-all {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--fs-sm);
+}
