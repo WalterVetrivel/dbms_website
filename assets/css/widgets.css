@@ -3534,3 +3534,112 @@
 .dc-sum .kf-verdict {
   margin-top: var(--sp-3);
 }
+
+/* Normalization animator (V9) */
+.nz-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-3);
+}
+
+.nz-track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nz-track li {
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}
+
+.nz-track li.is-done {
+  border-color: var(--success);
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.nz-track li.is-now {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.nz-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  align-items: flex-start;
+}
+
+.nz-card {
+  flex: 1 1 14rem;
+  min-width: 0;
+  max-width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.nz-card.is-new {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-soft);
+}
+
+.nz-name {
+  margin-bottom: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.nz-tab {
+  font-size: var(--fs-sm);
+}
+
+.nz-tab th.nz-key {
+  text-decoration: underline;
+}
+
+.nz-tab .nz-x {
+  background: var(--warning-soft);
+  font-weight: 700;
+}
+
+.nz-tab .nz-y {
+  background: var(--accent-soft);
+}
+
+.nz-tab td.nz-multi {
+  outline: 2px dashed var(--danger);
+  outline-offset: -4px;
+  background: var(--danger-soft);
+}
+
+.nz-meta {
+  margin: var(--sp-2) 0 0;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  overflow-wrap: anywhere;
+}
+
+.nz-level {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.nz-fds li {
+  max-width: 100%;
+  border-style: solid;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}

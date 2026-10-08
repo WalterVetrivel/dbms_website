@@ -368,6 +368,84 @@
       options: ["Make one row for each part and one column for each attribute", "Put a in the columns the part has and b symbols elsewhere", "Apply each FD to make matching rows agree", "Repeat until no FD changes the table", "Check for a row of only a symbols"],
       explain: "Build the table, fill in a and b symbols, chase with the FDs until nothing changes, then look for an all-a row.",
       link: "#tableau"
+    },
+    {
+      id: "q2.6-01",
+      topic: "2.6",
+      type: "mcq",
+      question: "A Student table stores two phone numbers in one cell for some students. Which normal form does it break?",
+      options: ["1NF", "2NF", "3NF", "BCNF"],
+      answer: 0,
+      explain: "1NF needs one atomic value in every cell. A list of phone numbers in one cell is not atomic.",
+      link: "#first"
+    },
+    {
+      id: "q2.6-02",
+      topic: "2.6",
+      type: "mcq",
+      question: "R(A, B, C, D) has candidate keys AB and BC. Which attributes are prime?",
+      options: ["A and B only", "B only", "A, B and C", "A, B, C and D"],
+      answer: 2,
+      explain: "A prime attribute is part of some candidate key. A, B and C each appear in a key; D does not.",
+      link: "#prime"
+    },
+    {
+      id: "q2.6-03",
+      topic: "2.6",
+      type: "mcq",
+      question: "In Student_Course(sid, sname, cid, cname) with key {sid, cid}, what kind of dependency is sid → sname?",
+      options: ["Full dependency", "Partial dependency", "Transitive dependency", "Trivial dependency"],
+      answer: 1,
+      explain: "sname is non-prime and depends on sid, which is only part of the key. That is a partial dependency, so the table is not in 2NF.",
+      link: "#second"
+    },
+    {
+      id: "q2.6-04",
+      topic: "2.6",
+      type: "tf",
+      question: "A table in 1NF whose only candidate key has a single attribute is always in 2NF.",
+      answer: true,
+      explain: "True. A partial dependency needs a proper part of a key, and a one-attribute key has no proper part.",
+      link: "#second"
+    },
+    {
+      id: "q2.6-05",
+      topic: "2.6",
+      type: "mcq",
+      question: "Student_details(sid, sname, zipcode, cityname) has sid → sname, zipcode and zipcode → cityname. Why is it not in 3NF?",
+      options: ["sname is not atomic", "cityname depends on the key only through zipcode", "zipcode is part of the key", "sid is not a key"],
+      answer: 1,
+      explain: "sid → zipcode → cityname is a transitive dependency. zipcode is not a key, and cityname is non-prime.",
+      link: "#third"
+    },
+    {
+      id: "q2.6-06",
+      topic: "2.6",
+      type: "multi",
+      question: "R is in 3NF if, for every non-trivial FD X → A, at least one of these holds. Select the two conditions.",
+      options: ["X is a superkey of R", "A is a prime attribute", "A is a non-prime attribute", "X is a single attribute"],
+      answer: [0, 1],
+      explain: "3NF allows X → A when X is a superkey or when A is prime. BCNF drops the second condition.",
+      link: "#third"
+    },
+    {
+      id: "q2.6-07",
+      topic: "2.6",
+      type: "mcq",
+      question: "R(A to J) with AB → C, A → DE, B → F, F → GH, D → IJ. Which set of tables is in 3NF?",
+      options: ["(A, B, C), (A, D, E), (D, I, J), (B, F), (F, G, H)", "(A, B, C), (A, D, E, I, J), (B, F, G, H)", "(A, B, C), (A, D, E), (D, I, J), (B, E), (E, G, H)", "(A, B), (C, D, E), (F, G, H, I, J)"],
+      answer: 0,
+      explain: "The second set is only 2NF: D → IJ and F → GH are transitive. The third set uses E where it should use F.",
+      link: "#worked"
+    },
+    {
+      id: "q2.6-08",
+      topic: "2.6",
+      type: "order",
+      question: "Put the steps for normalizing a table up to 3NF in order.",
+      options: ["Make every value atomic (1NF)", "Find the candidate keys and the prime attributes", "Move out each partial dependency (2NF)", "Move out each transitive dependency (3NF)"],
+      explain: "First fix the cells, then find the keys, because 2NF and 3NF are defined using keys. Remove partial dependencies before transitive ones.",
+      link: "#ladder"
     }
   ]);
 })();
