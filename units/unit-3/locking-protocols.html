@@ -113,7 +113,9 @@
           <p>Accounts A = ₹100 and B = ₹200. T1 moves ₹50 from B to A. T2 displays A + B, which should be ₹300.</p>
           <div class="grid grid-sm">
             <div>
-              <pre><code>T1: lock-X(B);
+              <div class="code-block">
+                <span class="code-label">Transaction</span>
+                <pre><code>T1: lock-X(B);
     read(B);
     B := B − 50;
     write(B);
@@ -123,15 +125,19 @@
     A := A + 50;
     write(A);
     unlock(A).</code></pre>
+              </div>
             </div>
             <div>
-              <pre><code>T2: lock-S(A);
+              <div class="code-block">
+                <span class="code-label">Transaction</span>
+                <pre><code>T2: lock-S(A);
     read(A);
     unlock(A);
     lock-S(B);
     read(B);
     unlock(B);
     display(A + B).</code></pre>
+              </div>
             </div>
           </div>
           <p>Run serially, T2 always shows ₹300. But this concurrent schedule is possible:</p>

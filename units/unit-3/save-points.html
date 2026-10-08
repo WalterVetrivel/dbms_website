@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Save Points | DBMS Study Guide</title>
+  <meta name="description" content="Learn how a SAVEPOINT lets you roll back part of a transaction: the SAVEPOINT, ROLLBACK TO and RELEASE SAVEPOINT commands, the CUSTOMERS example, what happens to later savepoints, and how COMMIT and ROLLBACK remove them. Includes a savepoint timeline you can run.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="3" data-topic="3.10" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-3">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-3">Unit III</span>
+            <span class="badge badge-level" title="Topic number">Topic 3.10</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO3</span>
+          </div>
+          <h1>Save Points</h1>
+          <p class="lead">ROLLBACK undoes a whole transaction. Sometimes you want to undo only the last few steps and keep the rest. A savepoint marks a point inside a transaction that you can roll back to.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define a savepoint and write the SAVEPOINT, ROLLBACK TO and RELEASE SAVEPOINT commands.</li>
+              <li>Work out which changes ROLLBACK TO undoes, and which savepoints remain afterward.</li>
+              <li>Explain how COMMIT and ROLLBACK affect savepoints.</li>
+              <li>Use savepoints to handle an error partway through a long transaction.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is a savepoint?</a></li>
+            <li><a href="#syntax">Commands</a></li>
+            <li><a href="#example">Example: the CUSTOMERS table</a></li>
+            <li><a href="#rules">Rules to remember</a></li>
+            <li><a href="#uses">Why use savepoints?</a></li>
+            <li><a href="#dialects">Savepoints in different databases</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is a savepoint?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>savepoint</strong> is a named point in a transaction to which you can roll the transaction back, without rolling back the entire transaction.</p>
+          </div>
+          <p>Think of it as a bookmark. Changes made before the bookmark are kept; changes made after it can be undone. The transaction stays open after a partial rollback, so you can carry on and later commit or roll back as usual.</p>
+          <p>Savepoints belong to the transaction control language (TCL), along with COMMIT and ROLLBACK. See SQL DCL and TCL Commands.</p>
+        </section>
+
+        <section id="syntax" class="topic-section" aria-labelledby="syntax-title">
+          <h2 id="syntax-title">Commands</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Savepoint commands</caption>
+              <thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead>
+              <tbody>
+                <tr><td><code>SAVEPOINT savepoint_name;</code></td><td>Creates a savepoint with this name at the current point in the transaction. It changes no data.</td></tr>
+                <tr><td><code>ROLLBACK TO savepoint_name;</code></td><td>Undoes every change made after the savepoint. Changes made before it are kept, and the transaction remains open.</td></tr>
+                <tr><td><code>RELEASE SAVEPOINT savepoint_name;</code></td><td>Removes the savepoint. No data is changed, but you can no longer roll back to it.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>In MySQL, the full form is <code>ROLLBACK [WORK] TO [SAVEPOINT] savepoint_name</code>, so <code>ROLLBACK TO SAVEPOINT SP2</code> and <code>ROLLBACK TO SP2</code> mean the same.</p>
+        </section>
+
+        <section id="example" class="topic-section" aria-labelledby="example-title">
+          <h2 id="example-title">Example: the CUSTOMERS table</h2>
+          <p>You plan to delete three records from the CUSTOMERS table. You create a savepoint before each delete, so that you can roll back to any savepoint at any time and return the right data to its original state.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>CUSTOMERS, before the transaction</caption>
+              <thead><tr><th scope="col">ID</th><th scope="col">NAME</th><th scope="col">AGE</th><th scope="col">ADDRESS</th><th scope="col">SALARY</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Suresh</td><td>23</td><td>Chennai</td><td>5400</td></tr>
+                <tr><td>2</td><td>Mano</td><td>22</td><td>Cochin</td><td>6500</td></tr>
+                <tr><td>3</td><td>Subhiksha</td><td>23</td><td>New York</td><td>4500</td></tr>
+                <tr><td>4</td><td>Malar</td><td>24</td><td>Bangalore</td><td>4300</td></tr>
+                <tr><td>5</td><td>Sarath</td><td>22</td><td>Trichy</td><td>7500</td></tr>
+                <tr><td>6</td><td>Krishna</td><td>32</td><td>Coimbatore</td><td>6600</td></tr>
+                <tr><td>7</td><td>Ranchana</td><td>21</td><td>Hyderabad</td><td>5500</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SQL&gt; SAVEPOINT SP1;
+Savepoint created.
+SQL&gt; DELETE FROM CUSTOMERS WHERE ID = 1;
+1 row deleted.
+SQL&gt; SAVEPOINT SP2;
+Savepoint created.
+SQL&gt; DELETE FROM CUSTOMERS WHERE ID = 2;
+1 row deleted.
+SQL&gt; SAVEPOINT SP3;
+Savepoint created.
+SQL&gt; DELETE FROM CUSTOMERS WHERE ID = 3;
+1 row deleted.</code></pre>
+          </div>
+          <p>Now you change your mind and roll back to SP2. SP2 was created after the first deletion, so the last two deletions are undone:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SQL&gt; ROLLBACK TO SP2;
+Rollback complete.
+SQL&gt; SELECT * FROM CUSTOMERS;</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>CUSTOMERS after ROLLBACK TO SP2 (6 rows selected)</caption>
+              <thead><tr><th scope="col">ID</th><th scope="col">NAME</th><th scope="col">AGE</th><th scope="col">ADDRESS</th><th scope="col">SALARY</th></tr></thead>
+              <tbody>
+                <tr><td>2</td><td>Mano</td><td>22</td><td>Cochin</td><td>6500</td></tr>
+                <tr><td>3</td><td>Subhiksha</td><td>23</td><td>New York</td><td>4500</td></tr>
+                <tr><td>4</td><td>Malar</td><td>24</td><td>Bangalore</td><td>4300</td></tr>
+                <tr><td>5</td><td>Sarath</td><td>22</td><td>Trichy</td><td>7500</td></tr>
+                <tr><td>6</td><td>Krishna</td><td>32</td><td>Coimbatore</td><td>6600</td></tr>
+                <tr><td>7</td><td>Ranchana</td><td>21</td><td>Hyderabad</td><td>5500</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Only the first deletion remains. It is still not permanent: a <code>COMMIT</code> now would make it permanent, and a <code>ROLLBACK</code> would bring row 1 back too.</p>
+        </section>
+
+        <section id="rules" class="topic-section" aria-labelledby="rules-title">
+          <h2 id="rules-title">Rules to remember</h2>
+          <ul>
+            <li><strong>Later savepoints are removed.</strong> After <code>ROLLBACK TO SP2</code>, SP3 no longer exists, because it was created after SP2. SP1 and SP2 remain, so you can still roll back to either.</li>
+            <li><strong>The transaction stays open.</strong> ROLLBACK TO does not end the transaction. Only COMMIT or ROLLBACK (without TO) ends it.</li>
+            <li><strong>Same name, new place.</strong> If you create a savepoint with a name that already exists, the old one is replaced by the new one.</li>
+            <li><strong>COMMIT and ROLLBACK remove all savepoints.</strong> After a COMMIT, the changes are permanent and <code>ROLLBACK TO SP1</code> gives an error such as “SAVEPOINT SP1 does not exist”.</li>
+            <li><strong>RELEASE keeps the data.</strong> RELEASE SAVEPOINT only forgets the bookmark. The changes made after it are not undone.</li>
+            <li><strong>Only inside a transaction.</strong> With autocommit on, each statement commits at once, so a savepoint is useless. Start a transaction first (<code>START TRANSACTION</code>), or turn autocommit off.</li>
+          </ul>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>To find what ROLLBACK TO S undoes, draw the statements in order and put a line where S was created. Everything below the line is undone; everything above it is kept but still uncommitted. Cross out any savepoint below the line.</p>
+          </div>
+        </section>
+
+        <section id="uses" class="topic-section" aria-labelledby="uses-title">
+          <h2 id="uses-title">Why use savepoints?</h2>
+          <ul>
+            <li><strong>Handle an error without losing all the work.</strong> In a long transaction, if one step fails, roll back only that step and try another way, instead of starting again.</li>
+            <li><strong>Try something out.</strong> Make a change, check the result with a SELECT, and roll back to the savepoint if it looks wrong.</li>
+            <li><strong>Structure big programs.</strong> A stored procedure can set a savepoint at the start of each part, so that an error handler can undo just that part.</li>
+          </ul>
+          <p>The idea is the same as the <strong>partial rollback</strong> used in <a href="deadlock.html#recovery">deadlock recovery</a>: undo only as much as needed. The undo itself uses the log records described in <a href="transaction-recovery.html#log">Transaction Recovery</a>.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>START TRANSACTION;
+INSERT INTO orders VALUES (101, 'Ravi', CURRENT_DATE);
+SAVEPOINT before_items;
+INSERT INTO order_items VALUES (101, 'P7', 2);
+-- the stock check for P7 fails
+ROLLBACK TO before_items;
+INSERT INTO order_items VALUES (101, 'P9', 2);   -- a substitute item
+COMMIT;</code></pre>
+          </div>
+          <p>Here the order header is kept, the failed item is undone, and the substitute item is committed with the order.</p>
+        </section>
+
+        <section id="dialects" class="topic-section" aria-labelledby="dialects-title">
+          <h2 id="dialects-title">Savepoints in different databases</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Savepoint syntax by database</caption>
+              <thead><tr><th scope="col">Database</th><th scope="col">Create</th><th scope="col">Roll back to</th><th scope="col">Release</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">MySQL (InnoDB)</th><td><code>SAVEPOINT s</code></td><td><code>ROLLBACK TO [SAVEPOINT] s</code></td><td><code>RELEASE SAVEPOINT s</code></td></tr>
+                <tr><th scope="row">Oracle</th><td><code>SAVEPOINT s</code></td><td><code>ROLLBACK TO [SAVEPOINT] s</code></td><td>Not supported</td></tr>
+                <tr><th scope="row">PostgreSQL</th><td><code>SAVEPOINT s</code></td><td><code>ROLLBACK TO [SAVEPOINT] s</code></td><td><code>RELEASE [SAVEPOINT] s</code></td></tr>
+                <tr><th scope="row">SQL Server</th><td><code>SAVE TRANSACTION s</code></td><td><code>ROLLBACK TRANSACTION s</code></td><td>Not supported</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-note">
+            <div class="callout-title">Note</div>
+            <p>In MySQL InnoDB, rolling back to a savepoint undoes the data changes, but row locks taken after the savepoint are usually kept until the transaction ends. Under the SQL standard, RELEASE SAVEPOINT also removes any savepoints created after the one released.</p>
+          </div>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>The widget starts with the CUSTOMERS example above. Press <strong>Play</strong> to run it. Deleted rows stay on screen, struck through, until the transaction commits, so you can see which ones ROLLBACK TO brings back. Choose “Build your own” to run your own statements one button at a time.</p>
+          <div class="widget" data-widget="savepoints" data-scenario="notes">
+            <noscript><p class="widget-narration">The savepoint timeline needs JavaScript. The example above shows the same statements.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>In the CUSTOMERS example, which savepoints still exist at the end? Could you still roll back to SP1?</li>
+              <li>Run “RELEASE SAVEPOINT, then try to roll back to it”. Why does the first ROLLBACK TO fail but the second succeed?</li>
+              <li>In “Build your own”, delete row 1, COMMIT, then delete row 2 and ROLLBACK. Which row comes back?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Group railway booking</h3>
+              <p class="muted">A booking for four passengers adds each passenger in turn. If the berth for the fourth cannot be allotted, the system can roll back to the savepoint before that passenger and put them on the waiting list, while keeping the first three confirmed.</p>
+            </div>
+            <div class="card">
+              <h3>Spreadsheet undo</h3>
+              <p class="muted">Pressing undo a few times takes back your last few edits but keeps earlier ones, and nothing is final until you save. ROLLBACK TO is the same idea, with COMMIT as the save.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>A savepoint is a named point inside a transaction that you can roll back to.</li>
+              <li><code>SAVEPOINT s</code> creates it; <code>ROLLBACK TO s</code> undoes changes after it; <code>RELEASE SAVEPOINT s</code> removes it.</li>
+              <li>ROLLBACK TO keeps changes made before the savepoint and keeps the transaction open.</li>
+              <li>Savepoints created after s are removed by ROLLBACK TO s; s itself remains.</li>
+              <li>COMMIT and ROLLBACK end the transaction and remove all savepoints.</li>
+              <li>Savepoints need a transaction: use START TRANSACTION or turn autocommit off.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit III question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="3.10"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="3.10"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 4, Section 4.3 (transactions in SQL).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 20, Section 20.6 (transaction support in SQL).</li>
+            <li>MySQL Reference Manual: “SAVEPOINT, ROLLBACK TO SAVEPOINT, and RELEASE SAVEPOINT Statements”.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-3.js"></script>
+  <script src="../../data/quizzes/unit-3.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/savepoints.js"></script>
+</body>
+</html>

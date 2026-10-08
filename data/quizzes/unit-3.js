@@ -659,6 +659,65 @@
       answer: 1,
       explain: "After the changed pages and the current page table are on disk, one atomic write makes the root pointer point to the current page table.",
       link: "#shadow"
+    },,
+    /* 3.10 Save Points */
+    {
+      id: "q3.10-01",
+      topic: "3.10",
+      type: "mcq",
+      question: "What does ROLLBACK TO SP2 do?",
+      options: ["Undoes the whole transaction", "Undoes only the changes made after SP2", "Undoes only the changes made before SP2", "Commits the changes made before SP2"],
+      answer: 1,
+      explain: "It undoes every change made after SP2 was created. Changes before SP2 are kept, still uncommitted.",
+      link: "#syntax"
+    },
+    {
+      id: "q3.10-02",
+      topic: "3.10",
+      type: "mcq",
+      question: "SAVEPOINT SP1; DELETE row 1; SAVEPOINT SP2; DELETE row 2; SAVEPOINT SP3; DELETE row 3; ROLLBACK TO SP2. Which rows are still deleted?",
+      options: ["None", "Row 1 only", "Rows 1 and 2", "Rows 1, 2 and 3"],
+      answer: 1,
+      explain: "Only the deletion made before SP2 remains. The deletions of rows 2 and 3 came after SP2, so they are undone.",
+      link: "#example"
+    },
+    {
+      id: "q3.10-03",
+      topic: "3.10",
+      type: "tf",
+      question: "After ROLLBACK TO SP2, savepoint SP3 (created after SP2) can still be used.",
+      answer: false,
+      explain: "False. Savepoints created after SP2 are removed by ROLLBACK TO SP2. SP1 and SP2 remain.",
+      link: "#rules"
+    },
+    {
+      id: "q3.10-04",
+      topic: "3.10",
+      type: "tf",
+      question: "ROLLBACK TO a savepoint ends the transaction.",
+      answer: false,
+      explain: "False. The transaction stays open. Only COMMIT or ROLLBACK without TO ends it.",
+      link: "#rules"
+    },
+    {
+      id: "q3.10-05",
+      topic: "3.10",
+      type: "mcq",
+      question: "What does RELEASE SAVEPOINT SP1 do?",
+      options: ["Undoes changes after SP1", "Removes SP1 without changing data", "Commits the transaction", "Renames SP1"],
+      answer: 1,
+      explain: "It only removes the savepoint. The changes are kept, but you can no longer roll back to SP1.",
+      link: "#syntax"
+    },
+    {
+      id: "q3.10-06",
+      topic: "3.10",
+      type: "mcq",
+      question: "A transaction creates SP1, deletes a row and then commits. What happens on ROLLBACK TO SP1?",
+      options: ["The row comes back", "An error: the savepoint does not exist", "The transaction is undone", "Nothing, and no error"],
+      answer: 1,
+      explain: "COMMIT ends the transaction and removes all its savepoints, so SP1 no longer exists.",
+      link: "#rules"
     },
   ]);
 })();

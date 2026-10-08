@@ -88,12 +88,15 @@
         <section id="example" class="topic-section" aria-labelledby="example-title">
           <h2 id="example-title">The running example</h2>
           <p>T<sub>i</sub> transfers ₹50 from account A to account B. Before T<sub>i</sub> runs, A = ₹1000 and B = ₹2000.</p>
-          <pre><code>Ti: read(A);
+          <div class="code-block">
+            <span class="code-label">Transaction</span>
+            <pre><code>Ti: read(A);
     A := A − 50;
     write(A);
     read(B);
     B := B + 50;
     write(B).</code></pre>
+          </div>
           <p>We now look at what each ACID property means for T<sub>i</sub>.</p>
         </section>
 

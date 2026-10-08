@@ -153,13 +153,16 @@
           </ul>
           <p>Example: A = 1000, B = 2000, C = 700. T0 moves ₹50 from A to B; T1 withdraws ₹100 from C.</p>
           <div class="grid grid-sm">
-            <pre><code>&lt;T0 start&gt;
+            <div class="code-block">
+              <span class="code-label">Log</span>
+              <pre><code>&lt;T0 start&gt;
 &lt;T0, A, 950&gt;
 &lt;T0, B, 2050&gt;
 &lt;T0 commit&gt;
 &lt;T1 start&gt;
 &lt;T1, C, 600&gt;
 &lt;T1 commit&gt;</code></pre>
+            </div>
             <div class="table-wrap">
               <table>
                 <caption>Recovery if the crash comes just after…</caption>
@@ -184,13 +187,16 @@
             <li>Both undo and redo may be needed. This is the UNDO/REDO method.</li>
           </ul>
           <div class="grid grid-sm">
-            <pre><code>&lt;T0 start&gt;
+            <div class="code-block">
+              <span class="code-label">Log</span>
+              <pre><code>&lt;T0 start&gt;
 &lt;T0, A, 1000, 950&gt;
 &lt;T0, B, 2000, 2050&gt;
 &lt;T0 commit&gt;
 &lt;T1 start&gt;
 &lt;T1, C, 700, 600&gt;
 &lt;T1 commit&gt;</code></pre>
+            </div>
             <div class="table-wrap">
               <table>
                 <caption>Recovery if the crash comes just after…</caption>

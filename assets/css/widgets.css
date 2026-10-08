@@ -2454,3 +2454,142 @@
   background: var(--warning-soft);
   font-weight: 700;
 }
+
+/* ---------- V21 Savepoints and rollback ---------- */
+
+.sp-tools {
+  align-items: flex-end;
+}
+
+.sp-stage {
+  max-height: 44rem;
+  overflow: auto;
+}
+
+.sp-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.sp-table-box {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.sp-table {
+  width: auto;
+  margin: 0;
+  font-size: var(--fs-xs);
+}
+
+.sp-table caption {
+  caption-side: top;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.sp-table th,
+.sp-table td {
+  padding: 2px var(--sp-2);
+  text-align: left;
+}
+
+.sp-table tr.is-gone td,
+.sp-key.is-gone {
+  color: var(--danger);
+  text-decoration: line-through;
+}
+
+.sp-table tr.is-touched td {
+  background: var(--warning-soft);
+}
+
+.sp-table tr.is-back td {
+  background: var(--success-soft);
+}
+
+.sp-table td.is-new,
+.sp-key.is-new {
+  font-weight: 700;
+  color: var(--warning);
+}
+
+.sp-legend {
+  margin: var(--sp-1) 0 0;
+  font-size: var(--fs-xs);
+}
+
+.sp-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  flex: 1 1 18rem;
+  max-width: 28rem;
+}
+
+.sp-steps {
+  margin: var(--sp-1) 0 0;
+  padding-left: var(--sp-5);
+  font-size: var(--fs-xs);
+}
+
+.sp-steps li {
+  padding: 2px 0;
+}
+
+.sp-steps code {
+  font-size: inherit;
+}
+
+.sp-steps li.is-mark code {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.sp-steps li.is-undone code,
+.sp-steps li.is-gone code {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.sp-steps li.is-committed code {
+  color: var(--success);
+}
+
+.sp-steps li.is-error code {
+  color: var(--danger);
+}
+
+.sp-steps li.is-current {
+  background: var(--u3-soft);
+  font-weight: 700;
+}
+
+.sp-tag {
+  display: inline-block;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.sp-points {
+  margin-top: var(--sp-1);
+}
+
+.sp-flag {
+  display: inline-block;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--primary);
+  color: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}

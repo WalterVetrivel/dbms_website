@@ -110,37 +110,49 @@
           <p>Accounts A and B; T1 moves ₹50 from B to A, and T2 displays A + B. These are the transactions from <a href="locking-protocols.html#example">Locking Protocols</a>, and their two phase versions T3 and T4.</p>
           <div class="grid grid-sm">
             <div>
-              <pre><code>T1: lock-X(B); read(B);
+              <div class="code-block">
+                <span class="code-label">Transaction</span>
+                <pre><code>T1: lock-X(B); read(B);
     B := B − 50; write(B);
     unlock(B);
     lock-X(A); read(A);
     A := A + 50; write(A);
     unlock(A).</code></pre>
+              </div>
               <p><strong>Not two phase:</strong> it locks A after unlocking B.</p>
             </div>
             <div>
-              <pre><code>T3: lock-X(B); read(B);
+              <div class="code-block">
+                <span class="code-label">Transaction</span>
+                <pre><code>T3: lock-X(B); read(B);
     B := B − 50; write(B);
     lock-X(A); read(A);
     A := A + 50; write(A);
     unlock(B);
     unlock(A).</code></pre>
+              </div>
               <p><strong>Two phase:</strong> all locks come before the first unlock. Its lock point is lock-X(A).</p>
             </div>
             <div>
-              <pre><code>T2: lock-S(A); read(A);
+              <div class="code-block">
+                <span class="code-label">Transaction</span>
+                <pre><code>T2: lock-S(A); read(A);
     unlock(A);
     lock-S(B); read(B);
     unlock(B);
     display(A + B).</code></pre>
+              </div>
               <p><strong>Not two phase:</strong> it locks B after unlocking A.</p>
             </div>
             <div>
-              <pre><code>T4: lock-S(A); read(A);
+              <div class="code-block">
+                <span class="code-label">Transaction</span>
+                <pre><code>T4: lock-S(A); read(A);
     lock-S(B); read(B);
     display(A + B);
     unlock(A);
     unlock(B).</code></pre>
+              </div>
               <p><strong>Two phase.</strong> Its lock point is lock-S(B).</p>
             </div>
           </div>

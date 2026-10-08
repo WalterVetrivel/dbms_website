@@ -77,12 +77,15 @@
           <div class="callout callout-example">
             <div class="callout-title">Example: the funds-transfer transaction</div>
             <p>T<sub>i</sub> transfers ₹50 from account A to account B.</p>
-            <pre><code>Ti: read(A);
+            <div class="code-block">
+              <span class="code-label">Transaction</span>
+              <pre><code>Ti: read(A);
     A := A − 50;
     write(A);
     read(B);
     B := B + 50;
     write(B).</code></pre>
+            </div>
             <p>This example is used all through Unit III, so it is worth remembering.</p>
           </div>
         </section>

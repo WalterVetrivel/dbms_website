@@ -82,14 +82,20 @@
             <div class="grid grid-sm">
               <div>
                 <p><strong>T1:</strong> transfer ₹50 from A to B.</p>
-                <pre><code>read(A); A := A − 50; write(A);
+                <div class="code-block">
+                  <span class="code-label">Transaction</span>
+                  <pre><code>read(A); A := A − 50; write(A);
 read(B); B := B + 50; write(B).</code></pre>
+                </div>
               </div>
               <div>
                 <p><strong>T2:</strong> transfer 10% of A to B.</p>
-                <pre><code>read(A); temp := A * 0.1;
+                <div class="code-block">
+                  <span class="code-label">Transaction</span>
+                  <pre><code>read(A); temp := A * 0.1;
 A := A − temp; write(A);
 read(B); B := B + temp; write(B).</code></pre>
+                </div>
               </div>
             </div>
           </div>
