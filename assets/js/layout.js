@@ -74,8 +74,8 @@
       { id: "revision", title: "Revision sheet", icon: "layers" }
     ].map(function (x) {
       var p = pageById(x.id);
-      // The question bank has one page per unit; other pages are hubs for now.
-      x.href = x.id === "question-bank" ? "question-bank/" + u.slug + ".html" : p && p.href;
+      // Each hub has one page per unit next to it, for example quizzes/unit-2.html.
+      x.href = p && p.href.replace(/index\.html$/, u.slug + ".html");
       x.live = isPublished(p);
       return x;
     });
@@ -363,10 +363,10 @@
     var crumbs = ['<li><a href="' + url("index.html") + '">Home</a></li>'];
     var u = unitByNumber(UNIT);
     var t = topicById(TOPIC);
-    var qb = pageById("question-bank");
-    if (PAGE === "question-bank" && u) {
-      // A unit question bank: Home / Question Banks / Unit IV
-      crumbs.push('<li><a href="' + url(qb.href) + '">' + esc(qb.title) + "</a></li>");
+    var hub = pageById(PAGE);
+    if (u && hub && ["question-bank", "quizzes", "revision"].indexOf(PAGE) !== -1) {
+      // A unit page of a hub, for example Home / Question Banks / Unit IV
+      crumbs.push('<li><a href="' + url(hub.href) + '">' + esc(hub.title) + "</a></li>");
       crumbs.push('<li aria-current="page">Unit ' + u.roman + "</li>");
     } else if (u && t) {
       crumbs.push('<li><a href="' + url(unitHref(u)) + '">Unit ' + u.roman + "</a></li>");
@@ -430,6 +430,11 @@
     });
     pages.forEach(function (p) {
       if (isPublished(p) && p.id !== "home") items.push({ kind: "Page", title: p.title, sub: p.summary || "", href: p.href, text: p.summary || "" });
+    });
+    units.forEach(function (u) {
+      unitExtras(u).forEach(function (x) {
+        if (x.live) items.push({ kind: "Page", title: "Unit " + u.roman + " " + x.title.toLowerCase(), sub: "Unit " + u.roman + ": " + u.title, href: x.href, text: u.title });
+      });
     });
     (D.searchExtras || []).forEach(function (x) {
       items.push(x);
@@ -647,7 +652,11 @@
       more.innerHTML = unitExtras(u)
         .map(function (x) {
           var title = "Unit " + u.roman + " " + x.title.toLowerCase();
-          var inner = '<span class="card-icon">' + icon(x.icon) + "</span><h3>" + esc(title) + "</h3>" + (x.live ? "" : '<span class="badge badge-soon">Coming soon</span>');
+          var best = x.id === "quizzes" && progress.quiz["unit-" + u.n];
+          var inner =
+            '<span class="card-icon">' + icon(x.icon) + "</span><h3>" + esc(title) + "</h3>" +
+            (x.live ? "" : '<span class="badge badge-soon">Coming soon</span>') +
+            (x.live && best ? '<span class="badge badge-done" title="Your best score">Best ' + best.score + "/" + best.total + "</span>" : "");
           return x.live ? '<a class="card" href="' + url(x.href) + '">' + inner + "</a>" : '<div class="card is-disabled">' + inner + "</div>";
         })
         .join("");
@@ -789,6 +798,7 @@
         if (window.confirm("Clear your progress on this device? This cannot be undone.")) {
           D.progress.reset();
           toast("Progress cleared");
+          document.dispatchEvent(new CustomEvent("dbms:progress-reset"));
         }
       });
     });

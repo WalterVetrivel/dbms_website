@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Built by tools/build-revision.mjs from the Key points of each topic page. Edit the topic pages, then run the script again. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit III Revision Sheet | DBMS Study Guide</title>
+  <meta name="description" content="The key points of every Unit III topic (Transaction Management) on one sheet that prints on about two A4 pages.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="revision" data-unit="3" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content content-wide">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        <header class="u-3 rev-head">
+          <span class="eyebrow">Unit III: Transaction Management</span>
+          <h1>Unit III Revision Sheet</h1>
+          <p class="lead">The key points of all 14 topics in one place. Read it the day before the exam, or print it on about two A4 pages.</p>
+        </header>
+
+        <div class="btn-row no-print">
+          <button type="button" class="btn btn-primary" data-print>Print the sheet</button>
+          <a class="btn" href="../quizzes/unit-3.html">Take the Unit III quiz</a>
+          <a class="btn" href="../question-bank/unit-3.html">Unit III question bank</a>
+        </div>
+
+        <div class="rev-sheet u-3">
+          <section class="rev-topic" id="t3-1" aria-labelledby="t3-1-title">
+            <h2 id="t3-1-title"><a href="../units/unit-3/transaction-concepts.html"><span class="rev-num">3.1</span> Transaction Concepts</a></h2>
+            <ul>
+              <li>A transaction is a single logical unit of work that runs completely or not at all.</li>
+              <li>read(X) copies X from the database to the transaction's buffer; write(X) copies it back.</li>
+              <li>A transaction ends with commit (changes kept) or abort (changes rolled back).</li>
+              <li>The five states are active, partially committed, failed, aborted and committed.</li>
+              <li>Partially committed means the last statement ran; the transaction can still fail.</li>
+              <li>After an abort, the system can restart or kill the transaction.</li>
+              <li>A committed transaction can only be reversed by a compensating transaction.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t3-2" aria-labelledby="t3-2-title">
+            <h2 id="t3-2-title"><a href="../units/unit-3/acid-properties.html"><span class="rev-num">3.2</span> ACID Properties</a></h2>
+            <ul>
+              <li>ACID stands for atomicity, consistency, isolation and durability.</li>
+              <li>Atomicity: all operations happen or none do; old values in the log allow undo.</li>
+              <li>Consistency: a transaction run alone keeps the database consistent (A + B unchanged).</li>
+              <li>Isolation: concurrent transactions do not see each other's unfinished work.</li>
+              <li>Durability: committed changes survive system failures.</li>
+              <li>The recovery system ensures atomicity and durability.</li>
+              <li>The concurrency-control system ensures isolation; the programmer and integrity constraints ensure consistency.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t3-3" aria-labelledby="t3-3-title">
+            <h2 id="t3-3-title"><a href="../units/unit-3/schedules.html"><span class="rev-num">3.3</span> Schedules</a></h2>
+            <ul>
+              <li>A schedule is the time order of the instructions of concurrent transactions; it keeps each transaction's own order.</li>
+              <li>Serial: no interleaving, always consistent; n transactions have n! serial schedules.</li>
+              <li>Concurrent schedules improve throughput and waiting time, but some give wrong results (schedule 4 creates ₹50).</li>
+              <li>A serializable schedule has the same effect as some serial schedule.</li>
+              <li>Recoverable: if T<sub>j</sub> reads from T<sub>i</sub>, T<sub>i</sub> commits before T<sub>j</sub> commits.</li>
+              <li>Cascading rollback: one abort forces other transactions that read its data to roll back.</li>
+              <li>Cascadeless: read only committed data. Strict: no read or write of an item until its writer ends.</li>
+              <li>Strict ⊂ cascadeless ⊂ recoverable.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t3-4" aria-labelledby="t3-4-title">
+            <h2 id="t3-4-title"><a href="../units/unit-3/serializability.html"><span class="rev-num">3.4</span> Serializability</a></h2>
+            <ul>
+              <li>A schedule is serializable if it is equivalent to some serial schedule.</li>
+              <li>Two instructions conflict if they are from different transactions, use the same item, and at least one is a write.</li>
+              <li>Conflict serializable: can be turned into a serial schedule by swapping non-conflicting instructions.</li>
+              <li>View equivalence: same initial reads, same reads-from, same final writes.</li>
+              <li>Every conflict serializable schedule is view serializable; the extra view serializable ones have blind writes.</li>
+              <li>Precedence graph: edge T<sub>i</sub> → T<sub>j</sub> for each conflicting pair where T<sub>i</sub> acts first.</li>
+              <li>No cycle means conflict serializable; topological sort gives the serial order.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t3-5" aria-labelledby="t3-5-title">
+            <h2 id="t3-5-title"><a href="../units/unit-3/concurrency-control.html"><span class="rev-num">3.5</span> Concurrency Control and Need for Concurrency</a></h2>
+            <ul>
+              <li>Concurrency gives better throughput, better resource use and shorter waiting time.</li>
+              <li>Concurrency control keeps concurrent schedules serializable and recoverable.</li>
+              <li>Lost update: a later write overwrites an earlier one (write-write).</li>
+              <li>Dirty read: reading uncommitted data that may be rolled back (write-read).</li>
+              <li>Unrepeatable read: the same item gives two values in one transaction (read-write).</li>
+              <li>Incorrect summary: an aggregate mixes old and new values.</li>
+              <li>Phantom: a repeated range query sees newly inserted rows.</li>
+              <li>Protocols: lock-based, timestamp-based, validation-based and multiversion.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t3-6" aria-labelledby="t3-6-title">
+            <h2 id="t3-6-title"><a href="../units/unit-3/locking-protocols.html"><span class="rev-num">3.6</span> Locking Protocols</a></h2>
+            <ul>
+              <li>A transaction must hold a lock on an item before it accesses it.</li>
+              <li>Shared (S): read only, many holders. Exclusive (X): read and write, one holder.</li>
+              <li>Compatibility: only S with S is true; any pair with X is false.</li>
+              <li>An incompatible request waits until the conflicting locks are released.</li>
+              <li>Unlocking too early can still give wrong results (T2 displays 250 instead of 300).</li>
+              <li>A locking protocol is a set of rules for when to lock and unlock, to ensure serializability.</li>
+              <li>The lock manager keeps a lock table: a hash table of items with lists of requests.</li>
+              <li>Starvation: a transaction waits forever; avoided by serving requests in arrival order.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t3-7" aria-labelledby="t3-7-title">
+            <h2 id="t3-7-title"><a href="../units/unit-3/two-phase-locking.html"><span class="rev-num">3.7</span> Two Phase Locking</a></h2>
+            <ul>
+              <li>2PL: a growing phase (only lock) followed by a shrinking phase (only unlock).</li>
+              <li>The lock point is where a transaction gets its final lock.</li>
+              <li>2PL ensures conflict serializability; the serial order is the order of lock points.</li>
+              <li>Basic 2PL allows deadlock and cascading rollback.</li>
+              <li>Strict 2PL holds X locks until commit or abort, so it is cascadeless.</li>
+              <li>Rigorous 2PL holds all locks until commit or abort; transactions serialize in commit order.</li>
+              <li>Upgrade (S to X) only in the growing phase; downgrade (X to S) only in the shrinking phase.</li>
+              <li>Conservative 2PL takes all locks before starting, so it is deadlock-free.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t3-8" aria-labelledby="t3-8-title">
+            <h2 id="t3-8-title"><a href="../units/unit-3/deadlock.html"><span class="rev-num">3.8</span> Deadlock</a></h2>
+            <ul>
+              <li>Deadlock: a set of transactions each waiting for another in the set, in a circle.</li>
+              <li>Four conditions: mutual exclusion, hold and wait, no preemption, circular wait.</li>
+              <li>Prevention: lock all at start, lock in a fixed order, wait-die, wound-wait, timeout.</li>
+              <li>Wait-die: older waits, younger dies. Wound-wait: older wounds, younger waits.</li>
+              <li>The rolled back transaction keeps its old timestamp, so it does not starve.</li>
+              <li>Wait-for graph: edge T<sub>i</sub> → T<sub>j</sub> when T<sub>i</sub> waits for T<sub>j</sub>. A cycle means deadlock.</li>
+              <li>Recovery: select a victim, roll it back (total or partial), and avoid starvation.</li>
+              <li>Livelock: transactions keep changing state but never progress.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t3-9" aria-labelledby="t3-9-title">
+            <h2 id="t3-9-title"><a href="../units/unit-3/transaction-recovery.html"><span class="rev-num">3.9</span> Transaction Recovery</a></h2>
+            <ul>
+              <li>Failures: transaction failure (logical or system error), system crash, disk failure.</li>
+              <li>Storage: volatile (lost on crash), non-volatile (lost on disk failure), stable (never lost).</li>
+              <li>Log records: start, update (item, old value, new value), commit, abort.</li>
+              <li>WAL: the log record reaches stable storage before the data block it describes.</li>
+              <li>Deferred: log new values, change the database after commit; redo only.</li>
+              <li>Immediate: log old and new values; undo unfinished, redo committed.</li>
+              <li>Checkpoint: flush the log and changed blocks, log <code>&lt;checkpoint L&gt;</code>; recovery starts there.</li>
+              <li>Shadow paging: copy-on-write pages; commit switches one pointer; no undo or redo.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t3-10" aria-labelledby="t3-10-title">
+            <h2 id="t3-10-title"><a href="../units/unit-3/save-points.html"><span class="rev-num">3.10</span> Save Points</a></h2>
+            <ul>
+              <li>A savepoint is a named point inside a transaction that you can roll back to.</li>
+              <li><code>SAVEPOINT s</code> creates it; <code>ROLLBACK TO s</code> undoes changes after it; <code>RELEASE SAVEPOINT s</code> removes it.</li>
+              <li>ROLLBACK TO keeps changes made before the savepoint and keeps the transaction open.</li>
+              <li>Savepoints created after s are removed by ROLLBACK TO s; s itself remains.</li>
+              <li>COMMIT and ROLLBACK end the transaction and remove all savepoints.</li>
+              <li>Savepoints need a transaction: use START TRANSACTION or turn autocommit off.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t3-11" aria-labelledby="t3-11-title">
+            <h2 id="t3-11-title"><a href="../units/unit-3/isolation-levels.html"><span class="rev-num">3.11</span> Isolation Levels</a></h2>
+            <ul>
+              <li>An isolation level is defined by which phenomena it allows.</li>
+              <li>Phenomena: dirty read, non-repeatable read, phantom.</li>
+              <li>READ UNCOMMITTED allows all three; READ COMMITTED stops dirty reads.</li>
+              <li>REPEATABLE READ also stops non-repeatable reads; SERIALIZABLE stops all three.</li>
+              <li>Higher level: more consistency, less concurrency.</li>
+              <li><code>SET TRANSACTION ISOLATION LEVEL ...</code> chooses the level.</li>
+              <li>MySQL InnoDB defaults to REPEATABLE READ and uses snapshots for plain reads.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t3-12" aria-labelledby="t3-12-title">
+            <h2 id="t3-12-title"><a href="../units/unit-3/sql-facilities-for-concurrency-and-recovery.html"><span class="rev-num">3.12</span> SQL Facilities for Concurrency and Recovery</a></h2>
+            <ul>
+              <li>START TRANSACTION, COMMIT and ROLLBACK mark a transaction; autocommit makes each statement its own transaction.</li>
+              <li>SET TRANSACTION chooses the isolation level and access mode.</li>
+              <li>FOR SHARE takes shared row locks; FOR UPDATE takes exclusive row locks; both last until commit.</li>
+              <li>LOCK TABLES locks whole tables, and commits any open transaction first.</li>
+              <li>Lock wait timeouts and deadlock errors should be handled by retrying the transaction.</li>
+              <li>Recovery: redo log for COMMIT, undo log for ROLLBACK, automatic crash recovery, backups for disk failure.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t3-13" aria-labelledby="t3-13-title">
+            <h2 id="t3-13-title"><a href="../units/unit-3/backup-and-recovery-system.html"><span class="rev-num">3.13</span> Backup and Recovery System</a></h2>
+            <ul>
+              <li>Backup: a copy of the database in a safe place. Recovery: restoring a correct state after failure.</li>
+              <li>Full copies everything; incremental copies changes since the last backup; differential copies changes since the last full backup.</li>
+              <li>Restore with incremental: full plus every incremental. With differential: full plus the latest differential.</li>
+              <li>Logical backups are SQL text; physical backups are file copies. Hot backups run while the database is in use.</li>
+              <li>Point-in-time recovery: restore the last full backup, then replay the binary log up to the chosen moment.</li>
+              <li>A remote backup site applies the primary's log and takes over if the primary fails.</li>
+              <li>RAID and replication are not backups.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t3-14" aria-labelledby="t3-14-title">
+            <h2 id="t3-14-title"><a href="../units/unit-3/sql-dcl-and-tcl-commands.html"><span class="rev-num">3.14</span> SQL DCL and TCL Commands</a></h2>
+            <ul>
+              <li>DCL: GRANT gives privileges, REVOKE takes them away. GRANT ... TO; REVOKE ... FROM.</li>
+              <li>WITH GRANT OPTION lets the receiver pass the privilege on.</li>
+              <li>Roles group privileges so they can be given to many users at once.</li>
+              <li>TCL: COMMIT saves, ROLLBACK undoes, SAVEPOINT marks a point for a partial rollback.</li>
+              <li>A transaction runs from START TRANSACTION to COMMIT or ROLLBACK.</li>
+              <li>DCL is about security; TCL is about atomicity and durability.</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/revision.js"></script>
+</body>
+</html>

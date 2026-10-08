@@ -59,3 +59,80 @@
     border: 0;
   }
 }
+
+/* Revision sheet: two columns in small print, so a unit fits on about two A4 pages. */
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  body[data-page="revision"] {
+    font-size: 8pt;
+    line-height: 1.3;
+  }
+
+  body[data-page="revision"] .rev-head h1 {
+    font-size: 15pt;
+    margin: 0;
+  }
+
+  body[data-page="revision"] .rev-head .lead {
+    font-size: 8.5pt;
+    margin: 0;
+  }
+
+  body[data-page="revision"] .rev-head .eyebrow {
+    font-size: 8pt;
+  }
+
+  .rev-sheet {
+    column-count: 2;
+    column-gap: 6mm;
+    margin-top: 3mm;
+  }
+
+  /* Topics may run on into the next column, so the columns stay full. */
+  .rev-topic {
+    break-inside: auto;
+    margin-bottom: 2mm;
+    padding-top: 0.8mm;
+    border-top-width: 2px;
+  }
+
+  .rev-topic h2 {
+    font-size: 9pt;
+    margin-bottom: 0.8mm;
+    break-after: avoid;
+  }
+
+  .rev-topic li,
+  .rev-callout {
+    break-inside: avoid;
+  }
+
+  .rev-topic ul,
+  .rev-callout {
+    font-size: 8pt;
+  }
+
+  .rev-topic li {
+    margin-bottom: 0.3mm;
+  }
+
+  .rev-callout {
+    padding: 1mm 2mm;
+    margin-top: 1mm;
+  }
+
+  body[data-page="revision"] .kiot-banner,
+  body[data-page="revision"] .footer-links,
+  body[data-page="revision"] .license {
+    display: none;
+  }
+
+  body[data-page="revision"] .site-footer {
+    font-size: 7.5pt;
+    margin-top: 2mm;
+  }
+}

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Built by tools/build-revision.mjs from the Key points of each topic page. Edit the topic pages, then run the script again. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit I Revision Sheet | DBMS Study Guide</title>
+  <meta name="description" content="The key points of every Unit I topic (Introduction to Relational Database) on one sheet that prints on about two A4 pages.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="revision" data-unit="1" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content content-wide">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        <header class="u-1 rev-head">
+          <span class="eyebrow">Unit I: Introduction to Relational Database</span>
+          <h1>Unit I Revision Sheet</h1>
+          <p class="lead">The key points of all 13 topics in one place. Read it the day before the exam, or print it on about two A4 pages.</p>
+        </header>
+
+        <div class="btn-row no-print">
+          <button type="button" class="btn btn-primary" data-print>Print the sheet</button>
+          <a class="btn" href="../quizzes/unit-1.html">Take the Unit I quiz</a>
+          <a class="btn" href="../question-bank/unit-1.html">Unit I question bank</a>
+        </div>
+
+        <div class="rev-sheet u-1">
+          <section class="rev-topic" id="t1-1" aria-labelledby="t1-1-title">
+            <h2 id="t1-1-title"><a href="../units/unit-1/purpose-of-database-system.html"><span class="rev-num">1.1</span> Purpose of Database System</a></h2>
+            <ul>
+              <li>A DBMS is a collection of interrelated data and a set of programs to access that data.</li>
+              <li>Its goal is to store and retrieve information conveniently and efficiently, and keep it safe.</li>
+              <li>A file-processing system keeps data in separate files with a separate program for each task.</li>
+              <li>The eight file-system problems: redundancy, inconsistency, difficulty in access, isolation, integrity, atomicity, concurrent access and security.</li>
+              <li>Redundancy (duplicate copies) leads to inconsistency (copies that disagree).</li>
+              <li>A DBMS controls redundancy, enforces constraints, supports transactions and limits access.</li>
+              <li>Demerits of a DBMS: complex design, cost, damage that spreads, conversion cost and training.</li>
+            </ul>
+            <p class="rev-callout rev-mistake"><strong>Common mistake:</strong> A DBMS does not remove redundancy completely. It <strong>controls</strong> it. Some copies, such as a foreign key or a backup, are kept on purpose.</p>
+          </section>
+          <section class="rev-topic" id="t1-2" aria-labelledby="t1-2-title">
+            <h2 id="t1-2-title"><a href="../units/unit-1/views-of-data.html"><span class="rev-num">1.2</span> Views of Data</a></h2>
+            <ul>
+              <li>Data abstraction hides how data is stored and shows users only what they need.</li>
+              <li>Physical level: how data is stored. Logical level: what data is stored and how it is related. View level: part of the database for one user group.</li>
+              <li>There is one physical schema and one logical schema, but there can be many views (subschemas).</li>
+              <li>Schema: the overall design, which rarely changes. Instance: the data at one moment, which changes often.</li>
+              <li>Physical data independence: change storage without changing the logical schema.</li>
+              <li>Logical data independence: change the logical schema without changing views or programs.</li>
+              <li>Logical data independence is harder to achieve than physical data independence.</li>
+            </ul>
+            <p class="rev-callout rev-mistake"><strong>Common mistake:</strong> Do not say the view level shows “the whole database in a simple way”. That is the logical level. The view level shows only <strong>part</strong> of the database.</p>
+          </section>
+          <section class="rev-topic" id="t1-3" aria-labelledby="t1-3-title">
+            <h2 id="t1-3-title"><a href="../units/unit-1/data-models.html"><span class="rev-num">1.3</span> Data Models</a></h2>
+            <ul>
+              <li>A data model is a collection of conceptual tools for describing data, relationships, semantics and constraints.</li>
+              <li>Relational model: data and relationships as tables (relations).</li>
+              <li>E-R model: entities and relationships, drawn as a diagram for design.</li>
+              <li>Object-based model: the relational model plus objects, methods and inheritance.</li>
+              <li>Semi-structured model: items of the same type can have different attributes; XML and JSON.</li>
+              <li>Hierarchical model: a tree, one parent per record; cannot show many-to-many directly.</li>
+              <li>Network model: a graph, many parents per record, linked by pointers.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t1-4" aria-labelledby="t1-4-title">
+            <h2 id="t1-4-title"><a href="../units/unit-1/database-system-architecture.html"><span class="rev-num">1.4</span> Database System Architecture</a></h2>
+            <ul>
+              <li>The two main parts are the query processor and the storage manager.</li>
+              <li>Query processor: DDL interpreter, DML compiler (with query optimization) and query evaluation engine.</li>
+              <li>Storage manager: authorization and integrity manager, transaction manager, file manager and buffer manager.</li>
+              <li>Disk storage: data files, data dictionary (metadata), indices and statistical data.</li>
+              <li>Users: naive users, application programmers, sophisticated users and the DBA.</li>
+              <li>The DBA defines the schema, plans storage, grants access and does routine maintenance.</li>
+              <li>Two-tier: the client talks to the database. Three-tier: the client talks to an application server, which talks to the database.</li>
+            </ul>
+            <p class="rev-callout rev-mistake"><strong>Common mistake:</strong> The DDL interpreter writes to the <strong>data dictionary</strong>, not to the data files. A CREATE TABLE stores the table's definition, not its rows.</p>
+          </section>
+          <section class="rev-topic" id="t1-5" aria-labelledby="t1-5-title">
+            <h2 id="t1-5-title"><a href="../units/unit-1/introduction-to-relational-databases.html"><span class="rev-num">1.5</span> Introduction to Relational Databases</a></h2>
+            <ul>
+              <li>A relational database is a collection of tables, each with a unique name.</li>
+              <li>A table has rows (one per item) and columns (one per property).</li>
+              <li>The order of rows does not matter.</li>
+              <li>Tables are linked by common values, not by pointers.</li>
+              <li>E. F. Codd proposed the relational model in 1970.</li>
+              <li>MySQL, Oracle, SQL Server, PostgreSQL, Db2 and SQLite are relational database products; all use SQL.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t1-6" aria-labelledby="t1-6-title">
+            <h2 id="t1-6-title"><a href="../units/unit-1/relational-model.html"><span class="rev-num">1.6</span> Relational Model</a></h2>
+            <ul>
+              <li>Relation = table, tuple = row, attribute = column.</li>
+              <li>A domain is the set of permitted values of an attribute; atomic values cannot be divided.</li>
+              <li>The relation schema is the structure; the relation instance is the set of tuples at one moment.</li>
+              <li>Degree = number of attributes; cardinality = number of tuples.</li>
+              <li>NULL means unknown or not applicable; it is not zero or blank.</li>
+              <li>A relation has no duplicate tuples, and the order of tuples does not matter.</li>
+            </ul>
+            <p class="rev-callout rev-mistake"><strong>Common mistake:</strong> Students often swap degree and cardinality. For the degree, count the column headings. For the cardinality, count the rows.</p>
+          </section>
+          <section class="rev-topic" id="t1-7" aria-labelledby="t1-7-title">
+            <h2 id="t1-7-title"><a href="../units/unit-1/keys.html"><span class="rev-num">1.7</span> Keys</a></h2>
+            <ul>
+              <li>Super key: one or more attributes that identify each tuple uniquely.</li>
+              <li>Candidate key: a minimal super key.</li>
+              <li>Primary key: the candidate key chosen by the designer; unique and never NULL; only one per relation.</li>
+              <li>Alternate key: a candidate key that is not the primary key.</li>
+              <li>Composite key: a key with two or more attributes.</li>
+              <li>Foreign key: attributes in a child table that refer to the primary key of a parent table.</li>
+              <li>Every candidate key is a super key; not every super key is a candidate key.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t1-8" aria-labelledby="t1-8-title">
+            <h2 id="t1-8-title"><a href="../units/unit-1/constraints.html"><span class="rev-num">1.8</span> Constraints</a></h2>
+            <ul>
+              <li>An integrity constraint is a rule the data must satisfy; the DBMS rejects changes that break it.</li>
+              <li>Domain constraint: values must come from the attribute's domain (data type, CHECK).</li>
+              <li>Key constraint: no two tuples share a key value (PRIMARY KEY, UNIQUE).</li>
+              <li>NOT NULL forces a value; UNIQUE forbids repeats; CHECK tests a condition; DEFAULT fills a missing value.</li>
+              <li>Entity integrity: a primary key can never be NULL.</li>
+              <li>Referential integrity: a foreign key must match an existing primary key, or be NULL.</li>
+              <li>ON DELETE and ON UPDATE choose RESTRICT, CASCADE or SET NULL for the child rows.</li>
+            </ul>
+            <p class="rev-callout rev-mistake"><strong>Common mistake:</strong> Referential integrity does not always delete the child rows. That happens only with <code>ON DELETE CASCADE</code>. By default, the DBMS refuses to delete a parent row that still has children.</p>
+          </section>
+          <section class="rev-topic" id="t1-9" aria-labelledby="t1-9-title">
+            <h2 id="t1-9-title"><a href="../units/unit-1/relational-algebra.html"><span class="rev-num">1.9</span> Relational Algebra</a></h2>
+            <ul>
+              <li>Relational algebra is a procedural query language; each operation takes relations and gives a relation.</li>
+              <li>Fundamental operations: select σ, project π, union ∪, set difference −, Cartesian product × and rename ρ.</li>
+              <li>σ picks rows by a predicate; π picks columns and removes duplicates.</li>
+              <li>Union, intersection and difference need union-compatible relations; r − s ≠ s − r.</li>
+              <li>Theta join = σθ(r × s); an equijoin uses only =; a natural join matches common attributes and keeps them once.</li>
+              <li>Outer joins keep unmatched tuples and fill the gaps with NULL (left ⟕, right ⟖, full ⟗).</li>
+              <li>Division (÷) answers “for all” queries; assignment (←) stores a partial result.</li>
+            </ul>
+            <p class="rev-callout rev-mistake"><strong>Common mistake:</strong> Do not mix up σ and π. <strong>σ selects rows</strong>; <strong>π projects columns</strong>. Note that the SQL keyword SELECT does the job of π, not σ. The WHERE clause does the job of σ.</p>
+          </section>
+          <section class="rev-topic" id="t1-10" aria-labelledby="t1-10-title">
+            <h2 id="t1-10-title"><a href="../units/unit-1/overview-of-sql.html"><span class="rev-num">1.10</span> Overview of the SQL Query Language</a></h2>
+            <ul>
+              <li>SQL is the standard, declarative language of relational databases.</li>
+              <li>It began as SEQUEL at IBM in the 1970s; the first ANSI standard was SQL-86.</li>
+              <li>DDL defines the schema: CREATE, ALTER, DROP, TRUNCATE, RENAME.</li>
+              <li>DML works on the data: INSERT, UPDATE, DELETE, SELECT.</li>
+              <li>DCL controls access (GRANT, REVOKE); TCL controls transactions (COMMIT, ROLLBACK, SAVEPOINT).</li>
+              <li>CHAR(n) is fixed length; VARCHAR(n) is variable length.</li>
+              <li>DECIMAL(p, d): p digits in all, d after the decimal point.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t1-11" aria-labelledby="t1-11-title">
+            <h2 id="t1-11-title"><a href="../units/unit-1/basic-structure-of-sql-queries.html"><span class="rev-num">1.11</span> Basic Structure of SQL Queries</a></h2>
+            <ul>
+              <li>Basic form: SELECT columns FROM tables WHERE condition.</li>
+              <li>SELECT ≈ π, FROM ≈ ×, WHERE ≈ σ.</li>
+              <li>SQL keeps duplicates unless you write DISTINCT.</li>
+              <li>With several tables in FROM, a join condition in WHERE (or JOIN ... ON) pairs the right rows.</li>
+              <li>AND needs all conditions true, OR needs one, NOT reverses a condition; IN, BETWEEN and LIKE are short forms.</li>
+              <li>ORDER BY sorts the result; ASC is the default, DESC is largest first.</li>
+              <li>Clauses run in the order FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t1-12" aria-labelledby="t1-12-title">
+            <h2 id="t1-12-title"><a href="../units/unit-1/ddl.html"><span class="rev-num">1.12</span> DDL</a></h2>
+            <ul>
+              <li>DDL defines the schema: CREATE, ALTER, DROP, TRUNCATE and RENAME.</li>
+              <li>CREATE TABLE lists each column with a data type, then any table-level constraints.</li>
+              <li>Constraints can be written at column level or table level; composite keys go at table level.</li>
+              <li>ALTER TABLE can ADD, DROP COLUMN, MODIFY or RENAME COLUMN, and add or drop constraints.</li>
+              <li>DROP removes the table; TRUNCATE empties it; DELETE (DML) removes chosen rows.</li>
+              <li>DDL is auto-committed in MySQL, so it cannot be rolled back.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t1-13" aria-labelledby="t1-13-title">
+            <h2 id="t1-13-title"><a href="../units/unit-1/dml.html"><span class="rev-num">1.13</span> DML</a></h2>
+            <ul>
+              <li>DML works on rows: INSERT, UPDATE, DELETE and SELECT.</li>
+              <li>INSERT can add one row, many rows, or the result of a SELECT.</li>
+              <li>UPDATE ... SET ... WHERE changes chosen rows; without WHERE it changes every row.</li>
+              <li>DELETE FROM ... WHERE removes chosen rows; without WHERE it empties the table.</li>
+              <li>Every INSERT, UPDATE and DELETE must satisfy the table's constraints.</li>
+              <li>DML can be undone with ROLLBACK before COMMIT; DDL cannot.</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/revision.js"></script>
+</body>
+</html>

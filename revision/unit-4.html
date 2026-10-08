@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Built by tools/build-revision.mjs from the Key points of each topic page. Edit the topic pages, then run the script again. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit IV Revision Sheet | DBMS Study Guide</title>
+  <meta name="description" content="The key points of every Unit IV topic (Implementation Techniques) on one sheet that prints on about two A4 pages.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="revision" data-unit="4" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content content-wide">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        <header class="u-4 rev-head">
+          <span class="eyebrow">Unit IV: Implementation Techniques</span>
+          <h1>Unit IV Revision Sheet</h1>
+          <p class="lead">The key points of all 11 topics in one place. Read it the day before the exam, or print it on about two A4 pages.</p>
+        </header>
+
+        <div class="btn-row no-print">
+          <button type="button" class="btn btn-primary" data-print>Print the sheet</button>
+          <a class="btn" href="../quizzes/unit-4.html">Take the Unit IV quiz</a>
+          <a class="btn" href="../question-bank/unit-4.html">Unit IV question bank</a>
+        </div>
+
+        <div class="rev-sheet u-4">
+          <section class="rev-topic" id="t4-1" aria-labelledby="t4-1-title">
+            <h2 id="t4-1-title"><a href="../units/unit-4/raid.html"><span class="rev-num">4.1</span> RAID</a></h2>
+            <ul>
+              <li>RAID (Redundant Array of Independent Disks) makes many disks work as one logical disk.</li>
+              <li>Striping gives speed, mirroring gives safety, and parity gives safety at a lower cost.</li>
+              <li>Parity is the XOR of the data blocks in a stripe. XOR of the other blocks rebuilds a lost block.</li>
+              <li>RAID 0 has no redundancy. RAID 1 mirrors every block.</li>
+              <li>RAID 2 uses error-correcting codes; RAID 3 and RAID 4 use one parity disk (bit and block striping).</li>
+              <li>RAID 5 spreads parity over all disks, so there is no parity bottleneck.</li>
+              <li>RAID 6 stores P and Q in each stripe and survives two disk failures.</li>
+              <li>Choose a level by cost, normal performance, performance after a failure and rebuild performance.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t4-2" aria-labelledby="t4-2-title">
+            <h2 id="t4-2-title"><a href="../units/unit-4/file-organization.html"><span class="rev-num">4.2</span> File Organization</a></h2>
+            <ul>
+              <li>A file is a sequence of records, and a record is a sequence of fields. Data moves between disk and memory in blocks.</li>
+              <li>A file organization is the way the records of a file are arranged on disk.</li>
+              <li>Heap: records in any order. Fast inserts, slow searches.</li>
+              <li>Sequential: records sorted on a search key and linked by pointers. Fast ordered reads, slow inserts.</li>
+              <li>A sequential file puts extra records in overflow blocks and is reorganized from time to time.</li>
+              <li>Hashing: a hash function on an attribute gives the bucket of each record. Fast exact lookups, poor range queries.</li>
+              <li>Multitable clustering stores related records of several tables together, which speeds up joins.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t4-3" aria-labelledby="t4-3-title">
+            <h2 id="t4-3-title"><a href="../units/unit-4/organization-of-records-in-files.html"><span class="rev-num">4.3</span> Organization of Records in Files</a></h2>
+            <ul>
+              <li>Fixed-length records all have the same size n; record i starts at byte n × (i − 1).</li>
+              <li>Deleted fixed-length records are linked in a free list that starts at the file header.</li>
+              <li>Variable-length records store an (offset, length) pair for each variable field, a null bitmap and then the field data.</li>
+              <li>The slotted page has a header with the number of entries, the end of free space and the location and size of each record.</li>
+              <li>In a slotted page, records are packed at the end of the block and may move; pointers point to header entries.</li>
+              <li>The data dictionary (system catalog) stores metadata: schemas, constraints, users, indices and statistics.</li>
+              <li>Column-oriented storage keeps each attribute together; it suits analytics, while row storage suits transactions.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t4-4" aria-labelledby="t4-4-title">
+            <h2 id="t4-4-title"><a href="../units/unit-4/indexing-and-hashing.html"><span class="rev-num">4.4</span> Indexing and Hashing</a></h2>
+            <ul>
+              <li>An index is an extra structure that finds records quickly, like the catalog of a library.</li>
+              <li>A search key is the attribute (or set of attributes) used to look up records. Any attribute can be a search key.</li>
+              <li>An index entry holds a search-key value and pointers to the records with that value.</li>
+              <li>There are two basic kinds: ordered indices (sorted values) and hash indices (values spread over buckets).</li>
+              <li>Indices are evaluated on access types, access time, insertion time, deletion time and space overhead.</li>
+              <li>Every index slows down inserts, deletes and updates, and uses space, so only useful indices are built.</li>
+              <li>Hashing is best for exact-value lookups; ordered indices also handle range queries and sorted output.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t4-5" aria-labelledby="t4-5-title">
+            <h2 id="t4-5-title"><a href="../units/unit-4/ordered-indices.html"><span class="rev-num">4.5</span> Ordered Indices</a></h2>
+            <ul>
+              <li>An ordered index keeps search keys in sorted order with pointers to the records.</li>
+              <li>A primary (clustering) index has a search key that sets the file order; a file has only one.</li>
+              <li>A secondary (non-clustering) index is on any other search key; it must be dense.</li>
+              <li>A dense index has an entry for every search-key value; a sparse index has one for only some values, usually one per block.</li>
+              <li>To search a sparse index, take the largest entry less than or equal to the key, then scan that block.</li>
+              <li>A multilevel index builds a sparse outer index on the inner index, so a search reads very few blocks.</li>
+              <li>A secondary index on a non-key attribute points to a bucket of record pointers for each value.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t4-6" aria-labelledby="t4-6-title">
+            <h2 id="t4-6-title"><a href="../units/unit-4/b-plus-tree-index-files.html"><span class="rev-num">4.6</span> B+ Tree Index Files</a></h2>
+            <ul>
+              <li>A B+ tree is a balanced tree index: every leaf is on the same level.</li>
+              <li>A node has up to n pointers and n − 1 keys. Every node except the root is at least half full.</li>
+              <li>All keys and record pointers are in the leaves. The leaves are linked in key order.</li>
+              <li>A search goes from the root to one leaf, so it reads one node on each level.</li>
+              <li>A leaf split copies the middle key up. An internal node split moves the middle key up.</li>
+              <li>A deletion that leaves a node too empty borrows from a sibling, or merges with one if no sibling can lend.</li>
+              <li>The tree grows taller only when the root splits, and shorter only when the root loses its last key.</li>
+              <li>A high fan-out keeps the tree short, so a search needs few disk reads.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t4-7" aria-labelledby="t4-7-title">
+            <h2 id="t4-7-title"><a href="../units/unit-4/b-tree-index-files.html"><span class="rev-num">4.7</span> B Tree Index Files</a></h2>
+            <ul>
+              <li>A B tree is a balanced tree index in which each key appears only once.</li>
+              <li>Every key, in any node, has a pointer to its record. The leaves are not linked.</li>
+              <li>A node of order n has at most n − 1 keys; every node except the root has at least ⌈n / 2⌉ − 1 keys.</li>
+              <li>A search can stop at an internal node when it finds the key there.</li>
+              <li>Insertion splits a full node and moves the middle key up; a root split makes the tree taller.</li>
+              <li>To delete an internal key, replace it with its in-order successor; an underflow borrows from a sibling or merges.</li>
+              <li>B+ trees are preferred in practice: linked leaves give fast range queries, and a higher fan-out keeps the tree short.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t4-8" aria-labelledby="t4-8-title">
+            <h2 id="t4-8-title"><a href="../units/unit-4/static-hashing.html"><span class="rev-num">4.8</span> Static Hashing</a></h2>
+            <ul>
+              <li>A hash function h maps each search-key value to a bucket; a bucket is usually one disk block.</li>
+              <li>In static hashing, the number of buckets is fixed, for example h(K) = K mod B.</li>
+              <li>A search on the hash key reads about one block.</li>
+              <li>A good hash function is uniform and random.</li>
+              <li>Bucket overflow is caused by too few buckets or by skew.</li>
+              <li>Overflow chaining (closed hashing) links overflow buckets to a full bucket; databases use this method.</li>
+              <li>Open hashing with linear probing puts the record in the next bucket with space; it causes clustering and makes deletion hard.</li>
+              <li>Static hashing cannot grow or shrink well, and it is poor for range queries.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t4-9" aria-labelledby="t4-9-title">
+            <h2 id="t4-9-title"><a href="../units/unit-4/dynamic-hashing.html"><span class="rev-num">4.9</span> Dynamic Hashing</a></h2>
+            <ul>
+              <li>Dynamic hashing changes the number of buckets as the data grows or shrinks; extendible hashing is the common form.</li>
+              <li>The directory (bucket address table) uses the last d bits of the hash value; d is the global depth.</li>
+              <li>Each bucket has a local depth d′; 2<sup>d − d′</sup> directory entries point to it.</li>
+              <li>A full bucket with d′ &lt; d splits; the directory does not change size.</li>
+              <li>A full bucket with d′ = d first doubles the directory (d increases by 1), then splits.</li>
+              <li>When a bucket becomes empty, it merges with its split image, and the directory may halve.</li>
+              <li>Dynamic hashing avoids overflow chains and full reorganization, at the cost of one directory lookup.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t4-10" aria-labelledby="t4-10-title">
+            <h2 id="t4-10-title"><a href="../units/unit-4/query-processing-overview.html"><span class="rev-num">4.10</span> Query Processing Overview</a></h2>
+            <ul>
+              <li>Query processing has three steps: parsing and translation, optimization, and evaluation.</li>
+              <li>The parser checks syntax and names, and translates SQL into relational algebra.</li>
+              <li>A query evaluation plan is relational algebra annotated with how to evaluate each operation.</li>
+              <li>Query cost = b × t<sub>T</sub> + S × t<sub>S</sub>: block transfers and seeks, because disk access dominates.</li>
+              <li>Linear search costs b<sub>r</sub> transfers + 1 seek; binary search costs ⌈log<sub>2</sub>(b<sub>r</sub>)⌉ × (t<sub>T</sub> + t<sub>S</sub>).</li>
+              <li>External merge sort makes sorted runs that fit in memory, then merges them.</li>
+              <li>Join algorithms: nested-loop, block nested-loop, indexed nested-loop, merge join and hash join; the choice depends on cost.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t4-11" aria-labelledby="t4-11-title">
+            <h2 id="t4-11-title"><a href="../units/unit-4/query-optimization.html"><span class="rev-num">4.11</span> Query Optimization using Heuristics and Cost Estimation</a></h2>
+            <ul>
+              <li>Query optimization chooses the most efficient plan from many equivalent plans.</li>
+              <li>A query tree shows relations as leaves and operations as internal nodes; the canonical tree is correct but slow.</li>
+              <li>Equivalence rules (cascade of σ, pushing σ and π through joins, join commutativity and associativity) let the optimizer rewrite a tree safely.</li>
+              <li>Heuristic rules: perform selections early, perform projections early, do the most restrictive operations first, and replace × followed by σ with ⋈.</li>
+              <li>Cost-based optimization estimates the cost of each plan from catalog statistics (n<sub>r</sub>, b<sub>r</sub>, V(A, r), histograms) and picks the cheapest.</li>
+              <li>Selectivity is the fraction of tuples that satisfy a condition; σ<sub>A = v</sub>(r) is estimated as n<sub>r</sub> / V(A, r).</li>
+              <li>Heuristics are fast but may miss the best plan; cost-based optimization is slower but usually better.</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/revision.js"></script>
+</body>
+</html>
