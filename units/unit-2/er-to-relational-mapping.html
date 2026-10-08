@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ER-to-Relational Mapping | DBMS Study Guide</title>
+  <meta name="description" content="Learn the steps that turn an E-R diagram into relational tables: strong and weak entity sets, 1:1, 1:N and M:N relationships, multivalued and composite attributes, with a step-by-step mapping widget and MySQL code.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="2" data-topic="2.3" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-2">Unit II</span>
+            <span class="badge badge-level" title="Topic number">Topic 2.3</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO2</span>
+          </div>
+          <h1>ER-to-Relational Mapping</h1>
+          <p class="lead">An E-R diagram is a picture; a DBMS stores tables. ER-to-relational mapping is the set of rules that turns each part of the diagram into tables, primary keys and foreign keys. Follow the steps below, then watch the widget map the university, bank and car insurance diagrams.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Map strong and weak entity sets to tables with the right primary keys.</li>
+              <li>Map 1 : 1, 1 : N and M : N relationship sets using foreign keys or new tables.</li>
+              <li>Map composite, multivalued and derived attributes.</li>
+              <li>Write the CREATE TABLE statements for a mapped schema.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#idea">The idea</a></li>
+            <li><a href="#strong">Step 1: strong entity sets</a></li>
+            <li><a href="#weak">Step 2: weak entity sets</a></li>
+            <li><a href="#one-one">Step 3: 1 : 1 relationships</a></li>
+            <li><a href="#one-many">Step 4: 1 : N relationships</a></li>
+            <li><a href="#many-many">Step 5: M : N relationships</a></li>
+            <li><a href="#multi">Step 6: multivalued attributes</a></li>
+            <li><a href="#nary">Step 7: relationships of degree 3 or more</a></li>
+            <li><a href="#special">Mapping specialization and generalization</a></li>
+            <li><a href="#try">Try it: mapping stepper</a></li>
+            <li><a href="#summary">Summary: E-R construct to table</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="idea" class="topic-section" aria-labelledby="idea-title">
+          <h2 id="idea-title">The idea</h2>
+          <p>In the logical design step, we turn the E-R diagram into a <strong>relational schema</strong>. Every entity set and many relationship sets become tables. The lines of the diagram become <strong>foreign keys</strong>.</p>
+          <p>We use the university diagram from <a href="er-diagrams.html">E-R Diagrams</a>. Its main parts are:</p>
+          <ul>
+            <li>Student(<u>ID</u>, Name (First, Last), Phone (multivalued), DOB, Age (derived))</li>
+            <li>Course(<u>CourseID</u>, Title, Credits) and Instructor(<u>InstID</u>, IName, Salary)</li>
+            <li>Section, a weak entity set of Course, with the partial key SecNo</li>
+            <li>Takes (M : N, with Grade), Teaches (M : N) and Advisor (1 : N, Instructor to Student)</li>
+          </ul>
+          <p>Elmasri and Navathe give the mapping as seven steps. We follow them in order.</p>
+        </section>
+
+        <section id="strong" class="topic-section" aria-labelledby="strong-title">
+          <h2 id="strong-title">Step 1: strong entity sets</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Rule</div>
+            <p>For each strong entity set, make a table with <strong>all its simple attributes</strong>. Its key becomes the <strong>primary key</strong> of the table.</p>
+          </div>
+          <ul>
+            <li>A <strong>composite</strong> attribute is stored as its parts. Name becomes two columns, First and Last.</li>
+            <li>A <strong>derived</strong> attribute is not stored. Age is calculated from DOB when needed.</li>
+            <li>A <strong>multivalued</strong> attribute is left out for now. It gets its own table in step 6.</li>
+          </ul>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE Student (
+  ID     CHAR(10),
+  First  VARCHAR(30),
+  Last   VARCHAR(30),
+  DOB    DATE,
+  PRIMARY KEY (ID)
+);
+
+CREATE TABLE Course (
+  CourseID CHAR(6),
+  Title    VARCHAR(50),
+  Credits  INT,
+  PRIMARY KEY (CourseID)
+);</code></pre>
+          </div>
+          <p>Instructor(<u>InstID</u>, IName, Salary) is mapped the same way.</p>
+        </section>
+
+        <section id="weak" class="topic-section" aria-labelledby="weak-title">
+          <h2 id="weak-title">Step 2: weak entity sets</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Rule</div>
+            <p>For each weak entity set, make a table with its attributes <strong>plus the primary key of its owner</strong>. The primary key is <strong>owner's key + partial key</strong>. The owner's key is also a foreign key, usually with <code>ON DELETE CASCADE</code>.</p>
+          </div>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE Section (
+  CourseID  CHAR(6),
+  SecNo     INT,
+  Semester  VARCHAR(10),
+  PRIMARY KEY (CourseID, SecNo),
+  FOREIGN KEY (CourseID) REFERENCES Course (CourseID)
+    ON DELETE CASCADE
+);</code></pre>
+          </div>
+          <ul>
+            <li>ON DELETE CASCADE says: when a course is deleted, delete its sections too. A section cannot exist without its course.</li>
+            <li>The identifying relationship Sec_of needs <strong>no table</strong>. The foreign key CourseID already stores it.</li>
+          </ul>
+        </section>
+
+        <section id="one-one" class="topic-section" aria-labelledby="oneone-title">
+          <h2 id="oneone-title">Step 3: 1 : 1 relationships</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Rule</div>
+            <p>Pick one of the two tables, S. Add the primary key of the other table, T, to S as a foreign key. Choose for S the entity set with <strong>total participation</strong>, so the column is never NULL.</p>
+          </div>
+          <p>Example: Manages is 1 : 1 between Employee and Department, and every department has a manager. Department has total participation, so the foreign key goes into Department:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE Department (
+  DeptID   INT,
+  DName    VARCHAR(30),
+  MgrID    CHAR(5) NOT NULL UNIQUE,   -- the manager
+  MgrSince DATE,                      -- attribute of Manages
+  PRIMARY KEY (DeptID),
+  FOREIGN KEY (MgrID) REFERENCES Employee (EmpID)
+);</code></pre>
+          </div>
+          <p>UNIQUE keeps the relationship one to one: no employee can manage two departments. Attributes of the relationship, such as MgrSince, go into the same table.</p>
+        </section>
+
+        <section id="one-many" class="topic-section" aria-labelledby="onemany-title">
+          <h2 id="onemany-title">Step 4: 1 : N relationships</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Rule</div>
+            <p>Add the primary key of the <strong>“one” side</strong> as a foreign key in the table of the <strong>“many” side</strong>. Put the attributes of the relationship there too. No new table is needed.</p>
+          </div>
+          <p>Advisor is 1 : N from Instructor to Student. One instructor has many students, and each student has one advisor. So Student gets InstID:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>ALTER TABLE Student
+  ADD InstID CHAR(5) NOT NULL,   -- total participation: never NULL
+  ADD FOREIGN KEY (InstID) REFERENCES Instructor (InstID);</code></pre>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>Ask “which side is many?” The foreign key always goes into the many side. If you put it on the one side, an instructor row would need many InstID values for many students, which a column cannot hold.</p>
+          </div>
+          <h3>The other approach: a separate table</h3>
+          <p>Your notes show two approaches for a relationship with a key constraint:</p>
+          <ul>
+            <li><strong>Approach 1:</strong> make a separate table, such as Advisor(<u>ID</u>, InstID). Its primary key is the key of the many side, ID.</li>
+            <li><strong>Approach 2:</strong> add the foreign key to the many side, as above. This is usually better. It needs one table fewer, and a query for a student's advisor needs no join. The cost is NULL values when many students have no advisor.</li>
+          </ul>
+        </section>
+
+        <section id="many-many" class="topic-section" aria-labelledby="mn-title">
+          <h2 id="mn-title">Step 5: M : N relationships</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Rule</div>
+            <p>Make a <strong>new table</strong> for the relationship. Its columns are the primary keys of the participating entity sets, as foreign keys, plus the attributes of the relationship. The primary key is the <strong>combination</strong> of the foreign keys.</p>
+          </div>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE Takes (
+  ID        CHAR(10),
+  CourseID  CHAR(6),
+  Grade     CHAR(2),
+  PRIMARY KEY (ID, CourseID),
+  FOREIGN KEY (ID)       REFERENCES Student (ID),
+  FOREIGN KEY (CourseID) REFERENCES Course (CourseID)
+);</code></pre>
+          </div>
+          <p>A foreign key cannot work here. A student takes many courses, so Student would need many CourseID values in one row. The new table holds one row for each (student, course) pair.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>The notes' Works_In table copies EName, Salary, DeptName and Building into the relationship table. Those are attributes of the entity sets, and copying them causes redundancy. A relationship table holds only the <strong>keys</strong> of the entity sets and the relationship's own attributes. Also, a table name cannot contain a space (“Works In”), and MySQL needs the referenced column after REFERENCES, as in <code>REFERENCES Employee (EmpID)</code>.</p>
+          </div>
+        </section>
+
+        <section id="multi" class="topic-section" aria-labelledby="multi-title">
+          <h2 id="multi-title">Step 6: multivalued attributes</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Rule</div>
+            <p>For each multivalued attribute, make a new table with the <strong>primary key of the owner</strong> and the <strong>attribute</strong>. Both together form the primary key.</p>
+          </div>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE Student_Phone (
+  ID     CHAR(10),
+  Phone  VARCHAR(15),
+  PRIMARY KEY (ID, Phone),
+  FOREIGN KEY (ID) REFERENCES Student (ID)
+);</code></pre>
+          </div>
+          <p>A student with three phone numbers has three rows here. We never store “9876543210, 9443012345” in one column, because a relational column holds one atomic value.</p>
+        </section>
+
+        <section id="nary" class="topic-section" aria-labelledby="nary-title">
+          <h2 id="nary-title">Step 7: relationships of degree 3 or more</h2>
+          <p>A ternary relationship, such as Sells(Product, Supplier, Customer) with Price, becomes a new table. It holds the three primary keys as foreign keys and the attribute Price. Usually all three keys together form the primary key.</p>
+          <div class="code-block">
+            <span class="code-label">Schema</span>
+            <pre><code>Sells(ProductID, SupplierID, CustomerID, Price)</code></pre>
+          </div>
+        </section>
+
+        <section id="special" class="topic-section" aria-labelledby="special-title">
+          <h2 id="special-title">Mapping specialization and generalization</h2>
+          <p>An extended E-R (EER) diagram can show a superclass with subclasses. Example: InventoryItem(ID, Name) with the subclasses Book(Publisher) and DVD(Manufacturer). There are three ways to map it:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Three ways to map InventoryItem, Book and DVD</caption>
+              <thead><tr><th scope="col">Method</th><th scope="col">Tables</th><th scope="col">Drawback</th></tr></thead>
+              <tbody>
+                <tr><td>1. A table for the superclass and each subclass</td><td>InventoryItem(<u>ID</u>, Name), Book(<u>ID</u>, Publisher), DVD(<u>ID</u>, Manufacturer)</td><td>Needs a join to see all the data of a book</td></tr>
+                <tr><td>2. Tables for the subclasses only</td><td>Book(<u>ID</u>, Name, Publisher), DVD(<u>ID</u>, Name, Manufacturer)</td><td>An item that is neither a book nor a DVD has no table</td></tr>
+                <tr><td>3. One table for the superclass only</td><td>InventoryItem(<u>ID</u>, Name, Publisher, Manufacturer)</td><td>Many NULLs: a book has no Manufacturer, a DVD has no Publisher</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>In method 1, ID in Book and DVD is both the primary key and a foreign key to InventoryItem.</p>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: mapping stepper</h2>
+          <p>Press Play or Next. The construct being mapped turns orange in the diagram and green once it is done. New columns are highlighted in the schema. Choose the bank or the car insurance diagram to map them too.</p>
+          <div class="widget" data-widget="er-mapping" data-model="university">
+            <noscript><p class="widget-narration">The stepper needs JavaScript. The university diagram maps to Student(ID, First, Last, DOB, InstID), Course(CourseID, Title, Credits), Instructor(InstID, IName, Salary), Section(CourseID, SecNo, Semester), Takes(ID, CourseID, Grade), Teaches(InstID, CourseID) and Student_Phone(ID, Phone).</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>In the car insurance diagram, why does Car get two foreign keys?</li>
+              <li>In the bank diagram, count the tables. Why are there more tables than entity sets?</li>
+              <li>Open the SQL. Which table must be created first, and why?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="summary" class="topic-section" aria-labelledby="sum-title">
+          <h2 id="sum-title">Summary: E-R construct to table</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>How each E-R construct maps to the relational model</caption>
+              <thead><tr><th scope="col">E-R construct</th><th scope="col">Relational construct</th></tr></thead>
+              <tbody>
+                <tr><td>Strong entity set</td><td>Table; key becomes the primary key</td></tr>
+                <tr><td>Weak entity set</td><td>Table; primary key = owner's key + partial key; foreign key to the owner</td></tr>
+                <tr><td>1 : 1 relationship set</td><td>Foreign key (UNIQUE) in one table, preferably the total side</td></tr>
+                <tr><td>1 : N relationship set</td><td>Foreign key in the table of the many side</td></tr>
+                <tr><td>M : N relationship set</td><td>New table; primary key = both foreign keys</td></tr>
+                <tr><td>n-ary relationship set</td><td>New table with all the foreign keys</td></tr>
+                <tr><td>Simple attribute</td><td>Column</td></tr>
+                <tr><td>Composite attribute</td><td>One column for each part</td></tr>
+                <tr><td>Multivalued attribute</td><td>New table (owner key, value)</td></tr>
+                <tr><td>Derived attribute</td><td>Not stored; computed in queries or views</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>After mapping, check each table for redundancy with normalization. The steps from an E-R diagram to normalized relations are: map the diagram, list the functional dependencies of each table, then split any table that breaks a normal form.</p>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Online shopping</h3>
+              <p class="muted">Order contains Product is M : N, so the shop has an OrderItem(OrderID, ProductID, Quantity) table. Every shopping site has a table like this.</p>
+            </div>
+            <div class="card">
+              <h3>UPI payments</h3>
+              <p class="muted">One bank account has many UPI IDs (1 : N), so the UPI ID table stores the account number as a foreign key.</p>
+            </div>
+            <div class="card">
+              <h3>College ERP</h3>
+              <p class="muted">A student's parents' phone numbers are multivalued. The ERP keeps them in a separate StudentContact table, one row for each number.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Strong entity set: a table with its simple attributes; its key is the primary key.</li>
+              <li>Weak entity set: a table whose primary key is the owner's key + the partial key.</li>
+              <li>1 : N: the foreign key goes into the many side. 1 : 1: into either side, preferably the total side.</li>
+              <li>M : N: a new table whose primary key is both foreign keys, plus the relationship attributes.</li>
+              <li>Multivalued attribute: a new table (owner key, value). Composite: one column per part. Derived: not stored.</li>
+              <li>A relationship table holds only keys and the relationship's own attributes.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit II question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="2.3"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="2.3"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 6, Section 6.7 “Reduction to Relational Schemas”.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 9, Section 9.1 “Relational Database Design Using ER-to-Relational Mapping” and Section 9.2 (mapping EER constructs).</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-table.html">CREATE TABLE</a> and <a href="https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html">FOREIGN KEY constraints</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-2.js"></script>
+  <script src="../../data/quizzes/unit-2.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/er-diagram.js"></script>
+  <script src="../../assets/js/widgets/er-mapping.js"></script>
+</body>
+</html>

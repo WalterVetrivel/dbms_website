@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Views | DBMS Study Guide</title>
+  <meta name="description" content="Learn SQL views: what a view is, CREATE VIEW on one or more tables, querying and updating through a view, WITH CHECK OPTION, which views are updatable in MySQL, CREATE OR REPLACE, ALTER and DROP VIEW, and how views help with security and simpler queries.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="2" data-topic="2.16" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-2">Unit II</span>
+            <span class="badge badge-level" title="Topic number">Topic 2.16</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO2</span>
+          </div>
+          <h1>Views</h1>
+          <p class="lead">A view is a saved query that you can use like a table. It stores no data of its own. Views hide complex joins, show each user only what they need, and keep old queries working when tables change. This page shows how to create, use, change and drop views in MySQL.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define a view and explain how it differs from a base table.</li>
+              <li>Create views on one table and on a join, and query them.</li>
+              <li>Predict when an INSERT, UPDATE or DELETE through a view works, and use WITH CHECK OPTION.</li>
+              <li>Change and remove views with CREATE OR REPLACE, ALTER VIEW and DROP VIEW.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is a view</a></li>
+            <li><a href="#sample">The sample tables</a></li>
+            <li><a href="#create">Creating a view</a></li>
+            <li><a href="#multi">A view on two tables</a></li>
+            <li><a href="#update">Changing data through a view</a></li>
+            <li><a href="#check">WITH CHECK OPTION</a></li>
+            <li><a href="#updatable">Which views are updatable</a></li>
+            <li><a href="#change">Changing and dropping views</a></li>
+            <li><a href="#uses">Why use views</a></li>
+            <li><a href="#kinds">Kinds of views</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is a view</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>view</strong> is a <strong>virtual table</strong> defined by a SELECT query. It has rows and columns like a table, but it stores only the query. Each time you use the view, the database runs the query on the <strong>base tables</strong> (the real tables) and shows the current data.</p>
+          </div>
+          <ul>
+            <li>A view can show some columns, some rows, or both, of one or more tables.</li>
+            <li>You query a view exactly like a table: <code>SELECT ... FROM view_name</code>.</li>
+            <li>When the base tables change, the view shows the change at once. There is no copy to keep up to date.</li>
+            <li>Dropping a view does not touch the base tables or their data.</li>
+          </ul>
+          <p>Views give <strong>logical data independence</strong> at the view level of the three-schema architecture (see <a href="../unit-1/views-of-data.html">Views of Data</a>). Users and programs read the view, so the tables underneath can change without breaking them.</p>
+        </section>
+
+        <section id="sample" class="topic-section" aria-labelledby="sample-title">
+          <h2 id="sample-title">The sample tables</h2>
+          <p>These are the tables from the notes. STU_ID is the key in both.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE Student_Detail (
+  STU_ID  INT PRIMARY KEY,
+  NAME    VARCHAR(20) NOT NULL,
+  ADDRESS VARCHAR(20)
+);
+CREATE TABLE Student_Marks (
+  STU_ID INT PRIMARY KEY,
+  NAME   VARCHAR(20),
+  MARKS  INT,
+  AGE    INT
+);
+INSERT INTO Student_Detail VALUES
+  (1, 'Stephan', 'Delhi'), (2, 'Kathrin', 'Noida'),
+  (3, 'David', 'Ghaziabad'), (4, 'Alina', 'Gurugram');
+INSERT INTO Student_Marks VALUES
+  (1, 'Stephan', 97, 19), (2, 'Kathrin', 86, 21), (3, 'David', 74, 18),
+  (4, 'Alina', 90, 20), (5, 'John', 96, 18);</code></pre>
+          </div>
+          <div class="grid grid-sm">
+            <div class="table-wrap">
+              <table>
+                <caption>Student_Detail</caption>
+                <thead><tr><th scope="col">STU_ID</th><th scope="col">NAME</th><th scope="col">ADDRESS</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>Stephan</td><td>Delhi</td></tr>
+                  <tr><td>2</td><td>Kathrin</td><td>Noida</td></tr>
+                  <tr><td>3</td><td>David</td><td>Ghaziabad</td></tr>
+                  <tr><td>4</td><td>Alina</td><td>Gurugram</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <caption>Student_Marks</caption>
+                <thead><tr><th scope="col">STU_ID</th><th scope="col">NAME</th><th scope="col">MARKS</th><th scope="col">AGE</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>Stephan</td><td>97</td><td>19</td></tr>
+                  <tr><td>2</td><td>Kathrin</td><td>86</td><td>21</td></tr>
+                  <tr><td>3</td><td>David</td><td>74</td><td>18</td></tr>
+                  <tr><td>4</td><td>Alina</td><td>90</td><td>20</td></tr>
+                  <tr><td>5</td><td>John</td><td>96</td><td>18</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="create" class="topic-section" aria-labelledby="create-title">
+          <h2 id="create-title">Creating a view</h2>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>CREATE VIEW view_name [(column_list)] AS
+SELECT ...
+[WITH CHECK OPTION];</code></pre>
+          </div>
+          <p>This view shows the name and address of the students with STU_ID below 4:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE VIEW DetailsView AS
+SELECT NAME, ADDRESS
+FROM Student_Detail
+WHERE STU_ID &lt; 4;
+
+SELECT * FROM DetailsView;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+-----------+
+| NAME    | ADDRESS   |
++---------+-----------+
+| Stephan | Delhi     |
+| Kathrin | Noida     |
+| David   | Ghaziabad |
++---------+-----------+</code></pre>
+          </div>
+          <p>The view name can be used anywhere a table name can be used in a SELECT. You can add WHERE, ORDER BY and joins on top of it.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes create this view <code>FROM Student_Details</code>, with an extra s. The table is Student_Detail, so that query fails with “table doesn't exist”. Names must match exactly.</p>
+          </div>
+        </section>
+
+        <section id="multi" class="topic-section" aria-labelledby="multi-title">
+          <h2 id="multi-title">A view on two tables</h2>
+          <p>A view can join tables (see <a href="joins.html">Joins</a>). Users then read one simple “table” instead of writing the join each time.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE VIEW MarksView AS
+SELECT d.NAME, d.ADDRESS, m.MARKS
+FROM Student_Detail d
+JOIN Student_Marks m ON d.STU_ID = m.STU_ID;
+
+SELECT * FROM MarksView;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+-----------+-------+
+| NAME    | ADDRESS   | MARKS |
++---------+-----------+-------+
+| Stephan | Delhi     |    97 |
+| Kathrin | Noida     |    86 |
+| David   | Ghaziabad |    74 |
+| Alina   | Gurugram  |    90 |
++---------+-----------+-------+</code></pre>
+          </div>
+          <p>John has marks but no row in Student_Detail, so the inner join leaves him out. Now a short query gives a useful answer:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT NAME, MARKS FROM MarksView
+WHERE MARKS &gt; 85
+ORDER BY MARKS DESC;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+-------+
+| NAME    | MARKS |
++---------+-------+
+| Stephan |    97 |
+| Alina   |    90 |
+| Kathrin |    86 |
++---------+-------+</code></pre>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes write this view with <code>FROM Student_Detail, Student_Mark</code> but <code>Student_Marks.NAME</code> in the WHERE clause. The table is Student_Marks in both places. The notes also join on NAME. Joining on the key STU_ID is safer, because two students can share a name.</p>
+          </div>
+        </section>
+
+        <section id="update" class="topic-section" aria-labelledby="update-title">
+          <h2 id="update-title">Changing data through a view</h2>
+          <p>A simple view on one table is <strong>updatable</strong>. An UPDATE, INSERT or DELETE on the view changes the base table.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>UPDATE DetailsView SET ADDRESS = 'Chennai' WHERE NAME = 'David';
+
+SELECT * FROM Student_Detail WHERE STU_ID = 3;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+--------+-------+---------+
+| STU_ID | NAME  | ADDRESS |
++--------+-------+---------+
+|      3 | David | Chennai |
++--------+-------+---------+</code></pre>
+          </div>
+          <p>The view has no data of its own, so the change goes to Student_Detail.</p>
+          <p>An INSERT through a view fails if the base table has a NOT NULL column that is missing from the view and has no default. For example, a view with only ADDRESS cannot insert a row, because NAME is NOT NULL. MySQL gives error 1423: “Field of view ... underlying table doesn't have a default value”.</p>
+        </section>
+
+        <section id="check" class="topic-section" aria-labelledby="check-title">
+          <h2 id="check-title">WITH CHECK OPTION</h2>
+          <p>Without a check, you could insert a row through a view that the view itself would not show. The row would “vanish” as soon as it was added. <code>WITH CHECK OPTION</code> stops this. Every row inserted or updated through the view must satisfy the view's WHERE clause.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE VIEW TopScorers AS
+SELECT STU_ID, NAME, MARKS
+FROM Student_Marks
+WHERE MARKS &gt;= 90
+WITH CHECK OPTION;
+
+INSERT INTO TopScorers VALUES (6, 'Ravi', 95);   -- works: 95 &gt;= 90
+INSERT INTO TopScorers VALUES (7, 'Meena', 60);  -- rejected: 60 &lt; 90</code></pre>
+          </div>
+          <p>The first INSERT adds Ravi to Student_Marks, with AGE NULL because the view has no AGE column. The second INSERT fails with error 1369, “CHECK OPTION failed”, and nothing is added.</p>
+        </section>
+
+        <section id="updatable" class="topic-section" aria-labelledby="updatable-title">
+          <h2 id="updatable-title">Which views are updatable</h2>
+          <p>A view is updatable only if each of its rows maps to exactly one row of a base table. In MySQL, a view is <strong>not</strong> updatable if its SELECT uses any of these:</p>
+          <ul>
+            <li>Aggregate functions such as SUM, COUNT or AVG</li>
+            <li>DISTINCT, GROUP BY or HAVING</li>
+            <li>UNION or UNION ALL</li>
+            <li>A subquery in the SELECT list (in most cases)</li>
+            <li>Only literal values, with no base table column</li>
+          </ul>
+          <p>This summary view is read-only, because one row stands for a whole group:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE VIEW AgeStats AS
+SELECT AGE, COUNT(*) AS students, AVG(MARKS) AS avg_marks
+FROM Student_Marks
+GROUP BY AGE;
+
+SELECT * FROM AgeStats;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+------+----------+-----------+
+| AGE  | students | avg_marks |
++------+----------+-----------+
+|   18 |        2 |   85.0000 |
+|   19 |        1 |   97.0000 |
+|   20 |        1 |   90.0000 |
+|   21 |        1 |   86.0000 |
++------+----------+-----------+</code></pre>
+          </div>
+          <p><code>UPDATE AgeStats SET students = 5 WHERE AGE = 18;</code> fails with error 1288, “The target table AgeStats of the UPDATE is not updatable”. There is no single base row to change.</p>
+          <p>A join view such as MarksView can be updated, but one statement may change only one base table. Setting MARKS and ADDRESS in the same UPDATE fails with error 1393.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes list these as the “disadvantages of views”. Some of them are about Oracle or SQL Server, not MySQL:</p>
+            <ul>
+              <li>“WITH READ ONLY” and the pseudocolumn “rownum” are Oracle features. MySQL has neither.</li>
+              <li>“Rules and defaults” are an old SQL Server feature.</li>
+            </ul>
+            <p>Two points do hold in MySQL. A view cannot take parameters. A view cannot use a temporary table (error 1352).</p>
+          </div>
+        </section>
+
+        <section id="change" class="topic-section" aria-labelledby="change-title">
+          <h2 id="change-title">Changing and dropping views</h2>
+          <p>To change a view, give its new query with <code>CREATE OR REPLACE VIEW</code> or <code>ALTER VIEW</code>. Both keep the view's name, so queries that use it still work.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE OR REPLACE VIEW DetailsView AS
+SELECT STU_ID, NAME, ADDRESS
+FROM Student_Detail
+WHERE STU_ID &lt; 4;
+
+ALTER VIEW DetailsView AS
+SELECT NAME, ADDRESS
+FROM Student_Detail;</code></pre>
+          </div>
+          <p>CREATE OR REPLACE also works when the view does not exist yet. ALTER VIEW needs the view to exist.</p>
+          <p>To remove a view, use DROP VIEW. The base tables and their data stay as they are.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>DROP VIEW MarksView;
+DROP VIEW IF EXISTS MarksView;   -- no error if it is already gone</code></pre>
+          </div>
+          <p><code>SHOW FULL TABLES;</code> lists tables and views, with the type BASE TABLE or VIEW.</p>
+          <div class="callout callout-tip">
+            <div class="callout-title">SELECT * in a view is fixed when the view is made</div>
+            <p>MySQL expands <code>SELECT *</code> into a column list when you create the view. If you add a column to the table later, the view does not show it until you replace the view. If you drop the base table, any use of the view fails with error 1356.</p>
+          </div>
+        </section>
+
+        <section id="uses" class="topic-section" aria-labelledby="uses-title">
+          <h2 id="uses-title">Why use views</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Benefits of views</caption>
+              <thead><tr><th scope="col">Benefit</th><th scope="col">How a view helps</th></tr></thead>
+              <tbody>
+                <tr><td>Security</td><td>Give a user access to the view but not the table. They see only the allowed rows and columns.</td></tr>
+                <tr><td>Simpler queries</td><td>A long join or calculation is written once. Users query the view like a single table.</td></tr>
+                <tr><td>Logical data independence</td><td>If tables are split or renamed, the view can be rewritten so old queries still work.</td></tr>
+                <tr><td>Consistency</td><td>Everyone uses the same definition, for example of “active customer”.</td></tr>
+                <tr><td>Renaming</td><td>A view can give columns clearer names without changing the table.</td></tr>
+                <tr><td>Integrity</td><td>WITH CHECK OPTION makes sure rows added through the view meet its condition.</td></tr>
+                <tr><td>Little storage</td><td>Only the query is stored, not the rows.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Here a clerk may read DetailsView but not the table under it:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>GRANT SELECT ON school.DetailsView TO 'clerk'@'localhost';</code></pre>
+          </div>
+          <p>The clerk can run <code>SELECT * FROM DetailsView</code>. <code>SELECT * FROM Student_Detail</code> fails with error 1142, “SELECT command denied”.</p>
+          <p>The costs are small but real. A view over a view over a view can be slow and hard to debug, and many views cannot be updated.</p>
+        </section>
+
+        <section id="kinds" class="topic-section" aria-labelledby="kinds-title">
+          <h2 id="kinds-title">Kinds of views</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Common names for kinds of views</caption>
+              <thead><tr><th scope="col">Name</th><th scope="col">Meaning</th></tr></thead>
+              <tbody>
+                <tr><td>Simple view</td><td>Built on one table, with no aggregates, GROUP BY or DISTINCT. Usually updatable. DetailsView is one.</td></tr>
+                <tr><td>Complex view</td><td>Uses aggregates, GROUP BY, DISTINCT or set operations. Read-only. AgeStats is one.</td></tr>
+                <tr><td>Join view</td><td>Has more than one table in its FROM clause. MarksView is one.</td></tr>
+                <tr><td>Inline view</td><td>Oracle's name for a subquery in the FROM clause. MySQL calls it a derived table (see <a href="sub-queries.html">Sub Queries</a>). It is not saved.</td></tr>
+                <tr><td>Materialized view</td><td>A view whose result is stored and refreshed. Oracle and PostgreSQL have them; MySQL does not.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Payroll privacy</h3>
+              <p class="muted">An HR database gives managers a view of their team with names and roles, but no salary or bank columns.</p>
+            </div>
+            <div class="card">
+              <h3>Reporting</h3>
+              <p class="muted">A sales dashboard reads a view that joins orders, customers and products. The report tool never sees the joins.</p>
+            </div>
+            <div class="card">
+              <h3>Safe upgrades</h3>
+              <p class="muted">When a table is split in two, a view with the old name and columns keeps old programs running.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>A view is a stored SELECT query that acts as a virtual table. It holds no data of its own.</li>
+              <li>A view always shows the current data of its base tables.</li>
+              <li>A simple one-table view is updatable. Changes go to the base table.</li>
+              <li>Views with aggregates, DISTINCT, GROUP BY, HAVING or UNION are read-only.</li>
+              <li>WITH CHECK OPTION rejects rows that would not appear in the view.</li>
+              <li>Use CREATE OR REPLACE VIEW or ALTER VIEW to change a view, and DROP VIEW to remove it. Dropping a view never deletes table data.</li>
+              <li>Views help with security, simpler queries and logical data independence.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit II question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="2.16"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="2.16"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 4, Section 4.2 (views, materialized views and update of a view).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 7, Section 7.3 (views in SQL).</li>
+            <li>MySQL 8.4 Reference Manual: Section 27.5 (using views), including 27.5.3 (updatable and insertable views) and 27.5.4 (the WITH CHECK OPTION clause).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-2.js"></script>
+  <script src="../../data/quizzes/unit-2.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+</body>
+</html>

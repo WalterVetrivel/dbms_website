@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Join Dependencies and Fifth Normal Form | DBMS Study Guide</title>
+  <meta name="description" content="Learn what a join dependency is, why some tables can only be split without loss into three or more parts, and what fifth normal form (5NF, project-join normal form) requires, with a worked example, SQL, a summary of all the normal forms and an interactive split-and-join checker.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="2" data-topic="2.10" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-2">Unit II</span>
+            <span class="badge badge-level" title="Topic number">Topic 2.10</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO2</span>
+          </div>
+          <h1>Join Dependencies and Fifth Normal Form</h1>
+          <p class="lead">A multivalued dependency tells us when a table can be split into two parts without loss. Some tables cannot be split into two, but can be split into three. A join dependency describes this, and fifth normal form is the last step of normalization.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define a join dependency and relate it to MVDs and lossless joins.</li>
+              <li>Show a table that is lossy for every split into two but lossless for a split into three.</li>
+              <li>Define 5NF and decompose a relation into 5NF.</li>
+              <li>Summarize all the normal forms from 1NF to 5NF.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#jd">Join dependency</a></li>
+            <li><a href="#example">A table that needs three parts</a></li>
+            <li><a href="#fifth">Fifth normal form (5NF)</a></li>
+            <li><a href="#decompose">Decomposing into 5NF</a></li>
+            <li><a href="#summary">All the normal forms</a></li>
+            <li><a href="#try">Try it: split and join checker</a></li>
+            <li><a href="#sql">The 5NF tables in SQL</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="jd" class="topic-section" aria-labelledby="jd-title">
+          <h2 id="jd-title">Join dependency</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>Let R1, R2, ..., Rn be sets of attributes whose union is R. The <strong>join dependency</strong> *(R1, R2, ..., Rn) holds on R if every legal instance r of R equals the natural join of its projections:</p>
+            <p>r = π<sub>R1</sub>(r) ⋈ π<sub>R2</sub>(r) ⋈ ... ⋈ π<sub>Rn</sub>(r)</p>
+          </div>
+          <ul>
+            <li>In other words, a JD says “splitting R into R1, ..., Rn is always lossless”.</li>
+            <li>A JD with two parts is an MVD. *(R1, R2) holds exactly when (R1 ∩ R2) →→ R1 holds.</li>
+            <li>A JD is <strong>trivial</strong> if one of the Ri is all of R. A trivial JD holds in every relation.</li>
+          </ul>
+          <p>Example: take R(A, B, C, D) with the JD *((A, B, C), (C, D)). Then R can always be split into (A, B, C) and (C, D). Joining them back on C gives no spurious rows.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes write this JD as “*(A, B, C, D), (C, D)”. Each part goes in its own brackets: *((A, B, C), (C, D)). The first part is (A, B, C), not all four attributes.</p>
+          </div>
+        </section>
+
+        <section id="example" class="topic-section" aria-labelledby="ex-title">
+          <h2 id="ex-title">A table that needs three parts</h2>
+          <p>A firm records which seller sells which product for which company. It has one business rule:</p>
+          <div class="callout callout-example">
+            <div class="callout-title">The rule</div>
+            <p>If a seller represents a company, the company makes a product, and the seller sells that kind of product, then the seller sells that product for that company.</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Supply(seller, company, product)</caption>
+              <thead><tr><th scope="col">seller</th><th scope="col">company</th><th scope="col">product</th></tr></thead>
+              <tbody>
+                <tr><td>Ravi</td><td>Godrej</td><td>AC</td></tr>
+                <tr><td>Ravi</td><td>LG</td><td>Fridge</td></tr>
+                <tr><td>Kumar</td><td>Godrej</td><td>Fridge</td></tr>
+                <tr><td>Ravi</td><td>Godrej</td><td>Fridge</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li>The key is all three attributes. There is no non-trivial FD, so the table is in BCNF.</li>
+            <li>There is no non-trivial MVD either. For example, seller →→ company fails: Ravi has companies Godrej and LG and products AC and Fridge, but (Ravi, LG, AC) is not in the table. So the table is in <strong>4NF</strong>.</li>
+          </ul>
+          <h3>Every split into two is lossy</h3>
+          <p>Split into (seller, company) and (company, product), and join on company. Kumar represents Godrej, and Godrej makes ACs, so the join adds <strong>(Kumar, Godrej, AC)</strong>. That row was never true: Kumar does not sell ACs. The other two-way splits also add a false row.</p>
+          <h3>The split into three is lossless</h3>
+          <p>Add the third projection, (seller, product), and join all three. The false row needs (Kumar, AC) in Seller_Product, which is not there, so it drops out. The join gives back exactly the four rows.</p>
+          <p>So the table satisfies the JD *((seller, company), (company, product), (seller, product)). This JD is what the business rule says, in the language of joins.</p>
+        </section>
+
+        <section id="fifth" class="topic-section" aria-labelledby="fifth-title">
+          <h2 id="fifth-title">Fifth normal form (5NF)</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A relation R is in <strong>fifth normal form</strong> if every non-trivial join dependency that holds on R is <strong>implied by the candidate keys</strong> of R. 5NF is also called <strong>project-join normal form (PJNF)</strong>.</p>
+          </div>
+          <ul>
+            <li>A JD is implied by the keys when each of its parts contains a key, or when the parts can be joined one by one on keys. Such a split never removes any redundancy.</li>
+            <li>In practice: a table is in 5NF if it is in 4NF and cannot be split further without loss, except in trivial ways that follow from its keys.</li>
+            <li>Every 5NF table is in 4NF, because an MVD is a JD with two parts.</li>
+            <li>Supply is in 4NF but <strong>not</strong> in 5NF. Its JD has three parts, and none of them contains the key (all three attributes).</li>
+          </ul>
+          <div class="callout callout-tip">
+            <div class="callout-title">How rare is it?</div>
+            <p>A table in 4NF but not in 5NF needs a rule that links three or more things in a cycle, like the seller rule. Such rules are rare, so most 4NF tables are already in 5NF. 5NF is mostly asked about in theory and exams.</p>
+          </div>
+        </section>
+
+        <section id="decompose" class="topic-section" aria-labelledby="dec-title">
+          <h2 id="dec-title">Decomposing into 5NF</h2>
+          <p>Split the table on its join dependency, one table per part:</p>
+          <div class="code-block">
+            <span class="code-label">5NF tables</span>
+            <pre><code>Seller_Company(<u>seller</u>, <u>company</u>)
+Company_Product(<u>company</u>, <u>product</u>)
+Seller_Product(<u>seller</u>, <u>product</u>)</code></pre>
+          </div>
+          <ul>
+            <li>Each table states one simple fact: who represents whom, who makes what, and who sells what.</li>
+            <li>The rule is now built into the design. Recording that Kumar sells ACs is one row in Seller_Product; the join then shows Kumar selling Godrej ACs automatically.</li>
+            <li>In the single table, the same change would need us to work out and insert every row the rule implies.</li>
+          </ul>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes say this table has the MVD seller →→ {company, product}, so it is not in 4NF, and split it into two tables before reaching three. But seller →→ {company, product} is trivial, because seller ∪ {company, product} is the whole relation. The table is already in 4NF. As shown above, every split into two is lossy. The correct 5NF step goes straight to the three tables.</p>
+          </div>
+        </section>
+
+        <section id="summary" class="topic-section" aria-labelledby="sum-title">
+          <h2 id="sum-title">All the normal forms</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Normal forms from 1NF to 5NF</caption>
+              <thead><tr><th scope="col">Normal form</th><th scope="col">Condition</th><th scope="col">Removes</th></tr></thead>
+              <tbody>
+                <tr><td>1NF</td><td>Atomic values only</td><td>Repeating groups</td></tr>
+                <tr><td>2NF</td><td>1NF, and no non-prime attribute depends on part of a key</td><td>Partial dependencies</td></tr>
+                <tr><td>3NF</td><td>For every FD X → A: X is a superkey or A is prime</td><td>Transitive dependencies</td></tr>
+                <tr><td>BCNF</td><td>For every FD X → Y: X is a superkey</td><td>All FD redundancy</td></tr>
+                <tr><td>4NF</td><td>For every MVD X →→ Y: X is a superkey</td><td>Independent multi-valued facts</td></tr>
+                <tr><td>5NF</td><td>Every JD is implied by the candidate keys</td><td>Redundancy from join dependencies</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Each form includes the ones above it: 5NF ⊂ 4NF ⊂ BCNF ⊂ 3NF ⊂ 2NF ⊂ 1NF. Every step must be lossless. Up to 3NF, every step can also keep all FDs.</p>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: split and join checker</h2>
+          <p>The checker opens with the Supply table and the three-way split. Step through the projections and the join. Then choose a two-way split and look for the spurious row.</p>
+          <div class="widget" data-widget="join-check" data-preset="2">
+            <noscript><p class="widget-narration">The checker needs JavaScript. Supply(seller, company, product) split into (seller, company), (company, product) and (seller, product) joins back to exactly the 4 original rows. Any split into two parts adds the false row (Kumar, Godrej, AC).</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Choose “Two parts: (seller, company) and (company, product)”. Which row is spurious?</li>
+              <li>With the three-way split, switch off (Ravi, Godrej, Fridge). The rule says this row must exist. What does the join do?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="sql" class="topic-section" aria-labelledby="sql-title">
+          <h2 id="sql-title">The 5NF tables in SQL</h2>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE Seller_Company (
+  seller  VARCHAR(20),
+  company VARCHAR(20),
+  PRIMARY KEY (seller, company)
+);
+
+CREATE TABLE Company_Product (
+  company VARCHAR(20),
+  product VARCHAR(20),
+  PRIMARY KEY (company, product)
+);
+
+CREATE TABLE Seller_Product (
+  seller  VARCHAR(20),
+  product VARCHAR(20),
+  PRIMARY KEY (seller, product)
+);
+
+INSERT INTO Seller_Company VALUES ('Ravi', 'Godrej'), ('Ravi', 'LG'), ('Kumar', 'Godrej');
+INSERT INTO Company_Product VALUES ('Godrej', 'AC'), ('Godrej', 'Fridge'), ('LG', 'Fridge');
+INSERT INTO Seller_Product VALUES ('Ravi', 'AC'), ('Ravi', 'Fridge'), ('Kumar', 'Fridge');
+
+-- Joining all three gives back exactly the four original rows.
+SELECT sc.seller, sc.company, cp.product
+FROM Seller_Company sc
+JOIN Company_Product cp ON cp.company = sc.company
+JOIN Seller_Product sp ON sp.seller = sc.seller AND sp.product = cp.product
+ORDER BY sc.seller DESC, sc.company, cp.product;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+--------+---------+---------+
+| seller | company | product |
++--------+---------+---------+
+| Ravi   | Godrej  | AC      |
+| Ravi   | Godrej  | Fridge  |
+| Ravi   | LG      | Fridge  |
+| Kumar  | Godrej  | Fridge  |
++--------+---------+---------+</code></pre>
+          </div>
+          <p>Leave out the last JOIN line and the result has five rows, including the false (Kumar, Godrej, AC). The third table is what makes the join exact.</p>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Medical reps</h3>
+              <p class="muted">A rep covers some pharma companies and some kinds of medicine. If the rep sells every covered company's medicine of a covered kind, the rule is a three-way join dependency.</p>
+            </div>
+            <div class="card">
+              <h3>Faculty and labs</h3>
+              <p class="muted">A faculty member handles some subjects and some labs, and each lab supports some subjects. If they teach every supported subject in their labs, store the three pairs separately.</p>
+            </div>
+            <div class="card">
+              <h3>Supply chains</h3>
+              <p class="muted">Supplier, part and project tables in procurement systems are the classic textbook case for 5NF.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>*(R1, ..., Rn) holds if R always equals the join of its projections on R1, ..., Rn.</li>
+              <li>An MVD is a join dependency with two parts.</li>
+              <li>Some tables are lossy for every split into two but lossless for a split into three.</li>
+              <li>5NF (PJNF): every non-trivial JD is implied by the candidate keys.</li>
+              <li>To reach 5NF, split the table on its join dependency, one table per part.</li>
+              <li>5NF ⊂ 4NF ⊂ BCNF ⊂ 3NF ⊂ 2NF ⊂ 1NF.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit II question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="2.10"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="2.10"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 7, Section 7.7 (more normal forms, including join dependencies and project-join normal form).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 14, Section 14.7 (join dependencies and fifth normal form).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-2.js"></script>
+  <script src="../../data/quizzes/unit-2.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/join-check.js"></script>
+</body>
+</html>

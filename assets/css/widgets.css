@@ -3147,3 +3147,671 @@
 .so-table tr.is-drop.so-g2 td {
   background: var(--danger-soft);
 }
+
+/* ---------- V6 E-R notation explorer (and E-R figures used by V7) ---------- */
+
+.er-stage {
+  background: var(--bg);
+}
+
+.er-svg {
+  display: block;
+  width: 100%;
+  min-width: 680px;
+  height: auto;
+  font-family: var(--font-sans);
+  font-size: 16px;
+}
+
+.er-line {
+  stroke: var(--border-strong);
+  stroke-width: 1.6;
+}
+
+.er-hit {
+  stroke: transparent;
+  stroke-width: 14;
+  cursor: pointer;
+}
+
+.er-shape,
+.er-inner {
+  fill: var(--surface);
+  stroke: var(--text-muted);
+  stroke-width: 1.6;
+}
+
+.er-inner {
+  fill: none;
+}
+
+.er-entity .er-shape,
+.er-weak .er-shape {
+  fill: var(--primary-soft);
+  stroke: var(--primary);
+}
+
+.er-weak .er-inner {
+  stroke: var(--primary);
+}
+
+.er-rel .er-shape,
+.er-identifying .er-shape {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+}
+
+.er-identifying .er-inner {
+  stroke: var(--accent);
+}
+
+.er-shape.is-dashed {
+  stroke-dasharray: 5 4;
+}
+
+.er-text {
+  fill: var(--text);
+}
+
+.er-text.is-bold {
+  font-weight: 700;
+}
+
+.er-under {
+  stroke: var(--text);
+  stroke-width: 1.3;
+}
+
+.er-under.is-dashed {
+  stroke-dasharray: 4 3;
+}
+
+.er-card {
+  fill: var(--danger);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 17px;
+}
+
+[data-widget] .er-node {
+  cursor: pointer;
+}
+
+.er-node:focus {
+  outline: none;
+}
+
+.er-node:focus-visible .er-shape {
+  stroke: var(--focus);
+  stroke-width: 3;
+}
+
+.er-svg.is-dim .er-node,
+.er-svg.is-dim .er-edge,
+.er-svg.is-dim [data-node] > .er-line {
+  opacity: 0.28;
+}
+
+.er-svg.is-dim .is-hl,
+.er-svg.is-dim .is-hl > .er-line {
+  opacity: 1;
+}
+
+.er-node.is-hl .er-shape {
+  fill: var(--warning-soft);
+  stroke: var(--warning);
+  stroke-width: 3;
+}
+
+.er-edge.is-hl .er-line {
+  stroke: var(--warning);
+  stroke-width: 2.6;
+}
+
+.er-node.is-on .er-shape {
+  fill: var(--warning-soft);
+  stroke: var(--warning);
+  stroke-width: 3;
+}
+
+.er-node.is-done .er-shape {
+  fill: var(--success-soft);
+  stroke: var(--success);
+}
+
+.er-symbols {
+  border-top: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.er-sym[aria-pressed="true"] {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+}
+
+.er-sym {
+  min-height: 36px;
+  padding: var(--sp-1) var(--sp-3);
+  font-size: var(--fs-xs);
+}
+
+/* ---------- V7 ER-to-relational mapping stepper ---------- */
+
+.map-stage {
+  background: var(--bg);
+}
+
+.map-er {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.map-cap {
+  margin: var(--sp-4) 0 var(--sp-2);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.map-tables {
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.map-table {
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  overflow-wrap: anywhere;
+}
+
+.map-table.is-changed {
+  border-color: var(--warning);
+  box-shadow: inset 4px 0 0 var(--warning);
+}
+
+.map-name {
+  font-weight: 700;
+}
+
+.map-col.is-new {
+  padding: 0 2px;
+  border-radius: var(--radius-sm);
+  background: var(--warning-soft);
+}
+
+/* ---------- V8 Closure and key calculator ---------- */
+
+.fdc-setup {
+  border-top: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.fdc-fds {
+  flex: 1 1 100%;
+}
+
+.fdc-fds textarea {
+  min-height: 4.5rem;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  resize: vertical;
+}
+
+.fdc-setup input[type="text"] {
+  font-family: var(--font-mono);
+}
+
+.fdc-error {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: var(--fs-sm);
+}
+
+.fdc-error[hidden],
+[data-close-wrap][hidden] {
+  display: none;
+}
+
+.fdc-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-4);
+}
+
+@media (min-width: 760px) {
+  .fdc-grid {
+    grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+  }
+}
+
+.fdc-list {
+  margin: 0;
+  padding-left: 1.6rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.fdc-list li {
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-sm);
+}
+
+.fdc-list li.is-on {
+  background: var(--warning-soft);
+  font-weight: 700;
+}
+
+.fdc-list li.is-gone {
+  text-decoration: line-through;
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.fdc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fdc-chips li {
+  min-width: 2.4rem;
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  text-align: center;
+}
+
+.fdc-chips li.is-in {
+  border-style: solid;
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.fdc-chips li.is-new {
+  border-style: solid;
+  border-color: var(--warning);
+  background: var(--warning-soft);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.fdc-table tr.is-key td {
+  background: var(--success-soft);
+  font-weight: 700;
+}
+
+.fdc-table tr.is-hl td {
+  box-shadow: inset 0 -2px 0 var(--warning);
+}
+
+.fdc-keys {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--fs-sm);
+}
+
+/* ---------- V10 Lossless join and dependency preservation checker ---------- */
+
+.dc-stage {
+  background: var(--bg);
+}
+
+.dc-tab th[scope="row"] {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.dc-tab td {
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.dc-tab td.is-a {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.dc-tab td.is-on {
+  background: var(--warning-soft);
+  box-shadow: inset 0 0 0 2px var(--warning);
+}
+
+.dc-tab tr.is-full td,
+.dc-tab tr.is-full th {
+  background: var(--success-soft);
+}
+
+.dc-proj {
+  margin: 0 0 var(--sp-4);
+  padding-left: 1.2rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.dc-pres tr.is-ok td:nth-child(2) {
+  color: var(--success);
+  font-weight: 700;
+}
+
+.dc-pres tr.is-lost td {
+  background: var(--danger-soft);
+}
+
+.dc-pres tr.is-lost td:nth-child(2) {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.dc-sum {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: 0;
+}
+
+.dc-sum .kf-verdict {
+  margin-top: var(--sp-3);
+}
+
+/* Normalization animator (V9) */
+.nz-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-3);
+}
+
+.nz-track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nz-track li {
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}
+
+.nz-track li.is-done {
+  border-color: var(--success);
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.nz-track li.is-now {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.nz-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  align-items: flex-start;
+}
+
+.nz-card {
+  flex: 1 1 14rem;
+  min-width: 0;
+  max-width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.nz-card.is-new {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-soft);
+}
+
+.nz-name {
+  margin-bottom: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.nz-tab {
+  font-size: var(--fs-sm);
+}
+
+.nz-tab th.nz-key {
+  text-decoration: underline;
+}
+
+.nz-tab .nz-x {
+  background: var(--warning-soft);
+  font-weight: 700;
+}
+
+.nz-tab .nz-y {
+  background: var(--accent-soft);
+}
+
+.nz-tab td.nz-multi {
+  outline: 2px dashed var(--danger);
+  outline-offset: -4px;
+  background: var(--danger-soft);
+}
+
+.nz-meta {
+  margin: var(--sp-2) 0 0;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  overflow-wrap: anywhere;
+}
+
+.nz-level {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.nz-fds li {
+  max-width: 100%;
+  border-style: solid;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+/* Split and join checker (V9, 4NF and 5NF) */
+.jc-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-3);
+}
+
+.jc-rows {
+  flex: 1 1 100%;
+  min-width: 0;
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.jc-rows legend {
+  padding: 0 var(--sp-1);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.jc-rows > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-4);
+}
+
+.jc-row {
+  display: inline-flex;
+  gap: var(--sp-2);
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.so-table tr.jc-extra td {
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-weight: 700;
+}
+
+/* Set operations and aggregates (V12) */
+.sa-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-3);
+}
+
+.sa-sql {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-sm);
+  background: var(--code-bg);
+  color: var(--code-text);
+  font-size: var(--fs-sm);
+  overflow-x: auto;
+}
+
+.so-table tr.sa-both td {
+  background: var(--accent-soft);
+}
+
+.so-table tr.sa-keep td {
+  background: var(--success-soft);
+  font-weight: 700;
+}
+
+.sa-work {
+  margin: 0;
+  padding-left: var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  overflow-wrap: anywhere;
+}
+
+/* Join visualizer (V11) */
+.jv-tab tr.jv-on td {
+  box-shadow: inset 0 2px 0 var(--primary), inset 0 -2px 0 var(--primary);
+  font-weight: 700;
+}
+
+.jv-tab tr.jv-match td {
+  background: var(--accent-soft);
+  font-weight: 700;
+}
+
+.jv-tab tr.jv-new td {
+  background: var(--success-soft);
+}
+
+.jv-tab td.jv-null {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.jv-tab td.jv-key {
+  text-decoration: underline;
+}
+
+.sq-note {
+  margin: var(--sp-2) 0;
+  font-size: var(--fs-sm);
+}
+
+/* Trigger timeline (V14) */
+.tt-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: var(--sp-3) 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: tt;
+}
+
+.tt-line li {
+  flex: 1 1 8rem;
+  min-width: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  counter-increment: tt;
+}
+
+.tt-line li::before {
+  content: counter(tt) ". ";
+}
+
+.tt-line li.tt-done {
+  color: var(--text);
+  background: var(--success-soft);
+  border-color: var(--success);
+}
+
+.tt-line li.tt-now {
+  color: var(--text);
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  font-weight: 700;
+}
+
+.tt-line li.tt-fail {
+  color: var(--text);
+  background: var(--danger-soft);
+  border-color: var(--danger);
+  font-weight: 700;
+}
+
+.tt-vals {
+  display: grid;
+  gap: var(--sp-1);
+  margin: var(--sp-2) 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  overflow-wrap: anywhere;
+}
+
+.tt-tag {
+  display: inline-block;
+  min-width: 3rem;
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-sm);
+  background: var(--code-bg);
+  color: var(--code-text);
+  font-weight: 700;
+  text-align: center;
+}

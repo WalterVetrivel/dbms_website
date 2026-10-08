@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aggregate Functions | DBMS Study Guide</title>
+  <meta name="description" content="Learn the SQL aggregate functions COUNT, SUM, AVG, MIN and MAX: their syntax, how they treat NULL values and duplicates, how they work with WHERE, and the rules for using them, with tested MySQL examples and an interactive visualizer.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="2" data-topic="2.12" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-2">Unit II</span>
+            <span class="badge badge-level" title="Topic number">Topic 2.12</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO2</span>
+          </div>
+          <h1>Aggregate Functions</h1>
+          <p class="lead">An aggregate function takes many rows and returns one value, such as a total, an average or a count. SQL has five standard ones: COUNT, SUM, AVG, MIN and MAX. This page shows each one on a sample table, and the rules about NULL and duplicates that catch many students out.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Use COUNT, SUM, AVG, MIN and MAX in a query and predict the result.</li>
+              <li>Explain how each aggregate treats NULL values and how DISTINCT changes it.</li>
+              <li>Combine aggregates with WHERE, and know where aggregates may not be used.</li>
+              <li>Tell COUNT(*) from COUNT(column).</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What an aggregate function is</a></li>
+            <li><a href="#sample">The sample table</a></li>
+            <li><a href="#count">COUNT</a></li>
+            <li><a href="#sum">SUM</a></li>
+            <li><a href="#avg">AVG</a></li>
+            <li><a href="#minmax">MIN and MAX</a></li>
+            <li><a href="#nulls">Aggregates and NULL</a></li>
+            <li><a href="#rules">Rules for using aggregates</a></li>
+            <li><a href="#summary">The five functions compared</a></li>
+            <li><a href="#try">Try it: aggregate functions</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What an aggregate function is</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>An <strong>aggregate function</strong> takes the values of a column from many rows and returns <strong>one</strong> value that summarizes them.</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>The five standard aggregate functions</caption>
+              <thead><tr><th scope="col">Function</th><th scope="col">Returns</th><th scope="col">Works on</th></tr></thead>
+              <tbody>
+                <tr><td>COUNT</td><td>The number of rows or values</td><td>Any type</td></tr>
+                <tr><td>SUM</td><td>The total</td><td>Numbers only</td></tr>
+                <tr><td>AVG</td><td>The average (mean)</td><td>Numbers only</td></tr>
+                <tr><td>MIN</td><td>The smallest value</td><td>Numbers, text and dates</td></tr>
+                <tr><td>MAX</td><td>The largest value</td><td>Numbers, text and dates</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Each function can take <strong>ALL</strong> (the default) or <strong>DISTINCT</strong> before its argument: <code>SUM(DISTINCT RATE)</code> adds each different rate once.</p>
+          <p>Without GROUP BY, an aggregate summarizes all the selected rows and the query returns one row. With GROUP BY, it returns one value per group (see <a href="group-by-and-having.html">GROUP BY and HAVING</a>).</p>
+        </section>
+
+        <section id="sample" class="topic-section" aria-labelledby="sample-title">
+          <h2 id="sample-title">The sample table</h2>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE PRODUCT_MAST (
+  PRODUCT VARCHAR(10) PRIMARY KEY,
+  COMPANY VARCHAR(10),
+  QTY     INT,
+  RATE    INT,
+  COST    INT
+);
+INSERT INTO PRODUCT_MAST VALUES
+  ('Item1', 'Com1', 2, 10, 20),   ('Item2', 'Com2', 3, 25, 75),
+  ('Item3', 'Com1', 2, 30, 60),   ('Item4', 'Com3', 5, 10, 50),
+  ('Item5', 'Com2', 2, 20, 40),   ('Item6', 'Com1', 3, 25, 75),
+  ('Item7', 'Com1', 5, 30, 150),  ('Item8', 'Com1', 3, 10, 30),
+  ('Item9', 'Com2', 2, 25, 50),   ('Item10', 'Com3', 4, 30, 120);</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>PRODUCT_MAST</caption>
+              <thead><tr><th scope="col">PRODUCT</th><th scope="col">COMPANY</th><th scope="col">QTY</th><th scope="col">RATE</th><th scope="col">COST</th></tr></thead>
+              <tbody>
+                <tr><td>Item1</td><td>Com1</td><td>2</td><td>10</td><td>20</td></tr>
+                <tr><td>Item2</td><td>Com2</td><td>3</td><td>25</td><td>75</td></tr>
+                <tr><td>Item3</td><td>Com1</td><td>2</td><td>30</td><td>60</td></tr>
+                <tr><td>Item4</td><td>Com3</td><td>5</td><td>10</td><td>50</td></tr>
+                <tr><td>Item5</td><td>Com2</td><td>2</td><td>20</td><td>40</td></tr>
+                <tr><td>Item6</td><td>Com1</td><td>3</td><td>25</td><td>75</td></tr>
+                <tr><td>Item7</td><td>Com1</td><td>5</td><td>30</td><td>150</td></tr>
+                <tr><td>Item8</td><td>Com1</td><td>3</td><td>10</td><td>30</td></tr>
+                <tr><td>Item9</td><td>Com2</td><td>2</td><td>25</td><td>50</td></tr>
+                <tr><td>Item10</td><td>Com3</td><td>4</td><td>30</td><td>120</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>COST is QTY × RATE.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes print Item6's company as “Cpm1”. It is a typo for Com1. The notes' own answers (Com1 has 5 items) only work with Com1.</p>
+          </div>
+        </section>
+
+        <section id="count" class="topic-section" aria-labelledby="count-title">
+          <h2 id="count-title">COUNT</h2>
+          <p>COUNT has three forms:</p>
+          <ul>
+            <li><strong>COUNT(*)</strong> counts rows, including rows with NULL values and duplicate rows.</li>
+            <li><strong>COUNT(column)</strong> counts the non-NULL values in a column.</li>
+            <li><strong>COUNT(DISTINCT column)</strong> counts the different non-NULL values.</li>
+          </ul>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT COUNT(*) FROM PRODUCT_MAST;                   -- 10
+SELECT COUNT(*) FROM PRODUCT_MAST WHERE RATE >= 20;  -- 7
+SELECT COUNT(DISTINCT COMPANY) FROM PRODUCT_MAST;    -- 3</code></pre>
+          </div>
+          <p>With WHERE, the filter runs first. COUNT then counts the 7 rows with a rate of 20 or more.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes write the WHERE example as <code>SELECT COUNT(*) FROM PRODUCT_MAST; WHERE RATE&gt;=20;</code>. The semicolon after PRODUCT_MAST ends the query too early, so MySQL returns 10 and then reports an error for the stray WHERE. The semicolon goes only at the end.</p>
+          </div>
+        </section>
+
+        <section id="sum" class="topic-section" aria-labelledby="sum-title">
+          <h2 id="sum-title">SUM</h2>
+          <p><strong>SUM</strong> adds up the values of a numeric column. NULL values are skipped.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT SUM(COST) FROM PRODUCT_MAST;               -- 670
+SELECT SUM(COST) FROM PRODUCT_MAST WHERE QTY > 3; -- 320
+SELECT SUM(DISTINCT RATE), SUM(RATE) FROM PRODUCT_MAST;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+--------------------+-----------+
+| SUM(DISTINCT RATE) | SUM(RATE) |
++--------------------+-----------+
+|                 85 |       215 |
++--------------------+-----------+</code></pre>
+          </div>
+          <ul>
+            <li>With QTY &gt; 3, only Item4 (50), Item7 (150) and Item10 (120) remain: 50 + 150 + 120 = 320.</li>
+            <li>The different rates are 10, 25, 30 and 20, so SUM(DISTINCT RATE) = 85. SUM(RATE) adds all ten rates: 215.</li>
+          </ul>
+        </section>
+
+        <section id="avg" class="topic-section" aria-labelledby="avg-title">
+          <h2 id="avg-title">AVG</h2>
+          <p><strong>AVG</strong> returns the average of the non-NULL values: their sum divided by their count.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT AVG(COST) FROM PRODUCT_MAST;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+-----------+
+| AVG(COST) |
++-----------+
+|   67.0000 |
++-----------+</code></pre>
+          </div>
+          <p>670 ÷ 10 = 67. MySQL returns AVG of whole numbers as a decimal with four places. Use <code>ROUND(AVG(COST), 2)</code> to show two.</p>
+        </section>
+
+        <section id="minmax" class="topic-section" aria-labelledby="mm-title">
+          <h2 id="mm-title">MIN and MAX</h2>
+          <p><strong>MIN</strong> and <strong>MAX</strong> return the smallest and largest value. They work on numbers, text and dates.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT MAX(RATE), MIN(RATE) FROM PRODUCT_MAST;
+SELECT MIN(PRODUCT), MAX(PRODUCT) FROM PRODUCT_MAST;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+-----------+-----------+
+| MAX(RATE) | MIN(RATE) |
++-----------+-----------+
+|        30 |        10 |
++-----------+-----------+
++--------------+--------------+
+| MIN(PRODUCT) | MAX(PRODUCT) |
++--------------+--------------+
+| Item1        | Item9        |
++--------------+--------------+</code></pre>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Why is MAX(PRODUCT) Item9, not Item10?</div>
+            <p>Text is compared character by character, like words in a dictionary. “Item1” and “Item9” differ at the fifth character, and 9 comes after 1. So Item10 sorts between Item1 and Item2.</p>
+          </div>
+          <h3>Several aggregates in one query</h3>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT COUNT(*) AS items, SUM(COST) AS total, AVG(RATE) AS avg_rate,
+       MIN(COST) AS cheapest, MAX(COST) AS dearest
+FROM PRODUCT_MAST;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+-------+-------+----------+----------+---------+
+| items | total | avg_rate | cheapest | dearest |
++-------+-------+----------+----------+---------+
+|    10 |   670 |  21.5000 |       20 |     150 |
++-------+-------+----------+----------+---------+</code></pre>
+          </div>
+        </section>
+
+        <section id="nulls" class="topic-section" aria-labelledby="null-title">
+          <h2 id="null-title">Aggregates and NULL</h2>
+          <p>Add a product whose cost is not known yet:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>INSERT INTO PRODUCT_MAST VALUES ('Item11', 'Com3', 1, 40, NULL);
+
+SELECT COUNT(*), COUNT(COST), SUM(COST), AVG(COST) FROM PRODUCT_MAST;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+----------+-------------+-----------+-----------+
+| COUNT(*) | COUNT(COST) | SUM(COST) | AVG(COST) |
++----------+-------------+-----------+-----------+
+|       11 |          10 |       670 |   67.0000 |
++----------+-------------+-----------+-----------+</code></pre>
+          </div>
+          <ul>
+            <li>COUNT(*) counts the new row: 11. COUNT(COST) skips the NULL: 10.</li>
+            <li>SUM and AVG skip the NULL. AVG is 670 ÷ 10 = 67, not 670 ÷ 11.</li>
+            <li>If no row is selected, or every value is NULL, SUM, AVG, MIN and MAX return <strong>NULL</strong>. COUNT returns <strong>0</strong>.</li>
+          </ul>
+          <div class="callout callout-tip">
+            <div class="callout-title">Getting 0 instead of NULL</div>
+            <p><code>SELECT COALESCE(SUM(COST), 0) FROM PRODUCT_MAST WHERE QTY &gt; 10;</code> returns 0 when no row matches.</p>
+          </div>
+        </section>
+
+        <section id="rules" class="topic-section" aria-labelledby="rules-title">
+          <h2 id="rules-title">Rules for using aggregates</h2>
+          <ol>
+            <li><strong>Not in WHERE.</strong> WHERE runs before rows are grouped, so <code>WHERE SUM(COST) &gt; 100</code> is an error. Use HAVING to filter on an aggregate.</li>
+            <li><strong>No plain columns beside an aggregate without GROUP BY.</strong> <code>SELECT COMPANY, SUM(COST) FROM PRODUCT_MAST</code> asks for one total but ten companies. MySQL 8.4 rejects it, because its default mode includes ONLY_FULL_GROUP_BY. Add <code>GROUP BY COMPANY</code>.</li>
+            <li><strong>No aggregate inside an aggregate</strong> in one query level: <code>MAX(AVG(COST))</code> is an error. Use a subquery instead.</li>
+            <li>An aggregate can be used in SELECT, HAVING and ORDER BY.</li>
+          </ol>
+        </section>
+
+        <section id="summary" class="topic-section" aria-labelledby="sum2-title">
+          <h2 id="sum2-title">The five functions compared</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Aggregate results on PRODUCT_MAST (10 rows)</caption>
+              <thead><tr><th scope="col">Query</th><th scope="col">Result</th><th scope="col">NULL values</th><th scope="col">No rows selected</th></tr></thead>
+              <tbody>
+                <tr><td>COUNT(*)</td><td>10</td><td>Counted</td><td>0</td></tr>
+                <tr><td>COUNT(COST)</td><td>10</td><td>Skipped</td><td>0</td></tr>
+                <tr><td>SUM(COST)</td><td>670</td><td>Skipped</td><td>NULL</td></tr>
+                <tr><td>AVG(COST)</td><td>67.0000</td><td>Skipped</td><td>NULL</td></tr>
+                <tr><td>MIN(COST)</td><td>20</td><td>Skipped</td><td>NULL</td></tr>
+                <tr><td>MAX(COST)</td><td>150</td><td>Skipped</td><td>NULL</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: aggregate functions</h2>
+          <p>Choose a function, a column and a filter, then press Play. Turn on GROUP BY COMPANY to see one result per company.</p>
+          <div class="widget" data-widget="set-agg" data-mode="agg" data-fn="SUM" data-col="COST">
+            <noscript><p class="widget-narration">The visualizer needs JavaScript. SUM(COST) over PRODUCT_MAST is 670; with WHERE QTY &gt; 3 it is 320.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Compare COUNT(DISTINCT COST) with COUNT(COST). Which costs repeat?</li>
+              <li>Pick AVG(RATE) with WHERE RATE &gt;= 20. Why is it higher than without the filter?</li>
+              <li>Turn on GROUP BY COMPANY with SUM(COST). Which company has the largest total?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Mark sheets</h3>
+              <p class="muted">A class report shows the number of students (COUNT), the class average (AVG) and the highest and lowest marks (MAX, MIN) for each subject.</p>
+            </div>
+            <div class="card">
+              <h3>Shop billing</h3>
+              <p class="muted">The bill total is SUM(price × quantity) over the items in the cart. The number of items is COUNT(*).</p>
+            </div>
+            <div class="card">
+              <h3>Weather data</h3>
+              <p class="muted">A day's record keeps MIN and MAX temperature. A broken sensor leaves NULL, and AVG simply skips it.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>COUNT, SUM, AVG, MIN and MAX each return one value from many rows.</li>
+              <li>COUNT(*) counts rows; COUNT(column) counts non-NULL values; COUNT(DISTINCT column) counts different values.</li>
+              <li>SUM and AVG work on numbers only. MIN and MAX also work on text and dates.</li>
+              <li>All aggregates except COUNT(*) skip NULL. With no rows, COUNT gives 0 and the others give NULL.</li>
+              <li>WHERE runs before aggregation, so aggregates cannot go in WHERE. Use HAVING.</li>
+              <li>A plain column beside an aggregate needs GROUP BY.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit II question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="2.12"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="2.12"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 3, Section 3.7 (aggregate functions) and Section 3.7.4 (aggregation with null and Boolean values).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 7, Section 7.1.7 (aggregate functions in SQL).</li>
+            <li>MySQL 8.4 Reference Manual: Section 14.19.1 (aggregate function descriptions).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-2.js"></script>
+  <script src="../../data/quizzes/unit-2.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/set-agg.js"></script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dependency Preservation | DBMS Study Guide</title>
+  <meta name="description" content="Learn what dependency preservation means, how to find the FDs that hold on each part of a decomposition, two ways to test whether a decomposition preserves dependencies, and how it differs from a lossless join, with worked examples and SQL.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="2" data-topic="2.7" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-2">Unit II</span>
+            <span class="badge badge-level" title="Topic number">Topic 2.7</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO2</span>
+          </div>
+          <h1>Dependency Preservation</h1>
+          <p class="lead">When we split a table, every functional dependency is still a rule the data must follow. If each rule can be checked inside one of the new tables, the split is dependency preserving. If not, the database must join tables just to check a rule. This page shows how to tell the difference.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define dependency preservation using the restrictions F1, ..., Fn of F+.</li>
+              <li>Test whether a decomposition preserves dependencies, by closures and by the attribute-closure algorithm.</li>
+              <li>Work the standard examples and explain why a lost FD is costly.</li>
+              <li>Distinguish a lossless-join decomposition from a dependency-preserving one.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#why">Why preserve dependencies</a></li>
+            <li><a href="#restriction">The FDs that hold on each part</a></li>
+            <li><a href="#definition">Definition</a></li>
+            <li><a href="#test">Testing with closures</a></li>
+            <li><a href="#algorithm">A test without computing F+</a></li>
+            <li><a href="#lost">Example: a lost dependency</a></li>
+            <li><a href="#kept">Example: a preserved dependency</a></li>
+            <li><a href="#both">Lossless join and dependency preservation</a></li>
+            <li><a href="#try">Try it: decomposition checker</a></li>
+            <li><a href="#sql">What a lost FD costs in SQL</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="why" class="topic-section" aria-labelledby="why-title">
+          <h2 id="why-title">Why preserve dependencies</h2>
+          <p>Every FD is a rule. For example, “each department has one head”: Dept → HOD. The database must check the rule on every insert and update.</p>
+          <ul>
+            <li>If all the attributes of an FD are in <strong>one table</strong>, the check is cheap. A primary key or a UNIQUE constraint does it.</li>
+            <li>If the attributes are spread over <strong>several tables</strong>, the database must join them on every change. That is slow, and most systems will not do it for you.</li>
+          </ul>
+          <p>A decomposition is <strong>dependency preserving</strong> when no rule ends up spread like this. Together with a lossless join (see <a href="non-loss-decomposition.html">Non-loss Decomposition</a>), it is one of the two properties of a good decomposition.</p>
+        </section>
+
+        <section id="restriction" class="topic-section" aria-labelledby="res-title">
+          <h2 id="res-title">The FDs that hold on each part</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>Let R be split into R1, R2, ..., Rn. The <strong>restriction</strong> of F to Ri, written Fi, is the set of FDs in <strong>F+</strong> that use only attributes of Ri.</p>
+          </div>
+          <p>Fi is taken from F+, not just from F. An FD that is not written in F can still hold on a part.</p>
+          <p>Example: R(A, B, C) with F = {A → B, B → C}. Take the part R1(A, C). Neither FD of F fits inside R1. But A → C is in F+ by transitivity, so F1 = {A → C}.</p>
+          <h3>How to find Fi</h3>
+          <ol class="steps">
+            <li>For each subset X of the attributes of Ri, find X+ under F.</li>
+            <li>Keep the attributes of X+ that are in Ri and not in X. Call them Y.</li>
+            <li>If Y is not empty, X → Y is in Fi.</li>
+            <li>Drop the FDs that follow from the others, so Fi stays short.</li>
+          </ol>
+        </section>
+
+        <section id="definition" class="topic-section" aria-labelledby="def-title">
+          <h2 id="def-title">Definition</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A decomposition of R into R1, ..., Rn is <strong>dependency preserving</strong> if</p>
+            <p>(F1 ∪ F2 ∪ ... ∪ Fn)+ = F+</p>
+            <p>In words: every FD of F can be derived from FDs that each sit inside one table.</p>
+          </div>
+          <p>Since F1 ∪ ... ∪ Fn only holds FDs from F+, one direction is always true. So in practice we check the other: every FD in F must follow from F1 ∪ ... ∪ Fn.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes write the condition as F1 ∪ ... ∪ Fn = F, without the closures. The two sets of FDs need not be equal. Only their closures must be equal. In the example below, F1 ∪ F2 ∪ F3 contains C → B, which is not in F, and the decomposition is still dependency preserving.</p>
+          </div>
+        </section>
+
+        <section id="test" class="topic-section" aria-labelledby="test-title">
+          <h2 id="test-title">Testing with closures</h2>
+          <ol class="steps">
+            <li>Find F1, F2, ..., Fn, the FDs that hold on each part.</li>
+            <li>Let G = F1 ∪ F2 ∪ ... ∪ Fn.</li>
+            <li>For each FD X → Y in F, find X+ <strong>under G</strong>.</li>
+            <li>If Y is in X+ for every FD, the decomposition is dependency preserving. If any FD fails, that FD is <strong>lost</strong>.</li>
+          </ol>
+          <div class="callout callout-tip">
+            <div class="callout-title">Quick check</div>
+            <p>If every FD of F fits inside one part, the decomposition is dependency preserving. You only need closures for the FDs that do not fit.</p>
+          </div>
+        </section>
+
+        <section id="algorithm" class="topic-section" aria-labelledby="algo-title">
+          <h2 id="algo-title">A test without computing F+</h2>
+          <p>Finding every Fi can take a long time, because a part with k attributes has 2<sup>k</sup> subsets. This shorter test checks one FD X → Y at a time:</p>
+          <div class="code-block">
+            <span class="code-label">Algorithm</span>
+            <pre><code>result = X
+repeat
+  for each part Ri:
+    t = (result ∩ Ri)+ ∩ Ri      -- closure under F
+    result = result ∪ t
+until result does not change
+X → Y is preserved if Y ⊆ result</code></pre>
+          </div>
+          <p>Each step only uses facts that one table can check on its own. So if the result reaches Y, the FD can be enforced without a join.</p>
+        </section>
+
+        <section id="lost" class="topic-section" aria-labelledby="lost-title">
+          <h2 id="lost-title">Example: a lost dependency</h2>
+          <p>R(A, B, C) with F = {A → B, B → C} is split into R1(A, C) and R2(B, C).</p>
+          <ol class="steps">
+            <li>F1 on (A, C): A+ = {A, B, C}, so A → C. C+ = {C}, so nothing more. F1 = {A → C}.</li>
+            <li>F2 on (B, C): B+ = {B, C}, so B → C. F2 = {B → C}.</li>
+            <li>G = {A → C, B → C}. Under G, A+ = {A, C}. B is not in it, so <strong>A → B is lost</strong>.</li>
+          </ol>
+          <p>The algorithm agrees. Start with result = {A}. R1 adds C. R2 sees only C, and C+ = {C}, so it adds nothing. B is never reached.</p>
+          <p>With real names: Student(RollNo, Dept, HOD) with RollNo → Dept and Dept → HOD. Splitting it into (RollNo, HOD) and (Dept, HOD) loses RollNo → Dept. Nothing stops us storing a student in two departments. This split is also lossy, because the common attribute HOD is not a key of either part.</p>
+          <div class="callout callout-tip">
+            <div class="callout-title">The better split</div>
+            <p>Split into R1(A, B) and R2(B, C) instead. Both FDs now fit inside one part, so the split is dependency preserving. It is also lossless, because B is the key of R2. With names: Student(RollNo, Dept) and Department(Dept, HOD).</p>
+          </div>
+        </section>
+
+        <section id="kept" class="topic-section" aria-labelledby="kept-title">
+          <h2 id="kept-title">Example: a preserved dependency</h2>
+          <p>R(A, B, C, D) with F = {A → B, B → C, C → D, D → B} is split into R1(A, B), R2(B, C) and R3(B, D).</p>
+          <p>First find the closures under F: B+ = C+ = D+ = {B, C, D}, and A+ = {A, B, C, D}.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>The FDs that hold on each part</caption>
+              <thead><tr><th scope="col">Part</th><th scope="col">FDs that hold on it</th></tr></thead>
+              <tbody>
+                <tr><td>R1(A, B)</td><td>F1 = {A → B}</td></tr>
+                <tr><td>R2(B, C)</td><td>F2 = {B → C, C → B}</td></tr>
+                <tr><td>R3(B, D)</td><td>F3 = {B → D, D → B}</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>A → B, B → C and D → B each fit inside one part. Only C → D does not fit. Under G = F1 ∪ F2 ∪ F3, C → B (from F2) and B → D (from F3) give C → D. So every FD of F follows from G, and the decomposition is <strong>dependency preserving</strong>.</p>
+          <p>The algorithm for C → D: start with {C}. R2 adds B. R3 then sees B and adds D. D is reached, so C → D is preserved.</p>
+          <p>This split is also lossless. Use the checker below to step through the tableau test.</p>
+        </section>
+
+        <section id="both" class="topic-section" aria-labelledby="both-title">
+          <h2 id="both-title">Lossless join and dependency preservation</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Lossless join compared with dependency preservation</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Lossless (non-loss) join</th><th scope="col">Dependency preservation</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Question it answers</th><td>Does joining the parts give back exactly R?</td><td>Can every FD be checked inside one part?</td></tr>
+                <tr><th scope="row">Condition</th><td>R1 ⋈ ... ⋈ Rn = R for every legal instance</td><td>(F1 ∪ ... ∪ Fn)+ = F+</td></tr>
+                <tr><th scope="row">Test</th><td>R1 ∩ R2 is a superkey of R1 or R2; tableau test for more parts</td><td>Closure of each FD under F1 ∪ ... ∪ Fn</td></tr>
+                <tr><th scope="row">If it fails</th><td>Spurious rows appear and information is lost</td><td>Checking a rule needs a join</td></tr>
+                <tr><th scope="row">Importance</th><td><strong>Required</strong></td><td>Desirable</td></tr>
+                <tr><th scope="row">Always possible with 3NF</th><td>Yes</td><td>Yes</td></tr>
+                <tr><th scope="row">Always possible with BCNF</th><td>Yes</td><td>No</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The two properties are independent. A split can have either one without the other:</p>
+          <ul>
+            <li>R(A, B, C) with F = {A → B, B → C} is split into (A, B) and (A, C). It is lossless, because A is a key of both. But B → C is lost.</li>
+            <li>R(A, B, C, D) with F = {A → B, C → D} is split into (A, B) and (C, D). Every FD fits in one part. But the parts share no attribute, so the split is lossy.</li>
+          </ul>
+          <p>The classic BCNF case is Enrollment(sid, course, teacher) with (sid, course) → teacher and teacher → course. Every BCNF split loses (sid, course) → teacher. This is why designers sometimes stop at 3NF. <a href="boyce-codd-normal-form.html">Boyce-Codd Normal Form</a> covers it in detail.</p>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: decomposition checker</h2>
+          <p>The checker opens with the lost-dependency example. Step to the end to see each Fi and which FDs are preserved. Then pick the other examples or enter your own.</p>
+          <div class="widget" data-widget="decomp-check" data-preset="2">
+            <noscript><p class="widget-narration">The checker needs JavaScript. For R(A, B, C) with A → B and B → C, the split into (A, C) and (B, C) is lossy and loses A → B.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Compare “(AC) and (BC)” with “(AB) and (BC)”. Which one keeps both FDs?</li>
+              <li>Choose the R(ABCD) example with three parts. Which FD is preserved only through the union?</li>
+              <li>Choose the BCNF split of R(Student, Course, Teacher). Which FD is lost?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="sql" class="topic-section" aria-labelledby="sql-title">
+          <h2 id="sql-title">What a lost FD costs in SQL</h2>
+          <p>Enrollment(sid, course, teacher) is split into Takes(sid, teacher) and Teaches(teacher, course). The rule (sid, course) → teacher says a student has one teacher for each course. Its attributes are now in two tables, so no key can enforce it:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE Teaches (
+  teacher VARCHAR(20) PRIMARY KEY,
+  course  VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE Takes (
+  sid     INT,
+  teacher VARCHAR(20),
+  PRIMARY KEY (sid, teacher),
+  FOREIGN KEY (teacher) REFERENCES Teaches (teacher)
+);
+
+INSERT INTO Teaches VALUES ('Ankita', 'C'), ('Archana', 'C'), ('Pooja', 'Java');
+INSERT INTO Takes VALUES (1, 'Ankita'), (1, 'Pooja'), (2, 'Archana');
+
+-- Accepted, but student 1 now has two teachers for course C.
+INSERT INTO Takes VALUES (1, 'Archana');
+
+-- Finding the broken FD needs a join.
+SELECT t.sid, c.course, COUNT(*) AS teachers
+FROM Takes t
+JOIN Teaches c ON c.teacher = t.teacher
+GROUP BY t.sid, c.course
+HAVING COUNT(*) > 1;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+-----+--------+----------+
+| sid | course | teachers |
++-----+--------+----------+
+|   1 | C      |        2 |
++-----+--------+----------+</code></pre>
+          </div>
+          <p>The bad row got in because each table on its own looked fine. To block it, we would need a trigger that runs this join on every insert. A preserved FD needs only a key or a UNIQUE constraint.</p>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Train reservations</h3>
+              <p class="muted">The rule “one passenger per seat, per train, per date” is checked on every booking. Keeping train, date, coach and seat in one table lets a UNIQUE constraint do it at once.</p>
+            </div>
+            <div class="card">
+              <h3>Hostel allotment</h3>
+              <p class="muted">“Each room has one warden” is easy to enforce if Room and Warden sit in the same table. If the design splits them apart, the office must run a report to catch mistakes.</p>
+            </div>
+            <div class="card">
+              <h3>Exam timetable</h3>
+              <p class="muted">“A hall holds one exam per slot” must be checked as the timetable is made. A design that preserves this FD rejects clashes at once.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Fi, the restriction of F to Ri, holds the FDs of F+ that use only attributes of Ri.</li>
+              <li>Dependency preserving: (F1 ∪ ... ∪ Fn)+ = F+.</li>
+              <li>Test: every FD X → Y of F must have Y in X+ computed under F1 ∪ ... ∪ Fn.</li>
+              <li>An FD that fits inside one part is always preserved.</li>
+              <li>A lost FD can only be checked with a join, for example in a trigger.</li>
+              <li>Lossless join is required; dependency preservation is desirable. 3NF can always have both; BCNF sometimes cannot.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit II question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="2.7"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="2.7"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 7, Section 7.2.4 (dependency preservation) and Section 7.4.3 (testing for dependency preservation).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 15, Section 15.2.1 (the dependency preservation property of a decomposition).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-2.js"></script>
+  <script src="../../data/quizzes/unit-2.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/fd.js"></script>
+  <script src="../../assets/js/widgets/decomp-check.js"></script>
+</body>
+</html>

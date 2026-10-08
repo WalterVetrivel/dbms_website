@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Triggers | DBMS Study Guide</title>
+  <meta name="description" content="Learn SQL triggers in MySQL: the event-condition-action idea, BEFORE and AFTER triggers on INSERT, UPDATE and DELETE, row-level triggers, the NEW and OLD values, validation with SIGNAL, audit logs, and the limits of triggers, with tested examples and an interactive trigger timeline.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="2" data-topic="2.17" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-2">Unit II</span>
+            <span class="badge badge-level" title="Topic number">Topic 2.17</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO2</span>
+          </div>
+          <h1>Triggers</h1>
+          <p class="lead">A trigger is SQL code that the database runs by itself when a row is inserted, updated or deleted. Triggers can fill in values, reject bad data and keep a history of changes, without any program having to remember to do it. This page shows how triggers work in MySQL, step by step.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Explain a trigger using the event-condition-action model.</li>
+              <li>Write BEFORE and AFTER triggers for INSERT, UPDATE and DELETE in MySQL.</li>
+              <li>Use NEW and OLD correctly, and know when each one is available.</li>
+              <li>Use triggers to compute values, reject bad data with SIGNAL and keep an audit log.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is a trigger</a></li>
+            <li><a href="#eca">Event, condition, action</a></li>
+            <li><a href="#syntax">Trigger syntax in MySQL</a></li>
+            <li><a href="#types">The six kinds of trigger</a></li>
+            <li><a href="#new-old">NEW and OLD</a></li>
+            <li><a href="#compute">Example: computing values</a></li>
+            <li><a href="#validate">Example: rejecting bad data</a></li>
+            <li><a href="#audit">Example: an audit log</a></li>
+            <li><a href="#try">Try it: trigger timeline</a></li>
+            <li><a href="#manage">Viewing and dropping triggers</a></li>
+            <li><a href="#limits">Limits and good practice</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is a trigger</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>trigger</strong> is a named block of SQL statements that the DBMS runs <strong>automatically</strong> when a given event happens on a given table. The events are INSERT, UPDATE and DELETE.</p>
+          </div>
+          <p>The name comes from a gun: pull the trigger and the shot follows by itself. In the same way, an INSERT on the table “pulls” the trigger, and its code runs. Nobody calls a trigger directly.</p>
+          <p>Suppose an HR manager must send a welcome message to every new employee. With thousands of new staff, doing it by hand is not possible. An AFTER INSERT trigger on the employee table can add a row to a message queue each time a new employee is added.</p>
+          <p>Triggers are used to:</p>
+          <ul>
+            <li>fill in or compute values, such as a total or a timestamp;</li>
+            <li>check data and reject rows that break a business rule;</li>
+            <li>keep an audit log of who changed what;</li>
+            <li>keep summary or copy tables in step with the main table.</li>
+          </ul>
+        </section>
+
+        <section id="eca" class="topic-section" aria-labelledby="eca-title">
+          <h2 id="eca-title">Event, condition, action</h2>
+          <p>Textbooks describe a trigger with the <strong>event-condition-action (ECA)</strong> model:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>The three parts of a trigger</caption>
+              <thead><tr><th scope="col">Part</th><th scope="col">Meaning</th><th scope="col">Example</th></tr></thead>
+              <tbody>
+                <tr><td>Event</td><td>The change that starts the trigger</td><td>An UPDATE on account</td></tr>
+                <tr><td>Condition</td><td>A test that decides if the action should run</td><td>The new balance is below 0</td></tr>
+                <tr><td>Action</td><td>The SQL that runs</td><td>Raise an error, or write a log row</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>In MySQL, the condition is written inside the action with <code>IF ... THEN ... END IF</code>.</p>
+        </section>
+
+        <section id="syntax" class="topic-section" aria-labelledby="syntax-title">
+          <h2 id="syntax-title">Trigger syntax in MySQL</h2>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>CREATE TRIGGER trigger_name
+{BEFORE | AFTER} {INSERT | UPDATE | DELETE}
+ON table_name
+FOR EACH ROW
+[{FOLLOWS | PRECEDES} other_trigger]
+trigger_body;</code></pre>
+          </div>
+          <ul>
+            <li><strong>BEFORE or AFTER</strong> says when the trigger runs: before or after the row is changed.</li>
+            <li><strong>INSERT, UPDATE or DELETE</strong> is the event.</li>
+            <li><strong>FOR EACH ROW</strong> makes it a <strong>row-level</strong> trigger. It runs once for every row the statement changes. MySQL supports only row-level triggers.</li>
+            <li>The <strong>body</strong> is one statement, or many statements between BEGIN and END.</li>
+          </ul>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes give the syntax as <code>[FOR EACH ROW | FOR EACH COLUMN] AS ...</code>. Both parts are wrong for MySQL.</p>
+            <ul>
+              <li>There is no FOR EACH COLUMN in any SQL product. The SQL standard has <strong>FOR EACH ROW</strong> (row-level) and <strong>FOR EACH STATEMENT</strong> (statement-level, run once per statement). MySQL has only FOR EACH ROW.</li>
+              <li>The keyword AS before the body is SQL Server syntax. MySQL has no AS there.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="types" class="topic-section" aria-labelledby="types-title">
+          <h2 id="types-title">The six kinds of trigger</h2>
+          <p>Two timings times three events gives six kinds:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Trigger timing and event</caption>
+              <thead><tr><th scope="col">Trigger</th><th scope="col">Runs</th><th scope="col">Typical use</th></tr></thead>
+              <tbody>
+                <tr><td>BEFORE INSERT</td><td>Before a new row is saved</td><td>Fill in or check values</td></tr>
+                <tr><td>AFTER INSERT</td><td>After a new row is saved</td><td>Log the new row, update a summary</td></tr>
+                <tr><td>BEFORE UPDATE</td><td>Before a row is changed</td><td>Check or adjust the new values</td></tr>
+                <tr><td>AFTER UPDATE</td><td>After a row is changed</td><td>Log the old and new values</td></tr>
+                <tr><td>BEFORE DELETE</td><td>Before a row is removed</td><td>Stop the delete if a rule says so</td></tr>
+                <tr><td>AFTER DELETE</td><td>After a row is removed</td><td>Copy the row to an archive table</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Use <strong>BEFORE</strong> when you want to change or stop the row. Use <strong>AFTER</strong> when you want to react to a change that has already happened.</p>
+          <p>For each row, MySQL runs the BEFORE trigger, then makes the change, then runs the AFTER trigger. Then it moves to the next row.</p>
+        </section>
+
+        <section id="new-old" class="topic-section" aria-labelledby="new-old-title">
+          <h2 id="new-old-title">NEW and OLD</h2>
+          <p>Inside a trigger, two names refer to the row being changed:</p>
+          <ul>
+            <li><code>NEW.column</code> is the value the row will have (or now has) after the change.</li>
+            <li><code>OLD.column</code> is the value the row had before the change.</li>
+          </ul>
+          <div class="table-wrap">
+            <table>
+              <caption>Which values each event has</caption>
+              <thead><tr><th scope="col">Event</th><th scope="col">OLD</th><th scope="col">NEW</th></tr></thead>
+              <tbody>
+                <tr><td>INSERT</td><td>No (there was no row before)</td><td>Yes</td></tr>
+                <tr><td>UPDATE</td><td>Yes</td><td>Yes</td></tr>
+                <tr><td>DELETE</td><td>Yes</td><td>No (there is no row after)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li>OLD is always read-only.</li>
+            <li>NEW can be changed with <code>SET NEW.column = ...</code>, but only in a BEFORE trigger. In an AFTER trigger the row is already saved.</li>
+          </ul>
+          <p>MySQL checks these rules when you create the trigger:</p>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>ERROR 1363 (HY000): There is no OLD row in on INSERT trigger
+ERROR 1363 (HY000): There is no NEW row in on DELETE trigger
+ERROR 1362 (HY000): Updating of NEW row is not allowed in after trigger</code></pre>
+          </div>
+        </section>
+
+        <section id="compute" class="topic-section" aria-labelledby="compute-title">
+          <h2 id="compute-title">Example: computing values</h2>
+          <p>This is the example from the notes, corrected so that it runs. A BEFORE INSERT trigger fills in the total and the percentage, so nobody has to type them.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE Student_Trigger (
+  Student_RollNo         INT NOT NULL PRIMARY KEY,
+  Student_FirstName      VARCHAR(100),
+  Student_EnglishMarks   INT,
+  Student_PhysicsMarks   INT,
+  Student_ChemistryMarks INT,
+  Student_MathsMarks     INT,
+  Student_TotalMarks     INT,
+  Student_Percentage     INT
+);
+
+CREATE TRIGGER Student_Table_Marks
+BEFORE INSERT ON Student_Trigger
+FOR EACH ROW
+SET NEW.Student_TotalMarks = NEW.Student_EnglishMarks + NEW.Student_PhysicsMarks
+                           + NEW.Student_ChemistryMarks + NEW.Student_MathsMarks,
+    NEW.Student_Percentage = (NEW.Student_TotalMarks / 400) * 100;
+
+INSERT INTO Student_Trigger VALUES (201, 'Sorya', 88, 75, 69, 92, 0, 0);
+
+SELECT Student_RollNo, Student_FirstName, Student_TotalMarks, Student_Percentage
+FROM Student_Trigger;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+----------------+-------------------+--------------------+--------------------+
+| Student_RollNo | Student_FirstName | Student_TotalMarks | Student_Percentage |
++----------------+-------------------+--------------------+--------------------+
+|            201 | Sorya             |                324 |                 81 |
++----------------+-------------------+--------------------+--------------------+</code></pre>
+          </div>
+          <p>The INSERT gave 0 for the total and the percentage. The trigger replaced them with 324 and 81 before the row was saved. The second SET line can use the new total, because the first line has already set it.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>The notes' version does not run, for two reasons:</p>
+            <ul>
+              <li>The column Student_Percentage has no data type. Every column needs one, so we use INT.</li>
+              <li>The name Sorya has no quotes. Without quotes, MySQL reads it as a column name and fails with “Unknown column”. Text values need quotes: <code>'Sorya'</code>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="validate" class="topic-section" aria-labelledby="validate-title">
+          <h2 id="validate-title">Example: rejecting bad data</h2>
+          <p>From here on we use a small bank table:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE account (
+  acc_no  INT PRIMARY KEY,
+  owner   VARCHAR(20) NOT NULL,
+  balance DECIMAL(10,2) NOT NULL
+);
+INSERT INTO account VALUES (101, 'Anitha', 1000), (102, 'Bharath', 300), (103, 'Charan', 2500);</code></pre>
+          </div>
+          <p>A BEFORE trigger can stop a change with <code>SIGNAL</code>. SIGNAL raises an error, so the statement fails and nothing is saved. SQLSTATE '45000' means “a user-defined error”.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>DELIMITER //
+CREATE TRIGGER account_bi BEFORE INSERT ON account
+FOR EACH ROW
+BEGIN
+  IF NEW.balance &lt; 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Balance cannot be negative';
+  END IF;
+END//
+DELIMITER ;
+
+INSERT INTO account VALUES (105, 'Esha', -50);</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>ERROR 1644 (45000): Balance cannot be negative</code></pre>
+          </div>
+          <p>A matching BEFORE UPDATE trigger, account_bu, has the same body. Together they make sure no balance can go below zero, whatever program changes the table.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Why DELIMITER?</div>
+            <p>The body between BEGIN and END has its own semicolons. The mysql client would stop at the first one. <code>DELIMITER //</code> tells the client to end statements with // for a while, so the whole trigger is sent at once. <code>DELIMITER ;</code> sets it back. DELIMITER is a client command, not SQL. A one-statement trigger, like the one in the last section, does not need it.</p>
+          </div>
+          <p>A CHECK constraint (see <a href="../unit-1/constraints.html">Constraints</a>), <code>CHECK (balance &gt;= 0)</code>, would also do this simple job, and is the better choice when it is enough. A trigger is needed when the rule looks at other tables or at the old value.</p>
+        </section>
+
+        <section id="audit" class="topic-section" aria-labelledby="audit-title">
+          <h2 id="audit-title">Example: an audit log</h2>
+          <p>AFTER triggers can record every change in a log table. The log keeps the old and the new balance.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE balance_log (
+  log_id      INT AUTO_INCREMENT PRIMARY KEY,
+  acc_no      INT,
+  action      VARCHAR(10),
+  old_balance DECIMAL(10,2),
+  new_balance DECIMAL(10,2),
+  logged_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TRIGGER account_ai AFTER INSERT ON account
+FOR EACH ROW
+INSERT INTO balance_log (acc_no, action, old_balance, new_balance)
+VALUES (NEW.acc_no, 'INSERT', NULL, NEW.balance);
+
+CREATE TRIGGER account_au AFTER UPDATE ON account
+FOR EACH ROW
+INSERT INTO balance_log (acc_no, action, old_balance, new_balance)
+VALUES (NEW.acc_no, 'UPDATE', OLD.balance, NEW.balance);
+
+CREATE TRIGGER account_ad AFTER DELETE ON account
+FOR EACH ROW
+INSERT INTO balance_log (acc_no, action, old_balance, new_balance)
+VALUES (OLD.acc_no, 'DELETE', OLD.balance, NULL);</code></pre>
+          </div>
+          <p>Now run three ordinary statements:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>INSERT INTO account VALUES (104, 'Divya', 500);
+UPDATE account SET balance = balance - 200 WHERE acc_no = 101;
+DELETE FROM account WHERE acc_no = 102;
+
+SELECT log_id, acc_no, action, old_balance, new_balance FROM balance_log;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+--------+--------+--------+-------------+-------------+
+| log_id | acc_no | action | old_balance | new_balance |
++--------+--------+--------+-------------+-------------+
+|      1 |    104 | INSERT |        NULL |      500.00 |
+|      2 |    101 | UPDATE |     1000.00 |      800.00 |
+|      3 |    102 | DELETE |      300.00 |        NULL |
++--------+--------+--------+-------------+-------------+</code></pre>
+          </div>
+          <p>The INSERT trigger uses only NEW, the DELETE trigger uses only OLD, and the UPDATE trigger uses both.</p>
+          <p>If a trigger fails, the whole statement fails. For InnoDB tables, every change the statement made is undone, including rows changed before the error and rows the triggers wrote. Try the “fails on the second row” statement below to see this.</p>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: trigger timeline</h2>
+          <p>The account table has the five triggers above. Choose a statement and press Play. The strip shows the order of work for the current row. The OLD and NEW lines show what the trigger can read. New log rows are highlighted.</p>
+          <div class="widget" data-widget="trigger-timeline" data-preset="2">
+            <noscript><p class="widget-narration">The timeline needs JavaScript. For each row, MySQL runs the BEFORE trigger, changes the row, then runs the AFTER trigger. A negative balance makes the BEFORE trigger raise an error, and the whole statement is undone.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Run the INSERT and the DELETE. Which of OLD and NEW is missing in each?</li>
+              <li>Run “UPDATE two accounts”. How many times does each trigger run?</li>
+              <li>Run “UPDATE that fails on the second row”. What happens to the change to account 101?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="manage" class="topic-section" aria-labelledby="manage-title">
+          <h2 id="manage-title">Viewing and dropping triggers</h2>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SHOW TRIGGERS;                         -- all triggers in the current database
+SHOW TRIGGERS LIKE 'account';          -- triggers on tables named like 'account'
+DROP TRIGGER account_ad;
+DROP TRIGGER IF EXISTS account_ad;     -- no error if it is already gone</code></pre>
+          </div>
+          <ul>
+            <li>MySQL has no ALTER TRIGGER. To change a trigger, drop it and create it again.</li>
+            <li>A table can have more than one trigger for the same timing and event. They run in the order they were created, unless FOLLOWS or PRECEDES sets the order.</li>
+            <li>A trigger belongs to its table. If you drop the table, its triggers are dropped too.</li>
+          </ul>
+        </section>
+
+        <section id="limits" class="topic-section" aria-labelledby="limits-title">
+          <h2 id="limits-title">Limits and good practice</h2>
+          <p>MySQL triggers have some limits:</p>
+          <ul>
+            <li>A trigger cannot change the table it is defined on (error 1442). Use SET NEW.column in a BEFORE trigger instead.</li>
+            <li>A trigger can be made only on a base table, not on a view or a temporary table.</li>
+            <li>TRUNCATE TABLE does not run DELETE triggers.</li>
+            <li>Changes made by foreign key actions such as ON DELETE CASCADE do not run triggers.</li>
+          </ul>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Advantages</h3>
+              <ul>
+                <li>Rules are enforced in one place, for every program that uses the table.</li>
+                <li>They run automatically, so nobody can forget.</li>
+                <li>They can check values before they are saved.</li>
+                <li>They make audit logs easy.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Disadvantages</h3>
+              <ul>
+                <li>They run “silently”, so the effects of a statement can surprise people.</li>
+                <li>Long trigger code slows down every INSERT, UPDATE or DELETE.</li>
+                <li>Triggers that fire other triggers are hard to follow.</li>
+                <li>Logic is split between the program and the database.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes say triggers “are not compiled” and that “it is not possible to find and debug the errors in triggers”. That is too strong. MySQL checks a trigger's syntax, and the NEW and OLD column names, when you create it. Other mistakes, such as a missing table, are reported as normal errors when the trigger runs. Debugging is harder than in normal code, because you cannot call a trigger directly. A common way is to write values into a log table, as in the audit example.</p>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Banking</h3>
+              <p class="muted">Every change to a balance is copied to a history table by an AFTER UPDATE trigger, so auditors can see each step.</p>
+            </div>
+            <div class="card">
+              <h3>Online shops</h3>
+              <p class="muted">When an order row is inserted, a trigger reduces the stock count of the product and flags it if stock runs low.</p>
+            </div>
+            <div class="card">
+              <h3>Timestamps</h3>
+              <p class="muted">A BEFORE UPDATE trigger sets a last_modified column on every change, so the app never forgets to do it.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>A trigger is SQL that runs automatically on INSERT, UPDATE or DELETE on a table.</li>
+              <li>It follows the event-condition-action model.</li>
+              <li>BEFORE triggers can change NEW or stop the change. AFTER triggers react to a change already made.</li>
+              <li>MySQL triggers are row-level: FOR EACH ROW. They run once per changed row.</li>
+              <li>INSERT has only NEW, DELETE has only OLD, and UPDATE has both.</li>
+              <li>SIGNAL SQLSTATE '45000' raises an error and makes the whole statement fail.</li>
+              <li>Use DELIMITER in the mysql client for a trigger body with BEGIN ... END.</li>
+              <li>Keep triggers short. Prefer a CHECK constraint when it is enough.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit II question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="2.17"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="2.17"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 5, Section 5.3 (triggers).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 7, Section 7.2 (assertions and triggers), and Chapter 26, Section 26.1 (active databases).</li>
+            <li>MySQL 8.4 Reference Manual: Section 15.1.22 (CREATE TRIGGER) and Section 27.3 (using triggers).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-2.js"></script>
+  <script src="../../data/quizzes/unit-2.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/trigger-timeline.js"></script>
+</body>
+</html>
