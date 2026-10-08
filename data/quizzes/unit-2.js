@@ -446,6 +446,74 @@
       options: ["Make every value atomic (1NF)", "Find the candidate keys and the prime attributes", "Move out each partial dependency (2NF)", "Move out each transitive dependency (3NF)"],
       explain: "First fix the cells, then find the keys, because 2NF and 3NF are defined using keys. Remove partial dependencies before transitive ones.",
       link: "#ladder"
+    },
+    {
+      id: "q2.7-01",
+      topic: "2.7",
+      type: "mcq",
+      question: "When is a decomposition of R into R1, ..., Rn dependency preserving?",
+      options: ["When F1 ∪ ... ∪ Fn = F", "When (F1 ∪ ... ∪ Fn)+ = F+", "When R1 ∩ R2 is a key", "When R1 ⋈ ... ⋈ Rn = R"],
+      answer: 1,
+      explain: "The closures must be equal. The sets themselves can differ. R1 ⋈ ... ⋈ Rn = R is the lossless-join condition.",
+      link: "#definition"
+    },
+    {
+      id: "q2.7-02",
+      topic: "2.7",
+      type: "tf",
+      question: "Fi, the set of FDs that hold on part Ri, contains only FDs that are written in F.",
+      answer: false,
+      explain: "False. Fi is taken from F+. For R(A, B, C) with A → B and B → C, the part (A, C) has A → C, which is not written in F.",
+      link: "#restriction"
+    },
+    {
+      id: "q2.7-03",
+      topic: "2.7",
+      type: "mcq",
+      question: "R(A, B, C) with F = {A → B, B → C} is split into (A, C) and (B, C). Which FD is lost?",
+      options: ["A → B", "B → C", "A → C", "None"],
+      answer: 0,
+      explain: "F1 = {A → C} and F2 = {B → C}. Under these, A+ = {A, C}, which does not contain B. So A → B is lost.",
+      link: "#lost"
+    },
+    {
+      id: "q2.7-04",
+      topic: "2.7",
+      type: "mcq",
+      question: "R(A, B, C, D) with A → B, B → C, C → D, D → B is split into (A, B), (B, C) and (B, D). How is C → D preserved?",
+      options: ["It fits inside (B, C)", "C → B from (B, C) and B → D from (B, D)", "It is not preserved", "A → B and B → C"],
+      answer: 1,
+      explain: "C → D fits in no single part. But C → B holds on (B, C) and B → D holds on (B, D), so C → D follows by transitivity.",
+      link: "#kept"
+    },
+    {
+      id: "q2.7-05",
+      topic: "2.7",
+      type: "multi",
+      question: "Which statements are true? Select all that apply.",
+      options: ["Lossless join is required for every decomposition", "Dependency preservation is always possible with BCNF", "3NF can always be both lossless and dependency preserving", "A split can be lossless but not dependency preserving"],
+      answer: [0, 2, 3],
+      explain: "BCNF sometimes has to lose an FD, as in Enrollment(sid, course, teacher). 3NF never needs to. Splitting (A, B, C) into (A, B) and (A, C) is lossless but loses B → C.",
+      link: "#both"
+    },
+    {
+      id: "q2.7-06",
+      topic: "2.7",
+      type: "tf",
+      question: "If every FD of F has all its attributes inside one part, the decomposition is dependency preserving.",
+      answer: true,
+      explain: "True. Each such FD is in some Fi, so it follows from F1 ∪ ... ∪ Fn.",
+      link: "#test"
+    },
+    {
+      id: "q2.7-07",
+      topic: "2.7",
+      type: "mcq",
+      question: "An FD is lost in a decomposition. What does the database need to enforce it?",
+      options: ["A primary key", "A UNIQUE constraint on one table", "A join on every change, for example in a trigger", "Nothing; it is enforced automatically"],
+      answer: 2,
+      explain: "Its attributes are in different tables, so no key in one table can check it. A trigger or a query must join the tables.",
+      link: "#sql"
     }
   ]);
 })();
