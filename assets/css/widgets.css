@@ -2927,3 +2927,105 @@
   margin: var(--sp-3) 0 0;
   font-size: var(--fs-sm);
 }
+
+/* ---------- V4 Relational algebra playground ---------- */
+
+[data-widget="relational-algebra"] [hidden] {
+  display: none;
+}
+
+.ra-expr {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  overflow-wrap: anywhere;
+}
+
+.ra-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.ra-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.ra-out {
+  min-width: 0;
+}
+
+.ra-arrow {
+  font-size: var(--fs-xl);
+  color: var(--text-muted);
+}
+
+.ra-rel {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ra-name {
+  margin-bottom: var(--sp-1);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.ra-scroll {
+  overflow-x: auto;
+}
+
+.ra-table {
+  margin: 0;
+  font-family: var(--font-mono);
+}
+
+.ra-table th.is-col,
+.ra-table td.is-col {
+  background: var(--primary-soft);
+}
+
+.ra-table tr.is-hit td {
+  background: var(--success-soft);
+}
+
+.ra-table tr.is-extra td {
+  background: var(--warning-soft);
+}
+
+.ra-table td.is-null {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.ra-out .ra-name {
+  color: var(--primary);
+}
+
+.ra-sql {
+  padding: var(--sp-3) var(--sp-4);
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-sm);
+}
+
+.ra-sql summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.ra-sql pre {
+  margin: var(--sp-2) 0 0;
+  padding: var(--sp-3);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  overflow-x: auto;
+}

@@ -566,6 +566,86 @@
       answer: 1,
       explain: "DEFAULT fills in a value when none is given. It does not reject anything.",
       link: "#column"
+    },
+    /* 1.9 Relational Algebra */
+    {
+      id: "q1.9-01",
+      topic: "1.9",
+      type: "mcq",
+      question: "Which operation picks rows that satisfy a condition?",
+      options: ["Project (π)", "Select (σ)", "Rename (ρ)", "Union (∪)"],
+      answer: 1,
+      explain: "Select (σ) picks tuples by a predicate. Project (π) picks columns.",
+      link: "#select"
+    },
+    {
+      id: "q1.9-02",
+      topic: "1.9",
+      type: "mcq",
+      question: "Predict the output: how many tuples does π city (Student) give, for the Student relation on this page?",
+      options: ["4", "3", "2", "1"],
+      answer: 1,
+      explain: "The cities are Salem, Chennai, Salem and Erode. Projection removes the duplicate Salem, leaving 3 tuples.",
+      link: "#project"
+    },
+    {
+      id: "q1.9-03",
+      topic: "1.9",
+      type: "mcq",
+      question: "Relation r has 4 tuples and s has 3 tuples. How many tuples are in r × s?",
+      options: ["7", "12", "4", "1"],
+      answer: 1,
+      explain: "The Cartesian product pairs every tuple of r with every tuple of s: 4 × 3 = 12.",
+      link: "#product"
+    },
+    {
+      id: "q1.9-04",
+      topic: "1.9",
+      type: "tf",
+      question: "For any two union-compatible relations r and s, r − s gives the same result as s − r.",
+      answer: false,
+      explain: "False. Set difference depends on the order. Full_Time − Part_Time is {Ganesh, Indu}, but Part_Time − Full_Time is {Janani}.",
+      link: "#set-ops"
+    },
+    {
+      id: "q1.9-05",
+      topic: "1.9",
+      type: "mcq",
+      question: "Which join matches tuples on all attributes with the same name and keeps each common attribute only once?",
+      options: ["Theta join", "Equijoin", "Natural join", "Cartesian product"],
+      answer: 2,
+      explain: "The natural join equates the common attributes and keeps them once. An equijoin keeps both copies.",
+      link: "#joins"
+    },
+    {
+      id: "q1.9-06",
+      topic: "1.9",
+      type: "mcq",
+      question: "Which operation answers “find customers who have an account in every branch”?",
+      options: ["Union", "Division", "Left outer join", "Rename"],
+      answer: 1,
+      explain: "Division answers “for all” questions.",
+      link: "#division"
+    },
+    {
+      id: "q1.9-07",
+      topic: "1.9",
+      type: "multi",
+      question: "Which are fundamental operations of relational algebra? Select all that apply.",
+      options: ["Select", "Set difference", "Natural join", "Cartesian product"],
+      answer: [0, 1, 3],
+      explain: "The six fundamental operations are select, project, union, set difference, Cartesian product and rename. Joins can be built from them.",
+      link: "#what"
+    },
+    {
+      id: "q1.9-08",
+      topic: "1.9",
+      type: "mcq",
+      question: "In Emp ⟕ Dept, employee Indu has no department. What appears in her dname?",
+      options: ["Her tuple is dropped", "NULL", "0", "The first department name"],
+      answer: 1,
+      explain: "A left outer join keeps every tuple of the left relation and fills the missing attributes with NULL.",
+      link: "#outer"
     }
   ]);
 })();

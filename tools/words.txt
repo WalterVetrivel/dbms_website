@@ -126,3 +126,5 @@ IRCTC
 Bachman
 Ritchie
 cust
+equijoin
+sname
