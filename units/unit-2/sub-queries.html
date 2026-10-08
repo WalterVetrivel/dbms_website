@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sub Queries | DBMS Study Guide</title>
+  <meta name="description" content="Learn SQL subqueries: single-row and multiple-row subqueries with IN, ANY and ALL, correlated subqueries and EXISTS, subqueries in FROM, SELECT and HAVING, and subqueries inside INSERT, UPDATE and DELETE, with tested MySQL examples and a step-by-step subquery stepper.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="2" data-topic="2.15" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-2">Unit II</span>
+            <span class="badge badge-level" title="Topic number">Topic 2.15</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO2</span>
+          </div>
+          <h1>Sub Queries</h1>
+          <p class="lead">A subquery is a query inside another query. It lets you ask a question whose answer depends on another question, such as “who earns more than the average?”. This page covers every kind of subquery, shows how each one runs, and fixes some common myths.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Write single-row and multiple-row subqueries and pick the right operator for each.</li>
+              <li>Use IN, ANY, ALL and EXISTS correctly.</li>
+              <li>Explain how a correlated subquery runs and why it can be slow.</li>
+              <li>Use subqueries in FROM, SELECT and HAVING, and inside INSERT, UPDATE and DELETE.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is a subquery</a></li>
+            <li><a href="#sample">The sample table</a></li>
+            <li><a href="#single">Single-row subqueries</a></li>
+            <li><a href="#multi">Multiple-row subqueries</a></li>
+            <li><a href="#correlated">Correlated subqueries</a></li>
+            <li><a href="#exists">EXISTS and NOT EXISTS</a></li>
+            <li><a href="#from-select">Subqueries in FROM, SELECT and HAVING</a></li>
+            <li><a href="#dml">Subqueries in INSERT, UPDATE and DELETE</a></li>
+            <li><a href="#vs-join">Subquery or join</a></li>
+            <li><a href="#try">Try it: subquery stepper</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is a subquery</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>subquery</strong> (or <strong>inner query</strong>) is a SELECT statement written inside another SQL statement. The statement around it is the <strong>outer query</strong> (or main query). The outer query uses the result of the subquery.</p>
+          </div>
+          <p>The rules:</p>
+          <ul>
+            <li>A subquery is always written in brackets: <code>( SELECT ... )</code>.</li>
+            <li>It can appear in the WHERE, HAVING, FROM and SELECT clauses.</li>
+            <li>It can be used inside SELECT, INSERT, UPDATE and DELETE statements.</li>
+            <li>It can be used with =, &lt;, &gt;, &lt;=, &gt;=, &lt;&gt;, IN, ANY, ALL and EXISTS.</li>
+            <li>A subquery that returns more than one row needs IN, ANY, ALL or EXISTS. A plain = or &gt; needs a single value.</li>
+          </ul>
+          <p>We name subqueries by what they return:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Kinds of subquery</caption>
+              <thead><tr><th scope="col">Kind</th><th scope="col">Returns</th><th scope="col">Used with</th></tr></thead>
+              <tbody>
+                <tr><td>Single-row (scalar)</td><td>One value</td><td>=, &lt;, &gt;, &lt;=, &gt;=, &lt;&gt;</td></tr>
+                <tr><td>Multiple-row</td><td>One column, many rows</td><td>IN, NOT IN, ANY, ALL</td></tr>
+                <tr><td>Table (derived table)</td><td>Many rows and columns</td><td>FROM clause</td></tr>
+                <tr><td>Correlated</td><td>Any of the above, once per outer row</td><td>Uses a column of the outer query</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes say a subquery cannot use ORDER BY, and that GROUP BY “does the same job”. Both parts are wrong.</p>
+            <ul>
+              <li>GROUP BY makes groups. It does not sort. ORDER BY sorts.</li>
+              <li>MySQL allows ORDER BY in a subquery. It matters together with LIMIT, as in <code>(SELECT ID FROM EMPLOYEE ORDER BY SALARY DESC LIMIT 1)</code>. Without LIMIT, the order of a subquery's rows has no effect on the final result.</li>
+            </ul>
+            <p>Some notes also say a subquery must be on the right side of the operator. That is only the usual style. <code>WHERE (SELECT AVG(SALARY) FROM EMPLOYEE) &lt; SALARY</code> is also valid.</p>
+          </div>
+        </section>
+
+        <section id="sample" class="topic-section" aria-labelledby="sample-title">
+          <h2 id="sample-title">The sample table</h2>
+          <p>All examples use this EMPLOYEE table. It is the table from the notes, with a DEPT column added so we can compare departments.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE EMPLOYEE (
+  ID      INT PRIMARY KEY,
+  NAME    VARCHAR(20),
+  AGE     INT,
+  ADDRESS VARCHAR(20),
+  DEPT    VARCHAR(10),
+  SALARY  DECIMAL(10,2)
+);
+INSERT INTO EMPLOYEE VALUES
+  (1, 'John',    20, 'US',        'Sales',  2000),
+  (2, 'Stephan', 26, 'Dubai',     'Sales',  1500),
+  (3, 'David',   27, 'Bangkok',   'IT',     2000),
+  (4, 'Alina',   29, 'UK',        'IT',     6500),
+  (5, 'Kathrin', 34, 'Bangalore', 'HR',     8500),
+  (6, 'Harry',   42, 'China',     'HR',     4500),
+  (7, 'Jackson', 25, 'Mizoram',   'IT',    10000);</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>EMPLOYEE</caption>
+              <thead><tr><th scope="col">ID</th><th scope="col">NAME</th><th scope="col">AGE</th><th scope="col">ADDRESS</th><th scope="col">DEPT</th><th scope="col">SALARY</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>John</td><td>20</td><td>US</td><td>Sales</td><td>2000.00</td></tr>
+                <tr><td>2</td><td>Stephan</td><td>26</td><td>Dubai</td><td>Sales</td><td>1500.00</td></tr>
+                <tr><td>3</td><td>David</td><td>27</td><td>Bangkok</td><td>IT</td><td>2000.00</td></tr>
+                <tr><td>4</td><td>Alina</td><td>29</td><td>UK</td><td>IT</td><td>6500.00</td></tr>
+                <tr><td>5</td><td>Kathrin</td><td>34</td><td>Bangalore</td><td>HR</td><td>8500.00</td></tr>
+                <tr><td>6</td><td>Harry</td><td>42</td><td>China</td><td>HR</td><td>4500.00</td></tr>
+                <tr><td>7</td><td>Jackson</td><td>25</td><td>Mizoram</td><td>IT</td><td>10000.00</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The company average salary is 35000 / 7 = 5000. The department averages are Sales 1750, IT 6166.67 and HR 6500.</p>
+        </section>
+
+        <section id="single" class="topic-section" aria-labelledby="single-title">
+          <h2 id="single-title">Single-row subqueries</h2>
+          <p>A <strong>single-row subquery</strong> returns exactly one value. The outer query compares each row with that value. Aggregate functions such as AVG and MAX (see <a href="aggregate-functions.html">Aggregate Functions</a>) are a common way to get one value.</p>
+          <p>Who earns more than the company average?</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT NAME, SALARY
+FROM EMPLOYEE
+WHERE SALARY &gt; (SELECT AVG(SALARY) FROM EMPLOYEE);</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+----------+
+| NAME    | SALARY   |
++---------+----------+
+| Alina   |  6500.00 |
+| Kathrin |  8500.00 |
+| Jackson | 10000.00 |
++---------+----------+</code></pre>
+          </div>
+          <ol class="steps">
+            <li>The subquery runs first and returns 5000.</li>
+            <li>The outer query becomes <code>WHERE SALARY &gt; 5000</code>.</li>
+            <li>Three rows pass.</li>
+          </ol>
+          <p>We cannot write <code>WHERE SALARY &gt; AVG(SALARY)</code>. An aggregate is not allowed in WHERE, because WHERE looks at one row at a time. The subquery solves this.</p>
+          <p>Who earns the highest salary?</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT NAME, SALARY
+FROM EMPLOYEE
+WHERE SALARY = (SELECT MAX(SALARY) FROM EMPLOYEE);</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+----------+
+| NAME    | SALARY   |
++---------+----------+
+| Jackson | 10000.00 |
++---------+----------+</code></pre>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Using = with a subquery that returns many rows. This query fails, because there are three IT salaries:</p>
+            <div class="code-block">
+              <span class="code-label">SQL</span>
+              <pre><code>SELECT NAME FROM EMPLOYEE
+WHERE SALARY = (SELECT SALARY FROM EMPLOYEE WHERE DEPT = 'IT');</code></pre>
+            </div>
+            <div class="code-block">
+              <span class="code-label">Output</span>
+              <pre><code>ERROR 1242 (21000): Subquery returns more than 1 row</code></pre>
+            </div>
+            <p>Use IN, ANY or ALL instead, as shown next. If the subquery returns no rows, its value is NULL, and the comparison is never true.</p>
+          </div>
+        </section>
+
+        <section id="multi" class="topic-section" aria-labelledby="multi-title">
+          <h2 id="multi-title">Multiple-row subqueries</h2>
+          <p>A <strong>multiple-row subquery</strong> returns one column with many rows. It needs an operator that works on a list.</p>
+          <h3>IN</h3>
+          <p><code>IN</code> is true when the value equals any value in the list. This is the example from the notes:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT *
+FROM EMPLOYEE
+WHERE ID IN (SELECT ID FROM EMPLOYEE WHERE SALARY &gt; 4500);</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+----+---------+------+-----------+------+----------+
+| ID | NAME    | AGE  | ADDRESS   | DEPT | SALARY   |
++----+---------+------+-----------+------+----------+
+|  4 | Alina   |   29 | UK        | IT   |  6500.00 |
+|  5 | Kathrin |   34 | Bangalore | HR   |  8500.00 |
+|  7 | Jackson |   25 | Mizoram   | IT   | 10000.00 |
++----+---------+------+-----------+------+----------+</code></pre>
+          </div>
+          <p>The subquery returns the list (4, 5, 7). The outer query keeps the rows whose ID is in that list. Here a plain <code>WHERE SALARY &gt; 4500</code> would do the same. The subquery form is useful when the list comes from another table.</p>
+          <h3>ANY and ALL</h3>
+          <ul>
+            <li><code>&gt; ANY (list)</code> is true if the value is greater than <strong>at least one</strong> value in the list. That means greater than the smallest one.</li>
+            <li><code>&gt; ALL (list)</code> is true if the value is greater than <strong>every</strong> value in the list. That means greater than the largest one.</li>
+            <li><code>= ANY</code> is the same as <code>IN</code>. <code>&lt;&gt; ALL</code> is the same as <code>NOT IN</code>.</li>
+          </ul>
+          <p>The HR salaries are 8500 and 4500.</p>
+          <div class="grid grid-sm">
+            <div>
+              <div class="code-block">
+                <span class="code-label">SQL</span>
+                <pre><code>SELECT NAME, DEPT, SALARY
+FROM EMPLOYEE
+WHERE SALARY &gt; ANY
+  (SELECT SALARY FROM EMPLOYEE
+   WHERE DEPT = 'HR');</code></pre>
+              </div>
+              <div class="code-block">
+                <span class="code-label">Output</span>
+                <pre><code>+---------+------+----------+
+| NAME    | DEPT | SALARY   |
++---------+------+----------+
+| Alina   | IT   |  6500.00 |
+| Kathrin | HR   |  8500.00 |
+| Jackson | IT   | 10000.00 |
++---------+------+----------+</code></pre>
+              </div>
+            </div>
+            <div>
+              <div class="code-block">
+                <span class="code-label">SQL</span>
+                <pre><code>SELECT NAME, DEPT, SALARY
+FROM EMPLOYEE
+WHERE SALARY &gt; ALL
+  (SELECT SALARY FROM EMPLOYEE
+   WHERE DEPT = 'HR');</code></pre>
+              </div>
+              <div class="code-block">
+                <span class="code-label">Output</span>
+                <pre><code>+---------+------+----------+
+| NAME    | DEPT | SALARY   |
++---------+------+----------+
+| Jackson | IT   | 10000.00 |
++---------+------+----------+</code></pre>
+              </div>
+            </div>
+          </div>
+          <p>ANY keeps everyone above 4500. ALL keeps only those above 8500.</p>
+          <div class="callout callout-tip">
+            <div class="callout-title">Watch out for NOT IN and NULL</div>
+            <p>If the subquery list contains a NULL, <code>NOT IN</code> returns no rows at all. <code>x NOT IN (1, NULL)</code> means <code>x &lt;&gt; 1 AND x &lt;&gt; NULL</code>, and <code>x &lt;&gt; NULL</code> is never true. Add <code>WHERE column IS NOT NULL</code> to the subquery, or use NOT EXISTS.</p>
+          </div>
+        </section>
+
+        <section id="correlated" class="topic-section" aria-labelledby="correlated-title">
+          <h2 id="correlated-title">Correlated subqueries</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>correlated subquery</strong> uses a column of the outer query. So its result is different for each outer row, and it runs again for every outer row. A subquery that does not use the outer query is <strong>non-correlated</strong>: it runs once.</p>
+          </div>
+          <p>Who earns more than the average of their <em>own</em> department?</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT NAME, DEPT, SALARY
+FROM EMPLOYEE e
+WHERE SALARY &gt; (SELECT AVG(SALARY)
+                FROM EMPLOYEE
+                WHERE DEPT = e.DEPT);</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+-------+----------+
+| NAME    | DEPT  | SALARY   |
++---------+-------+----------+
+| John    | Sales |  2000.00 |
+| Alina   | IT    |  6500.00 |
+| Kathrin | HR    |  8500.00 |
+| Jackson | IT    | 10000.00 |
++---------+-------+----------+</code></pre>
+          </div>
+          <p>The alias e names the outer table. Inside the subquery, <code>e.DEPT</code> means “the department of the outer row we are checking now”.</p>
+          <ol class="steps">
+            <li>Outer row John (Sales). The subquery finds the Sales average, 1750. 2000 &gt; 1750, so John is kept.</li>
+            <li>Outer row Stephan (Sales). Average 1750 again. 1500 is not greater, so he is skipped.</li>
+            <li>Outer row David (IT). The IT average is 6166.67. 2000 is not greater, so he is skipped.</li>
+            <li>The same check runs for the other four rows. In total the subquery runs 7 times.</li>
+          </ol>
+          <p>John is in the result even though he earns less than the company average. He is compared only with Sales.</p>
+          <p>The same pattern finds the top earner of each department:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT NAME, DEPT, SALARY
+FROM EMPLOYEE e
+WHERE SALARY = (SELECT MAX(SALARY)
+                FROM EMPLOYEE
+                WHERE DEPT = e.DEPT);</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+-------+----------+
+| NAME    | DEPT  | SALARY   |
++---------+-------+----------+
+| John    | Sales |  2000.00 |
+| Kathrin | HR    |  8500.00 |
+| Jackson | IT    | 10000.00 |
++---------+-------+----------+</code></pre>
+          </div>
+          <p>If two people in a department share the top salary, both are returned.</p>
+        </section>
+
+        <section id="exists" class="topic-section" aria-labelledby="exists-title">
+          <h2 id="exists-title">EXISTS and NOT EXISTS</h2>
+          <p><code>EXISTS (subquery)</code> is true if the subquery returns at least one row. It does not care what the row contains, so we often write <code>SELECT 1</code>. EXISTS is almost always used with a correlated subquery.</p>
+          <p>Which employees work in a department where someone earns more than 8000?</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT NAME
+FROM EMPLOYEE e
+WHERE EXISTS (SELECT 1
+              FROM EMPLOYEE x
+              WHERE x.DEPT = e.DEPT
+                AND x.SALARY &gt; 8000);</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+
+| NAME    |
++---------+
+| David   |
+| Alina   |
+| Kathrin |
+| Harry   |
+| Jackson |
++---------+</code></pre>
+          </div>
+          <p>IT has Jackson (10000) and HR has Kathrin (8500), so everyone in IT and HR is listed. With <code>NOT EXISTS</code>, the result is the other department: John and Stephan.</p>
+          <p>NOT EXISTS is the safe way to ask “which rows have no match?”, because NULL values do not break it the way they break NOT IN.</p>
+        </section>
+
+        <section id="from-select" class="topic-section" aria-labelledby="from-select-title">
+          <h2 id="from-select-title">Subqueries in FROM, SELECT and HAVING</h2>
+          <h3>In FROM: a derived table</h3>
+          <p>A subquery in FROM returns a whole table, called a <strong>derived table</strong>. The outer query reads it like any other table. MySQL needs an alias for it.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT d.DEPT, d.avg_sal
+FROM (SELECT DEPT, AVG(SALARY) AS avg_sal
+      FROM EMPLOYEE
+      GROUP BY DEPT) AS d
+WHERE d.avg_sal &gt; 5000;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+------+-------------+
+| DEPT | avg_sal     |
++------+-------------+
+| HR   | 6500.000000 |
+| IT   | 6166.666667 |
++------+-------------+</code></pre>
+          </div>
+          <p>The same result also comes from GROUP BY with HAVING (see <a href="group-by-and-having.html">GROUP BY and HAVING</a>). The derived table is handy when you want to filter or join a summary table.</p>
+          <h3>In SELECT: a scalar subquery</h3>
+          <p>A single-row subquery can be a column of the result. Here it shows how far each salary is below the top salary:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT NAME, SALARY,
+       (SELECT MAX(SALARY) FROM EMPLOYEE) - SALARY AS below_top
+FROM EMPLOYEE
+WHERE DEPT = 'Sales' OR ID = 3;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+---------+-----------+
+| NAME    | SALARY  | below_top |
++---------+---------+-----------+
+| John    | 2000.00 |   8000.00 |
+| Stephan | 1500.00 |   8500.00 |
+| David   | 2000.00 |   8000.00 |
++---------+---------+-----------+</code></pre>
+          </div>
+          <h3>In HAVING</h3>
+          <p>HAVING can compare a group's total with a subquery. Which departments pay more than twice the company average in total?</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT DEPT, SUM(SALARY) AS total
+FROM EMPLOYEE
+GROUP BY DEPT
+HAVING SUM(SALARY) &gt; (SELECT AVG(SALARY) FROM EMPLOYEE) * 2;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+------+----------+
+| DEPT | total    |
++------+----------+
+| HR   | 13000.00 |
+| IT   | 18500.00 |
++------+----------+</code></pre>
+          </div>
+          <p>Twice the average is 10000. Sales has a total of 3500, so it is left out.</p>
+        </section>
+
+        <section id="dml" class="topic-section" aria-labelledby="dml-title">
+          <h2 id="dml-title">Subqueries in INSERT, UPDATE and DELETE</h2>
+          <h3>INSERT with a subquery</h3>
+          <p>INSERT ... SELECT copies the rows that a query returns into another table. First we make an empty backup table with the same columns:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE EMPLOYEE_BKP LIKE EMPLOYEE;
+
+INSERT INTO EMPLOYEE_BKP
+SELECT * FROM EMPLOYEE
+WHERE ID IN (SELECT ID FROM EMPLOYEE);</code></pre>
+          </div>
+          <p>This copies all 7 rows. The WHERE clause here is only to show the syntax; <code>INSERT INTO EMPLOYEE_BKP SELECT * FROM EMPLOYEE;</code> does the same. Note that INSERT ... SELECT has no VALUES keyword.</p>
+          <h3>UPDATE with a subquery</h3>
+          <p>Set the salary to 0.25 times its value for every employee aged 29 or more. The subquery reads the backup table:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>UPDATE EMPLOYEE
+SET SALARY = SALARY * 0.25
+WHERE AGE IN (SELECT AGE FROM EMPLOYEE_BKP WHERE AGE &gt;= 29);</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+----+---------+------+----------+
+| ID | NAME    | AGE  | SALARY   |
++----+---------+------+----------+
+|  1 | John    |   20 |  2000.00 |
+|  2 | Stephan |   26 |  1500.00 |
+|  3 | David   |   27 |  2000.00 |
+|  4 | Alina   |   29 |  1625.00 |
+|  5 | Kathrin |   34 |  2125.00 |
+|  6 | Harry   |   42 |  1125.00 |
+|  7 | Jackson |   25 | 10000.00 |
++----+---------+------+----------+</code></pre>
+          </div>
+          <p>Three rows change: Alina, Kathrin and Harry.</p>
+          <h3>DELETE with a subquery</h3>
+          <p>Delete every employee aged 29 or more:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>DELETE FROM EMPLOYEE
+WHERE AGE IN (SELECT AGE FROM EMPLOYEE_BKP WHERE AGE &gt;= 29);</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+----+---------+------+----------+
+| ID | NAME    | AGE  | SALARY   |
++----+---------+------+----------+
+|  1 | John    |   20 |  2000.00 |
+|  2 | Stephan |   26 |  1500.00 |
+|  3 | David   |   27 |  2000.00 |
+|  7 | Jackson |   25 | 10000.00 |
++----+---------+------+----------+</code></pre>
+          </div>
+          <div class="callout callout-note">
+            <div class="callout-title">Why the backup table?</div>
+            <p>In MySQL, an UPDATE or DELETE cannot change a table and also read the same table in a subquery. For example, <code>DELETE FROM EMPLOYEE WHERE AGE IN (SELECT AGE FROM EMPLOYEE WHERE AGE &gt;= 29);</code> is rejected with error 1093 (“You can't specify target table for update in FROM clause”). Reading a different table, like EMPLOYEE_BKP, avoids the problem.</p>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes write the UPDATE subquery as <code>SELECT AGE FROM CUSTOMERS_BKP</code>. There is no CUSTOMERS_BKP table in that example. The backup table is EMPLOYEE_BKP.</p>
+          </div>
+        </section>
+
+        <section id="vs-join" class="topic-section" aria-labelledby="vs-join-title">
+          <h2 id="vs-join-title">Subquery or join</h2>
+          <p>Many subqueries can also be written as a join (see <a href="joins.html">Joins</a>). Both forms below find the top earner of each department:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT e.NAME, e.DEPT, e.SALARY
+FROM EMPLOYEE e
+JOIN (SELECT DEPT, MAX(SALARY) AS top
+      FROM EMPLOYEE
+      GROUP BY DEPT) AS m
+  ON e.DEPT = m.DEPT AND e.SALARY = m.top;</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>When to use which</caption>
+              <thead><tr><th scope="col">Use a subquery when</th><th scope="col">Use a join when</th></tr></thead>
+              <tbody>
+                <tr><td>You compare with a single value, such as an average</td><td>You need columns from both tables in the result</td></tr>
+                <tr><td>You test whether a match exists (EXISTS, NOT EXISTS)</td><td>You combine many rows from both sides</td></tr>
+                <tr><td>The question reads naturally as “a question inside a question”</td><td>A correlated subquery would run once per row on a big table</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The MySQL optimizer rewrites many subqueries into joins on its own, so the speed is often the same. Write the clearest form first. Check the plan with EXPLAIN if the query is slow.</p>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: subquery stepper</h2>
+          <p>Choose a query and press Play. The outer row being checked is outlined. The rows the inner query reads are tinted. Rows added to the result are highlighted. Watch how many times the inner query runs.</p>
+          <div class="widget" data-widget="subquery-step" data-preset="0">
+            <noscript><p class="widget-narration">The stepper needs JavaScript. The correlated query runs the inner query 7 times and returns John, Alina, Kathrin and Jackson. The non-correlated query runs it once and returns Alina, Kathrin and Jackson.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Step through the correlated query. Why is John kept but David skipped, when both earn 2000?</li>
+              <li>Switch to the non-correlated query. How many times does the inner query run now?</li>
+              <li>Pick the top-earner query. Which inner result is the same for three different outer rows?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Above-average products</h3>
+              <p class="muted">A shop's report lists products that sell better than the average of their own category: a correlated subquery on category.</p>
+            </div>
+            <div class="card">
+              <h3>Customers with no orders</h3>
+              <p class="muted">A marketing team finds customers where NOT EXISTS an order in the last year, and sends them a reminder offer.</p>
+            </div>
+            <div class="card">
+              <h3>Archiving old data</h3>
+              <p class="muted">A nightly job copies old rows into an archive table with INSERT ... SELECT, then deletes them from the main table.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>A subquery is a SELECT in brackets inside another statement. It can be in WHERE, HAVING, FROM or SELECT.</li>
+              <li>A single-row subquery returns one value and works with =, &lt;, &gt; and the like. Using = with many rows gives error 1242.</li>
+              <li>A multiple-row subquery needs IN, ANY or ALL. &gt; ANY means above the smallest; &gt; ALL means above the largest.</li>
+              <li>A correlated subquery uses a column of the outer query and runs once per outer row.</li>
+              <li>EXISTS tests whether the subquery returns any row. NOT EXISTS is safer than NOT IN when NULL values are possible.</li>
+              <li>A subquery in FROM is a derived table and needs an alias.</li>
+              <li>ORDER BY is allowed in a subquery; it matters together with LIMIT. GROUP BY groups rows; it does not sort.</li>
+              <li>In MySQL, UPDATE and DELETE cannot read the table they change in a subquery (error 1093).</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit II question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="2.15"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="2.15"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 3, Section 3.8 (nested subqueries).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 7, Section 7.1.2 (nested queries, tuples and set comparisons) and 7.1.3 (correlated nested queries).</li>
+            <li>MySQL 8.4 Reference Manual: Section 15.2.15 (subqueries).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-2.js"></script>
+  <script src="../../data/quizzes/unit-2.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/subquery-step.js"></script>
+</body>
+</html>

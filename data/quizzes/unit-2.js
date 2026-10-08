@@ -1000,6 +1000,84 @@
       answer: 1,
       explain: "NATURAL JOIN uses all same-named columns and shows each once. USING (column) names the column explicitly, which is safer.",
       link: "#natural"
+    },
+    {
+      id: "q2.15-01",
+      topic: "2.15",
+      type: "mcq",
+      question: "The salaries are 2000, 1500, 2000, 6500, 8500, 4500 and 10000. How many rows does WHERE SALARY > (SELECT AVG(SALARY) FROM EMPLOYEE) return?",
+      options: ["2", "3", "4", "7"],
+      answer: 1,
+      explain: "The average is 35000 / 7 = 5000. Only 6500, 8500 and 10000 are above it.",
+      link: "#single"
+    },
+    {
+      id: "q2.15-02",
+      topic: "2.15",
+      type: "mcq",
+      question: "A query uses WHERE SALARY = (SELECT SALARY FROM EMPLOYEE WHERE DEPT = 'IT'), and IT has three employees. What happens?",
+      options: ["It returns the three IT employees", "It returns the first IT salary only", "It fails: the subquery returns more than 1 row", "It returns no rows"],
+      answer: 2,
+      explain: "= needs a single value. With many rows MySQL raises error 1242. Use IN instead.",
+      link: "#single"
+    },
+    {
+      id: "q2.15-03",
+      topic: "2.15",
+      type: "mcq",
+      question: "The HR salaries are 8500 and 4500. Which salaries pass WHERE SALARY > ALL (HR salaries)?",
+      options: ["Salaries above 4500", "Salaries above 8500", "Salaries between 4500 and 8500", "Only 8500"],
+      answer: 1,
+      explain: "> ALL must be greater than every value in the list, so it must beat the largest, 8500. > ANY only needs to beat the smallest.",
+      link: "#multi"
+    },
+    {
+      id: "q2.15-04",
+      topic: "2.15",
+      type: "tf",
+      question: "A correlated subquery uses a column of the outer query, so it runs again for every outer row.",
+      answer: true,
+      explain: "Its result depends on the outer row, such as e.DEPT. A non-correlated subquery runs only once.",
+      link: "#correlated"
+    },
+    {
+      id: "q2.15-05",
+      topic: "2.15",
+      type: "tf",
+      question: "ORDER BY can never be used inside a subquery, and GROUP BY does the same job.",
+      answer: false,
+      explain: "MySQL allows ORDER BY in a subquery, and it matters with LIMIT. GROUP BY makes groups; it does not sort.",
+      link: "#what"
+    },
+    {
+      id: "q2.15-06",
+      topic: "2.15",
+      type: "multi",
+      question: "Which of these can hold a subquery? Select all that apply.",
+      options: ["The WHERE clause", "The FROM clause", "The SELECT list", "The HAVING clause"],
+      answer: [0, 1, 2, 3],
+      explain: "A subquery can appear in all four. A subquery in FROM is a derived table and needs an alias.",
+      link: "#from-select"
+    },
+    {
+      id: "q2.15-07",
+      topic: "2.15",
+      type: "mcq",
+      question: "The subquery list contains a NULL. What does WHERE ID NOT IN (subquery) return?",
+      options: ["All rows", "Only the rows not in the list", "No rows", "An error"],
+      answer: 2,
+      explain: "x <> NULL is never true, so NOT IN is never true. Filter out NULL in the subquery, or use NOT EXISTS.",
+      link: "#multi"
+    },
+    {
+      id: "q2.15-08",
+      topic: "2.15",
+      type: "mcq",
+      question: "In MySQL, DELETE FROM EMPLOYEE WHERE AGE IN (SELECT AGE FROM EMPLOYEE WHERE AGE >= 29) gives error 1093. Why?",
+      options: ["AGE is not a key", "A DELETE cannot read the table it changes in a subquery", "IN cannot be used with DELETE", "The subquery returns more than one row"],
+      answer: 1,
+      explain: "MySQL does not let UPDATE or DELETE change a table and read it in a subquery. That is why the example reads EMPLOYEE_BKP.",
+      link: "#dml"
     }
   ]);
 })();

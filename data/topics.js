@@ -88,7 +88,7 @@ DBMS.topics = [
   { id: "2.12", unit: 2, slug: "aggregate-functions", title: "Aggregate Functions", level: "L3", textbooks: ["S3", "E7"], covers: "COUNT, SUM, AVG, MIN and MAX", status: "published", prereqs: ["1.11"], related: ["2.13", "2.11"], widgets: ["V12"] },
   { id: "2.13", unit: 2, slug: "group-by-and-having", title: "GROUP BY and HAVING", level: "L3", textbooks: ["S3", "E7"], covers: "Grouping rows and filtering groups", status: "published", prereqs: ["2.12"], related: ["1.11", "2.15"], widgets: ["V5", "V12"] },
   { id: "2.14", unit: 2, slug: "joins", title: "Joins", level: "L3", textbooks: ["S4", "E7"], covers: "Inner, natural, outer, cross and self joins", status: "published", prereqs: ["1.11", "1.9"], related: ["2.15", "2.16"], widgets: ["V11"] },
-  { id: "2.15", unit: 2, slug: "sub-queries", title: "Sub Queries", level: "L3", textbooks: ["S3", "E7"], covers: "Single-row, multiple-row and correlated subqueries", status: "planned", prereqs: [], related: [] },
+  { id: "2.15", unit: 2, slug: "sub-queries", title: "Sub Queries", level: "L3", textbooks: ["S3", "E7"], covers: "Single-row, multiple-row and correlated subqueries", status: "published", prereqs: ["2.12", "2.14"], related: ["2.13", "2.16"], widgets: ["V13"] },
   { id: "2.16", unit: 2, slug: "views", title: "Views", level: "L3", textbooks: ["S4", "E7"], covers: "Creating, changing and dropping views", status: "planned", prereqs: [], related: [] },
   { id: "2.17", unit: 2, slug: "triggers", title: "Triggers", level: "L3", textbooks: ["S5", "E7"], covers: "BEFORE and AFTER triggers, and NEW and OLD values", status: "planned", prereqs: [], related: [] },
 

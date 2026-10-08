@@ -3743,3 +3743,8 @@
 .jv-tab td.jv-key {
   text-decoration: underline;
 }
+
+.sq-note {
+  margin: var(--sp-2) 0;
+  font-size: var(--fs-sm);
+}
