@@ -90,7 +90,7 @@ DBMS.topics = [
   { id: "2.14", unit: 2, slug: "joins", title: "Joins", level: "L3", textbooks: ["S4", "E7"], covers: "Inner, natural, outer, cross and self joins", status: "published", prereqs: ["1.11", "1.9"], related: ["2.15", "2.16"], widgets: ["V11"] },
   { id: "2.15", unit: 2, slug: "sub-queries", title: "Sub Queries", level: "L3", textbooks: ["S3", "E7"], covers: "Single-row, multiple-row and correlated subqueries", status: "published", prereqs: ["2.12", "2.14"], related: ["2.13", "2.16"], widgets: ["V13"] },
   { id: "2.16", unit: 2, slug: "views", title: "Views", level: "L3", textbooks: ["S4", "E7"], covers: "Creating, changing and dropping views", status: "published", prereqs: ["1.11", "2.14"], related: ["2.15", "1.2"] },
-  { id: "2.17", unit: 2, slug: "triggers", title: "Triggers", level: "L3", textbooks: ["S5", "E7"], covers: "BEFORE and AFTER triggers, and NEW and OLD values", status: "planned", prereqs: [], related: [] },
+  { id: "2.17", unit: 2, slug: "triggers", title: "Triggers", level: "L3", textbooks: ["S5", "E7"], covers: "BEFORE and AFTER triggers, and NEW and OLD values", status: "published", prereqs: ["1.13", "1.8"], related: ["2.16", "1.12"], widgets: ["V14"] },
 
   // Unit III
   { id: "3.1", unit: 3, slug: "transaction-concepts", title: "Transaction Concepts", level: "L2", textbooks: ["S17", "E20"], covers: "Read and write operations, commit and abort, and the states of a transaction", status: "published", prereqs: [], related: ["3.2", "3.9", "5.3"], widgets: ["V15"] },

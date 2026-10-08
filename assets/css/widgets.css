@@ -3748,3 +3748,70 @@
   margin: var(--sp-2) 0;
   font-size: var(--fs-sm);
 }
+
+/* Trigger timeline (V14) */
+.tt-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: var(--sp-3) 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: tt;
+}
+
+.tt-line li {
+  flex: 1 1 8rem;
+  min-width: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  counter-increment: tt;
+}
+
+.tt-line li::before {
+  content: counter(tt) ". ";
+}
+
+.tt-line li.tt-done {
+  color: var(--text);
+  background: var(--success-soft);
+  border-color: var(--success);
+}
+
+.tt-line li.tt-now {
+  color: var(--text);
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  font-weight: 700;
+}
+
+.tt-line li.tt-fail {
+  color: var(--text);
+  background: var(--danger-soft);
+  border-color: var(--danger);
+  font-weight: 700;
+}
+
+.tt-vals {
+  display: grid;
+  gap: var(--sp-1);
+  margin: var(--sp-2) 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  overflow-wrap: anywhere;
+}
+
+.tt-tag {
+  display: inline-block;
+  min-width: 3rem;
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-sm);
+  background: var(--code-bg);
+  color: var(--code-text);
+  font-weight: 700;
+  text-align: center;
+}

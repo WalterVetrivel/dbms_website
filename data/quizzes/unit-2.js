@@ -1146,6 +1146,74 @@
       answer: 1,
       explain: "Granting SELECT on a view hides the other columns and rows. Views are not always faster.",
       link: "#uses"
+    },
+    {
+      id: "q2.17-01",
+      topic: "2.17",
+      type: "mcq",
+      question: "Which trigger can change the values of a row before it is saved?",
+      options: ["AFTER INSERT", "BEFORE INSERT", "AFTER DELETE", "Any trigger"],
+      answer: 1,
+      explain: "Only a BEFORE trigger may SET NEW.column. In an AFTER trigger the row is already saved (error 1362).",
+      link: "#new-old"
+    },
+    {
+      id: "q2.17-02",
+      topic: "2.17",
+      type: "mcq",
+      question: "Inside a DELETE trigger, which values can you read?",
+      options: ["NEW only", "OLD only", "Both OLD and NEW", "Neither"],
+      answer: 1,
+      explain: "A deleted row has no value after the change, so only OLD exists. An INSERT has only NEW; an UPDATE has both.",
+      link: "#new-old"
+    },
+    {
+      id: "q2.17-03",
+      topic: "2.17",
+      type: "mcq",
+      question: "An UPDATE changes 3 rows of a table with one AFTER UPDATE trigger. How many times does the trigger run in MySQL?",
+      options: ["Once", "3 times", "6 times", "It depends on the columns changed"],
+      answer: 1,
+      explain: "MySQL triggers are row-level (FOR EACH ROW), so the trigger runs once for each changed row.",
+      link: "#syntax"
+    },
+    {
+      id: "q2.17-04",
+      topic: "2.17",
+      type: "order",
+      question: "Put the work MySQL does for one row of an UPDATE in order.",
+      options: ["The BEFORE UPDATE trigger runs", "The row is changed in the table", "The AFTER UPDATE trigger runs"],
+      explain: "For each row: the BEFORE trigger, then the change, then the AFTER trigger. Then MySQL moves to the next row.",
+      link: "#types"
+    },
+    {
+      id: "q2.17-05",
+      topic: "2.17",
+      type: "tf",
+      question: "MySQL supports FOR EACH STATEMENT and FOR EACH COLUMN triggers as well as FOR EACH ROW.",
+      answer: false,
+      explain: "MySQL has only FOR EACH ROW. FOR EACH STATEMENT is in the SQL standard and other products. FOR EACH COLUMN does not exist.",
+      link: "#syntax"
+    },
+    {
+      id: "q2.17-06",
+      topic: "2.17",
+      type: "mcq",
+      question: "A BEFORE UPDATE trigger runs SIGNAL SQLSTATE '45000' on the second of two rows. What happens to the first row's change in an InnoDB table?",
+      options: ["It stays saved", "It is undone with the rest of the statement", "It is saved but not logged", "It is moved to a log table"],
+      answer: 1,
+      explain: "The error makes the whole statement fail, and InnoDB undoes every change the statement made.",
+      link: "#audit"
+    },
+    {
+      id: "q2.17-07",
+      topic: "2.17",
+      type: "multi",
+      question: "Which are good uses of a trigger? Select all that apply.",
+      options: ["Writing an audit log of balance changes", "Filling in a computed total before a row is saved", "Running a report once a month", "Rejecting a change that breaks a business rule"],
+      answer: [0, 1, 3],
+      explain: "Triggers react to INSERT, UPDATE and DELETE. A monthly report is a scheduled job, not a trigger.",
+      link: "#what"
     }
   ]);
 })();

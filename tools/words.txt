@@ -165,3 +165,5 @@ Gurugram
 Noida
 insertable
 pseudocolumn
+Esha
+Sorya
