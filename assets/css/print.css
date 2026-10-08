@@ -136,3 +136,24 @@
     margin-top: 2mm;
   }
 }
+
+/* Outlines: one question per sheet, and keep each part together. */
+@media print {
+  .ol-contents {
+    display: none;
+  }
+
+  .ol-item {
+    border: 0;
+    padding: 0;
+  }
+
+  .ol-item + .ol-item {
+    break-before: page;
+  }
+
+  .ol-section,
+  .ol-plan {
+    break-inside: avoid;
+  }
+}

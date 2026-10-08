@@ -61,6 +61,7 @@
   font-weight: 500;
   font-size: var(--fs-sm);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .top-nav a:hover,
@@ -153,6 +154,17 @@
 
   .search-btn kbd {
     display: inline-block;
+  }
+}
+
+/* Laptop widths: tighter header links, and no keyboard hint, so the menu fits on one line. */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .top-nav a {
+    padding: var(--sp-2);
+  }
+
+  .search-btn kbd {
+    display: none;
   }
 }
 

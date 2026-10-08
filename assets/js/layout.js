@@ -66,10 +66,11 @@
     return null;
   }
 
-  // A unit's question bank, quiz and revision sheet. live is false until that page is published.
+  // A unit's question bank, 16-mark outlines, quiz and revision sheet. live is false until that page is published.
   function unitExtras(u) {
     return [
       { id: "question-bank", title: "Question bank", icon: "file-question" },
+      { id: "outlines", title: "16-mark outlines", icon: "file-text" },
       { id: "quizzes", title: "Quiz", icon: "list-checks" },
       { id: "revision", title: "Revision sheet", icon: "layers" }
     ].map(function (x) {
@@ -99,6 +100,7 @@
     "list-checks": '<path d="M13 5h8"/><path d="M13 12h8"/><path d="M13 19h8"/><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/>',
     "graduation-cap": '<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>',
     "file-question": '<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M12 17h.01"/><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/>',
+    "file-text": '<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
     printer: '<path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/>',
     layers: '<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/>'
   };
@@ -226,7 +228,7 @@
       })
       .map(function (p) {
         var current = p.id === PAGE ? ' aria-current="page"' : "";
-        return '<a href="' + url(p.href) + '"' + current + ">" + esc(p.title) + "</a>";
+        return '<a href="' + url(p.href) + '"' + current + ">" + esc(p.navTitle || p.title) + "</a>";
       })
       .join("");
 
@@ -364,7 +366,7 @@
     var u = unitByNumber(UNIT);
     var t = topicById(TOPIC);
     var hub = pageById(PAGE);
-    if (u && hub && ["question-bank", "quizzes", "revision"].indexOf(PAGE) !== -1) {
+    if (u && hub && ["question-bank", "outlines", "quizzes", "revision"].indexOf(PAGE) !== -1) {
       // A unit page of a hub, for example Home / Question Banks / Unit IV
       crumbs.push('<li><a href="' + url(hub.href) + '">' + esc(hub.title) + "</a></li>");
       crumbs.push('<li aria-current="page">Unit ' + u.roman + "</li>");

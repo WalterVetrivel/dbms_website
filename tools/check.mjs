@@ -209,6 +209,40 @@ for (const u of units) {
   }
 }
 
+// 5b. 16-mark outlines. A question has outline: true exactly when its outline exists,
+// and every "Read" link points to a section of a published topic page.
+const oDir = path.join(ROOT, "data", "outlines");
+const oFiles = fs.existsSync(oDir) ? fs.readdirSync(oDir).filter((f) => f.endsWith(".js")).sort() : [];
+for (const f of oFiles) vm.runInContext(fs.readFileSync(path.join(oDir, f), "utf8"), ctx, { filename: f });
+const outlines = D.outlines || {};
+for (const q of questions) {
+  if (q.part === "B" && (q.outline === true) !== !!outlines[q.id]) {
+    err(`data/questions [${q.id}]`, q.outline ? "has outline: true but no outline in data/outlines" : "has an outline in data/outlines but outline is not true");
+  }
+}
+for (const [id, o] of Object.entries(outlines)) {
+  const where = `data/outlines [${id}]`;
+  const q = questions.find((x) => x.id === id);
+  if (!q || q.part !== "B") { err(where, "is not a 16-mark question"); continue; }
+  if (!o.aim || !Array.isArray(o.sections) || o.sections.length < 3) { err(where, "needs an aim and at least three sections"); continue; }
+  const pages = o.sections.reduce((n, s) => n + (s.pages || 0), 0);
+  if (pages < 5 || pages > 6.5) err(where, `space plan adds up to ${pages} pages (expected 5 to 6.5)`);
+  if (!o.sections.some((s) => (s.draw || []).length || (s.table || []).length)) warn(where, "has no diagram or table");
+  o.sections.forEach((s, i) => {
+    const sw = `${where} section ${i + 1}`;
+    if (!s.title || !(s.pages > 0) || !(s.points || []).length) err(sw, "needs a title, pages and points");
+    for (const ref of s.see || []) {
+      const [tid, anchor] = ref.split("#");
+      const t = topics.find((x) => x.id === tid);
+      if (!t) { err(sw, `refers to unknown topic ${tid}`); continue; }
+      if (t.status !== "published") continue;
+      const file = path.join(ROOT, "units", `unit-${t.unit}`, `${t.slug}.html`);
+      pageHtml[file] = pageHtml[file] || (fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "");
+      if (anchor && !pageHtml[file].includes(`id="${anchor}"`)) err(sw, `link ${ref} is not a section of ${rel(file)}`);
+    }
+  });
+}
+
 // 6. Revision sheets must match the Key points on the topic pages.
 try {
   for (const [file, html] of Object.entries(buildRevision())) {
@@ -256,7 +290,7 @@ for (const f of htmlFiles) {
 
 console.log("Reading ease (higher is easier):");
 for (const [f, s] of report.sort((a, b) => a[1] - b[1])) console.log(`  ${s.toFixed(0).padStart(4)}  ${f}`);
-console.log(`\nChecked ${htmlFiles.length} pages, ${textFiles.length} text files, ${topics.length} topics, ${questions.length} questions, ${quizzes.length} quiz items.`);
+console.log(`\nChecked ${htmlFiles.length} pages, ${textFiles.length} text files, ${topics.length} topics, ${questions.length} questions, ${quizzes.length} quiz items, ${Object.keys(outlines).length} outlines.`);
 for (const w of warnings) console.log(`warning  ${w}`);
 for (const e of errors) console.log(`error    ${e}`);
 console.log(`\n${errors.length} errors, ${warnings.length} warnings`);
