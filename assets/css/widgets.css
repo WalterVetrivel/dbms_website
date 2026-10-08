@@ -1585,3 +1585,1015 @@
   background: var(--primary-soft);
   font-weight: 600;
 }
+
+/* ---------- V15 Transaction states ---------- */
+
+.ts-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.ts-scroll {
+  overflow-x: auto;
+}
+
+.ts-svg {
+  display: block;
+  width: 100%;
+  max-width: 740px;
+  min-width: 560px;
+  height: auto;
+  margin: 0 auto;
+  font-family: var(--font-sans);
+}
+
+.ts-state rect {
+  fill: var(--surface);
+  stroke: var(--border-strong);
+  stroke-width: 2;
+}
+
+.ts-state .ts-inner {
+  fill: none;
+}
+
+.ts-state text {
+  fill: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ts-state.is-visited rect {
+  fill: var(--surface-2);
+}
+
+.ts-state.is-current rect {
+  fill: var(--u3-soft);
+  stroke: var(--u3);
+  stroke-width: 3;
+}
+
+.ts-state.is-current .ts-inner {
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.ts-edge {
+  stroke: var(--border-strong);
+  stroke-width: 2;
+}
+
+.ts-edge.is-used {
+  stroke: var(--text-muted);
+}
+
+.ts-edge.is-on {
+  stroke: var(--u3);
+  stroke-width: 3;
+}
+
+.ts-head {
+  fill: var(--border-strong);
+}
+
+.ts-head.is-on {
+  fill: var(--u3);
+}
+
+.ts-elabel {
+  fill: var(--text-muted);
+  font-size: 12px;
+}
+
+.ts-elabel.is-on {
+  fill: var(--text);
+  font-weight: 600;
+}
+
+.ts-side {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-6);
+  justify-content: center;
+  font-size: var(--fs-sm);
+}
+
+.ts-cap {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: var(--sp-1);
+}
+
+.ts-steps {
+  margin: 0;
+  padding-left: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.ts-steps li {
+  color: var(--text-muted);
+}
+
+.ts-steps li.is-done {
+  color: var(--text);
+}
+
+.ts-steps li.is-done::marker {
+  content: "✓ ";
+  color: var(--success);
+}
+
+.ts-vals {
+  width: auto;
+  margin: 0;
+  font-family: var(--font-mono);
+}
+
+.ts-vals th,
+.ts-vals td {
+  padding: var(--sp-1) var(--sp-3);
+  text-align: right;
+}
+
+.ts-vals th[scope="row"] {
+  text-align: left;
+  font-family: var(--font-sans);
+}
+
+.ts-vals .is-bad {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+/* ---------- V17 Schedule tester ---------- */
+
+.st-input input {
+  font-family: var(--font-mono);
+  width: 100%;
+}
+
+.st-input {
+  flex-basis: 22rem;
+}
+
+.st-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-6);
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.st-left {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.st-right {
+  flex: 1 1 16rem;
+  max-width: 26rem;
+}
+
+.st-cap {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.st-table {
+  width: auto;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.st-table th,
+.st-table td {
+  padding: var(--sp-1) var(--sp-3);
+  min-width: 5.5rem;
+  text-align: left;
+}
+
+.st-table .st-n,
+.st-table th:first-child {
+  min-width: 0;
+  color: var(--text-muted);
+}
+
+.st-table tr.is-done td {
+  color: var(--text);
+}
+
+.st-table tr.is-current td {
+  background: var(--u3-soft);
+  font-weight: 600;
+}
+
+.st-table tr.is-conflict td {
+  background: var(--warning-soft);
+}
+
+.st-op.kind-c {
+  color: var(--success);
+}
+
+.st-op.kind-a {
+  color: var(--danger);
+}
+
+.st-graph {
+  display: block;
+  margin: 0 auto;
+  font-family: var(--font-sans);
+}
+
+.st-node circle {
+  fill: var(--surface);
+  stroke: var(--primary);
+  stroke-width: 2;
+}
+
+.st-node.is-cycle circle {
+  fill: var(--danger-soft);
+  stroke: var(--danger);
+}
+
+.st-node text {
+  fill: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.st-edge {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 2;
+}
+
+.st-edge.is-new {
+  stroke: var(--u3);
+  stroke-width: 3;
+}
+
+.st-edge.is-cycle {
+  stroke: var(--danger);
+  stroke-width: 3;
+}
+
+.st-head {
+  fill: var(--text-muted);
+}
+
+.st-head.is-cycle {
+  fill: var(--danger);
+}
+
+.st-elabel {
+  fill: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 4px;
+}
+
+.st-hint {
+  font-size: var(--fs-xs);
+  text-align: center;
+}
+
+.st-verdicts,
+.st-notes {
+  list-style: none;
+  padding: 0;
+  margin: var(--sp-3) 0 0;
+  font-size: var(--fs-sm);
+}
+
+.st-verdicts li {
+  margin-bottom: var(--sp-1);
+}
+
+.st-mark {
+  display: inline-block;
+  width: 1.25rem;
+  font-weight: 700;
+}
+
+.st-verdicts .is-yes .st-mark {
+  color: var(--success);
+}
+
+.st-verdicts .is-no .st-mark {
+  color: var(--danger);
+}
+
+.st-verdicts .is-info .st-mark {
+  color: var(--primary);
+}
+
+.st-notes li {
+  padding: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-2);
+  border-left: 3px solid var(--warning);
+  background: var(--warning-soft);
+  font-size: var(--fs-xs);
+}
+
+/* ---------- V16 Concurrency problems and V22 Isolation levels ---------- */
+
+.an-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.an-left {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.an-table {
+  width: auto;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.an-table th,
+.an-table td {
+  padding: var(--sp-1) var(--sp-3);
+  min-width: 8rem;
+  text-align: left;
+}
+
+.an-table .an-n,
+.an-table th:first-child {
+  min-width: 0;
+  color: var(--text-muted);
+}
+
+.an-table tr.is-todo td {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.an-table tr.is-current td {
+  background: var(--u3-soft);
+  font-weight: 600;
+}
+
+.an-table tr.is-bad td {
+  background: var(--danger-soft);
+  font-weight: 600;
+}
+
+.an-wait {
+  display: inline-block;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--warning-soft);
+  color: var(--warning);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.an-side {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  flex: 0 1 18rem;
+}
+
+.an-box {
+  flex: 1 1 7rem;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: var(--fs-sm);
+}
+
+.an-db {
+  flex-basis: 100%;
+  border-color: var(--u3);
+  background: var(--u3-soft);
+}
+
+.an-cap {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.an-val {
+  font-family: var(--font-mono);
+}
+
+.an-key {
+  color: var(--text-muted);
+}
+
+.an-end {
+  margin: var(--sp-4) 0 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.an-end.is-bad {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.an-end.is-ok {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.il-matrix {
+  padding: var(--sp-3) var(--sp-4) 0;
+  overflow-x: auto;
+}
+
+.il-table {
+  margin: 0;
+  font-size: var(--fs-sm);
+}
+
+.il-table th,
+.il-table td {
+  padding: var(--sp-1) var(--sp-3);
+  text-align: center;
+}
+
+.il-table th[scope="row"] {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.il-table .is-allowed {
+  color: var(--danger);
+}
+
+.il-table .is-prevented {
+  color: var(--success);
+}
+
+.il-table tr.is-row th,
+.il-table tr.is-row td {
+  background: var(--u3-soft);
+  font-weight: 600;
+}
+
+.il-table th.is-col {
+  text-decoration: underline;
+}
+
+.il-table td.is-pick {
+  outline: 3px solid var(--u3);
+  outline-offset: -3px;
+}
+
+.il-verdict {
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+
+/* ---------- V18 Lock manager and two phase locking ---------- */
+
+.lk-stage {
+  max-height: 40rem;
+  overflow: auto;
+}
+
+.lk-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.lk-left {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.lk-table {
+  width: auto;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.lk-table th,
+.lk-table td {
+  padding: 2px var(--sp-3);
+  min-width: 7.5rem;
+  text-align: left;
+}
+
+.lk-table tr.is-lock td {
+  color: var(--primary);
+}
+
+.lk-table tr.is-current td {
+  background: var(--u3-soft);
+  font-weight: 600;
+}
+
+.lk-table tr.is-wait td {
+  color: var(--warning);
+}
+
+.lk-table tr.is-bad td {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.lk-tag {
+  display: inline-block;
+  margin-left: var(--sp-1);
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.lk-tag.is-yes {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.lk-tag.is-no {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.lk-side {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  flex: 0 1 20rem;
+}
+
+.lk-locks {
+  width: auto;
+  margin: 0;
+  font-size: var(--fs-xs);
+}
+
+.lk-locks th,
+.lk-locks td {
+  padding: 2px var(--sp-2);
+  text-align: left;
+}
+
+.lk-waits {
+  margin: var(--sp-1) 0 0;
+  color: var(--warning);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+
+.lk-matrix {
+  width: auto;
+  margin: 0;
+  font-size: var(--fs-xs);
+}
+
+.lk-matrix caption {
+  caption-side: top;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.lk-matrix th,
+.lk-matrix td {
+  padding: 2px var(--sp-2);
+  text-align: center;
+}
+
+.lk-matrix td.is-yes {
+  color: var(--success);
+}
+
+.lk-matrix td.is-no {
+  color: var(--danger);
+}
+
+.lk-matrix td.is-on {
+  outline: 3px solid var(--u3);
+  outline-offset: -3px;
+  font-weight: 700;
+}
+
+.lk-chart-box {
+  flex-basis: 100%;
+}
+
+.lk-chart {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  font-family: var(--font-sans);
+}
+
+.lk-axis {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.lk-line {
+  fill: none;
+  stroke-width: 2.5;
+  stroke: var(--primary);
+}
+
+.lk-line.t1 {
+  stroke: var(--accent);
+}
+
+.lk-line.t2 {
+  stroke: var(--u3);
+}
+
+.lk-ctext {
+  fill: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.lk-point {
+  stroke: var(--danger);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+}
+
+.lk-ptext {
+  fill: var(--danger);
+  font-size: 10px;
+}
+
+/* ---------- V19 Deadlock simulator ---------- */
+
+.dl-table tr.is-ok td {
+  color: var(--success);
+}
+
+.dl-state {
+  display: inline-block;
+  margin-left: var(--sp-1);
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.dl-state.is-waiting {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.dl-state.is-aborted {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.dl-state.is-done {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.dl-graph-box {
+  flex-basis: 100%;
+}
+
+.dl-graph {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  font-family: var(--font-sans);
+}
+
+.dl-node circle {
+  fill: var(--surface);
+  stroke: var(--border-strong);
+  stroke-width: 2;
+}
+
+.dl-node.is-ready circle {
+  stroke: var(--u3);
+}
+
+.dl-node.is-waiting circle {
+  fill: var(--warning-soft);
+  stroke: var(--warning);
+}
+
+.dl-node.is-aborted circle {
+  fill: var(--danger-soft);
+  stroke: var(--danger);
+  stroke-dasharray: 4 3;
+}
+
+.dl-node.is-done circle {
+  fill: var(--success-soft);
+  stroke: var(--success);
+}
+
+.dl-name {
+  fill: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.dl-ts {
+  fill: var(--text-muted);
+  font-size: 10px;
+}
+
+.dl-edge {
+  fill: none;
+  stroke: var(--warning);
+  stroke-width: 2;
+}
+
+.dl-edge.is-bad {
+  stroke: var(--danger);
+  stroke-width: 3;
+}
+
+.dl-head {
+  fill: var(--warning);
+}
+
+.dl-head.is-bad {
+  fill: var(--danger);
+}
+
+.dl-label {
+  fill: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.dl-edges {
+  margin: var(--sp-1) 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+/* ---------- V20 Log-based recovery ---------- */
+
+.lr-stage {
+  max-height: 40rem;
+  overflow: auto;
+}
+
+.lr-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.lr-log-box {
+  flex: 1 1 16rem;
+  max-width: 24rem;
+}
+
+.lr-log {
+  margin: var(--sp-1) 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.lr-log li {
+  padding: 2px var(--sp-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.lr-log li.is-mark {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.lr-log li.is-undo {
+  color: var(--danger);
+}
+
+.lr-log li.is-current {
+  background: var(--u3-soft);
+  font-weight: 700;
+}
+
+.lr-no {
+  display: inline-block;
+  min-width: 1.75rem;
+  color: var(--text-muted);
+}
+
+.lr-side {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  flex: 0 1 18rem;
+}
+
+.lr-phase {
+  flex-basis: 100%;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-align: center;
+}
+
+.lr-phase.is-crash {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.lr-phase.is-done {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.lr-lost {
+  color: var(--danger);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+
+.lr-undo {
+  flex-basis: 100%;
+}
+
+.an-val.is-changed {
+  background: var(--warning-soft);
+  font-weight: 700;
+}
+
+/* ---------- V21 Savepoints and rollback ---------- */
+
+.sp-tools {
+  align-items: flex-end;
+}
+
+.sp-tools[hidden] {
+  display: none;
+}
+
+.sp-stage {
+  max-height: 44rem;
+  overflow: auto;
+}
+
+.sp-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.sp-table-box {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.sp-table {
+  width: auto;
+  margin: 0;
+  font-size: var(--fs-xs);
+}
+
+.sp-table caption {
+  caption-side: top;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.sp-table th,
+.sp-table td {
+  padding: 2px var(--sp-2);
+  text-align: left;
+}
+
+.sp-table tr.is-gone td,
+.sp-key.is-gone {
+  color: var(--danger);
+  text-decoration: line-through;
+}
+
+.sp-table tr.is-touched td {
+  background: var(--warning-soft);
+}
+
+.sp-table tr.is-back td {
+  background: var(--success-soft);
+}
+
+.sp-table td.is-new,
+.sp-key.is-new {
+  font-weight: 700;
+  color: var(--warning);
+}
+
+.sp-legend {
+  margin: var(--sp-1) 0 0;
+  font-size: var(--fs-xs);
+}
+
+.sp-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  flex: 1 1 18rem;
+  max-width: 28rem;
+}
+
+.sp-steps {
+  margin: var(--sp-1) 0 0;
+  padding-left: var(--sp-5);
+  font-size: var(--fs-xs);
+}
+
+.sp-steps li {
+  padding: 2px 0;
+}
+
+.sp-steps code {
+  font-size: inherit;
+}
+
+.sp-steps li.is-mark code {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.sp-steps li.is-undone code,
+.sp-steps li.is-gone code {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.sp-steps li.is-committed code {
+  color: var(--success);
+}
+
+.sp-steps li.is-error code {
+  color: var(--danger);
+}
+
+.sp-steps li.is-current {
+  background: var(--u3-soft);
+  font-weight: 700;
+}
+
+.sp-tag {
+  display: inline-block;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.sp-points {
+  margin-top: var(--sp-1);
+}
+
+.sp-flag {
+  display: inline-block;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--primary);
+  color: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}

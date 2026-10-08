@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SQL Facilities for Concurrency and Recovery | DBMS Study Guide</title>
+  <meta name="description" content="Learn the SQL commands that control concurrency and recovery: START TRANSACTION, COMMIT, ROLLBACK and autocommit, SET TRANSACTION, locking reads with SELECT ... FOR UPDATE and FOR SHARE, LOCK TABLES, handling lock waits and deadlocks, and the recovery features behind COMMIT. Uses the game store purchase from the lab.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="3" data-topic="3.12" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-3">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-3">Unit III</span>
+            <span class="badge badge-level" title="Topic number">Topic 3.12</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO3</span>
+          </div>
+          <h1>SQL Facilities for Concurrency and Recovery</h1>
+          <p class="lead">The ideas of the earlier topics (transactions, locks, isolation and logs) reach the programmer through a small set of SQL commands. This page lists them, with MySQL examples you can run.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>List the SQL commands for concurrency control and for recovery.</li>
+              <li>Group statements into a transaction and control autocommit.</li>
+              <li>Use SELECT ... FOR UPDATE, SELECT ... FOR SHARE and LOCK TABLES, and say when each is needed.</li>
+              <li>Explain how COMMIT, ROLLBACK and crash recovery protect the data.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#boundaries">Starting and ending a transaction</a></li>
+            <li><a href="#set-transaction">SET TRANSACTION</a></li>
+            <li><a href="#locking-reads">Locking reads: FOR UPDATE and FOR SHARE</a></li>
+            <li><a href="#lock-tables">LOCK TABLES</a></li>
+            <li><a href="#waits">Lock waits and deadlocks</a></li>
+            <li><a href="#recovery">Facilities for recovery</a></li>
+            <li><a href="#summary">All the commands in one table</a></li>
+            <li><a href="#try-it">Try it in MySQL</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="overview" class="topic-section" aria-labelledby="overview-title">
+          <h2 id="overview-title">Overview</h2>
+          <p>SQL gives four groups of facilities:</p>
+          <ol>
+            <li><strong>Transaction boundaries:</strong> mark where a transaction starts and ends (START TRANSACTION, COMMIT, ROLLBACK, autocommit).</li>
+            <li><strong>Isolation:</strong> choose how much a transaction is protected from others (SET TRANSACTION).</li>
+            <li><strong>Explicit locking:</strong> lock rows or tables yourself when the isolation level is not enough (SELECT ... FOR UPDATE, FOR SHARE, LOCK TABLES).</li>
+            <li><strong>Recovery:</strong> undo work and survive failures (ROLLBACK, SAVEPOINT, automatic crash recovery, backups).</li>
+          </ol>
+          <p>The examples use MySQL with the InnoDB storage engine, as in the lab.</p>
+        </section>
+
+        <section id="boundaries" class="topic-section" aria-labelledby="boundaries-title">
+          <h2 id="boundaries-title">Starting and ending a transaction</h2>
+          <ul>
+            <li><code>START TRANSACTION;</code> (or <code>BEGIN;</code>) starts a transaction.</li>
+            <li><code>COMMIT;</code> ends it and makes all its changes permanent.</li>
+            <li><code>ROLLBACK;</code> ends it and undoes all its changes.</li>
+          </ul>
+          <p>MySQL runs with <strong>autocommit</strong> on by default: each statement is its own transaction and commits as soon as it finishes. START TRANSACTION turns autocommit off until the next COMMIT or ROLLBACK. To turn it off for the whole session, use <code>SET autocommit = 0;</code>. Then every statement is part of a transaction that lasts until you commit or roll back.</p>
+          <p>The game purchase from the lab moves the user's cart into the purchase history. All the steps must happen together or not at all:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>START TRANSACTION;
+SET @UserID = 1;
+INSERT INTO Transactions(TransactionDate, UserID) VALUES (NOW(), @UserID);
+SELECT LAST_INSERT_ID() INTO @T_ID;
+INSERT INTO PurchaseHistory(TransactionID, GameID, SalePrice)
+  SELECT @T_ID, Cart.GameID, Games.CurrentPrice
+  FROM Cart INNER JOIN Games ON Cart.GameID = Games.GameID
+  WHERE Cart.UserID = @UserID;
+DELETE FROM Cart WHERE UserID = @UserID;
+COMMIT;</code></pre>
+          </div>
+          <p>If any statement fails before the COMMIT, the program issues ROLLBACK and the database goes back to its state before START TRANSACTION. The cart is never emptied without the purchase being recorded.</p>
+          <p>Two useful options when starting:</p>
+          <ul>
+            <li><code>START TRANSACTION READ ONLY;</code> promises that the transaction will not change data, which lets the DBMS run it more cheaply. <code>READ WRITE</code> is the default.</li>
+            <li><code>START TRANSACTION WITH CONSISTENT SNAPSHOT;</code> takes the read snapshot at once, instead of at the first read.</li>
+          </ul>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some statements cause an <strong>implicit commit</strong>: most DDL statements (CREATE, ALTER, DROP, TRUNCATE), LOCK TABLES, and START TRANSACTION itself. A ROLLBACK after them cannot undo what came before. Keep DDL out of transactions that you may want to roll back.</p>
+          </div>
+        </section>
+
+        <section id="set-transaction" class="topic-section" aria-labelledby="set-transaction-title">
+          <h2 id="set-transaction-title">SET TRANSACTION</h2>
+          <p><code>SET TRANSACTION</code> sets the characteristics of the next transaction: its <a href="isolation-levels.html">isolation level</a> and its access mode.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ WRITE;
+START TRANSACTION;
+-- statements run at SERIALIZABLE
+COMMIT;
+
+SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;  -- every later transaction in this session</code></pre>
+          </div>
+          <p>The four levels are READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ (the InnoDB default) and SERIALIZABLE.</p>
+        </section>
+
+        <section id="locking-reads" class="topic-section" aria-labelledby="locking-reads-title">
+          <h2 id="locking-reads-title">Locking reads: FOR UPDATE and FOR SHARE</h2>
+          <p>At the default level, a plain SELECT in InnoDB reads a snapshot and takes no locks. That is a problem when you read a value and then write based on it: another transaction may change the value in between, causing a lost update. A <strong>locking read</strong> solves this.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Locking reads</caption>
+              <thead><tr><th scope="col">Statement</th><th scope="col">Lock taken on each row read</th><th scope="col">Others can</th></tr></thead>
+              <tbody>
+                <tr><td><code>SELECT ... FOR SHARE</code></td><td>Shared (S) lock</td><td>Read the rows, and also lock them FOR SHARE, but not change them</td></tr>
+                <tr><td><code>SELECT ... FOR UPDATE</code></td><td>Exclusive (X) lock</td><td>Only read snapshots; any locking read or change must wait</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The locks are held until the transaction commits or rolls back. These are the <a href="locking-protocols.html#modes">shared and exclusive locks</a> of the locking protocols, under <a href="two-phase-locking.html#types">strict two phase locking</a>. Older MySQL versions write FOR SHARE as <code>LOCK IN SHARE MODE</code>.</p>
+          <p><strong>Example: booking the last seat.</strong> Two users try to book seat 12A at the same time.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>START TRANSACTION;
+SELECT status FROM seats WHERE seat_no = '12A' FOR UPDATE;   -- locks the row
+-- if status is 'free':
+UPDATE seats SET status = 'booked', user_id = 42 WHERE seat_no = '12A';
+COMMIT;                                                       -- releases the lock</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Two sessions booking the same seat</caption>
+              <thead><tr><th scope="col">Step</th><th scope="col">Session A</th><th scope="col">Session B</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td><code>SELECT ... FOR UPDATE</code> → free (row locked)</td><td></td></tr>
+                <tr><td>2</td><td></td><td><code>SELECT ... FOR UPDATE</code> → waits for A</td></tr>
+                <tr><td>3</td><td><code>UPDATE ...</code> booked; <code>COMMIT</code></td><td></td></tr>
+                <tr><td>4</td><td></td><td>Gets the lock; reads booked; does not book</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Without FOR UPDATE, both sessions could read “free” and both could book the seat.</p>
+          <p>MySQL 8 adds two options for when waiting is not wanted:</p>
+          <ul>
+            <li><code>FOR UPDATE NOWAIT</code> returns an error at once if a row is locked.</li>
+            <li><code>FOR UPDATE SKIP LOCKED</code> skips locked rows and returns the rest. This suits job queues, where each worker takes any free job.</li>
+          </ul>
+        </section>
+
+        <section id="lock-tables" class="topic-section" aria-labelledby="lock-tables-title">
+          <h2 id="lock-tables-title">LOCK TABLES</h2>
+          <p><code>LOCK TABLES</code> locks whole tables for the current session.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>LOCK TABLES Games READ, Cart WRITE;
+-- this session may read Games, and read and write Cart
+UNLOCK TABLES;</code></pre>
+          </div>
+          <ul>
+            <li><strong>READ lock:</strong> this session and others can read the table; nobody can write it.</li>
+            <li><strong>WRITE lock:</strong> only this session can read or write the table; others wait.</li>
+            <li>While it holds table locks, a session can use only the tables it has locked.</li>
+            <li>LOCK TABLES commits any active transaction first, and <code>UNLOCK TABLES</code> releases all table locks.</li>
+          </ul>
+          <p>For InnoDB tables, row locks from transactions are usually better, because they lock less and let more transactions run at once. LOCK TABLES is used for maintenance tasks and for storage engines without transactions, such as MyISAM.</p>
+        </section>
+
+        <section id="waits" class="topic-section" aria-labelledby="waits-title">
+          <h2 id="waits-title">Lock waits and deadlocks</h2>
+          <ul>
+            <li>A transaction that waits for a lock longer than <code>innodb_lock_wait_timeout</code> (50 seconds by default) gets an error: “Lock wait timeout exceeded; try restarting transaction”.</li>
+            <li>InnoDB detects <a href="deadlock.html">deadlocks</a> automatically and rolls back one transaction, which gets error 1213: “Deadlock found when trying to get lock; try restarting transaction”.</li>
+            <li>The application should catch these errors and run the whole transaction again.</li>
+            <li><code>SHOW ENGINE INNODB STATUS;</code> shows the latest deadlock, and the <code>performance_schema.data_locks</code> table lists the locks held now.</li>
+          </ul>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>To reduce deadlocks, keep transactions short, access tables and rows in the same order in every program, and use the lowest isolation level that is safe.</p>
+          </div>
+        </section>
+
+        <section id="recovery" class="topic-section" aria-labelledby="recovery-title">
+          <h2 id="recovery-title">Facilities for recovery</h2>
+          <ul>
+            <li><strong>COMMIT and durability.</strong> When COMMIT returns, the change is safe. InnoDB first writes the change to its <strong>redo log</strong> and flushes the log to disk at commit (the write-ahead logging rule from <a href="transaction-recovery.html#log">Transaction Recovery</a>). The setting <code>innodb_flush_log_at_trx_commit = 1</code>, the default, makes this flush happen at every commit.</li>
+            <li><strong>ROLLBACK.</strong> InnoDB keeps the old version of each changed row in its <strong>undo log</strong>. ROLLBACK uses it to put the old values back.</li>
+            <li><strong>SAVEPOINT.</strong> <a href="save-points.html">Savepoints</a> allow a partial rollback inside a transaction.</li>
+            <li><strong>Automatic crash recovery.</strong> After a crash, InnoDB replays the redo log from the last checkpoint and rolls back transactions that had not committed, as soon as the server restarts. No command is needed.</li>
+            <li><strong>Backups and the binary log.</strong> For disk failures and human mistakes, use backups and the binary log. See <a href="backup-and-recovery-system.html">Backup and Recovery System</a>.</li>
+          </ul>
+        </section>
+
+        <section id="summary" class="topic-section" aria-labelledby="summary-title">
+          <h2 id="summary-title">All the commands in one table</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>SQL facilities for concurrency and recovery</caption>
+              <thead><tr><th scope="col">Command</th><th scope="col">Used for</th><th scope="col">What it does</th></tr></thead>
+              <tbody>
+                <tr><td><code>START TRANSACTION</code> / <code>BEGIN</code></td><td>Both</td><td>Starts a transaction</td></tr>
+                <tr><td><code>COMMIT</code></td><td>Both</td><td>Makes the changes permanent; releases locks</td></tr>
+                <tr><td><code>ROLLBACK</code></td><td>Recovery</td><td>Undoes the changes; releases locks</td></tr>
+                <tr><td><code>SAVEPOINT</code>, <code>ROLLBACK TO</code></td><td>Recovery</td><td>Partial rollback</td></tr>
+                <tr><td><code>SET autocommit = 0</code></td><td>Both</td><td>Makes statements part of a longer transaction</td></tr>
+                <tr><td><code>SET TRANSACTION ISOLATION LEVEL</code></td><td>Concurrency</td><td>Chooses the isolation level</td></tr>
+                <tr><td><code>SELECT ... FOR SHARE</code></td><td>Concurrency</td><td>Shared locks on the rows read</td></tr>
+                <tr><td><code>SELECT ... FOR UPDATE</code></td><td>Concurrency</td><td>Exclusive locks on the rows read</td></tr>
+                <tr><td><code>LOCK TABLES</code>, <code>UNLOCK TABLES</code></td><td>Concurrency</td><td>Table-level read or write locks</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it in MySQL</h2>
+          <p>Open two MySQL command-line windows on the same database. Call them A and B.</p>
+          <ol>
+            <li>In A: <code>CREATE TABLE seats (seat_no CHAR(3) PRIMARY KEY, status VARCHAR(10));</code> and <code>INSERT INTO seats VALUES ('12A', 'free');</code></li>
+            <li>In A: <code>START TRANSACTION;</code> then <code>SELECT * FROM seats WHERE seat_no = '12A' FOR UPDATE;</code></li>
+            <li>In B: <code>START TRANSACTION;</code> then the same SELECT ... FOR UPDATE. B waits.</li>
+            <li>In A: <code>UPDATE seats SET status = 'booked' WHERE seat_no = '12A'; COMMIT;</code>. B's SELECT now returns, showing “booked”.</li>
+            <li>In B: <code>ROLLBACK;</code>. Now repeat the steps with a plain SELECT (no FOR UPDATE) in B. Does B still wait?</li>
+          </ol>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Food delivery app</h3>
+              <p class="muted">When two delivery partners tap “accept” on the same order, the server runs <code>SELECT ... FOR UPDATE</code> on the order row. The first one gets the order; the second one sees that it is already taken.</p>
+            </div>
+            <div class="card">
+              <h3>Job queues</h3>
+              <p class="muted">Many workers take jobs from one table with <code>SELECT ... FOR UPDATE SKIP LOCKED LIMIT 1</code>. Each worker gets a different job, and nobody waits.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>START TRANSACTION, COMMIT and ROLLBACK mark a transaction; autocommit makes each statement its own transaction.</li>
+              <li>SET TRANSACTION chooses the isolation level and access mode.</li>
+              <li>FOR SHARE takes shared row locks; FOR UPDATE takes exclusive row locks; both last until commit.</li>
+              <li>LOCK TABLES locks whole tables, and commits any open transaction first.</li>
+              <li>Lock wait timeouts and deadlock errors should be handled by retrying the transaction.</li>
+              <li>Recovery: redo log for COMMIT, undo log for ROLLBACK, automatic crash recovery, backups for disk failure.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit III question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="3.12"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="3.12"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 17, Section 17.10 (transactions as SQL statements).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 20, Section 20.6 (transaction support in SQL).</li>
+            <li>MySQL Reference Manual: “START TRANSACTION, COMMIT, and ROLLBACK Statements”, “Locking Reads” and “LOCK TABLES and UNLOCK TABLES Statements”.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-3.js"></script>
+  <script src="../../data/quizzes/unit-3.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+</body>
+</html>

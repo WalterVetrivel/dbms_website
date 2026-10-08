@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ACID Properties | DBMS Study Guide</title>
+  <meta name="description" content="Learn the four ACID properties of a transaction: atomicity, consistency, isolation and durability. Each property is explained with the funds-transfer example, with the part of the DBMS that ensures it.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="3" data-topic="3.2" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-3">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-3">Unit III</span>
+            <span class="badge badge-level" title="Topic number">Topic 3.2</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO3</span>
+          </div>
+          <h1>ACID Properties</h1>
+          <p class="lead">Every transaction must follow four rules, known by the short form ACID. This page explains each rule with the ₹50 transfer from account A to account B, and shows which part of the DBMS enforces it.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>State the four ACID properties.</li>
+              <li>Explain each property with the funds-transfer example.</li>
+              <li>Name the part of the DBMS that ensures each property.</li>
+              <li>Write a full 16-mark answer on the ACID properties.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#overview">The four properties</a></li>
+            <li><a href="#example">The running example</a></li>
+            <li><a href="#atomicity">Atomicity</a></li>
+            <li><a href="#consistency">Consistency</a></li>
+            <li><a href="#isolation">Isolation</a></li>
+            <li><a href="#durability">Durability</a></li>
+            <li><a href="#who">Who ensures each property</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="overview" class="topic-section" aria-labelledby="overview-title">
+          <h2 id="overview-title">The four properties</h2>
+          <p>To keep data correct, the database system makes every <a href="transaction-concepts.html">transaction</a> follow four properties. Their first letters spell <strong>ACID</strong>.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definitions</div>
+            <ul>
+              <li><strong>Atomicity:</strong> either all operations of the transaction are reflected in the database, or none are.</li>
+              <li><strong>Consistency:</strong> a transaction run alone, with no other transaction running at the same time, keeps the database consistent.</li>
+              <li><strong>Isolation:</strong> each transaction is unaware of other transactions running at the same time. To T<sub>i</sub>, it looks as if T<sub>j</sub> ran fully before it or fully after it.</li>
+              <li><strong>Durability:</strong> after a transaction completes successfully, its changes stay in the database, even if the system fails.</li>
+            </ul>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Memory aid</div>
+            <p><strong>A</strong> = all or nothing. <strong>C</strong> = correct before and after. <strong>I</strong> = in its own world. <strong>D</strong> = does not disappear.</p>
+          </div>
+        </section>
+
+        <section id="example" class="topic-section" aria-labelledby="example-title">
+          <h2 id="example-title">The running example</h2>
+          <p>T<sub>i</sub> transfers ₹50 from account A to account B. Before T<sub>i</sub> runs, A = ₹1000 and B = ₹2000.</p>
+          <div class="code-block">
+            <span class="code-label">Transaction</span>
+            <pre><code>Ti: read(A);
+    A := A − 50;
+    write(A);
+    read(B);
+    B := B + 50;
+    write(B).</code></pre>
+          </div>
+          <p>We now look at what each ACID property means for T<sub>i</sub>.</p>
+        </section>
+
+        <section id="atomicity" class="topic-section" aria-labelledby="atomicity-title">
+          <h2 id="atomicity-title">Atomicity</h2>
+          <p>Suppose the system fails <strong>after write(A) but before write(B)</strong>. The database now holds A = ₹950 and B = ₹2000. The sum A + B has dropped from ₹3000 to ₹2950, so ₹50 has been destroyed. This is an <strong>inconsistent state</strong>.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Values on disk when the system fails after write(A)</caption>
+              <thead><tr><th scope="col">Moment</th><th scope="col">A</th><th scope="col">B</th><th scope="col">A + B</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Before T<sub>i</sub></th><td>1000</td><td>2000</td><td>3000</td></tr>
+                <tr><th scope="row">After write(A), then failure</th><td>950</td><td>2000</td><td>2950</td></tr>
+                <tr><th scope="row">After recovery undoes T<sub>i</sub></th><td>1000</td><td>2000</td><td>3000</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Atomicity says this half-done state must never be seen. <strong>How it is ensured:</strong> before a data item changes, the system writes its <strong>old value</strong> to a file called the <strong>log</strong>. If the transaction does not finish, the system uses the log to put the old values back. It then looks as if the transaction never ran.</p>
+          <p><strong>Responsible:</strong> the <strong>recovery system</strong> of the DBMS.</p>
+        </section>
+
+        <section id="consistency" class="topic-section" aria-labelledby="consistency-title">
+          <h2 id="consistency-title">Consistency</h2>
+          <p>For T<sub>i</sub>, the consistency requirement is that the <strong>sum A + B is unchanged</strong> by the transaction. Without it, money could be created or destroyed.</p>
+          <p>Consistency also covers the rules written into the schema, such as primary keys, foreign keys and <code>CHECK</code> constraints (for example, a balance may not go below zero). The DBMS tests these <strong>integrity constraints</strong> automatically.</p>
+          <p><strong>Responsible:</strong> the <strong>application programmer</strong> who writes the transaction, helped by the integrity constraints that the DBMS checks.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Note</div>
+            <p>While T<sub>i</sub> is running, the database may be inconsistent for a short time (after write(A) and before write(B)). That is allowed. What matters is that it is consistent again when T<sub>i</sub> ends. Atomicity and isolation make sure no one sees the in-between state.</p>
+          </div>
+        </section>
+
+        <section id="isolation" class="topic-section" aria-labelledby="isolation-title">
+          <h2 id="isolation-title">Isolation</h2>
+          <p>Suppose a second transaction T<sub>j</sub> runs at the same time and computes A + B, for example to print the bank's total. If T<sub>j</sub> reads A and B in the middle of T<sub>i</sub> (after write(A), before write(B)), it sees A = 950 and B = 2000, and prints ₹2950. That total is wrong.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>T<sub>j</sub> reads in the middle of T<sub>i</sub></caption>
+              <thead><tr><th scope="col">T<sub>i</sub> (transfer)</th><th scope="col">T<sub>j</sub> (print total)</th></tr></thead>
+              <tbody>
+                <tr><td>read(A); A := A − 50; write(A)</td><td></td></tr>
+                <tr><td></td><td>read(A) gives 950; read(B) gives 2000; display(A + B) shows 2950</td></tr>
+                <tr><td>read(B); B := B + 50; write(B)</td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Worse, if T<sub>j</sub> then updates A or B using these wrong values, the database can stay inconsistent even after both transactions finish.</p>
+          <p>The simple fix is to run transactions <strong>serially</strong>, one after the other. But that is slow. Isolation allows transactions to run at the same time, as long as the result is the same as running them one after another in some order.</p>
+          <p><strong>Responsible:</strong> the <strong>concurrency-control system</strong> of the DBMS, for example by using locks (see <a href="locking-protocols.html">Locking Protocols</a>).</p>
+        </section>
+
+        <section id="durability" class="topic-section" aria-labelledby="durability-title">
+          <h2 id="durability-title">Durability</h2>
+          <p>The user is told that the transfer succeeded. Now the new balances A = ₹950 and B = ₹2050 must never be lost. This holds even if the system crashes a moment later.</p>
+          <p>Durability is guaranteed if either of these is true:</p>
+          <ol>
+            <li>The changes made by the transaction are written to disk <strong>before</strong> the transaction completes; or</li>
+            <li>Enough information about the changes is written to disk (in the log) to <strong>rebuild</strong> them when the system restarts after a failure.</li>
+          </ol>
+          <p><strong>Responsible:</strong> the <strong>recovery system</strong> of the DBMS. See <a href="transaction-recovery.html">Transaction Recovery</a>.</p>
+        </section>
+
+        <section id="who" class="topic-section" aria-labelledby="who-title">
+          <h2 id="who-title">Who ensures each property</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>ACID properties at a glance</caption>
+              <thead><tr><th scope="col">Property</th><th scope="col">Meaning in one line</th><th scope="col">In the transfer example</th><th scope="col">Ensured by</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Atomicity</th><td>All or nothing</td><td>Never debit A without crediting B</td><td>Recovery system (log, undo)</td></tr>
+                <tr><th scope="row">Consistency</th><td>Valid state to valid state</td><td>A + B stays ₹3000</td><td>Programmer and integrity constraints</td></tr>
+                <tr><th scope="row">Isolation</th><td>No interference</td><td>No one sees A = 950 and B = 2000 together</td><td>Concurrency-control system (locks)</td></tr>
+                <tr><th scope="row">Durability</th><td>Committed changes survive failures</td><td>A = 950 and B = 2050 stay after a crash</td><td>Recovery system (log, redo)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>For a 16-mark answer, write the transfer transaction first. Then, for each property, give the definition, what goes wrong without it in this example, and the part of the DBMS that ensures it. End with the summary table above.</p>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>ATM withdrawal</h3>
+              <p class="muted">If the ATM debits your account but the cash is not dispensed, atomicity requires that the debit be undone. Banks reverse such failed withdrawals automatically.</p>
+            </div>
+            <div class="card">
+              <h3>College fee portal</h3>
+              <p class="muted">After the portal says “fee paid”, the receipt must still be there tomorrow, even if the server restarted overnight. That is durability.</p>
+            </div>
+            <div class="card">
+              <h3>Online sale</h3>
+              <p class="muted">Two buyers click “buy” on the last phone at the same moment. Isolation makes sure only one order gets it, as if the orders came one after the other.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>ACID stands for atomicity, consistency, isolation and durability.</li>
+              <li>Atomicity: all operations happen or none do; old values in the log allow undo.</li>
+              <li>Consistency: a transaction run alone keeps the database consistent (A + B unchanged).</li>
+              <li>Isolation: concurrent transactions do not see each other's unfinished work.</li>
+              <li>Durability: committed changes survive system failures.</li>
+              <li>The recovery system ensures atomicity and durability.</li>
+              <li>The concurrency-control system ensures isolation; the programmer and integrity constraints ensure consistency.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit III question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="3.2"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="3.2"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 17 “Transactions”, Sections 17.1 to 17.4.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 20, Section 20.3 (desirable properties of transactions).</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/mysql-acid.html">InnoDB and the ACID model</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-3.js"></script>
+  <script src="../../data/quizzes/unit-3.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+</body>
+</html>
