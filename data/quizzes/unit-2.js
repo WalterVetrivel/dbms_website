@@ -1078,6 +1078,74 @@
       answer: 1,
       explain: "MySQL does not let UPDATE or DELETE change a table and read it in a subquery. That is why the example reads EMPLOYEE_BKP.",
       link: "#dml"
+    },
+    {
+      id: "q2.16-01",
+      topic: "2.16",
+      type: "mcq",
+      question: "What does a view store?",
+      options: ["A copy of the rows it shows", "Only its SELECT query", "An index on the base table", "Nothing; it disappears after the session"],
+      answer: 1,
+      explain: "A view is a virtual table. Only the query is stored, and it runs on the base tables each time the view is used.",
+      link: "#what"
+    },
+    {
+      id: "q2.16-02",
+      topic: "2.16",
+      type: "tf",
+      question: "After you update a base table, a view on that table shows the new values at once.",
+      answer: true,
+      explain: "The view runs its query on the current data every time, so there is no copy to refresh.",
+      link: "#what"
+    },
+    {
+      id: "q2.16-03",
+      topic: "2.16",
+      type: "mcq",
+      question: "You run UPDATE DetailsView SET ADDRESS = 'Chennai' WHERE NAME = 'David'. DetailsView is a simple view on Student_Detail. What changes?",
+      options: ["Only the view", "The row for David in Student_Detail", "Nothing; views are read-only", "A new row is added to Student_Detail"],
+      answer: 1,
+      explain: "A simple view is updatable. The change goes through to the base table.",
+      link: "#update"
+    },
+    {
+      id: "q2.16-04",
+      topic: "2.16",
+      type: "multi",
+      question: "Which of these make a MySQL view read-only? Select all that apply.",
+      options: ["GROUP BY", "A WHERE clause", "DISTINCT", "An aggregate such as COUNT"],
+      answer: [0, 2, 3],
+      explain: "GROUP BY, DISTINCT and aggregates mean one view row does not map to one base row. A WHERE clause is fine.",
+      link: "#updatable"
+    },
+    {
+      id: "q2.16-05",
+      topic: "2.16",
+      type: "mcq",
+      question: "TopScorers shows rows WHERE MARKS >= 90 WITH CHECK OPTION. What happens to INSERT INTO TopScorers VALUES (7, 'Meena', 60)?",
+      options: ["The row is added but not shown by the view", "The row is added and shown", "It is rejected: CHECK OPTION failed", "MARKS is changed to 90"],
+      answer: 2,
+      explain: "WITH CHECK OPTION rejects any row that would not satisfy the view's WHERE clause.",
+      link: "#check"
+    },
+    {
+      id: "q2.16-06",
+      topic: "2.16",
+      type: "tf",
+      question: "DROP VIEW also deletes the rows of the base tables that the view showed.",
+      answer: false,
+      explain: "Dropping a view removes only its definition. The base tables and their data are not touched.",
+      link: "#change"
+    },
+    {
+      id: "q2.16-07",
+      topic: "2.16",
+      type: "mcq",
+      question: "Which is the best reason to give a user access to a view instead of the table?",
+      options: ["Views are always faster", "The user sees only the allowed rows and columns", "Views use more storage, so they are safer", "Views cannot be queried with WHERE"],
+      answer: 1,
+      explain: "Granting SELECT on a view hides the other columns and rows. Views are not always faster.",
+      link: "#uses"
     }
   ]);
 })();
