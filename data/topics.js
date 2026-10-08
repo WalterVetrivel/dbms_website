@@ -59,7 +59,7 @@ DBMS.units = [
 
 DBMS.topics = [
   // Unit I
-  { id: "1.1", unit: 1, slug: "purpose-of-database-system", title: "Purpose of Database System", level: "L2", textbooks: ["S1", "E1"], covers: "Problems with file systems, uses of databases and the advantages of a DBMS", status: "planned", prereqs: [], related: [] },
+  { id: "1.1", unit: 1, slug: "purpose-of-database-system", title: "Purpose of Database System", level: "L2", textbooks: ["S1", "E1"], covers: "Problems with file systems, uses of databases and the advantages of a DBMS", status: "published", prereqs: [], related: ["1.2", "1.4", "3.2"] },
   { id: "1.2", unit: 1, slug: "views-of-data", title: "Views of Data", level: "L2", textbooks: ["S1", "E2"], covers: "Data abstraction, the three levels, instances, schemas and data independence", status: "planned", prereqs: [], related: [] },
   { id: "1.3", unit: 1, slug: "data-models", title: "Data Models", level: "L2", textbooks: ["S1", "E2"], covers: "Relational, E-R, object-based, semi-structured, hierarchical and network models", status: "planned", prereqs: [], related: [] },
   { id: "1.4", unit: 1, slug: "database-system-architecture", title: "Database System Architecture", level: "L2", textbooks: ["S1", "E2"], covers: "Query processor, storage manager, database users, and two-tier and three-tier designs", status: "planned", prereqs: [], related: [] },
