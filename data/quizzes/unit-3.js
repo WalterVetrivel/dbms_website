@@ -788,6 +788,66 @@
       answer: 1,
       explain: "The shared lock is released straight after the read. That is why a second read may see a newer committed value.",
       link: "#levels"
+    },,
+    /* 3.12 SQL Facilities for Concurrency and Recovery */
+    {
+      id: "q3.12-01",
+      topic: "3.12",
+      type: "mcq",
+      question: "With autocommit on (the MySQL default), when does an UPDATE statement commit?",
+      options: ["At the next COMMIT", "As soon as the statement finishes", "At the next checkpoint", "When the session ends"],
+      answer: 1,
+      explain: "With autocommit on, each statement is its own transaction and commits as soon as it finishes.",
+      link: "#boundaries"
+    },
+    {
+      id: "q3.12-02",
+      topic: "3.12",
+      type: "mcq",
+      question: "Which statement reads a row and takes an exclusive lock on it until the transaction ends?",
+      options: ["SELECT ... FOR SHARE", "SELECT ... FOR UPDATE", "LOCK TABLES ... READ", "SET TRANSACTION READ ONLY"],
+      answer: 1,
+      explain: "FOR UPDATE takes an exclusive (X) lock on each row read. FOR SHARE takes a shared (S) lock.",
+      link: "#locking-reads"
+    },
+    {
+      id: "q3.12-03",
+      topic: "3.12",
+      type: "tf",
+      question: "A ROLLBACK can undo a CREATE TABLE statement run earlier in the same transaction in MySQL.",
+      answer: false,
+      explain: "False. Most DDL statements cause an implicit commit, so the transaction has already ended.",
+      link: "#boundaries"
+    },
+    {
+      id: "q3.12-04",
+      topic: "3.12",
+      type: "mcq",
+      question: "Two users book the same seat. Which change stops both of them from booking it?",
+      options: ["Use SELECT ... FOR UPDATE before the UPDATE", "Turn autocommit on", "Use READ UNCOMMITTED", "Add a savepoint"],
+      answer: 0,
+      explain: "FOR UPDATE locks the row, so the second user waits and then sees that the seat is booked.",
+      link: "#locking-reads"
+    },
+    {
+      id: "q3.12-05",
+      topic: "3.12",
+      type: "mcq",
+      question: "What does LOCK TABLES do to an open transaction?",
+      options: ["Nothing", "Rolls it back", "Commits it", "Pauses it"],
+      answer: 2,
+      explain: "LOCK TABLES causes an implicit commit of any active transaction before it locks the tables.",
+      link: "#lock-tables"
+    },
+    {
+      id: "q3.12-06",
+      topic: "3.12",
+      type: "mcq",
+      question: "What should a program do when MySQL returns error 1213, “Deadlock found when trying to get lock”?",
+      options: ["Ignore it and carry on", "Run the whole transaction again", "Restart the server", "Drop the table"],
+      answer: 1,
+      explain: "InnoDB has rolled the transaction back to break the deadlock, so the program should retry it.",
+      link: "#waits"
     },
   ]);
 })();
