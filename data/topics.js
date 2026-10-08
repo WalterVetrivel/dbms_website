@@ -93,7 +93,7 @@ DBMS.topics = [
   { id: "2.17", unit: 2, slug: "triggers", title: "Triggers", level: "L3", textbooks: ["S5", "E7"], covers: "BEFORE and AFTER triggers, and NEW and OLD values", status: "planned", prereqs: [], related: [] },
 
   // Unit III
-  { id: "3.1", unit: 3, slug: "transaction-concepts", title: "Transaction Concepts", level: "L2", textbooks: ["S17", "E20"], covers: "Read and write operations and the states of a transaction", status: "planned", prereqs: [], related: [] },
+  { id: "3.1", unit: 3, slug: "transaction-concepts", title: "Transaction Concepts", level: "L2", textbooks: ["S17", "E20"], covers: "Read and write operations, commit and abort, and the states of a transaction", status: "published", prereqs: [], related: ["3.2", "3.9", "5.3"], widgets: ["V15"] },
   { id: "3.2", unit: 3, slug: "acid-properties", title: "ACID Properties", level: "L2", textbooks: ["S17", "E20"], covers: "Atomicity, consistency, isolation and durability", status: "planned", prereqs: [], related: [] },
   { id: "3.3", unit: 3, slug: "schedules", title: "Schedules", level: "L3", textbooks: ["S17", "E20"], covers: "Serial, concurrent, recoverable and cascadeless schedules", status: "planned", prereqs: [], related: [] },
   { id: "3.4", unit: 3, slug: "serializability", title: "Serializability", level: "L3", textbooks: ["S17", "E20"], covers: "Conflict and view serializability, and the precedence graph test", status: "planned", prereqs: [], related: [] },

@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Transaction Concepts | DBMS Study Guide</title>
+  <meta name="description" content="Learn what a transaction is in a DBMS: a unit of work that runs completely or not at all. Covers read and write operations, commit and abort, and the five transaction states, with an interactive state diagram.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="3" data-topic="3.1" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-3">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-3">Unit III</span>
+            <span class="badge badge-level" title="Topic number">Topic 3.1</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO3</span>
+          </div>
+          <h1>Transaction Concepts</h1>
+          <p class="lead">Moving money between two bank accounts takes several steps, but it must behave like one step. This page explains what a transaction is, how it reads and writes data, and the states it passes through.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define a transaction and give an example.</li>
+              <li>Explain the read(X) and write(X) operations.</li>
+              <li>Explain what commit and abort (rollback) mean.</li>
+              <li>Draw the transaction state diagram and explain each state.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is a transaction?</a></li>
+            <li><a href="#operations">Read and write operations</a></li>
+            <li><a href="#end">Commit and abort</a></li>
+            <li><a href="#states">Transaction states</a></li>
+            <li><a href="#why">Why transactions need care</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is a transaction?</h2>
+          <p>A student pays ₹50 to a friend using a banking app. The bank must take ₹50 out of the student's account A and add ₹50 to the friend's account B. These are two separate changes. If only the first one happens, ₹50 simply disappears. So the bank treats the two changes as one unit of work.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>transaction</strong> is a collection of operations that forms a <strong>single logical unit of work</strong>. It reads and possibly updates data items. A transaction must run <strong>completely or not at all</strong>.</p>
+          </div>
+          <p>A transaction is usually started by a program written in a language such as Java or Python, which sends SQL to the database (for example through JDBC or ODBC). In the textbook, a transaction is written between the statements <code>begin transaction</code> and <code>end transaction</code>. In SQL, it starts with <code>START TRANSACTION</code> and ends with <code>COMMIT</code> or <code>ROLLBACK</code>.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example: the funds-transfer transaction</div>
+            <p>T<sub>i</sub> transfers ₹50 from account A to account B.</p>
+            <pre><code>Ti: read(A);
+    A := A − 50;
+    write(A);
+    read(B);
+    B := B + 50;
+    write(B).</code></pre>
+            <p>This example is used all through Unit III, so it is worth remembering.</p>
+          </div>
+        </section>
+
+        <section id="operations" class="topic-section" aria-labelledby="operations-title">
+          <h2 id="operations-title">Read and write operations</h2>
+          <p>A transaction does its work in main memory. Each transaction has its own <strong>buffer</strong> (work area) in main memory. Data moves between the database and this buffer with two operations.</p>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>read(X)</h3>
+              <p class="muted">Copies the data item X <strong>from the database</strong> into a variable, also called X, in the transaction's buffer.</p>
+            </div>
+            <div class="card">
+              <h3>write(X)</h3>
+              <p class="muted">Copies the value of the variable X <strong>from the buffer</strong> back to the data item X in the database.</p>
+            </div>
+          </div>
+          <p>Calculations such as <code>A := A − 50</code> change only the copy in the buffer. The database changes only when <code>write(A)</code> runs.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Note</div>
+            <p>Even after write(X), the new value may sit in a buffer block in main memory for a while before it reaches the disk. This is why the database also keeps a <strong>log</strong> on disk. Recovery from failures (topic 3.9) depends on this log.</p>
+          </div>
+        </section>
+
+        <section id="end" class="topic-section" aria-labelledby="end-title">
+          <h2 id="end-title">Commit and abort</h2>
+          <p>Every transaction ends in one of two ways.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>The two ways a transaction can end</caption>
+              <thead><tr><th scope="col">End</th><th scope="col">Meaning</th><th scope="col">SQL statement</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Commit</th><td>The transaction finished successfully. Its changes become permanent.</td><td><code>COMMIT</code></td></tr>
+                <tr><th scope="row">Abort</th><td>The transaction did not finish. All its changes are undone (<strong>rolled back</strong>), as if it never ran.</td><td><code>ROLLBACK</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Once a transaction has committed, it cannot be undone by aborting it. If its effect was wrong, another transaction must be run to reverse it. This is called a <strong>compensating transaction</strong>, for example a refund.</p>
+        </section>
+
+        <section id="states" class="topic-section" aria-labelledby="states-title">
+          <h2 id="states-title">Transaction states</h2>
+          <p>A transaction is always in one of five states.</p>
+          <figure class="figure">
+            <div class="widget-stage" tabindex="0">
+              <svg viewBox="0 0 740 250" width="740" role="img" aria-labelledby="states-svg-title" style="max-width:100%;height:auto">
+                <title id="states-svg-title">Transaction state diagram. Active goes to partially committed or to failed. Partially committed goes to committed or to failed. Failed goes to aborted.</title>
+                <defs><marker id="st-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--text-muted)"/></marker></defs>
+                <g style="stroke:var(--text-muted);stroke-width:2">
+                  <line x1="170" y1="120" x2="250" y2="50" marker-end="url(#st-arrow)"/>
+                  <line x1="170" y1="140" x2="250" y2="210" marker-end="url(#st-arrow)"/>
+                  <line x1="410" y1="44" x2="570" y2="44" marker-end="url(#st-arrow)"/>
+                  <line x1="330" y1="68" x2="330" y2="192" marker-end="url(#st-arrow)"/>
+                  <line x1="410" y1="216" x2="570" y2="216" marker-end="url(#st-arrow)"/>
+                </g>
+                <g style="fill:var(--surface);stroke:var(--border-strong);stroke-width:2">
+                  <rect x="10" y="106" width="160" height="48" rx="24" style="fill:var(--u3-soft);stroke:var(--u3)"/>
+                  <rect x="250" y="20" width="160" height="48" rx="24"/>
+                  <rect x="250" y="192" width="160" height="48" rx="24"/>
+                  <rect x="570" y="20" width="160" height="48" rx="24"/>
+                  <rect x="574" y="24" width="152" height="40" rx="20" style="fill:none"/>
+                  <rect x="570" y="192" width="160" height="48" rx="24"/>
+                  <rect x="574" y="196" width="152" height="40" rx="20" style="fill:none"/>
+                </g>
+                <g style="fill:var(--text);font:600 14px var(--font-sans)" text-anchor="middle">
+                  <text x="90" y="135">Active</text>
+                  <text x="330" y="49">Partially committed</text>
+                  <text x="330" y="221">Failed</text>
+                  <text x="650" y="49">Committed</text>
+                  <text x="650" y="221">Aborted</text>
+                </g>
+                <g style="fill:var(--text-muted);font:12px var(--font-sans)">
+                  <text x="204" y="70" text-anchor="end">last statement runs</text>
+                  <text x="200" y="196" text-anchor="end">error</text>
+                  <text x="490" y="36" text-anchor="middle">commit record on disk</text>
+                  <text x="338" y="134">failure</text>
+                  <text x="490" y="208" text-anchor="middle">rolled back</text>
+                </g>
+              </svg>
+            </div>
+            <figcaption>The transaction state diagram. Committed and aborted (double outline) are the two final states. A transaction that ends in either of them is <strong>terminated</strong>.</figcaption>
+          </figure>
+          <div class="table-wrap">
+            <table>
+              <caption>The five transaction states</caption>
+              <thead><tr><th scope="col">State</th><th scope="col">The transaction is in this state when</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Active</th><td>It is running. This is the first state.</td></tr>
+                <tr><th scope="row">Partially committed</th><td>Its last statement has run, but its changes may still be only in main memory.</td></tr>
+                <tr><th scope="row">Failed</th><td>It finds that normal execution can no longer go on, because of an error or a system failure.</td></tr>
+                <tr><th scope="row">Aborted</th><td>It has been rolled back, and the database is back to its state before the transaction started.</td></tr>
+                <tr><th scope="row">Committed</th><td>It has completed successfully. Enough information is on disk to rebuild its changes after a failure.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>What happens after an abort</h3>
+          <p>After a transaction is aborted, the system has two choices.</p>
+          <ul>
+            <li><strong>Restart</strong> the transaction, if it failed because of a hardware or software problem that was not caused by its own logic. A restarted transaction is a new transaction.</li>
+            <li><strong>Kill</strong> the transaction, if it failed because of an error in its own logic (for example, bad input or a missing record). The program must be fixed first.</li>
+          </ul>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Partially committed is <strong>not</strong> the same as committed. A partially committed transaction can still fail, for example if the power goes off before its changes reach the disk. Draw the arrow from partially committed to failed in your answer.</p>
+          </div>
+        </section>
+
+        <section id="why" class="topic-section" aria-labelledby="why-title">
+          <h2 id="why-title">Why transactions need care</h2>
+          <p>Two things can go wrong with transactions. The rest of Unit III deals with them.</p>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Failures</h3>
+              <p class="muted">The system can crash in the middle of a transaction. Then some of its writes are done and some are not. The <strong>recovery system</strong> must undo or redo work so that each transaction happens completely or not at all. See Transaction Recovery.</p>
+            </div>
+            <div class="card">
+              <h3>Concurrent execution</h3>
+              <p class="muted">Many transactions run at the same time to keep the CPU and disks busy. Their steps can mix in harmful ways. The <strong>concurrency-control system</strong> stops this. See Concurrency Control.</p>
+            </div>
+          </div>
+          <p>The rules that a transaction must follow are called the ACID properties, the next topic.</p>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>Choose a scenario and press <strong>Next</strong> to run one step at a time. Watch the state, the statements and the values of A and B.</p>
+          <div class="widget" data-widget="transaction-states" data-scenario="commit">
+            <noscript><p class="widget-narration">The transaction state animation needs JavaScript. The state diagram and table above show the same states.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>In “T fails in the middle”, look at A + B on disk just after the error. Why must the system undo write(A)?</li>
+              <li>In “Power fails before the commit record is on disk”, which state was T in when the power failed?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>UPI payment</h3>
+              <p class="muted">When a UPI payment fails halfway, the app shows “money will be refunded”. The debit already happened, so the bank runs a reverse entry, which is a compensating transaction.</p>
+            </div>
+            <div class="card">
+              <h3>Train ticket booking</h3>
+              <p class="muted">Booking a seat must mark the seat as taken and record the passenger in one transaction. If the booking fails, the seat is released, as if the booking never started.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>A transaction is a single logical unit of work that runs completely or not at all.</li>
+              <li>read(X) copies X from the database to the transaction's buffer; write(X) copies it back.</li>
+              <li>A transaction ends with commit (changes kept) or abort (changes rolled back).</li>
+              <li>The five states are active, partially committed, failed, aborted and committed.</li>
+              <li>Partially committed means the last statement ran; the transaction can still fail.</li>
+              <li>After an abort, the system can restart or kill the transaction.</li>
+              <li>A committed transaction can only be reversed by a compensating transaction.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit III question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="3.1"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="3.1"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 17 “Transactions”, Sections 17.1 and 17.4 (transaction concept and atomicity and durability).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 20, Sections 20.1 and 20.2 (transaction processing and transaction states).</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/commit.html">START TRANSACTION, COMMIT and ROLLBACK</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-3.js"></script>
+  <script src="../../data/quizzes/unit-3.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/transaction-states.js"></script>
+</body>
+</html>
