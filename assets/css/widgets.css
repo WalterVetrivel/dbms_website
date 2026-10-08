@@ -3471,3 +3471,66 @@
   margin: var(--sp-3) 0 0;
   font-size: var(--fs-sm);
 }
+
+/* ---------- V10 Lossless join and dependency preservation checker ---------- */
+
+.dc-stage {
+  background: var(--bg);
+}
+
+.dc-tab th[scope="row"] {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.dc-tab td {
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.dc-tab td.is-a {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.dc-tab td.is-on {
+  background: var(--warning-soft);
+  box-shadow: inset 0 0 0 2px var(--warning);
+}
+
+.dc-tab tr.is-full td,
+.dc-tab tr.is-full th {
+  background: var(--success-soft);
+}
+
+.dc-proj {
+  margin: 0 0 var(--sp-4);
+  padding-left: 1.2rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.dc-pres tr.is-ok td:nth-child(2) {
+  color: var(--success);
+  font-weight: 700;
+}
+
+.dc-pres tr.is-lost td {
+  background: var(--danger-soft);
+}
+
+.dc-pres tr.is-lost td:nth-child(2) {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.dc-sum {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: 0;
+}
+
+.dc-sum .kf-verdict {
+  margin-top: var(--sp-3);
+}

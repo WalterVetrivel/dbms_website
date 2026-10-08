@@ -252,14 +252,14 @@
 
   // Lossless-join test by the tableau (chase) method.
   // Returns { lossless, rows } where rows[i][j] is "a" or "b<i>".
-  function chase(attrs, parts, fds) {
+  function chase(attrs, parts, fds, trace) {
     var rows = parts.map(function (p, i) {
       return attrs.map(function (a) { return p.indexOf(a) >= 0 ? "a" : "b" + (i + 1); });
     });
     var changed = true;
     while (changed) {
       changed = false;
-      fds.forEach(function (f) {
+      fds.forEach(function (f, fi) {
         var li = f.l.map(function (a) { return attrs.indexOf(a); });
         var ri = f.r.map(function (a) { return attrs.indexOf(a); });
         for (var x = 0; x < rows.length; x++) {
@@ -272,13 +272,15 @@
               var drop = rows[x][c] === keep ? rows[y][c] : rows[x][c];
               rows.forEach(function (r) { if (r[c] === drop) r[c] = keep; });
               changed = true;
+              if (trace) trace.push({ fd: fi, rows: [x, y], col: c, from: drop, to: keep, table: rows.map(function (r) { return r.slice(); }) });
             });
           }
         }
       });
     }
-    var lossless = rows.some(function (r) { return r.every(function (v) { return v === "a"; }); });
-    return { lossless: lossless, rows: rows };
+    var full = -1;
+    rows.forEach(function (r, i) { if (full < 0 && r.every(function (v) { return v === "a"; })) full = i; });
+    return { lossless: full >= 0, row: full, rows: rows };
   }
 
   D.fd = {

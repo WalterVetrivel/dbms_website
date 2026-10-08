@@ -301,6 +301,73 @@
       options: ["Split every right side into single attributes", "Remove extraneous attributes from left sides", "Remove redundant FDs", "Combine FDs with the same left side"],
       explain: "Split, simplify the left sides, drop redundant FDs, then combine with the union rule.",
       link: "#cover"
+    },
+    {
+      id: "q2.5-01",
+      topic: "2.5",
+      type: "mcq",
+      question: "A new department cannot be stored until it has at least one employee. Which anomaly is this?",
+      options: ["Update anomaly", "Insertion anomaly", "Deletion anomaly", "Join anomaly"],
+      answer: 1,
+      explain: "We cannot insert a fact (the department) without an unrelated fact (an employee). That is an insertion anomaly.",
+      link: "#anomalies"
+    },
+    {
+      id: "q2.5-02",
+      topic: "2.5",
+      type: "tf",
+      question: "In a non-loss decomposition, joining the parts gives back exactly the original rows, with no extra rows.",
+      answer: true,
+      explain: "True. Lossless means r = r1 ⋈ r2. A lossy split adds extra (spurious) rows, so we can no longer tell which rows are real.",
+      link: "#lossless"
+    },
+    {
+      id: "q2.5-03",
+      topic: "2.5",
+      type: "mcq",
+      question: "A lossy decomposition is joined back. What do we get?",
+      options: ["Fewer rows than the original", "Extra rows that were never in the original", "Exactly the original rows", "An error"],
+      answer: 1,
+      explain: "The join always contains the original rows. A lossy split adds spurious rows, and the information about which rows are real is lost.",
+      link: "#spurious"
+    },
+    {
+      id: "q2.5-04",
+      topic: "2.5",
+      type: "multi",
+      question: "R is split into R1 and R2. Which conditions make the split lossless? Select all that apply.",
+      options: ["R1 ∩ R2 → R1 is in F+", "R1 ∩ R2 → R2 is in F+", "R1 ∪ R2 → R1 is in F+", "R1 and R2 have no common attribute"],
+      answer: [0, 1],
+      explain: "The common attributes must be a superkey of R1 or of R2. Either one is enough. With no common attribute the join is a cross product, which is lossy.",
+      link: "#binary-test"
+    },
+    {
+      id: "q2.5-05",
+      topic: "2.5",
+      type: "mcq",
+      question: "R(A, B, C) with F = {A → B}. Which split is lossless?",
+      options: ["(A, B) and (A, C)", "(A, B) and (B, C)", "(A, C) and (B, C)", "(A) and (B, C)"],
+      answer: 0,
+      explain: "(A, B) ∩ (A, C) = A, and A → AB, so A is a key of the first part. In the other splits the common attribute is not a key of either part.",
+      link: "#binary-test"
+    },
+    {
+      id: "q2.5-06",
+      topic: "2.5",
+      type: "tf",
+      question: "In the tableau test, the decomposition is lossless when some row becomes all a symbols.",
+      answer: true,
+      explain: "True. A row of only a symbols means the join must contain the original tuple, so no information is lost.",
+      link: "#tableau"
+    },
+    {
+      id: "q2.5-07",
+      topic: "2.5",
+      type: "order",
+      question: "Put the steps of the tableau test in order.",
+      options: ["Make one row for each part and one column for each attribute", "Put a in the columns the part has and b symbols elsewhere", "Apply each FD to make matching rows agree", "Repeat until no FD changes the table", "Check for a row of only a symbols"],
+      explain: "Build the table, fill in a and b symbols, chase with the FDs until nothing changes, then look for an all-a row.",
+      link: "#tableau"
     }
   ]);
 })();
