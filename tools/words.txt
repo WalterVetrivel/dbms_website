@@ -120,3 +120,5 @@ mysqlbinlog
 binlog
 subschema
 subschemas
+IDMS
+CODASYL

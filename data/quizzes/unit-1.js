@@ -146,6 +146,81 @@
       answer: [0, 1],
       explain: "Adding a column and splitting a table change the logical schema. Moving files and adding an index are physical changes.",
       link: "#independence"
+    },
+    /* 1.3 Data Models */
+    {
+      id: "q1.3-01",
+      topic: "1.3",
+      type: "mcq",
+      question: "A data model is best described as:",
+      options: [
+        "A collection of conceptual tools for describing data, relationships, semantics and constraints",
+        "A copy of the database kept for backup",
+        "The physical file where records are stored",
+        "A program that prints reports"
+      ],
+      answer: 0,
+      explain: "A data model is the set of tools used to describe a database's data, relationships, meaning and constraints.",
+      link: "#what"
+    },
+    {
+      id: "q1.3-02",
+      topic: "1.3",
+      type: "mcq",
+      question: "In which data model can a record have only one parent?",
+      options: ["Network model", "Relational model", "Hierarchical model", "Semi-structured model"],
+      answer: 2,
+      explain: "The hierarchical model is a tree, so each record has exactly one parent.",
+      link: "#hierarchical"
+    },
+    {
+      id: "q1.3-03",
+      topic: "1.3",
+      type: "mcq",
+      question: "Two products in a catalog have different attributes: a phone has a battery size, a shirt has a fabric. Which data model suits this best?",
+      options: ["Hierarchical model", "Semi-structured model", "Network model", "E-R model"],
+      answer: 1,
+      explain: "In the semi-structured model, items of the same type can have different sets of attributes, as in XML or JSON.",
+      link: "#semi"
+    },
+    {
+      id: "q1.3-04",
+      topic: "1.3",
+      type: "tf",
+      question: "The relational model links tables using pointers between records.",
+      answer: false,
+      explain: "False. The relational model links tables using common values (keys). Pointers are used by the hierarchical and network models.",
+      link: "#compare"
+    },
+    {
+      id: "q1.3-05",
+      topic: "1.3",
+      type: "mcq",
+      question: "Which model adds inheritance and methods to the relational model?",
+      options: ["Object-based model", "Network model", "Hierarchical model", "Semi-structured model"],
+      answer: 0,
+      explain: "The object-based model combines object-oriented features such as methods and inheritance with the relational model.",
+      link: "#object"
+    },
+    {
+      id: "q1.3-06",
+      topic: "1.3",
+      type: "multi",
+      question: "Which models can show a many-to-many relationship directly? Select all that apply.",
+      options: ["Network model", "Relational model (with a linking table)", "Hierarchical model"],
+      answer: [0, 1],
+      explain: "The network model allows many parents, and the relational model uses a linking table. The hierarchical tree cannot.",
+      link: "#compare"
+    },
+    {
+      id: "q1.3-07",
+      topic: "1.3",
+      type: "mcq",
+      question: "In an E-R diagram drawn in Chen notation, what does a diamond show?",
+      options: ["An entity set", "An attribute", "A relationship set", "A table"],
+      answer: 2,
+      explain: "Rectangles are entity sets and diamonds are relationship sets.",
+      link: "#er"
     }
   ]);
 })();
