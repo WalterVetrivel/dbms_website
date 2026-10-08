@@ -450,6 +450,75 @@
       answer: 1,
       explain: "This is starvation. It is avoided by granting a request only if no earlier request on the same item is waiting.",
       link: "#starvation"
-    }
+    },
+    /* 3.7 Two Phase Locking */
+    {
+      id: "q3.7-01",
+      topic: "3.7",
+      type: "mcq",
+      question: "In two phase locking, what may a transaction do during the shrinking phase?",
+      options: ["Obtain new locks only", "Release locks, but not obtain new ones", "Obtain and release locks freely", "Nothing until it commits"],
+      answer: 1,
+      explain: "Once a transaction releases its first lock, it enters the shrinking phase. From then on it may release locks but may not ask for any new lock.",
+      link: "#rule"
+    },
+    {
+      id: "q3.7-02",
+      topic: "3.7",
+      type: "mcq",
+      question: "What is the lock point of a transaction?",
+      options: ["The point where it gets its final lock", "The point where it commits", "The point where it releases its first lock", "The point where it starts"],
+      answer: 0,
+      explain: "The lock point is the end of the growing phase, the moment the transaction gets its final lock.",
+      link: "#rule"
+    },
+    {
+      id: "q3.7-03",
+      topic: "3.7",
+      type: "tf",
+      question: "Two phase locking guarantees that no deadlock can occur.",
+      answer: false,
+      explain: "False. Two transactions can each hold one lock and wait for the other's lock. Two phase locking ensures conflict serializability, not freedom from deadlock.",
+      link: "#demerits"
+    },
+    {
+      id: "q3.7-04",
+      topic: "3.7",
+      type: "mcq",
+      question: "Under basic two phase locking, transactions are serializable in which order?",
+      options: ["The order they started", "The order of their lock points", "The order they commit", "Any random order"],
+      answer: 1,
+      explain: "Ordering transactions by their lock points gives an equivalent serial order.",
+      link: "#serial"
+    },
+    {
+      id: "q3.7-05",
+      topic: "3.7",
+      type: "mcq",
+      question: "Strict two phase locking holds which locks until commit or abort?",
+      options: ["All shared locks", "All exclusive locks", "Only the first lock", "No locks"],
+      answer: 1,
+      explain: "Strict two phase locking keeps every exclusive lock until the transaction ends, so no one can read uncommitted data. This avoids cascading rollback.",
+      link: "#types"
+    },
+    {
+      id: "q3.7-06",
+      topic: "3.7",
+      type: "mcq",
+      question: "Which variant holds ALL locks, shared and exclusive, until the transaction commits or aborts?",
+      options: ["Basic two phase locking", "Strict two phase locking", "Rigorous two phase locking", "Early unlocking"],
+      answer: 2,
+      explain: "Rigorous two phase locking keeps every lock until the end. Transactions are then serializable in the order they commit.",
+      link: "#types"
+    },
+    {
+      id: "q3.7-07",
+      topic: "3.7",
+      type: "tf",
+      question: "With lock conversion, an upgrade from shared to exclusive is allowed only in the growing phase.",
+      answer: true,
+      explain: "True. An upgrade acts like getting a new lock, so it belongs to the growing phase. A downgrade belongs to the shrinking phase.",
+      link: "#conversion"
+    },
   ]);
 })();

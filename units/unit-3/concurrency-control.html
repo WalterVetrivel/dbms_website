@@ -197,7 +197,7 @@
               <caption>Kinds of concurrency control protocols</caption>
               <thead><tr><th scope="col">Protocol</th><th scope="col">Idea</th><th scope="col">Example</th></tr></thead>
               <tbody>
-                <tr><th scope="row">Lock-based</th><td>A transaction must lock an item before using it. Conflicting requests wait.</td><td>Two phase locking</td></tr>
+                <tr><th scope="row">Lock-based</th><td>A transaction must lock an item before using it. Conflicting requests wait.</td><td><a href="two-phase-locking.html">Two phase locking</a></td></tr>
                 <tr><th scope="row">Timestamp-based</th><td>Each transaction gets a timestamp when it starts. Conflicting operations must run in timestamp order, or the late transaction is rolled back.</td><td>Timestamp ordering protocol</td></tr>
                 <tr><th scope="row">Validation-based (optimistic)</th><td>Transactions run freely on private copies. Before commit, the system checks for conflicts and rolls back if there are any.</td><td>Optimistic concurrency control</td></tr>
                 <tr><th scope="row">Multiversion</th><td>Each write makes a new version of the item. Readers read an older, committed version and never wait for writers.</td><td>Snapshot isolation in MySQL InnoDB, Oracle and PostgreSQL</td></tr>

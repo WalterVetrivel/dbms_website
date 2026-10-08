@@ -240,7 +240,7 @@ read(B); B := B + temp; write(B).</code></pre>
               <li>A <strong>strict</strong> schedule is one where a data item written by T<sub>i</sub> cannot be <strong>read or written</strong> by another transaction until T<sub>i</sub> commits or aborts.</li>
             </ul>
           </div>
-          <p>Every cascadeless schedule is also recoverable, and every strict schedule is also cascadeless. Strict schedules make recovery easiest: to undo T<sub>i</sub>, the system just puts back the old values from the log. Most database systems produce strict schedules by using strict two phase locking.</p>
+          <p>Every cascadeless schedule is also recoverable, and every strict schedule is also cascadeless. Strict schedules make recovery easiest: to undo T<sub>i</sub>, the system just puts back the old values from the log. Most database systems produce strict schedules by using <a href="two-phase-locking.html">strict two phase locking</a>.</p>
           <figure class="figure">
             <div class="widget-stage" tabindex="0">
               <svg viewBox="0 0 420 210" width="420" role="img" aria-labelledby="nest-svg-title" style="max-width:100%;height:auto">

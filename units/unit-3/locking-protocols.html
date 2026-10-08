@@ -154,7 +154,7 @@
           <p>T2 shows ₹250, which is wrong. Every access was locked, yet the result is wrong. The reason: <strong>T1 unlocked B too early</strong>, so T2 saw the database halfway through T1's transfer.</p>
           <div class="callout callout-mistake">
             <div class="callout-title">Common mistake</div>
-            <p>“Using locks” is not enough for serializability. <strong>When</strong> locks are released matters. A rule about lock and unlock timing, such as two phase locking, is needed.</p>
+            <p>“Using locks” is not enough for serializability. <strong>When</strong> locks are released matters. A rule about lock and unlock timing, such as <a href="two-phase-locking.html">two phase locking</a>, is needed.</p>
           </div>
           <p>If instead T1 and T2 delay their unlocks to the end, the wrong total cannot happen. But then a <strong>deadlock</strong> becomes possible: T1 holds X on B and waits for A, while T2 holds S on A and waits for B. See Deadlock.</p>
         </section>
