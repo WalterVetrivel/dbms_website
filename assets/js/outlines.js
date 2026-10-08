@@ -43,12 +43,6 @@
     return '<a href="' + url(D.topicHref(t)) + (parts[1] ? "#" + parts[1] : "") + '">' + label + "</a>";
   }
 
-  function unique(list) {
-    return list.filter(function (x, i) {
-      return list.indexOf(x) === i;
-    });
-  }
-
   function list(items) {
     return "<ul>" + items.map(function (x) {
       return "<li>" + x + "</li>";
@@ -89,12 +83,19 @@
   }
 
   function section(s, i) {
-    var see = (s.see || []).map(seeLink).filter(Boolean);
+    // One link per topic, to the first section named for it.
+    var seen = {};
+    var see = (s.see || []).filter(function (ref) {
+      var id = ref.split("#")[0];
+      if (seen[id]) return false;
+      seen[id] = true;
+      return true;
+    }).map(seeLink).filter(Boolean);
     return (
       '<li class="ol-section"><h3><span class="ol-sec-num">' + (i + 1) + ".</span> " + esc(s.title) +
       ' <span class="ol-space">about ' + space(s.pages) + "</span></h3>" +
       list(s.points) + extras(s) +
-      (see.length ? '<p class="ol-see">Read: ' + unique(see).join(", ") + "</p>" : "") +
+      (see.length ? '<p class="ol-see">Read: ' + see.join(", ") + "</p>" : "") +
       "</li>"
     );
   }
