@@ -787,6 +787,75 @@
       answer: 0,
       explain: "IN tests a list of values. BETWEEN 1 AND 3 would also include roll 2.",
       link: "#where"
+    },
+    {
+      id: "q1.12-01",
+      topic: "1.12",
+      type: "multi",
+      question: "Which of these are DDL commands? Pick all that apply.",
+      options: ["CREATE", "ALTER", "INSERT", "TRUNCATE", "UPDATE"],
+      answer: [0, 1, 3],
+      explain: "CREATE, ALTER and TRUNCATE change or empty the structure. INSERT and UPDATE are DML.",
+      link: "#what"
+    },
+    {
+      id: "q1.12-02",
+      topic: "1.12",
+      type: "mcq",
+      question: "Which command adds a column email to an existing table person_details?",
+      options: ["UPDATE person_details ADD email VARCHAR(30);", "ALTER TABLE person_details ADD email VARCHAR(30);", "INSERT INTO person_details (email) VALUES ('');", "CREATE COLUMN email ON person_details;"],
+      answer: 1,
+      explain: "ALTER TABLE ... ADD changes the structure. UPDATE and INSERT only work on rows.",
+      link: "#alter"
+    },
+    {
+      id: "q1.12-03",
+      topic: "1.12",
+      type: "mcq",
+      question: "You want to empty a big log table but keep its structure. Which command is fastest?",
+      options: ["DROP TABLE log;", "DELETE FROM log;", "TRUNCATE TABLE log;", "ALTER TABLE log DROP ROWS;"],
+      answer: 2,
+      explain: "TRUNCATE empties the table in one step and keeps it. DELETE works row by row, and DROP removes the table too.",
+      link: "#truncate"
+    },
+    {
+      id: "q1.12-04",
+      topic: "1.12",
+      type: "tf",
+      question: "A composite primary key must be written as a table-level constraint.",
+      answer: true,
+      explain: "True. A column-level constraint can only name its own column, so a key on two columns goes after the column list.",
+      link: "#constraints"
+    },
+    {
+      id: "q1.12-05",
+      topic: "1.12",
+      type: "tf",
+      question: "In MySQL, ROLLBACK after DROP TABLE brings the table back.",
+      answer: false,
+      explain: "False. DDL is auto-committed in MySQL, so DROP TABLE cannot be undone with ROLLBACK.",
+      link: "#ddl-vs-dml"
+    },
+    {
+      id: "q1.12-06",
+      topic: "1.12",
+      type: "mcq",
+      question: "Why does this statement fail?",
+      code: "CREATE TABLE parts (\n  part_no INT PRIMARY KEY,\n  price DECIMAL(10, 2) CHECK (cost > 0)\n);",
+      options: ["CHECK is not allowed at column level", "There is no column named cost", "DECIMAL cannot have a CHECK", "PRIMARY KEY must come last"],
+      answer: 1,
+      explain: "A CHECK can only test columns of the table. The rule should be CHECK (price > 0).",
+      link: "#constraints"
+    },
+    {
+      id: "q1.12-07",
+      topic: "1.12",
+      type: "mcq",
+      question: "DROP TABLE department; fails. What is the most likely reason?",
+      options: ["The table has rows in it", "Another table has a foreign key that references department", "DROP needs a WHERE clause", "Only TRUNCATE can remove a table"],
+      answer: 1,
+      explain: "A parent table cannot be dropped while a foreign key still points to it. Drop the child table or its foreign key first.",
+      link: "#drop"
     }
   ]);
 })();

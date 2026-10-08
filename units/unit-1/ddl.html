@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DDL | DBMS Study Guide</title>
+  <meta name="description" content="Learn the SQL Data Definition Language: CREATE, ALTER (ADD, DROP COLUMN, MODIFY, RENAME), DROP, TRUNCATE and RENAME, and how to define constraints, with MySQL examples you can run.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="1" data-topic="1.12" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-1">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-1">Unit I</span>
+            <span class="badge badge-level" title="Topic number">Topic 1.12</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+          </div>
+          <h1>DDL</h1>
+          <p class="lead">DDL commands build and change the structure of a database: the tables, their columns and their rules. This page walks through each command on one example table, then compares DDL with DML.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Create a database and a table with suitable columns.</li>
+              <li>Define primary key, foreign key, UNIQUE, NOT NULL and CHECK constraints.</li>
+              <li>Change a table with ALTER TABLE.</li>
+              <li>Tell DROP, TRUNCATE and DELETE apart.</li>
+              <li>Differentiate between DDL and DML.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is DDL?</a></li>
+            <li><a href="#create">CREATE</a></li>
+            <li><a href="#constraints">Defining constraints</a></li>
+            <li><a href="#alter">ALTER</a></li>
+            <li><a href="#drop">DROP</a></li>
+            <li><a href="#truncate">TRUNCATE</a></li>
+            <li><a href="#rename">RENAME</a></li>
+            <li><a href="#ddl-vs-dml">DDL compared with DML</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is DDL?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>DDL (Data Definition Language)</strong> is the part of SQL used to <strong>define, change and remove the schema</strong>: databases, tables, columns, constraints, views and indexes.</p>
+          </div>
+          <p>DDL works on the <strong>structure</strong>, not on the rows. The DDL interpreter (see <a href="database-system-architecture.html">Database System Architecture</a>) stores each definition in the <strong>data dictionary</strong>, so the DBMS always knows what tables exist and what rules they follow.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>The five DDL commands</caption>
+              <thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">CREATE</th><td>Makes a new database, table, view or index.</td></tr>
+                <tr><th scope="row">ALTER</th><td>Changes an existing table: add, drop or change a column or a constraint.</td></tr>
+                <tr><th scope="row">DROP</th><td>Removes a table (structure and data) for good.</td></tr>
+                <tr><th scope="row">TRUNCATE</th><td>Removes all rows but keeps the empty table.</td></tr>
+                <tr><th scope="row">RENAME</th><td>Gives a table a new name.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="create" class="topic-section" aria-labelledby="create-title">
+          <h2 id="create-title">CREATE</h2>
+          <h3>Create a database</h3>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>CREATE DATABASE database_name;
+USE database_name;</code></pre>
+          </div>
+          <p><code>USE</code> makes it the current database, so the tables you create next go inside it.</p>
+          <h3>Create a table</h3>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>CREATE TABLE table_name (
+  column1 datatype [column constraints],
+  column2 datatype [column constraints],
+  ...
+  [table constraints]
+);</code></pre>
+          </div>
+          <p>Each column needs a name and a data type (see <a href="overview-of-sql.html">Overview of SQL</a> for the types). The example below is the <code>person_details</code> table from the notes, with a primary key added.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>CREATE TABLE person_details (
+  aadhaar_no  INT,
+  first_name  VARCHAR(20),
+  middle_name VARCHAR(20),
+  last_name   VARCHAR(20),
+  address     VARCHAR(30),
+  city        VARCHAR(20),
+  PRIMARY KEY (aadhaar_no)
+);
+DESCRIBE person_details;</code></pre>
+          </div>
+          <p><code>DESCRIBE</code> (or <code>DESC</code>) shows the structure. The new table has six columns and no rows.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Output of DESCRIBE person_details</caption>
+              <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Null</th><th scope="col">Key</th></tr></thead>
+              <tbody>
+                <tr><td>aadhaar_no</td><td>int</td><td>NO</td><td>PRI</td></tr>
+                <tr><td>first_name</td><td>varchar(20)</td><td>YES</td><td></td></tr>
+                <tr><td>middle_name</td><td>varchar(20)</td><td>YES</td><td></td></tr>
+                <tr><td>last_name</td><td>varchar(20)</td><td>YES</td><td></td></tr>
+                <tr><td>address</td><td>varchar(30)</td><td>YES</td><td></td></tr>
+                <tr><td>city</td><td>varchar(20)</td><td>YES</td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-warning">
+            <div class="callout-title">Watch out</div>
+            <p>The notes write the column list inside curly braces <code>{ }</code>. SQL needs round brackets <code>( )</code>, and each column is separated by a comma. With braces the statement fails.</p>
+          </div>
+          <p>A table can also be made from a query. It copies the columns and the rows, but not the keys:</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>CREATE TABLE salem_people AS
+  SELECT aadhaar_no, first_name FROM person_details WHERE city = 'Salem';</code></pre>
+          </div>
+        </section>
+
+        <section id="constraints" class="topic-section" aria-labelledby="constraints-title">
+          <h2 id="constraints-title">Defining constraints</h2>
+          <p>Constraints are rules the data must follow. The meaning of each one is on the <a href="constraints.html">Constraints</a> page. Here we look at how to <strong>write</strong> them.</p>
+          <p>A constraint can be written in two places:</p>
+          <ul>
+            <li><strong>Column level:</strong> right after the column, for a rule on that one column.</li>
+            <li><strong>Table level:</strong> after all the columns, for a rule on one or more columns. A composite key must be written here.</li>
+          </ul>
+          <p>The <code>CONSTRAINT name</code> part is optional. A name makes error messages clearer and lets you drop the rule later.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>CREATE TABLE department (
+  dept_id   INT PRIMARY KEY,                       -- column level
+  dept_name VARCHAR(20) NOT NULL UNIQUE            -- column level
+);
+
+CREATE TABLE employee (
+  emp_id      INT NOT NULL,
+  name        VARCHAR(20) NOT NULL,
+  designation VARCHAR(20),
+  salary      DECIMAL(10, 2) CHECK (salary > 0),   -- column level
+  dept_id     INT,
+  CONSTRAINT pk_employee PRIMARY KEY (emp_id),     -- table level
+  CONSTRAINT fk_emp_dept FOREIGN KEY (dept_id)
+    REFERENCES department (dept_id)                -- table level
+);</code></pre>
+          </div>
+          <p>A composite primary key names two columns at table level:</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>CREATE TABLE enrolment (
+  roll_no   INT,
+  course_id VARCHAR(10),
+  grade     CHAR(2),
+  CONSTRAINT pk_enrolment PRIMARY KEY (roll_no, course_id)
+);</code></pre>
+          </div>
+          <div class="callout callout-warning">
+            <div class="callout-title">Watch out</div>
+            <p>The notes give <code>Price DECIMAL(10, 2) NOT NULL CHECK(cost &gt; 0)</code>. There is no <code>cost</code> column, so this fails. The check must name a real column: <code>CHECK (price &gt; 0)</code>.</p>
+          </div>
+        </section>
+
+        <section id="alter" class="topic-section" aria-labelledby="alter-title">
+          <h2 id="alter-title">ALTER</h2>
+          <p><code>ALTER TABLE</code> changes a table that already exists. The rows already in it are kept.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Common ALTER TABLE forms in MySQL</caption>
+              <thead><tr><th scope="col">Task</th><th scope="col">Form</th></tr></thead>
+              <tbody>
+                <tr><td>Add a column</td><td><code>ADD column datatype</code></td></tr>
+                <tr><td>Remove a column</td><td><code>DROP COLUMN column</code></td></tr>
+                <tr><td>Change a column's type or rule</td><td><code>MODIFY column new_datatype</code></td></tr>
+                <tr><td>Rename a column</td><td><code>RENAME COLUMN old TO new</code></td></tr>
+                <tr><td>Add a constraint</td><td><code>ADD CONSTRAINT name ...</code></td></tr>
+                <tr><td>Remove a constraint</td><td><code>DROP CONSTRAINT name</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Add and drop a column</h3>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>ALTER TABLE person_details ADD email VARCHAR(30);
+ALTER TABLE person_details DROP COLUMN address;</code></pre>
+          </div>
+          <p>The table now has <code>email</code> at the end, and <code>address</code> is gone with all its values. Existing rows get NULL in the new column.</p>
+          <h3>Modify and rename a column</h3>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>ALTER TABLE person_details MODIFY city VARCHAR(30) NOT NULL;
+ALTER TABLE person_details RENAME COLUMN email TO email_id;</code></pre>
+          </div>
+          <p><code>MODIFY</code> makes the column wider and adds NOT NULL. It fails if a row already has NULL in that column.</p>
+          <h3>Add and drop a constraint</h3>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>ALTER TABLE employee ADD CONSTRAINT uq_designation UNIQUE (designation);
+ALTER TABLE employee ADD CONSTRAINT chk_name CHECK (name &lt;&gt; '');
+ALTER TABLE employee DROP CONSTRAINT chk_name;</code></pre>
+          </div>
+          <div class="callout callout-note">
+            <div class="callout-title">Other databases</div>
+            <p><code>MODIFY</code> is MySQL and Oracle syntax. Standard SQL, PostgreSQL and SQL Server use <code>ALTER COLUMN</code> instead.</p>
+          </div>
+        </section>
+
+        <section id="drop" class="topic-section" aria-labelledby="drop-title">
+          <h2 id="drop-title">DROP</h2>
+          <p><code>DROP TABLE</code> removes the table, its rows, its constraints and its indexes. The name is gone from the data dictionary.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>DROP TABLE salem_people;
+DROP TABLE IF EXISTS old_marks;   -- no error if the table is not there</code></pre>
+          </div>
+          <p>A parent table cannot be dropped while a foreign key in another table still points to it. Drop the child table first, or remove its foreign key.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>DROP TABLE department;   -- ERROR: employee.dept_id still references it</code></pre>
+          </div>
+          <p>The same command works for other objects: <code>DROP DATABASE</code>, <code>DROP VIEW</code> and <code>DROP INDEX</code>.</p>
+        </section>
+
+        <section id="truncate" class="topic-section" aria-labelledby="truncate-title">
+          <h2 id="truncate-title">TRUNCATE</h2>
+          <p><code>TRUNCATE TABLE</code> removes <strong>every row</strong> but keeps the table, its columns and its constraints. It is much faster than deleting the rows one at a time, because the DBMS simply empties the table's storage.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>TRUNCATE TABLE enrolment;
+SELECT COUNT(*) FROM enrolment;   -- 0, but the table still exists</code></pre>
+          </div>
+          <h3>DROP, TRUNCATE and DELETE</h3>
+          <div class="table-wrap">
+            <table>
+              <caption>Three ways to remove data</caption>
+              <thead><tr><th scope="col"></th><th scope="col">DELETE</th><th scope="col">TRUNCATE</th><th scope="col">DROP</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Language</th><td>DML</td><td>DDL</td><td>DDL</td></tr>
+                <tr><th scope="row">Removes</th><td>Chosen rows (or all)</td><td>All rows</td><td>Rows and the table itself</td></tr>
+                <tr><th scope="row">WHERE allowed</th><td>Yes</td><td>No</td><td>No</td></tr>
+                <tr><th scope="row">Table kept</th><td>Yes</td><td>Yes</td><td>No</td></tr>
+                <tr><th scope="row">Can be rolled back in MySQL</th><td>Yes, inside a transaction</td><td>No</td><td>No</td></tr>
+                <tr><th scope="row">Speed on a big table</th><td>Slow (row by row)</td><td>Fast</td><td>Fast</td></tr>
+                <tr><th scope="row">AUTO_INCREMENT counter</th><td>Kept</td><td>Reset</td><td>Gone</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="rename" class="topic-section" aria-labelledby="rename-title">
+          <h2 id="rename-title">RENAME</h2>
+          <p><code>RENAME TABLE</code> gives a table a new name. The rows and constraints stay the same.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>RENAME TABLE person_details TO person;
+ALTER TABLE person RENAME TO person_details;   -- the same thing with ALTER</code></pre>
+          </div>
+        </section>
+
+        <section id="ddl-vs-dml" class="topic-section" aria-labelledby="vs-title">
+          <h2 id="vs-title">DDL compared with DML</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>DDL and DML side by side</caption>
+              <thead><tr><th scope="col"></th><th scope="col">DDL</th><th scope="col">DML</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Full name</th><td>Data Definition Language</td><td>Data Manipulation Language</td></tr>
+                <tr><th scope="row">Works on</th><td>The structure (schema)</td><td>The data (rows)</td></tr>
+                <tr><th scope="row">Commands</th><td>CREATE, ALTER, DROP, TRUNCATE, RENAME</td><td>INSERT, UPDATE, DELETE, SELECT</td></tr>
+                <tr><th scope="row">Effect</th><td>Changes the data dictionary</td><td>Changes or reads the stored rows</td></tr>
+                <tr><th scope="row">Commit</th><td>Saved at once (auto-commit in MySQL)</td><td>Can be undone with ROLLBACK before COMMIT</td></tr>
+                <tr><th scope="row">WHERE clause</th><td>Not used</td><td>Used to pick rows</td></tr>
+                <tr><th scope="row">Who uses it most</th><td>Database designers and administrators</td><td>Application programmers and users</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-warning">
+            <div class="callout-title">Auto-commit</div>
+            <p>In MySQL and Oracle, every DDL statement first commits any open transaction and then commits itself. A ROLLBACK after DROP TABLE does not bring the table back. DML commands are covered on the DML page (topic 1.13).</p>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>App updates</h3>
+              <p class="muted">When a shopping app adds a “wish list” feature, its developers run a migration script: a CREATE TABLE for the new list and an ALTER TABLE to add a column.</p>
+            </div>
+            <div class="card">
+              <h3>New semester</h3>
+              <p class="muted">A college portal may TRUNCATE a temporary “attendance this week” table every Monday. The table stays, only the old rows go.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>DDL defines the schema: CREATE, ALTER, DROP, TRUNCATE and RENAME.</li>
+              <li>CREATE TABLE lists each column with a data type, then any table-level constraints.</li>
+              <li>Constraints can be written at column level or table level; composite keys go at table level.</li>
+              <li>ALTER TABLE can ADD, DROP COLUMN, MODIFY or RENAME COLUMN, and add or drop constraints.</li>
+              <li>DROP removes the table; TRUNCATE empties it; DELETE (DML) removes chosen rows.</li>
+              <li>DDL is auto-committed in MySQL, so it cannot be rolled back.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit I question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="1.12"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="1.12"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 3, Section 3.2, and Chapter 4, Section 4.4.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 6, Sections 6.1 and 6.2, and Chapter 7, Section 7.4.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/sql-data-definition-statements.html">Data Definition Statements</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-1.js"></script>
+  <script src="../../data/quizzes/unit-1.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+</body>
+</html>
