@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CAP Theorem | DBMS Study Guide</title>
+  <meta name="description" content="Learn the CAP theorem (Brewer's theorem): consistency, availability and partition tolerance, why a distributed database can keep only two of them during a network split, and CP and AP systems with examples.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="5" data-topic="5.5" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-5">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-5">Unit V</span>
+            <span class="badge badge-level" title="Topic number">Topic 5.5</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO5</span>
+          </div>
+          <h1>CAP Theorem</h1>
+          <p class="lead">A distributed database keeps copies of data on many servers. When the network between them breaks, it must make a hard choice. The CAP theorem explains that choice.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define consistency, availability and partition tolerance.</li>
+              <li>State the CAP theorem and explain why only two can be kept.</li>
+              <li>Tell CP systems from AP systems, with examples.</li>
+              <li>Pick CP or AP for a given application and give a reason.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#setting">The setting: copies on many servers</a></li>
+            <li><a href="#three">The three guarantees</a></li>
+            <li><a href="#theorem">The CAP theorem</a></li>
+            <li><a href="#why">Why only two? A worked example</a></li>
+            <li><a href="#choices">CP, AP and CA systems</a></li>
+            <li><a href="#choosing">Worked examples: choosing CP or AP</a></li>
+            <li><a href="#acid-base">CAP, ACID and BASE</a></li>
+            <li><a href="#merits">Merits and demerits (advantages and disadvantages)</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="setting" class="topic-section" aria-labelledby="setting-title">
+          <h2 id="setting-title">The setting: copies on many servers</h2>
+          <p>Big NoSQL systems keep <strong>copies (replicas)</strong> of each item on several servers, often in different cities. This is <a href="distributed-database-architecture.html#storage">replication</a> from topic 5.1. Copies make the system fast and keep it running when one server fails.</p>
+          <p>But copies bring a problem. When a user changes one copy, the change must travel over the network to the other copies. What if the network breaks at that moment? The CAP theorem answers this question.</p>
+        </section>
+
+        <section id="three" class="topic-section" aria-labelledby="three-title">
+          <h2 id="three-title">The three guarantees</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definitions</div>
+            <ul>
+              <li><strong>Consistency (C):</strong> every read gets the <strong>most recent write</strong>, or an error. All users see the same data at the same time, whichever server they use.</li>
+              <li><strong>Availability (A):</strong> every request to a working server gets a <strong>response</strong> (not an error). The response may not hold the latest data.</li>
+              <li><strong>Partition tolerance (P):</strong> the system <strong>keeps working</strong> even when the network <strong>splits</strong> the servers into groups that cannot talk to each other.</li>
+            </ul>
+          </div>
+          <p>A <strong>network partition</strong> is a break in the network between servers. A cable is cut, a router fails or a data center loses its link. Each group of servers still works, but the groups cannot share changes.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>The C in CAP is <strong>not</strong> the C in ACID. In ACID, consistency means the data obeys the rules (constraints). In CAP, consistency means every copy shows the same, latest value.</p>
+          </div>
+        </section>
+
+        <section id="theorem" class="topic-section" aria-labelledby="theorem-title">
+          <h2 id="theorem-title">The CAP theorem</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">CAP theorem (Brewer's theorem)</div>
+            <p>A distributed system with replicated data <strong>cannot guarantee all three</strong> of consistency, availability and partition tolerance <strong>at the same time</strong>. It can guarantee <strong>at most two</strong>.</p>
+          </div>
+          <p>Eric Brewer stated the idea in the year 2000. Seth Gilbert and Nancy Lynch proved it in 2002. That is why it is also called <strong>Brewer's theorem</strong>.</p>
+          <figure class="figure">
+            <div class="widget-stage" tabindex="0">
+              <svg viewBox="0 0 400 260" width="400" role="img" aria-labelledby="cap-svg-title" style="max-width:100%;height:auto">
+                <title id="cap-svg-title">The CAP triangle. Corners C, A and P. Edge CA: single-site relational databases. Edge CP: HBase, MongoDB. Edge AP: Cassandra, CouchDB, DynamoDB.</title>
+                <path d="M200 40 L70 215 L330 215 Z" style="fill:none;stroke:var(--border-strong);stroke-width:3"/>
+                <g style="fill:var(--primary-soft);stroke:var(--primary);stroke-width:2">
+                  <circle cx="200" cy="40" r="24"/>
+                  <circle cx="70" cy="215" r="24"/>
+                  <circle cx="330" cy="215" r="24"/>
+                </g>
+                <g style="fill:var(--text);font:700 18px var(--font-sans)" text-anchor="middle">
+                  <text x="200" y="46">C</text>
+                  <text x="70" y="221">A</text>
+                  <text x="330" y="221">P</text>
+                </g>
+                <g style="fill:var(--text);font:600 13px var(--font-sans);paint-order:stroke;stroke:var(--surface);stroke-width:5px" text-anchor="middle">
+                  <text x="106" y="118">CA</text>
+                  <text x="294" y="118">CP</text>
+                  <text x="200" y="210">AP</text>
+                </g>
+                <g style="fill:var(--text-muted);font:12px var(--font-sans);paint-order:stroke;stroke:var(--surface);stroke-width:5px" text-anchor="middle">
+                  <text x="98" y="136">MySQL on</text>
+                  <text x="98" y="151">one server</text>
+                  <text x="304" y="136">HBase,</text>
+                  <text x="304" y="151">MongoDB</text>
+                  <text x="200" y="246">Cassandra, CouchDB, DynamoDB</text>
+                </g>
+              </svg>
+            </div>
+            <figcaption>Each edge of the triangle is a pair of guarantees, with example systems that choose it.</figcaption>
+          </figure>
+        </section>
+
+        <section id="why" class="topic-section" aria-labelledby="why-title">
+          <h2 id="why-title">Why only two? A worked example</h2>
+          <p>Two servers, S1 in Chennai and S2 in Delhi, keep copies of a bank balance. The balance is ₹5,000 on both.</p>
+          <ol>
+            <li>The network between Chennai and Delhi breaks. This is a <strong>partition</strong>.</li>
+            <li>A user in Chennai withdraws ₹4,000 at S1. S1 now shows ₹1,000. It cannot tell S2.</li>
+            <li>A user in Delhi asks S2 for the balance. What should S2 do?</li>
+          </ol>
+          <div class="table-wrap">
+            <table>
+              <caption>S2's two choices during the partition</caption>
+              <thead><tr><th scope="col">S2 does this</th><th scope="col">Keeps</th><th scope="col">Loses</th></tr></thead>
+              <tbody>
+                <tr><td>Answers with its own copy: ₹5,000</td><td>Availability (it answered)</td><td>Consistency (the answer is old)</td></tr>
+                <tr><td>Refuses: “Please try again later”</td><td>Consistency (no wrong data)</td><td>Availability (no answer)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>There is no third choice. S2 cannot know about the withdrawal, because the network is broken. So during a partition the system must give up either C or A.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Note</div>
+            <p>In a system spread over many servers, partitions <strong>will</strong> happen sooner or later. So P is not really optional. The real choice is: <strong>when a partition happens, keep C or keep A?</strong> When there is no partition, a good system gives both C and A.</p>
+          </div>
+        </section>
+
+        <section id="choices" class="topic-section" aria-labelledby="choices-title">
+          <h2 id="choices-title">CP, AP and CA systems</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>The three pairs of the CAP theorem</caption>
+              <thead><tr><th scope="col">Type</th><th scope="col">During a partition</th><th scope="col">Examples</th><th scope="col">Good for</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">CP (consistency + partition tolerance)</th><td>Some servers refuse or wait, so no one sees old data</td><td>HBase, MongoDB (default settings), Redis Cluster</td><td>Banking, ticket booking, stock levels</td></tr>
+                <tr><th scope="row">AP (availability + partition tolerance)</th><td>All servers keep answering; some answers may be old; copies sync later</td><td>Apache Cassandra, CouchDB, Amazon DynamoDB</td><td>Social media feeds, likes, shopping carts</td></tr>
+                <tr><th scope="row">CA (consistency + availability)</th><td>Cannot handle a partition; works only on one site</td><td>MySQL or PostgreSQL on a single server</td><td>Small systems on one server</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Many NoSQL systems let you <strong>tune</strong> the choice. For example, Cassandra can wait for a majority of copies to agree before it answers. That moves it closer to CP for that query.</p>
+        </section>
+
+        <section id="choosing" class="topic-section" aria-labelledby="choosing-title">
+          <h2 id="choosing-title">Worked examples: choosing CP or AP</h2>
+          <p>To choose, ask one question: <strong>“Is an old answer worse than no answer?”</strong> If yes, choose CP. If no, choose AP.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example 1: train ticket booking</div>
+            <p>Two people must never get the same seat. An old seat count could sell one seat twice. No answer (“try again”) is better than a wrong answer. <strong>Choose CP.</strong></p>
+          </div>
+          <div class="callout callout-example">
+            <div class="callout-title">Example 2: likes on a video</div>
+            <p>If a user sees 1,203 likes when the true count is 1,205, no harm is done. But an error page would annoy millions of users. <strong>Choose AP.</strong></p>
+          </div>
+          <div class="callout callout-example">
+            <div class="callout-title">Example 3: shopping cart</div>
+            <p>A user must always be able to add items to the cart, even during a network problem. If two copies of the cart differ, the system merges them later. Amazon built DynamoDB this way. <strong>Choose AP.</strong></p>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>For the 2-mark question, state the theorem and define C, A and P in one line each. For a long answer, add the partition example, the CP and AP table with examples, and one application for each.</p>
+          </div>
+        </section>
+
+        <section id="acid-base" class="topic-section" aria-labelledby="acid-base-title">
+          <h2 id="acid-base-title">CAP, ACID and BASE</h2>
+          <p>In topic 5.4 we met <a href="nosql-introduction.html#base">BASE</a>: basically available, soft state, eventual consistency. BASE is the AP choice of the CAP theorem. The system stays available, and the copies become consistent later.</p>
+          <p>CP systems behave more like ACID databases. They may need protocols such as <a href="distributed-transaction-processing.html#two-phase">two-phase commit</a> or a majority vote. These make users wait during a failure.</p>
+        </section>
+
+        <section id="merits" class="topic-section" aria-labelledby="merits-title">
+          <h2 id="merits-title">Merits and demerits (advantages and disadvantages)</h2>
+          <p>Each choice has its own merits and demerits.</p>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>CP systems</h3>
+              <h4>Merits (advantages)</h4>
+              <ul>
+                <li>Users never see old or wrong data.</li>
+                <li>Easy for app developers to reason about.</li>
+              </ul>
+              <h4>Demerits (disadvantages)</h4>
+              <ul>
+                <li>Some requests fail or wait during a partition.</li>
+                <li>Slower, because copies must agree first.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>AP systems</h3>
+              <h4>Merits (advantages)</h4>
+              <ul>
+                <li>Always answers, even during a partition.</li>
+                <li>Fast, because each server answers on its own.</li>
+              </ul>
+              <h4>Demerits (disadvantages)</h4>
+              <ul>
+                <li>Users may see old data for a while.</li>
+                <li>Conflicting changes must be merged later.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>Pick two guarantees. Then press <strong>Next</strong> to watch two servers handle the last seat on a train when the network breaks.</p>
+          <div class="widget" data-widget="nosql-models" data-part="cap">
+            <noscript><p class="widget-narration">The CAP demo needs JavaScript. The worked example above shows the same idea.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Pick C and P. At which step does Server 2 stop being available?</li>
+              <li>Pick A and P. What goes wrong with the last seat, and when do the copies agree again?</li>
+              <li>Pick C and A. Why can this system not be spread over two cities?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>C: every read sees the latest write. A: every request gets an answer. P: the system works when the network splits.</li>
+              <li>The CAP theorem says a distributed system can guarantee at most two of C, A and P at the same time.</li>
+              <li>Partitions cannot be avoided across many servers, so the real choice during a partition is C or A.</li>
+              <li>CP systems refuse or wait (HBase, MongoDB). AP systems answer with possibly old data (Cassandra, CouchDB, DynamoDB).</li>
+              <li>CA is possible only on a single site, such as MySQL on one server.</li>
+              <li>BASE and eventual consistency are the AP choice. The C in CAP is not the C in ACID.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit V question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="5.5"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="5.5"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 24, Section 24.2 “The CAP Theorem”.</li>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 23, the section on consistency and availability in replicated data (the CAP theorem).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-5.js"></script>
+  <script src="../../data/quizzes/unit-5.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/nosql-models.js"></script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Distributed Databases: Architecture | DBMS Study Guide</title>
+  <meta name="description" content="Learn what a distributed database is, how its sites work together, and how data is stored with replication and horizontal, vertical and mixed fragmentation. Includes an interactive fragmentation and replication demo.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="5" data-topic="5.1" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-5">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-5">Unit V</span>
+            <span class="badge badge-level" title="Topic number">Topic 5.1</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO5</span>
+          </div>
+          <h1>Distributed Databases: Architecture</h1>
+          <p class="lead">A distributed database keeps its data at several sites joined by a network. Users still see one database. This page shows how the sites work together and how the data is split and copied.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define a distributed database and a distributed DBMS.</li>
+              <li>Draw and explain the architecture of a distributed database.</li>
+              <li>Explain replication and the three kinds of fragmentation with examples.</li>
+              <li>List the merits and demerits of distributed databases.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is a distributed database?</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#compare">Centralized and distributed databases</a></li>
+            <li><a href="#storage">Data storage: replication and fragmentation</a></li>
+            <li><a href="#transparency">Transparency</a></li>
+            <li><a href="#merits">Merits and demerits (advantages and disadvantages)</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is a distributed database?</h2>
+          <p>Think of a bank with branches in Salem, Chennai and Coimbatore. Each branch has its own computer. The Salem computer stores the accounts of Salem customers. Still, a customer can check their balance from any branch. The bank's data is spread over many computers, but it works as one database.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>distributed database</strong> is a collection of related data stored at <strong>several sites</strong>. The sites are connected by a <strong>communication network</strong>. Each site has its own database system and can work on its own. To the user, all the sites together look like <strong>one database</strong>.</p>
+            <p>The software that manages a distributed database is called a <strong>distributed database management system (DDBMS)</strong>.</p>
+          </div>
+          <p>A <strong>site</strong> (also called a node) is one computer, or a group of computers, in one place. The sites are <strong>loosely coupled</strong>: they share no memory or disks. They talk to each other only by sending messages over the network.</p>
+          <p>Each site handles two kinds of work:</p>
+          <ul>
+            <li>A <strong>local transaction</strong> uses data only at the site where it starts.</li>
+            <li>A <strong>global transaction</strong> uses data at more than one site. See <a href="distributed-transaction-processing.html">Transaction Processing</a>.</li>
+          </ul>
+        </section>
+
+        <section id="architecture" class="topic-section" aria-labelledby="architecture-title">
+          <h2 id="architecture-title">Architecture</h2>
+          <p>The figure shows the general architecture. Every site has its own local database and local DBMS. The sites are joined by a network.</p>
+          <figure class="figure">
+            <div class="widget-stage" tabindex="0">
+              <svg viewBox="0 0 640 300" width="640" role="img" aria-labelledby="arch-svg-title" style="max-width:100%;height:auto">
+                <title id="arch-svg-title">Three sites, each with users, a DBMS and a local database, joined by a communication network</title>
+                <ellipse cx="320" cy="150" rx="110" ry="42" style="fill:var(--surface-2);stroke:var(--border-strong);stroke-width:2"/>
+                <text x="320" y="146" text-anchor="middle" style="fill:var(--text);font:600 14px var(--font-sans)">Communication</text>
+                <text x="320" y="164" text-anchor="middle" style="fill:var(--text);font:600 14px var(--font-sans)">network</text>
+                <g style="stroke:var(--primary);stroke-width:2">
+                  <line x1="150" y1="90" x2="240" y2="125"/>
+                  <line x1="490" y1="90" x2="400" y2="125"/>
+                  <line x1="320" y1="192" x2="320" y2="220"/>
+                </g>
+                <g>
+                  <rect x="20" y="20" width="150" height="90" rx="8" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:2"/>
+                  <text x="95" y="42" text-anchor="middle" style="fill:var(--text);font:600 14px var(--font-sans)">Site 1: Salem</text>
+                  <text x="95" y="64" text-anchor="middle" style="fill:var(--text);font:13px var(--font-sans)">Users and DBMS</text>
+                  <text x="95" y="86" text-anchor="middle" style="fill:var(--text);font:13px var(--font-sans)">Local database</text>
+                </g>
+                <g>
+                  <rect x="470" y="20" width="150" height="90" rx="8" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:2"/>
+                  <text x="545" y="42" text-anchor="middle" style="fill:var(--text);font:600 14px var(--font-sans)">Site 2: Chennai</text>
+                  <text x="545" y="64" text-anchor="middle" style="fill:var(--text);font:13px var(--font-sans)">Users and DBMS</text>
+                  <text x="545" y="86" text-anchor="middle" style="fill:var(--text);font:13px var(--font-sans)">Local database</text>
+                </g>
+                <g>
+                  <rect x="230" y="220" width="180" height="70" rx="8" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:2"/>
+                  <text x="320" y="242" text-anchor="middle" style="fill:var(--text);font:600 14px var(--font-sans)">Site 3: Coimbatore</text>
+                  <text x="320" y="262" text-anchor="middle" style="fill:var(--text);font:13px var(--font-sans)">Users and DBMS</text>
+                  <text x="320" y="280" text-anchor="middle" style="fill:var(--text);font:13px var(--font-sans)">Local database</text>
+                </g>
+              </svg>
+            </div>
+            <figcaption>General architecture of a distributed database. Each site keeps its own data, and the sites send messages over the network.</figcaption>
+          </figure>
+
+          <h3>Parts of the architecture</h3>
+          <ul>
+            <li><strong>Sites:</strong> each site has users, a local DBMS and a local database.</li>
+            <li><strong>Communication network:</strong> carries queries, results and control messages between sites.</li>
+            <li><strong>Global schema and catalog:</strong> describe all the data of the whole system, and record which site stores which part. The DDBMS uses the catalog to find data.</li>
+            <li><strong>Transaction manager and transaction coordinator:</strong> each site has both. They run transactions and keep them atomic across sites (see <a href="distributed-transaction-processing.html">Transaction Processing</a>).</li>
+          </ul>
+
+          <h3>How a request is answered</h3>
+          <ol>
+            <li>A user at site S<sub>i</sub> asks for some data.</li>
+            <li>The DBMS at S<sub>i</sub> first looks in its <strong>local database</strong>.</li>
+            <li>If the data is not there, it uses the catalog and sends the request over the network to the site that has it, say S<sub>j</sub>.</li>
+            <li>Site S<sub>j</sub> runs the request on its local database.</li>
+            <li>S<sub>j</sub> sends the result back to S<sub>i</sub>, and S<sub>i</sub> shows it to the user.</li>
+          </ol>
+
+          <h3>Common architecture styles</h3>
+          <div class="table-wrap">
+            <table>
+              <caption>Three ways to build a distributed database</caption>
+              <thead><tr><th scope="col">Style</th><th scope="col">How it works</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Client-server</th><td>Client sites send queries. Server sites store the data and run the queries.</td></tr>
+                <tr><th scope="row">Peer-to-peer</th><td>Every site is equal. Each site can store data and also send queries.</td></tr>
+                <tr><th scope="row">Multidatabase (federated)</th><td>Separate databases that already exist are joined by a software layer on top. See <a href="types-of-distributed-databases.html">Types of Distributed Databases</a>.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="compare" class="topic-section" aria-labelledby="compare-title">
+          <h2 id="compare-title">Centralized and distributed databases</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Centralized database compared with distributed database</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Centralized database</th><th scope="col">Distributed database</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Where data is stored</th><td>At one site</td><td>At many sites</td></tr>
+                <tr><th scope="row">If the site fails</th><td>The whole system stops</td><td>Other sites keep working</td></tr>
+                <tr><th scope="row">Speed for local users</th><td>Remote users must use the network</td><td>Data can be kept near its users</td></tr>
+                <tr><th scope="row">Growth</th><td>Buy a bigger computer</td><td>Add more sites</td></tr>
+                <tr><th scope="row">Control and design</th><td>Simple</td><td>Complex</td></tr>
+                <tr><th scope="row">Security</th><td>One place to protect</td><td>Many sites and a network to protect</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="storage" class="topic-section" aria-labelledby="storage-title">
+          <h2 id="storage-title">Data storage: replication and fragmentation</h2>
+          <p>There are two ways to store a relation r in a distributed database. They can also be used together.</p>
+          <ul>
+            <li><strong>Replication:</strong> keep copies of r at several sites.</li>
+            <li><strong>Fragmentation:</strong> split r into parts called <strong>fragments</strong>, and store each fragment at a different site.</li>
+          </ul>
+          <p>Deciding which fragment or copy goes to which site is called <strong>allocation</strong>.</p>
+
+          <h3>Replication</h3>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Data replication</strong> means storing a copy (a <strong>replica</strong>) of a relation or a fragment at two or more sites.</p>
+          </div>
+          <ul>
+            <li><strong>Full replication:</strong> every site has a copy of the whole database.</li>
+            <li><strong>Partial replication:</strong> only some fragments are copied, to some sites.</li>
+            <li><strong>No replication:</strong> each fragment is stored at exactly one site.</li>
+          </ul>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h4>Merits (advantages)</h4>
+              <ul>
+                <li><strong>Availability:</strong> if one site fails, a copy at another site can be used.</li>
+                <li><strong>Parallelism:</strong> different sites can answer queries on r at the same time.</li>
+                <li><strong>Less data transfer:</strong> r is often available locally, so reads are fast.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h4>Demerits (disadvantages)</h4>
+              <ul>
+                <li><strong>Costly updates:</strong> every copy must be changed when r changes.</li>
+                <li><strong>Complex concurrency control:</strong> the copies must not differ when many transactions run together.</li>
+                <li>Copies use more disk space.</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Fragmentation</h3>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Data fragmentation</strong> divides a relation r into fragments r<sub>1</sub>, r<sub>2</sub>, …, r<sub>n</sub>. The fragments together hold enough information to <strong>rebuild r</strong>.</p>
+          </div>
+          <p>We use this Student relation in all the examples.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Student (the global relation)</caption>
+              <thead><tr><th scope="col">RollNo</th><th scope="col">Name</th><th scope="col">Dept</th><th scope="col">City</th><th scope="col">Marks</th></tr></thead>
+              <tbody>
+                <tr><td>101</td><td>Anu</td><td>CSE</td><td>Salem</td><td>88</td></tr>
+                <tr><td>102</td><td>Bala</td><td>ECE</td><td>Chennai</td><td>72</td></tr>
+                <tr><td>103</td><td>Charu</td><td>CSE</td><td>Coimbatore</td><td>65</td></tr>
+                <tr><td>104</td><td>Dinesh</td><td>MECH</td><td>Salem</td><td>91</td></tr>
+                <tr><td>105</td><td>Elan</td><td>ECE</td><td>Coimbatore</td><td>58</td></tr>
+                <tr><td>106</td><td>Fathima</td><td>CSE</td><td>Chennai</td><td>79</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>1. Horizontal fragmentation (split by rows)</h4>
+          <p>Each tuple (row) of r goes to a fragment. A fragment is defined with a <strong>selection</strong> (σ). To rebuild r, take the <strong>union</strong> of the fragments: r = r<sub>1</sub> ∪ r<sub>2</sub> ∪ … ∪ r<sub>n</sub>.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example</div>
+            <p>Store each student at the site of their city:</p>
+            <ul>
+              <li>Salem site: F1 = σ<sub>City='Salem'</sub>(Student), which holds rows 101 and 104.</li>
+              <li>Chennai site: F2 = σ<sub>City='Chennai'</sub>(Student), which holds rows 102 and 106.</li>
+              <li>Coimbatore site: F3 = σ<sub>City='Coimbatore'</sub>(Student), which holds rows 103 and 105.</li>
+            </ul>
+            <p>In SQL, F1 is <code>SELECT * FROM Student WHERE City = 'Salem';</code>. Student = F1 ∪ F2 ∪ F3.</p>
+          </div>
+
+          <h4>2. Vertical fragmentation (split by columns)</h4>
+          <p>The schema of r is split into groups of attributes. A fragment is defined with a <strong>projection</strong> (π). Every fragment must keep the <strong>primary key</strong> (or a tuple id). To rebuild r, take the <strong>natural join</strong>: r = r<sub>1</sub> ⋈ r<sub>2</sub> ⋈ … ⋈ r<sub>n</sub>.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example</div>
+            <ul>
+              <li>College office: F1 = π<sub>RollNo, Name, Dept</sub>(Student)</li>
+              <li>Exam cell: F2 = π<sub>RollNo, City, Marks</sub>(Student)</li>
+            </ul>
+            <p>In SQL, F1 is <code>SELECT RollNo, Name, Dept FROM Student;</code>. Student = F1 ⋈ F2, joined on RollNo.</p>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>A vertical fragment without the key cannot be joined back. If F2 kept only City and Marks, we could not tell which marks belong to which student.</p>
+          </div>
+
+          <h4>3. Mixed (hybrid) fragmentation</h4>
+          <p>First split by columns, then split one of the parts again by rows (or the other way round). To rebuild r, use union and join in the reverse order.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example</div>
+            <ul>
+              <li>F1 = π<sub>RollNo, Name, Dept</sub>(Student)</li>
+              <li>F2 = σ<sub>City='Chennai'</sub>(π<sub>RollNo, City, Marks</sub>(Student))</li>
+              <li>F3 = σ<sub>City≠'Chennai'</sub>(π<sub>RollNo, City, Marks</sub>(Student))</li>
+            </ul>
+            <p>Student = F1 ⋈ (F2 ∪ F3).</p>
+          </div>
+
+          <h3>Rules for correct fragmentation</h3>
+          <ol>
+            <li><strong>Completeness:</strong> every row (or column) of r is in at least one fragment, so no data is lost.</li>
+            <li><strong>Reconstruction:</strong> r can be rebuilt from its fragments with union or join.</li>
+            <li><strong>Disjointness:</strong> a row is in only one horizontal fragment; only the key repeats in vertical fragments.</li>
+          </ol>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>For a “fragmentation with example” question, draw one small table, show each fragment with its σ or π expression, and write the rebuild formula: ∪ for horizontal, ⋈ for vertical.</p>
+          </div>
+        </section>
+
+        <section id="transparency" class="topic-section" aria-labelledby="transparency-title">
+          <h2 id="transparency-title">Transparency</h2>
+          <p><strong>Transparency</strong> means the user does not need to know how the data is spread. The user writes a query on Student as if it were at one site.</p>
+          <ul>
+            <li><strong>Fragmentation transparency:</strong> the user does not know that Student is split into fragments.</li>
+            <li><strong>Replication transparency:</strong> the user does not know how many copies exist or which copy is used.</li>
+            <li><strong>Location transparency:</strong> the user does not know at which site the data is stored.</li>
+            <li><strong>Naming transparency:</strong> each data item has one unique name, wherever it is stored.</li>
+          </ul>
+        </section>
+
+        <section id="merits" class="topic-section" aria-labelledby="merits-title">
+          <h2 id="merits-title">Merits and demerits (advantages and disadvantages)</h2>
+          <h3>Merits (advantages)</h3>
+          <ul>
+            <li><strong>Reliability and availability:</strong> when one site fails, the other sites keep working.</li>
+            <li><strong>Faster local access:</strong> data is stored near the people who use it most.</li>
+            <li><strong>Parallel processing:</strong> several sites can work on one request at the same time.</li>
+            <li><strong>Easy growth:</strong> add a new site when the business opens a new branch.</li>
+            <li><strong>Sharing and local control:</strong> sites share data, but each site still controls its own data (local autonomy).</li>
+          </ul>
+          <h3>Demerits (disadvantages)</h3>
+          <ul>
+            <li><strong>Complexity:</strong> the system is harder to design, manage and control.</li>
+            <li><strong>Security:</strong> many sites and the network must all be protected.</li>
+            <li><strong>Harder transactions:</strong> commit, concurrency control and deadlock handling must work across sites.</li>
+            <li><strong>Cost:</strong> more hardware, software and network links are needed.</li>
+            <li><strong>Lack of standards:</strong> sites with different software are hard to join.</li>
+          </ul>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>Pick a way to store the Student relation. Press <strong>Next</strong> to place each fragment at its site, and watch how the relation is rebuilt.</p>
+          <div class="widget" data-widget="fragmentation" data-method="horizontal">
+            <noscript><p class="widget-narration">The fragmentation demo needs JavaScript. The examples above show the same fragments.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>In vertical fragmentation, find the column that appears at both sites. Why is it there?</li>
+              <li>In full replication, see how many copies change when one mark is updated.</li>
+              <li>In partial replication, which site's failure would make some rows unavailable?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Bank branches</h3>
+              <p class="muted">A bank stores each customer's account at their home branch (horizontal fragmentation). The head office keeps a copy of all accounts for reports (replication). A customer can still use any ATM in India.</p>
+            </div>
+            <div class="card">
+              <h3>Railway reservation</h3>
+              <p class="muted">Train booking data is copied to servers in several cities. If one data center has a power cut, the booking site keeps working from another copy.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>A distributed database stores related data at several sites joined by a network, but looks like one database to users.</li>
+              <li>Each site has its own local DBMS and database; a DDBMS manages the whole system.</li>
+              <li>A request that cannot be answered locally is sent to the site that holds the data.</li>
+              <li>Replication keeps copies at several sites: better availability, but costly updates.</li>
+              <li>Horizontal fragmentation splits rows with σ and is rebuilt with union (∪).</li>
+              <li>Vertical fragmentation splits columns with π, keeps the key in every fragment, and is rebuilt with join (⋈).</li>
+              <li>Mixed fragmentation uses both splits.</li>
+              <li>Transparency hides fragmentation, replication and location from the user.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit V question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="5.1"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="5.1"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 20 “Database-System Architectures” (distributed systems), and Chapter 21 “Parallel and Distributed Storage” (data partitioning and replication).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 23, Sections 23.1 “Distributed Database Concepts”, 23.2 “Data Fragmentation, Replication, and Allocation Techniques” and 23.7 “Distributed Database Architectures”.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-5.js"></script>
+  <script src="../../data/quizzes/unit-5.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/fragmentation.js"></script>
+</body>
+</html>

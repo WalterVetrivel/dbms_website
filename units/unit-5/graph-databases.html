@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Graph Databases | DBMS Study Guide</title>
+  <meta name="description" content="Learn graph databases: nodes, relationships (edges), labels and properties, why following links is fast, Cypher queries in Neo4j compared with SQL joins, uses such as social networks and fraud detection, and a comparison of the four NoSQL types.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="5" data-topic="5.9" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-5">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-5">Unit V</span>
+            <span class="badge badge-level" title="Topic number">Topic 5.9</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO5</span>
+          </div>
+          <h1>Graph Databases</h1>
+          <p class="lead">Some data is mostly about connections: who knows whom, which station links to which, which account sent money to which. A graph database stores these connections directly. This page explains the property graph model and the Cypher query language of Neo4j.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Explain nodes, relationships, labels and properties.</li>
+              <li>Explain why a graph database follows links faster than joins.</li>
+              <li>Read simple Cypher queries and compare them with SQL.</li>
+              <li>Name applications of graph databases and compare the four NoSQL types.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is a graph database?</a></li>
+            <li><a href="#model">The property graph model</a></li>
+            <li><a href="#why">Why links are fast</a></li>
+            <li><a href="#cypher">Worked example: Cypher in Neo4j</a></li>
+            <li><a href="#sql">Worked example: the same query in SQL</a></li>
+            <li><a href="#uses">Applications</a></li>
+            <li><a href="#four">The four NoSQL types compared</a></li>
+            <li><a href="#merits">Merits and demerits (advantages and disadvantages)</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is a graph database?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>graph database</strong> is a NoSQL database that stores data as a <strong>graph</strong>: <strong>nodes</strong> for entities, <strong>edges</strong> (relationships) for the links between them, and <strong>properties</strong> on both. Relationships are stored directly as data, not worked out with joins.</p>
+          </div>
+          <p>Draw your friends on paper. Each person is a circle, and a line joins two friends. That drawing is a graph. A graph database stores exactly that drawing, so questions like “who are my friends' friends?” are easy to answer.</p>
+          <p>In a relational database, a link is only implied: two rows share a value, such as a foreign key. A join must find the match each time. In a graph database, the link itself is stored.</p>
+        </section>
+
+        <section id="model" class="topic-section" aria-labelledby="model-title">
+          <h2 id="model-title">The property graph model</h2>
+          <figure class="figure">
+            <div class="widget-stage" tabindex="0">
+              <svg viewBox="0 0 520 250" width="520" role="img" aria-labelledby="g-svg-title" style="max-width:100%;height:auto">
+                <title id="g-svg-title">A small social graph. Arun knows Priya since 2023. Priya knows Kavin. Arun and Priya both live in Salem. Kavin lives in Erode.</title>
+                <defs><marker id="g-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--border-strong)"/></marker></defs>
+                <g style="stroke:var(--border-strong);stroke-width:2" marker-end="url(#g-arrow)">
+                  <path d="M118 60 H222" marker-end="url(#g-arrow)"/>
+                  <path d="M318 60 H402" marker-end="url(#g-arrow)"/>
+                  <path d="M76 82 L140 168" marker-end="url(#g-arrow)"/>
+                  <path d="M264 82 L200 168" marker-end="url(#g-arrow)"/>
+                  <path d="M450 82 V168" marker-end="url(#g-arrow)"/>
+                </g>
+                <g style="font:600 12px var(--font-mono);fill:var(--text);paint-order:stroke;stroke:var(--surface);stroke-width:5px" text-anchor="middle">
+                  <text x="170" y="50">KNOWS</text>
+                  <text x="170" y="80">{since: 2023}</text>
+                  <text x="360" y="50">KNOWS</text>
+                  <text x="84" y="130">LIVES_IN</text>
+                  <text x="256" y="130">LIVES_IN</text>
+                  <text x="450" y="130">LIVES_IN</text>
+                </g>
+                <g style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:2">
+                  <rect x="22" y="38" width="96" height="44" rx="22"/>
+                  <rect x="222" y="38" width="96" height="44" rx="22"/>
+                  <rect x="402" y="38" width="96" height="44" rx="22"/>
+                </g>
+                <g style="fill:var(--primary-soft);stroke:var(--primary);stroke-width:2">
+                  <rect x="122" y="170" width="96" height="44" rx="8"/>
+                  <rect x="402" y="170" width="96" height="44" rx="8"/>
+                </g>
+                <g style="font:600 14px var(--font-sans);fill:var(--text)" text-anchor="middle">
+                  <text x="70" y="65">Arun</text>
+                  <text x="270" y="65">Priya</text>
+                  <text x="450" y="65">Kavin</text>
+                  <text x="170" y="197">Salem</text>
+                  <text x="450" y="197">Erode</text>
+                </g>
+                <g style="font:12px var(--font-sans);fill:var(--text-muted)" text-anchor="middle">
+                  <text x="70" y="30">:Person</text>
+                  <text x="270" y="30">:Person</text>
+                  <text x="450" y="30">:Person</text>
+                  <text x="170" y="232">:City</text>
+                  <text x="450" y="232">:City</text>
+                </g>
+              </svg>
+            </div>
+            <figcaption>A property graph. Rounded boxes are Person nodes and square boxes are City nodes. Arrows are relationships, and one of them has a property.</figcaption>
+          </figure>
+          <ul>
+            <li><strong>Node:</strong> an entity, such as a person or a city. It is like a row.</li>
+            <li><strong>Label:</strong> the kind of node, such as <code>:Person</code> or <code>:City</code>. It is like a table name.</li>
+            <li><strong>Relationship (edge):</strong> a named, directed link between two nodes, such as <code>KNOWS</code> or <code>LIVES_IN</code>.</li>
+            <li><strong>Property:</strong> a key-value pair on a node or a relationship, such as <code>name: "Arun"</code> or <code>since: 2023</code>.</li>
+          </ul>
+          <p>Like a document store, a graph database has a flexible schema. Two Person nodes can have different properties.</p>
+        </section>
+
+        <section id="why" class="topic-section" aria-labelledby="why-title">
+          <h2 id="why-title">Why links are fast</h2>
+          <p>In a graph database, each node keeps direct pointers to its relationships. This is called <strong>index-free adjacency</strong>. To go from Arun to his friends, the database follows the pointers. It does not search a table.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example</div>
+            <p>A social network has 10 crore users. To find a user's friends of friends with SQL, the database joins a huge <code>friendship</code> table with itself, using an index each time. In a graph database, it follows the links from one node. The work depends on how many friends the user has, not on how many users there are.</p>
+          </div>
+          <p>The more “hops” a question needs, the bigger the gain. Three or four hops can be slow with joins, but quick in a graph database.</p>
+        </section>
+
+        <section id="cypher" class="topic-section" aria-labelledby="cypher-title">
+          <h2 id="cypher-title">Worked example: Cypher in Neo4j</h2>
+          <p>Neo4j uses the <strong>Cypher</strong> query language. Its patterns look like drawings: <code>()</code> is a node and <code>-[]-&gt;</code> is a relationship.</p>
+          <p><strong>Step 1.</strong> Create the graph in the picture above.</p>
+          <div class="code-block">
+            <span class="code-label">Cypher (Neo4j)</span>
+            <pre><code>CREATE (a:Person {name: 'Arun'}),
+       (p:Person {name: 'Priya'}),
+       (k:Person {name: 'Kavin'}),
+       (s:City {name: 'Salem'}),
+       (e:City {name: 'Erode'}),
+       (a)-[:KNOWS {since: 2023}]-&gt;(p),
+       (p)-[:KNOWS]-&gt;(k),
+       (a)-[:LIVES_IN]-&gt;(s),
+       (p)-[:LIVES_IN]-&gt;(s),
+       (k)-[:LIVES_IN]-&gt;(e);</code></pre>
+          </div>
+          <p><strong>Step 2.</strong> Find the people Arun knows.</p>
+          <div class="code-block">
+            <span class="code-label">Cypher (Neo4j)</span>
+            <pre><code>MATCH (a:Person {name: 'Arun'})-[:KNOWS]-&gt;(f:Person)
+RETURN f.name;            -- Priya</code></pre>
+          </div>
+          <p><strong>Step 3.</strong> Suggest new friends: people known by Arun's friends, whom Arun does not know yet.</p>
+          <div class="code-block">
+            <span class="code-label">Cypher (Neo4j)</span>
+            <pre><code>MATCH (a:Person {name: 'Arun'})-[:KNOWS]-&gt;(:Person)-[:KNOWS]-&gt;(fof:Person)
+WHERE NOT (a)-[:KNOWS]-&gt;(fof) AND fof &lt;&gt; a
+RETURN fof.name;          -- Kavin</code></pre>
+          </div>
+          <p><strong>Step 4.</strong> Find people who live in the same city as Arun.</p>
+          <div class="code-block">
+            <span class="code-label">Cypher (Neo4j)</span>
+            <pre><code>MATCH (a:Person {name: 'Arun'})-[:LIVES_IN]-&gt;(c:City)&lt;-[:LIVES_IN]-(other:Person)
+RETURN other.name, c.name;   -- Priya, Salem</code></pre>
+          </div>
+        </section>
+
+        <section id="sql" class="topic-section" aria-labelledby="sql-title">
+          <h2 id="sql-title">Worked example: the same query in SQL</h2>
+          <p>In MySQL, people and friendships go in two tables. Friends of friends need the <code>knows</code> table joined to itself.</p>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>CREATE TABLE person (id INT PRIMARY KEY, name VARCHAR(50));
+CREATE TABLE knows (from_id INT, to_id INT, since INT,
+                    PRIMARY KEY (from_id, to_id));
+
+SELECT DISTINCT p3.name
+FROM person p1
+JOIN knows k1  ON k1.from_id = p1.id
+JOIN knows k2  ON k2.from_id = k1.to_id
+JOIN person p3 ON p3.id = k2.to_id
+WHERE p1.name = 'Arun'
+  AND p3.id &lt;&gt; p1.id
+  AND NOT EXISTS (SELECT 1 FROM knows k
+                  WHERE k.from_id = p1.id AND k.to_id = p3.id);</code></pre>
+          </div>
+          <p>It works, but each extra hop adds two more joins. The Cypher pattern only gets one more <code>-[:KNOWS]-&gt;()</code>. It is also easier to read.</p>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>When asked to define a graph database, name the three parts: nodes, edges and properties. Then draw a small graph with three nodes and give one application, such as friend suggestions or fraud detection.</p>
+          </div>
+        </section>
+
+        <section id="uses" class="topic-section" aria-labelledby="uses-title">
+          <h2 id="uses-title">Applications</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Social networks</h3>
+              <p class="muted">Friend suggestions, “people you may know”, groups and followers are all paths in a graph.</p>
+            </div>
+            <div class="card">
+              <h3>Fraud detection</h3>
+              <p class="muted">Banks link accounts, phones and addresses. A ring of new accounts sharing one phone number stands out as a pattern in the graph.</p>
+            </div>
+            <div class="card">
+              <h3>Recommendations</h3>
+              <p class="muted">“Students who took DBMS also took Data Mining” comes from following student and course links.</p>
+            </div>
+            <div class="card">
+              <h3>Routes and networks</h3>
+              <p class="muted">Bus and train routes, delivery paths and computer networks need shortest paths between nodes.</p>
+            </div>
+          </div>
+          <p>Graph databases include Neo4j, Amazon Neptune, ArangoDB and JanusGraph.</p>
+        </section>
+
+        <section id="four" class="topic-section" aria-labelledby="four-title">
+          <h2 id="four-title">The four NoSQL types compared</h2>
+          <p>This page completes the four NoSQL types from <a href="nosql-introduction.html">topic 5.4</a>. Here they are side by side.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Document, key-value, column-based and graph databases</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col"><a href="document-based-systems.html">Document</a></th><th scope="col"><a href="key-value-stores.html">Key-value</a></th><th scope="col"><a href="column-based-systems.html">Column-based</a></th><th scope="col">Graph</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Unit of data</th><td>JSON document</td><td>Key and opaque value</td><td>Row with column families</td><td>Nodes and edges</td></tr>
+                <tr><th scope="row">Query by</th><td>Any field</td><td>Key only</td><td>Row key or partition key</td><td>Patterns of links</td></tr>
+                <tr><th scope="row">Relationships</th><td>Embedded or referenced</td><td>None</td><td>None</td><td>Stored directly</td></tr>
+                <tr><th scope="row">Strength</th><td>Flexible records</td><td>Speed and simplicity</td><td>Huge data, fast writes</td><td>Connected data</td></tr>
+                <tr><th scope="row">Uses</th><td>Catalogs, profiles, content</td><td>Caches, sessions, carts</td><td>Logs, sensors, messages</td><td>Social networks, fraud, routes</td></tr>
+                <tr><th scope="row">Examples</th><td>MongoDB, CouchDB</td><td>Redis, DynamoDB</td><td>Cassandra, HBase</td><td>Neo4j, Amazon Neptune</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="merits" class="topic-section" aria-labelledby="merits-title">
+          <h2 id="merits-title">Merits and demerits (advantages and disadvantages)</h2>
+          <h3>Merits (advantages)</h3>
+          <ul>
+            <li><strong>Fast link queries:</strong> following relationships does not need joins.</li>
+            <li><strong>Natural model:</strong> the data looks like the whiteboard drawing of the problem.</li>
+            <li><strong>Flexible schema:</strong> new kinds of nodes and relationships can be added at any time.</li>
+            <li><strong>Readable queries:</strong> Cypher patterns are short and look like the graph.</li>
+          </ul>
+          <h3>Demerits (disadvantages)</h3>
+          <ul>
+            <li><strong>Hard to spread over servers:</strong> cutting a graph into pieces breaks many links.</li>
+            <li><strong>Not for bulk totals:</strong> adding up values over millions of rows is better done elsewhere.</li>
+            <li><strong>Less common skills:</strong> fewer developers know Cypher than SQL.</li>
+            <li><strong>Overkill for simple data:</strong> data with few links fits tables better.</li>
+          </ul>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>The widget opens on the graph model. Step through all five models to review the four NoSQL types.</p>
+          <div class="widget" data-widget="nosql-models" data-part="models" data-model="graph">
+            <noscript><p class="widget-narration">The data model viewer needs JavaScript. The picture above shows a graph.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>In the graph model, where are the marks stored: in a node or on an edge?</li>
+              <li>Which models can find Anitha's marks without a join?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>A graph database stores nodes (entities), relationships (edges) and properties on both.</li>
+              <li>Labels group nodes, such as <code>:Person</code>; relationships are named and directed, such as <code>KNOWS</code>.</li>
+              <li>Links are stored directly (index-free adjacency), so multi-hop queries are fast.</li>
+              <li>Neo4j uses Cypher: <code>MATCH (a)-[:KNOWS]-&gt;(b) RETURN b</code>.</li>
+              <li>Uses: social networks, fraud detection, recommendations and routes.</li>
+              <li>Examples: Neo4j, Amazon Neptune, ArangoDB and JanusGraph.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit V question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="5.9"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="5.9"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 24, Section 24.6 “NOSQL Graph Databases and Neo4j”.</li>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 8 “Complex Data Types” (the RDF and graph data model) and Chapter 10 “Big Data” (graph databases).</li>
+            <li>The Neo4j Cypher manual, “Introduction” (neo4j.com/docs/cypher-manual).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-5.js"></script>
+  <script src="../../data/quizzes/unit-5.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/nosql-models.js"></script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Column Based Systems | DBMS Study Guide</title>
+  <meta name="description" content="Learn column-based (wide-column) NoSQL databases: row keys, column families, sparse rows and versioned cells, Apache HBase and Apache Cassandra with CQL, designing a table for sensor data, and how they differ from relational and columnar databases.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="5" data-topic="5.8" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-5">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-5">Unit V</span>
+            <span class="badge badge-level" title="Topic number">Topic 5.8</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO5</span>
+          </div>
+          <h1>Column Based Systems</h1>
+          <p class="lead">A column-based NoSQL database stores rows whose columns are grouped into column families, and each row can have its own columns. This page explains the model with HBase and Cassandra and shows how to design a table for huge amounts of data.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Explain row keys, column families, columns and cells.</li>
+              <li>Explain why wide-column rows are sparse and how cell versions work.</li>
+              <li>Read simple HBase and Cassandra (CQL) commands.</li>
+              <li>Design a wide-column table around the queries an app needs.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is a column-based database?</a></li>
+            <li><a href="#model">The data model</a></li>
+            <li><a href="#hbase">Worked example: HBase</a></li>
+            <li><a href="#cassandra">Worked example: Cassandra and CQL</a></li>
+            <li><a href="#writes">Why writes are fast</a></li>
+            <li><a href="#columnar">Wide-column and columnar are not the same</a></li>
+            <li><a href="#compare">Column-based and relational databases compared</a></li>
+            <li><a href="#merits">Merits and demerits (advantages and disadvantages)</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is a column-based database?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>column-based</strong> (or <strong>wide-column</strong>) NoSQL database stores data in rows found by a <strong>row key</strong>. The columns of a row are grouped into <strong>column families</strong>, and columns of one family are stored together. Each row can have a <strong>different set of columns</strong>, so the number of columns is not fixed.</p>
+          </div>
+          <p>It looks like a table, but it behaves like a two-level map. First the row key finds the row. Then the column family and column name find the value.</p>
+          <p>The idea comes from Google's Bigtable (2006). Apache HBase copies Bigtable's design. Apache Cassandra, first built at Facebook, mixes it with ideas from Amazon's key-value store.</p>
+        </section>
+
+        <section id="model" class="topic-section" aria-labelledby="model-title">
+          <h2 id="model-title">The data model</h2>
+          <ul>
+            <li><strong>Table:</strong> holds rows, like a relational table.</li>
+            <li><strong>Row key:</strong> the unique id of a row. Rows are kept sorted by row key, and data is split over servers by ranges of row keys.</li>
+            <li><strong>Column family:</strong> a group of related columns, such as <code>info</code> and <code>marks</code>. Families are declared when the table is made.</li>
+            <li><strong>Column (qualifier):</strong> a name inside a family, such as <code>marks:DBMS</code>. Columns are <strong>not</strong> declared; any row can add new ones.</li>
+            <li><strong>Cell:</strong> the value at a row, family and column. A cell can keep several <strong>versions</strong>, each with a timestamp.</li>
+          </ul>
+          <div class="table-wrap">
+            <table>
+              <caption>Table student with two column families</caption>
+              <thead>
+                <tr><th scope="col" rowspan="2">Row key</th><th scope="colgroup" colspan="2">Family: info</th><th scope="colgroup" colspan="3">Family: marks</th></tr>
+                <tr><th scope="col">name</th><th scope="col">dept</th><th scope="col">DBMS</th><th scope="col">OS</th><th scope="col">Java</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">101</th><td>Anitha</td><td>CSE</td><td>86</td><td>78</td><td>(none)</td></tr>
+                <tr><th scope="row">102</th><td>Bala</td><td>ECE</td><td>72</td><td>(none)</td><td>(none)</td></tr>
+                <tr><th scope="row">103</th><td>Charu</td><td>IT</td><td>(none)</td><td>(none)</td><td>81</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>A cell marked “(none)” is <strong>not stored at all</strong>. In a relational table it would be a <code>NULL</code> that still takes space. Rows with only a few of thousands of possible columns are called <strong>sparse</strong>. Wide-column stores handle sparse data well.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example: versions of a cell</div>
+            <p>Anitha's DBMS mark is first entered as 68 at time t1. After revaluation, it is changed to 86 at time t2. HBase keeps both: <code>marks:DBMS = 86 @ t2</code> and <code>68 @ t1</code>. A normal read returns the newest version, 86. You can also ask for older versions.</p>
+          </div>
+        </section>
+
+        <section id="hbase" class="topic-section" aria-labelledby="hbase-title">
+          <h2 id="hbase-title">Worked example: HBase</h2>
+          <p>We create the student table with two families and add Anitha's data, using the HBase shell.</p>
+          <div class="code-block">
+            <span class="code-label">HBase shell</span>
+            <pre><code>create 'student', 'info', 'marks'
+
+put 'student', '101', 'info:name',  'Anitha'
+put 'student', '101', 'info:dept',  'CSE'
+put 'student', '101', 'marks:DBMS', '86'
+put 'student', '101', 'marks:OS',   '78'
+
+get  'student', '101'                 # the whole row
+get  'student', '101', 'marks'        # only the marks family
+scan 'student', {STARTROW => '101', STOPROW => '200'}</code></pre>
+          </div>
+          <ol>
+            <li><code>create</code> names only the table and its families. No columns are declared.</li>
+            <li>Each <code>put</code> writes one cell, named as <code>family:column</code>.</li>
+            <li><code>get</code> reads a row by its row key. <code>scan</code> reads a range of rows in row key order.</li>
+          </ol>
+        </section>
+
+        <section id="cassandra" class="topic-section" aria-labelledby="cassandra-title">
+          <h2 id="cassandra-title">Worked example: Cassandra and CQL</h2>
+          <p>Cassandra uses <strong>CQL</strong> (Cassandra Query Language), which looks like SQL. A smart city has thousands of air sensors. Each sends a reading every minute. The app asks: “Show the readings of sensor S17 for one day, newest first.”</p>
+          <p>In Cassandra you design the table for that query.</p>
+          <div class="code-block">
+            <span class="code-label">CQL (Cassandra)</span>
+            <pre><code>CREATE TABLE readings (
+  sensor_id  text,
+  day        date,
+  read_at    timestamp,
+  pm25       float,
+  temp       float,
+  PRIMARY KEY ((sensor_id, day), read_at)
+) WITH CLUSTERING ORDER BY (read_at DESC);
+
+INSERT INTO readings (sensor_id, day, read_at, pm25, temp)
+VALUES ('S17', '2026-10-07', '2026-10-07 09:15:00', 42.5, 29.1);
+
+SELECT read_at, pm25 FROM readings
+WHERE sensor_id = 'S17' AND day = '2026-10-07';</code></pre>
+          </div>
+          <ul>
+            <li><strong>Partition key</strong> <code>(sensor_id, day)</code>: hashed to choose the servers. All readings of one sensor for one day sit together.</li>
+            <li><strong>Clustering column</strong> <code>read_at</code>: sorts the readings inside the partition, newest first.</li>
+            <li>The <code>SELECT</code> reads one partition from one place, in order. That is very fast even with billions of rows.</li>
+          </ul>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>CQL looks like SQL, but it is not SQL. <code>SELECT * FROM readings WHERE pm25 &gt; 100</code> is refused by default, because it would have to scan every server. Joins are not supported. You design one table per query, and the same data may be stored in more than one table.</p>
+          </div>
+        </section>
+
+        <section id="writes" class="topic-section" aria-labelledby="writes-title">
+          <h2 id="writes-title">Why writes are fast</h2>
+          <p>HBase and Cassandra never update data in place on disk. A write does three quick steps.</p>
+          <ol>
+            <li>Add the change to the end of a <strong>commit log</strong>, for recovery after a crash (like the log in Unit III).</li>
+            <li>Put the change in a sorted table in <strong>memory</strong>.</li>
+            <li>When memory fills, write it to disk as a new sorted file. Older files are merged in the background.</li>
+          </ol>
+          <p>Writing to the end of a file is much faster than finding and changing a record. This is why wide-column stores suit apps that write all the time, such as logs and sensor data.</p>
+        </section>
+
+        <section id="columnar" class="topic-section" aria-labelledby="columnar-title">
+          <h2 id="columnar-title">Wide-column and columnar are not the same</h2>
+          <p>Some books also use “column store” for a different idea: a <strong>columnar</strong> database that stores each column of a table separately on disk. Adding up one column, such as total sales, is then very fast. Examples are Amazon Redshift and ClickHouse, used for data warehouses and reports.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Wide-column NoSQL stores and columnar databases</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Wide-column NoSQL</th><th scope="col">Columnar database</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Stored together</th><td>A column family of a row</td><td>All values of one column</td></tr>
+                <tr><th scope="row">Schema</th><td>Flexible columns per row</td><td>Fixed relational schema</td></tr>
+                <tr><th scope="row">Query language</th><td>Own API or CQL</td><td>SQL</td></tr>
+                <tr><th scope="row">Good for</th><td>Huge, fast writes; reads by row key</td><td>Reports that add up columns</td></tr>
+                <tr><th scope="row">Examples</th><td>HBase, Cassandra</td><td>Amazon Redshift, ClickHouse</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>If a question says column-based NoSQL, write about the wide-column model with HBase or Cassandra. You can add one line saying columnar databases are good for adding up columns in data warehouses.</p>
+          </div>
+        </section>
+
+        <section id="compare" class="topic-section" aria-labelledby="compare-title">
+          <h2 id="compare-title">Column-based and relational databases compared</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Column-based NoSQL databases and relational databases</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Relational database</th><th scope="col">Column-based NoSQL</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Columns</th><td>Fixed, declared in <code>CREATE TABLE</code></td><td>Families declared; columns added freely per row</td></tr>
+                <tr><th scope="row">Missing values</th><td>Stored as <code>NULL</code></td><td>Not stored at all (sparse)</td></tr>
+                <tr><th scope="row">Design</th><td>Normalize the data, then write queries</td><td>Start from the queries, then design tables</td></tr>
+                <tr><th scope="row">Joins</th><td>Yes</td><td>No</td></tr>
+                <tr><th scope="row">Scaling</th><td>Mostly vertical</td><td>Horizontal, across hundreds of servers</td></tr>
+                <tr><th scope="row">CAP choice</th><td>CA on one server</td><td>HBase: CP. Cassandra: AP (tunable)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="merits" class="topic-section" aria-labelledby="merits-title">
+          <h2 id="merits-title">Merits and demerits (advantages and disadvantages)</h2>
+          <h3>Merits (advantages)</h3>
+          <ul>
+            <li><strong>Handles huge data:</strong> billions of rows spread over many servers.</li>
+            <li><strong>Very fast writes:</strong> writes are appended, not updated in place.</li>
+            <li><strong>Flexible columns:</strong> each row can have its own columns, and empty cells cost nothing.</li>
+            <li><strong>High availability:</strong> data is copied to several servers; Cassandra has no single master.</li>
+            <li><strong>Versioned cells:</strong> old values can be kept with timestamps.</li>
+          </ul>
+          <h3>Demerits (disadvantages)</h3>
+          <ul>
+            <li><strong>Query-first design:</strong> new kinds of queries may need new tables.</li>
+            <li><strong>No joins and limited filters:</strong> reads should use the row or partition key.</li>
+            <li><strong>Duplicate data:</strong> the same data is often kept in several tables.</li>
+            <li><strong>Complex to run:</strong> clusters need skilled people to tune and repair.</li>
+          </ul>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>The widget opens on the column family model. Switch to relational rows to see how the same marks are stored there.</p>
+          <div class="widget" data-widget="nosql-models" data-part="models" data-model="column">
+            <noscript><p class="widget-narration">The data model viewer needs JavaScript. The student table above shows the same idea.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Which cell in the column family view is not stored? How would the relational model store it?</li>
+              <li>Compare the HBase query with the SQL query. Which one needs a join?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Messages and chats</h3>
+              <p class="muted">Chat apps store billions of messages, partitioned by chat id and sorted by time. Discord ran its messages on Cassandra for years for this reason.</p>
+            </div>
+            <div class="card">
+              <h3>Sensors and logs</h3>
+              <p class="muted">Electricity smart meters and factory machines send readings every few seconds. A wide-column store takes these writes without slowing down.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>A column-based (wide-column) database stores rows by row key, with columns grouped into column families.</li>
+              <li>Families are declared; columns are not. Each row can have different columns, and missing cells are not stored.</li>
+              <li>Cells can keep several versions with timestamps.</li>
+              <li>HBase uses <code>put</code>, <code>get</code> and <code>scan</code>; Cassandra uses CQL with a partition key and clustering columns.</li>
+              <li>Tables are designed around the queries; there are no joins.</li>
+              <li>Examples: Apache HBase and Apache Cassandra. Uses: sensor data, logs, messages, time series.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit V question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="5.8"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="5.8"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 24, Section 24.5 “Column-Based or Wide Column NOSQL Systems” (HBase).</li>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 10, Section 10.2 “Big Data Storage Systems” (wide-column stores such as Bigtable, HBase and Cassandra).</li>
+            <li>The Apache Cassandra documentation, “Data modeling” (cassandra.apache.org/doc).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-5.js"></script>
+  <script src="../../data/quizzes/unit-5.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/nosql-models.js"></script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Database Security: Security Issues | DBMS Study Guide</title>
+  <meta name="description" content="Learn the issues in database security: legal, policy, system and data-level issues, the threats of lost integrity, availability and confidentiality, the four control measures (access, inference and flow control and encryption), and the DBA's security role.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="5" data-topic="5.10" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-5">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-5">Unit V</span>
+            <span class="badge badge-level" title="Topic number">Topic 5.10</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO5</span>
+          </div>
+          <h1>Database Security: Security Issues</h1>
+          <p class="lead">A database holds marks, salaries, bank balances and health records. Keeping this data safe is called database security. This page explains the issues, the threats and the main ways to control them.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define database security and list the types of security issues.</li>
+              <li>Explain the three threats: loss of integrity, availability and confidentiality.</li>
+              <li>Describe the four control measures with examples.</li>
+              <li>Explain the role of the DBA in database security.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is database security?</a></li>
+            <li><a href="#issues">Types of security issues</a></li>
+            <li><a href="#threats">Threats to databases</a></li>
+            <li><a href="#classify">Worked example: name the threat</a></li>
+            <li><a href="#controls">Control measures</a></li>
+            <li><a href="#inference">Worked example: an inference attack</a></li>
+            <li><a href="#dba">The DBA and database security</a></li>
+            <li><a href="#merits">Merits and demerits (advantages and disadvantages)</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is database security?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Database security</strong> is the protection of a database against <strong>unauthorized access</strong>, <strong>wrong changes</strong> and <strong>loss</strong>, whether on purpose or by accident. It decides which users may do which actions on which data.</p>
+          </div>
+          <p>Think of a college exam cell. Only some staff may enter it. Only the controller may change marks. The papers are kept in a locked room and copies are kept safe. A database needs the same kind of rules, locks and copies.</p>
+        </section>
+
+        <section id="issues" class="topic-section" aria-labelledby="issues-title">
+          <h2 id="issues-title">Types of security issues</h2>
+          <p>Database security deals with four kinds of issues.</p>
+          <ol>
+            <li><strong>Legal and ethical issues:</strong> who has the <strong>right</strong> to see some data. Some data is protected by law, such as health records and Aadhaar details. India's Digital Personal Data Protection Act, 2023 sets rules for personal data.</li>
+            <li><strong>Policy issues:</strong> rules set by the government or the organization about what may be shared. For example, a college may publish pass percentages but not each student's marks.</li>
+            <li><strong>System issues:</strong> where security is checked. It can be at the hardware, the operating system or the DBMS <strong>level</strong>.</li>
+            <li><strong>Data and user level issues:</strong> many organizations sort data and users into <strong>security levels</strong>, such as public, internal, confidential and top secret. A user may read only data at or below their level.</li>
+          </ol>
+        </section>
+
+        <section id="threats" class="topic-section" aria-labelledby="threats-title">
+          <h2 id="threats-title">Threats to databases</h2>
+          <p>A threat can cause three kinds of loss. They are often remembered as <strong>CIA</strong>: confidentiality, integrity and availability.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>The three kinds of loss</caption>
+              <thead><tr><th scope="col">Loss of</th><th scope="col">Meaning</th><th scope="col">Example</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Integrity</th><td>Data is changed, inserted or deleted wrongly, on purpose or by accident</td><td>A student changes their own marks; a clerk deletes the wrong row</td></tr>
+                <tr><th scope="row">Availability</th><td>Authorized users cannot use the data or the system</td><td>A denial-of-service attack; ransomware locks the server</td></tr>
+                <tr><th scope="row">Confidentiality</th><td>Data is shown to people who should not see it</td><td>Customer phone numbers leak and are sold to spammers</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Each loss hurts in its own way. Wrong data leads to wrong decisions and fraud. A system that is down stops all work. Leaked data brings loss of trust, shame and court cases.</p>
+          <p>Common causes are stolen passwords and staff who misuse their access. Others are <strong>SQL injection</strong> through web forms (<a href="sql-injection.html">topic 5.13</a>), old software with known holes, lost backups and simple mistakes.</p>
+        </section>
+
+        <section id="classify" class="topic-section" aria-labelledby="classify-title">
+          <h2 id="classify-title">Worked example: name the threat</h2>
+          <p>For each event, decide which kind of loss happened.</p>
+          <ol>
+            <li>An attacker floods the online fee payment site so no student can pay. <strong>Answer: loss of availability.</strong> The data is safe, but no one can use it.</li>
+            <li>A hacker copies the hostel database with parents' phone numbers. <strong>Answer: loss of confidentiality.</strong> Nothing changed, but private data was seen.</li>
+            <li>A program bug sets every student's attendance to 0%. <strong>Answer: loss of integrity.</strong> The data is now wrong, even though no one meant harm.</li>
+          </ol>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Security is not only about hackers. Mistakes by staff and failures of hardware also cause loss. That is why backups and logs are part of security.</p>
+          </div>
+        </section>
+
+        <section id="controls" class="topic-section" aria-labelledby="controls-title">
+          <h2 id="controls-title">Control measures</h2>
+          <p>There are four main control measures in a DBMS.</p>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>1. Access control</h3>
+              <p class="muted">Only users with an account and a password (or other proof of identity) can log in. Each user then gets only the <strong>privileges</strong> they need. This is the most common control. <a href="access-control-based-on-privileges.html">Topics 5.11</a> and <a href="role-based-access-control.html">5.12</a> cover it in detail.</p>
+            </div>
+            <div class="card">
+              <h3>2. Inference control</h3>
+              <p class="muted">Used for <strong>statistical databases</strong>, which answer only totals and averages. Inference control stops users from working out one person's private value from many summary answers.</p>
+            </div>
+            <div class="card">
+              <h3>3. Flow control</h3>
+              <p class="muted">Stops information from flowing to users who should not get it, for example from a top secret table into a public report. Hidden paths that leak data are called <strong>covert channels</strong>.</p>
+            </div>
+            <div class="card">
+              <h3>4. Data encryption</h3>
+              <p class="muted">Data is turned into unreadable code with a key. A thief who steals the disk or listens on the network sees only scrambled data. <a href="encryption-and-public-key-infrastructures.html">Topic 5.14</a> covers it.</p>
+            </div>
+          </div>
+          <p>Two more measures support these four. <strong>Auditing</strong> keeps a log of who did what and when, so misuse can be found and proved. <strong>Backups</strong> let the data be restored after an attack or failure.</p>
+        </section>
+
+        <section id="inference" class="topic-section" aria-labelledby="inference-title">
+          <h2 id="inference-title">Worked example: an inference attack</h2>
+          <p>A college lets staff see only <strong>averages</strong> of salaries, never one person's salary. A user runs these two queries.</p>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>SELECT COUNT(*), AVG(salary) FROM staff
+WHERE dept = 'CSE' AND gender = 'F' AND designation = 'Professor';
+-- 1 row:  COUNT = 1,  AVG = 185000</code></pre>
+          </div>
+          <p>The answer is an “average”, but the count is 1. So the user has learned the exact salary of the only woman professor in CSE. The rule “averages only” was not enough.</p>
+          <p>Inference control fixes this in a few ways.</p>
+          <ul>
+            <li>Refuse a query when the group is too small, such as fewer than 5 people.</li>
+            <li>Refuse queries whose groups overlap too much with earlier queries.</li>
+            <li>Add a little random noise to the answers.</li>
+          </ul>
+        </section>
+
+        <section id="dba" class="topic-section" aria-labelledby="dba-title">
+          <h2 id="dba-title">The DBA and database security</h2>
+          <p>The <strong>database administrator (DBA)</strong> is the central authority for security. The DBA uses a powerful <strong>superuser</strong> account (in MySQL, the <code>root</code> account) to do four kinds of actions.</p>
+          <ol>
+            <li><strong>Account creation:</strong> make a new account and password for a user or group.</li>
+            <li><strong>Privilege granting:</strong> give accounts the right to do actions, such as reading a table.</li>
+            <li><strong>Privilege revocation:</strong> take those rights back.</li>
+            <li><strong>Security level assignment:</strong> put each account at the right security level.</li>
+          </ol>
+          <div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>-- 1. Account creation
+CREATE USER 'meena'@'localhost' IDENTIFIED BY 'Str0ng#Pass2026';
+
+-- 2. Privilege granting
+GRANT SELECT ON college.marks TO 'meena'@'localhost';
+
+-- 3. Privilege revocation
+REVOKE SELECT ON college.marks FROM 'meena'@'localhost';
+
+-- Check what an account may do
+SHOW GRANTS FOR 'meena'@'localhost';</code></pre>
+          </div>
+          <p>The DBA also keeps the <strong>audit log</strong>, which records each login and each change with the account name and time. If marks are changed wrongly, the log shows who did it.</p>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>For the 16-mark question on security issues, cover four parts. Write the four types of issues and the three threats with examples. Add the four control measures and the DBA's four actions.</p>
+          </div>
+        </section>
+
+        <section id="merits" class="topic-section" aria-labelledby="merits-title">
+          <h2 id="merits-title">Merits and demerits (advantages and disadvantages)</h2>
+          <p>Strong security has a cost as well as a benefit.</p>
+          <h3>Merits (advantages)</h3>
+          <ul>
+            <li><strong>Protects people:</strong> private data stays private.</li>
+            <li><strong>Keeps data correct:</strong> only allowed users can change it.</li>
+            <li><strong>Meets the law:</strong> the organization follows data protection rules and avoids fines.</li>
+            <li><strong>Builds trust:</strong> students, customers and partners trust the system.</li>
+          </ul>
+          <h3>Demerits (disadvantages)</h3>
+          <ul>
+            <li><strong>Cost:</strong> security tools, audits and trained staff cost money.</li>
+            <li><strong>Slower work:</strong> extra checks, encryption and logging add some delay.</li>
+            <li><strong>Less convenience:</strong> strict rules can block users who need data quickly.</li>
+            <li><strong>Never finished:</strong> new attacks appear, so security needs constant updates.</li>
+          </ul>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Hospital records</h3>
+              <p class="muted">Doctors see their own patients' records. The billing staff see only bills, not test reports. Every access is logged, so misuse can be traced.</p>
+            </div>
+            <div class="card">
+              <h3>Census data</h3>
+              <p class="muted">Census results are published as totals for areas. Small groups are merged or hidden so that no single family can be identified. This is inference control.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Database security protects data against unauthorized access, wrong changes and loss.</li>
+              <li>The issues are legal and ethical, policy, system, and data and user level issues.</li>
+              <li>Threats cause loss of integrity, availability or confidentiality (CIA).</li>
+              <li>The four control measures are access control, inference control, flow control and encryption.</li>
+              <li>Inference control stops users from working out private values from summary answers.</li>
+              <li>The DBA creates accounts, grants and revokes privileges, assigns security levels and keeps the audit log.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit V question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="5.10"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="5.10"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 30, Section 30.1 “Introduction to Database Security Issues”.</li>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 9 “Application Development”, Section 9.8 “Application Security”.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-5.js"></script>
+  <script src="../../data/quizzes/unit-5.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+</body>
+</html>
