@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Schedules | DBMS Study Guide</title>
+  <meta name="description" content="Learn what a schedule is in transaction processing: serial and concurrent schedules, why concurrent execution is used, and recoverable, cascadeless and strict schedules, with worked examples and a schedule tester.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="3" data-topic="3.3" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-3">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-3">Unit III</span>
+            <span class="badge badge-level" title="Topic number">Topic 3.3</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO3</span>
+          </div>
+          <h1>Schedules</h1>
+          <p class="lead">When many transactions run at the same time, their steps are mixed together. A schedule records the order in which those steps run. This page shows the kinds of schedules and which ones are safe.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define a schedule and write one in the textbook's column form.</li>
+              <li>Tell serial and concurrent schedules apart, and give the merits of concurrent execution.</li>
+              <li>Show with values how a concurrent schedule can give a wrong result.</li>
+              <li>Classify a schedule as recoverable, cascadeless or strict, and explain cascading rollback.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is a schedule?</a></li>
+            <li><a href="#serial">Serial schedules</a></li>
+            <li><a href="#concurrent">Concurrent schedules</a></li>
+            <li><a href="#why">Why run transactions concurrently?</a></li>
+            <li><a href="#recoverable">Recoverable schedules</a></li>
+            <li><a href="#cascadeless">Cascadeless and strict schedules</a></li>
+            <li><a href="#types">Types of schedules at a glance</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is a schedule?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>schedule</strong> is a sequence of instructions that shows the <strong>chronological order</strong> (time order) in which the instructions of concurrent transactions are executed.</p>
+          </div>
+          <p>A schedule must contain <strong>all</strong> the instructions of the transactions in it, and it must keep the <strong>order of instructions inside each transaction</strong>. Only the mixing between transactions can change.</p>
+          <p>In the textbook, a schedule is drawn with one column per transaction. Time runs from top to bottom. A short form writes the same schedule on one line: <code>r1(A)</code> means T1 reads A, <code>w2(B)</code> means T2 writes B, and <code>c1</code> means T1 commits.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">The two transactions used on this page</div>
+            <p>A = ₹1000 and B = ₹2000 at the start.</p>
+            <div class="grid grid-sm">
+              <div>
+                <p><strong>T1:</strong> transfer ₹50 from A to B.</p>
+                <pre><code>read(A); A := A − 50; write(A);
+read(B); B := B + 50; write(B).</code></pre>
+              </div>
+              <div>
+                <p><strong>T2:</strong> transfer 10% of A to B.</p>
+                <pre><code>read(A); temp := A * 0.1;
+A := A − temp; write(A);
+read(B); B := B + temp; write(B).</code></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="serial" class="topic-section" aria-labelledby="serial-title">
+          <h2 id="serial-title">Serial schedules</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>In a <strong>serial schedule</strong>, the instructions of each transaction run <strong>one after the other, with no break</strong>. One transaction finishes completely before the next one starts.</p>
+          </div>
+          <div class="grid grid-sm">
+            <div class="table-wrap">
+              <table>
+                <caption>Schedule 1: T1 then T2</caption>
+                <thead><tr><th scope="col">T1</th><th scope="col">T2</th></tr></thead>
+                <tbody>
+                  <tr><td>read(A)<br>A := A − 50<br>write(A)<br>read(B)<br>B := B + 50<br>write(B)<br>commit</td><td></td></tr>
+                  <tr><td></td><td>read(A)<br>temp := A * 0.1<br>A := A − temp<br>write(A)<br>read(B)<br>B := B + temp<br>write(B)<br>commit</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <caption>Schedule 2: T2 then T1</caption>
+                <thead><tr><th scope="col">T1</th><th scope="col">T2</th></tr></thead>
+                <tbody>
+                  <tr><td></td><td>read(A)<br>temp := A * 0.1<br>A := A − temp<br>write(A)<br>read(B)<br>B := B + temp<br>write(B)<br>commit</td></tr>
+                  <tr><td>read(A)<br>A := A − 50<br>write(A)<br>read(B)<br>B := B + 50<br>write(B)<br>commit</td><td></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p>Schedule 1 ends with A = ₹855 and B = ₹2145. Schedule 2 ends with A = ₹850 and B = ₹2150. The results differ, but <strong>both are correct</strong>, because A + B = ₹3000 in each. A serial schedule always keeps the database consistent, since each transaction alone is consistent.</p>
+          <p>With n transactions there are <strong>n!</strong> (n factorial) different serial schedules. Two transactions give 2 serial schedules; three give 6.</p>
+        </section>
+
+        <section id="concurrent" class="topic-section" aria-labelledby="concurrent-title">
+          <h2 id="concurrent-title">Concurrent schedules</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>In a <strong>concurrent</strong> (non-serial) schedule, the instructions of different transactions are <strong>interleaved</strong>. The CPU switches between transactions, so one starts before another has finished.</p>
+          </div>
+          <p>Some concurrent schedules are correct and some are not.</p>
+          <div class="grid grid-sm">
+            <div class="table-wrap">
+              <table>
+                <caption>Schedule 3: a correct concurrent schedule</caption>
+                <thead><tr><th scope="col">T1</th><th scope="col">T2</th></tr></thead>
+                <tbody>
+                  <tr><td>read(A)<br>A := A − 50<br>write(A)</td><td></td></tr>
+                  <tr><td></td><td>read(A)<br>temp := A * 0.1<br>A := A − temp<br>write(A)</td></tr>
+                  <tr><td>read(B)<br>B := B + 50<br>write(B)</td><td></td></tr>
+                  <tr><td></td><td>read(B)<br>B := B + temp<br>write(B)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <caption>Schedule 4: a wrong concurrent schedule</caption>
+                <thead><tr><th scope="col">T1</th><th scope="col">T2</th></tr></thead>
+                <tbody>
+                  <tr><td>read(A)<br>A := A − 50</td><td></td></tr>
+                  <tr><td></td><td>read(A)<br>temp := A * 0.1<br>A := A − temp<br>write(A)<br>read(B)</td></tr>
+                  <tr><td>write(A)<br>read(B)<br>B := B + 50<br>write(B)</td><td></td></tr>
+                  <tr><td></td><td>B := B + temp<br>write(B)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="worked">
+              <caption>Final values of each schedule (start: A = 1000, B = 2000)</caption>
+              <thead><tr><th scope="col">Schedule</th><th scope="col">A</th><th scope="col">B</th><th scope="col">A + B</th><th scope="col">Correct?</th></tr></thead>
+              <tbody>
+                <tr><td>Schedule 1 (serial T1, T2)</td><td>855</td><td>2145</td><td>3000</td><td>Yes</td></tr>
+                <tr><td>Schedule 2 (serial T2, T1)</td><td>850</td><td>2150</td><td>3000</td><td>Yes</td></tr>
+                <tr><td>Schedule 3 (concurrent)</td><td>855</td><td>2145</td><td>3000</td><td>Yes, same as schedule 1</td></tr>
+                <tr><td>Schedule 4 (concurrent)</td><td>950</td><td>2100</td><td>3050</td><td>No, ₹50 was created</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>In schedule 4, T1 reads A = 1000 before T2 writes A. T1 then writes A = 950 over T2's value of 900, so T2's update to A is lost. The bank has ₹50 that came from nowhere.</p>
+          <p>Schedule 3 is safe because it gives the same result as a serial schedule. Such a schedule is called <strong>serializable</strong>. The next topic, <a href="serializability.html">Serializability</a>, shows how to test for it.</p>
+        </section>
+
+        <section id="why" class="topic-section" aria-labelledby="why-title">
+          <h2 id="why-title">Why run transactions concurrently?</h2>
+          <p>Serial schedules are always correct, so why allow concurrency at all? There are two good reasons.</p>
+          <ul>
+            <li><strong>Better throughput and resource use:</strong> one transaction can use the CPU while another waits for the disk. More transactions finish per second, and the CPU and disks are less idle.</li>
+            <li><strong>Less waiting time:</strong> a short transaction does not have to wait behind a long one. The average response time drops.</li>
+          </ul>
+          <p>The job of the <strong>concurrency-control system</strong> is to allow only those concurrent schedules that are as good as some serial schedule.</p>
+        </section>
+
+        <section id="recoverable" class="topic-section" aria-labelledby="recoverable-title">
+          <h2 id="recoverable-title">Recoverable schedules</h2>
+          <p>So far we assumed no transaction fails. Now suppose a transaction aborts. Its changes must be undone, and so must the work of any transaction that used its data.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A schedule is <strong>recoverable</strong> if, for every pair of transactions T<sub>i</sub> and T<sub>j</sub> where T<sub>j</sub> reads a data item written by T<sub>i</sub>, T<sub>i</sub> <strong>commits before</strong> T<sub>j</sub> commits.</p>
+          </div>
+          <div class="grid grid-sm">
+            <div class="table-wrap">
+              <table>
+                <caption>Schedule 9: not recoverable</caption>
+                <thead><tr><th scope="col">T8</th><th scope="col">T9</th></tr></thead>
+                <tbody>
+                  <tr><td>read(A)<br>write(A)</td><td></td></tr>
+                  <tr><td></td><td>read(A)<br>commit</td></tr>
+                  <tr><td>read(B)<br><em>abort</em></td><td></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <p>T9 reads the value of A written by T8 and <strong>commits at once</strong>. Then T8 aborts. T8's write must be undone, so T9 read a value that never existed. But T9 has already committed and cannot be rolled back. The database cannot be recovered.</p>
+              <p>To make it recoverable, T9 must delay its commit until after T8 commits.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="cascadeless" class="topic-section" aria-labelledby="cascadeless-title">
+          <h2 id="cascadeless-title">Cascadeless and strict schedules</h2>
+          <h3>Cascading rollback</h3>
+          <div class="grid grid-sm">
+            <div class="table-wrap">
+              <table>
+                <caption>Schedule 10: cascading rollback</caption>
+                <thead><tr><th scope="col">T10</th><th scope="col">T11</th><th scope="col">T12</th></tr></thead>
+                <tbody>
+                  <tr><td>read(A)<br>read(B)<br>write(A)</td><td></td><td></td></tr>
+                  <tr><td></td><td>read(A)<br>write(A)</td><td></td></tr>
+                  <tr><td></td><td></td><td>read(A)</td></tr>
+                  <tr><td><em>abort</em></td><td></td><td></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <p>T11 reads A from T10, and T12 reads A from T11. None of them has committed, so the schedule is recoverable. But when T10 aborts, T11 must roll back because it used T10's data, and then T12 must roll back because it used T11's data.</p>
+              <p>One failure causes a chain of rollbacks. This is a <strong>cascading rollback</strong>. It can undo a lot of work.</p>
+            </div>
+          </div>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definitions</div>
+            <ul>
+              <li>A <strong>cascadeless</strong> schedule is one where, whenever T<sub>j</sub> reads a data item written by T<sub>i</sub>, T<sub>i</sub> <strong>commits before T<sub>j</sub> reads it</strong>. No transaction reads uncommitted data (no dirty reads), so cascading rollback cannot happen.</li>
+              <li>A <strong>strict</strong> schedule is one where a data item written by T<sub>i</sub> cannot be <strong>read or written</strong> by another transaction until T<sub>i</sub> commits or aborts.</li>
+            </ul>
+          </div>
+          <p>Every cascadeless schedule is also recoverable, and every strict schedule is also cascadeless. Strict schedules make recovery easiest: to undo T<sub>i</sub>, the system just puts back the old values from the log. Most database systems produce strict schedules by using strict two phase locking.</p>
+          <figure class="figure">
+            <div class="widget-stage" tabindex="0">
+              <svg viewBox="0 0 420 210" width="420" role="img" aria-labelledby="nest-svg-title" style="max-width:100%;height:auto">
+                <title id="nest-svg-title">Nested sets. All schedules contain recoverable schedules, which contain cascadeless schedules, which contain strict schedules, which contain serial schedules.</title>
+                <g style="stroke-width:2">
+                  <rect x="5" y="5" width="410" height="200" rx="14" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                  <rect x="30" y="35" width="360" height="160" rx="12" style="fill:var(--surface);stroke:var(--primary)"/>
+                  <rect x="55" y="65" width="310" height="120" rx="10" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                  <rect x="80" y="95" width="260" height="80" rx="8" style="fill:var(--u3-soft);stroke:var(--u3)"/>
+                  <rect x="130" y="125" width="160" height="40" rx="6" style="fill:var(--surface);stroke:var(--text-muted)"/>
+                </g>
+                <g style="fill:var(--text);font:600 13px var(--font-sans)" text-anchor="middle">
+                  <text x="210" y="25">All schedules</text>
+                  <text x="210" y="55">Recoverable</text>
+                  <text x="210" y="85">Cascadeless</text>
+                  <text x="210" y="115">Strict</text>
+                  <text x="210" y="150">Serial</text>
+                </g>
+              </svg>
+            </div>
+            <figcaption>Each kind of schedule is a special case of the one around it.</figcaption>
+          </figure>
+        </section>
+
+        <section id="types" class="topic-section" aria-labelledby="types-title">
+          <h2 id="types-title">Types of schedules at a glance</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Types of schedules and their role in transaction processing</caption>
+              <thead><tr><th scope="col">Type</th><th scope="col">Rule</th><th scope="col">Role</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Serial</th><td>Transactions run one after another</td><td>Always consistent, but slow</td></tr>
+                <tr><th scope="row">Concurrent (non-serial)</th><td>Instructions are interleaved</td><td>Fast, but may be wrong</td></tr>
+                <tr><th scope="row">Serializable</th><td>Same effect as some serial schedule</td><td>Fast and consistent; the goal of concurrency control</td></tr>
+                <tr><th scope="row">Recoverable</th><td>A reader commits only after the writer it read from commits</td><td>Makes recovery after an abort possible</td></tr>
+                <tr><th scope="row">Cascadeless</th><td>Read only committed data</td><td>Avoids cascading rollbacks</td></tr>
+                <tr><th scope="row">Strict</th><td>No read or write of an item until its writer ends</td><td>Simplest recovery: restore old values</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>For “discuss the types of schedules”, draw schedules 1, 3 and 4 with final values, then schedules 9 and 10. Two serializability terms, conflict and view, are explained on the <a href="serializability.html">Serializability</a> page; add them if the question asks for both topics.</p>
+          </div>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>Pick a preset or type your own schedule, such as <code>r1(A) w1(A) r2(A) c2 a1</code>. The tester says whether the schedule is serial, recoverable, cascadeless and strict, and explains why. Press <strong>Back</strong> and <strong>Next</strong> to step through it.</p>
+          <div class="widget" data-widget="schedule-tester" data-focus="recover" data-preset="unrecoverable">
+            <noscript><p class="widget-narration">The schedule tester needs JavaScript. Schedules 9 and 10 above show the same cases.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Fix the non-recoverable schedule by moving <code>c2</code> to the end, after <code>c1</code> in place of <code>a1</code>. Is it cascadeless now?</li>
+              <li>In “Cascadeless but not strict”, why does T2's write break strictness, even though nobody reads uncommitted data?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Exam result portal</h3>
+              <p class="muted">On result day, thousands of students check marks while staff update a few records. The database interleaves all these transactions. A serial schedule would make every student wait in one long queue.</p>
+            </div>
+            <div class="card">
+              <h3>Online shopping cart</h3>
+              <p class="muted">Your order should never be confirmed using stock that another order has reserved but not yet confirmed. Databases avoid this by giving strict schedules, so no one reads uncommitted data.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>A schedule is the time order of the instructions of concurrent transactions; it keeps each transaction's own order.</li>
+              <li>Serial: no interleaving, always consistent; n transactions have n! serial schedules.</li>
+              <li>Concurrent schedules improve throughput and waiting time, but some give wrong results (schedule 4 creates ₹50).</li>
+              <li>A serializable schedule has the same effect as some serial schedule.</li>
+              <li>Recoverable: if T<sub>j</sub> reads from T<sub>i</sub>, T<sub>i</sub> commits before T<sub>j</sub> commits.</li>
+              <li>Cascading rollback: one abort forces other transactions that read its data to roll back.</li>
+              <li>Cascadeless: read only committed data. Strict: no read or write of an item until its writer ends.</li>
+              <li>Strict ⊂ cascadeless ⊂ recoverable.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit III question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="3.3"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="3.3"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 17 “Transactions”, Sections 17.5 (isolation and concurrent executions) and 17.7 (recoverable and cascadeless schedules).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 20, Section 20.4 (schedules based on recoverability).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-3.js"></script>
+  <script src="../../data/quizzes/unit-3.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/schedule-tester.js"></script>
+</body>
+</html>

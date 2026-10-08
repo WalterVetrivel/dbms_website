@@ -1727,3 +1727,178 @@
   color: var(--danger);
   font-weight: 700;
 }
+
+/* ---------- V17 Schedule tester ---------- */
+
+.st-input input {
+  font-family: var(--font-mono);
+  width: 100%;
+}
+
+.st-input {
+  flex-basis: 22rem;
+}
+
+.st-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-6);
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.st-left {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.st-right {
+  flex: 1 1 16rem;
+  max-width: 26rem;
+}
+
+.st-cap {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.st-table {
+  width: auto;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.st-table th,
+.st-table td {
+  padding: var(--sp-1) var(--sp-3);
+  min-width: 5.5rem;
+  text-align: left;
+}
+
+.st-table .st-n,
+.st-table th:first-child {
+  min-width: 0;
+  color: var(--text-muted);
+}
+
+.st-table tr.is-done td {
+  color: var(--text);
+}
+
+.st-table tr.is-current td {
+  background: var(--u3-soft);
+  font-weight: 600;
+}
+
+.st-table tr.is-conflict td {
+  background: var(--warning-soft);
+}
+
+.st-op.kind-c {
+  color: var(--success);
+}
+
+.st-op.kind-a {
+  color: var(--danger);
+}
+
+.st-graph {
+  display: block;
+  margin: 0 auto;
+  font-family: var(--font-sans);
+}
+
+.st-node circle {
+  fill: var(--surface);
+  stroke: var(--primary);
+  stroke-width: 2;
+}
+
+.st-node.is-cycle circle {
+  fill: var(--danger-soft);
+  stroke: var(--danger);
+}
+
+.st-node text {
+  fill: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.st-edge {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 2;
+}
+
+.st-edge.is-new {
+  stroke: var(--u3);
+  stroke-width: 3;
+}
+
+.st-edge.is-cycle {
+  stroke: var(--danger);
+  stroke-width: 3;
+}
+
+.st-head {
+  fill: var(--text-muted);
+}
+
+.st-head.is-cycle {
+  fill: var(--danger);
+}
+
+.st-elabel {
+  fill: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 4px;
+}
+
+.st-hint {
+  font-size: var(--fs-xs);
+  text-align: center;
+}
+
+.st-verdicts,
+.st-notes {
+  list-style: none;
+  padding: 0;
+  margin: var(--sp-3) 0 0;
+  font-size: var(--fs-sm);
+}
+
+.st-verdicts li {
+  margin-bottom: var(--sp-1);
+}
+
+.st-mark {
+  display: inline-block;
+  width: 1.25rem;
+  font-weight: 700;
+}
+
+.st-verdicts .is-yes .st-mark {
+  color: var(--success);
+}
+
+.st-verdicts .is-no .st-mark {
+  color: var(--danger);
+}
+
+.st-verdicts .is-info .st-mark {
+  color: var(--primary);
+}
+
+.st-notes li {
+  padding: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-2);
+  border-left: 3px solid var(--warning);
+  background: var(--warning-soft);
+  font-size: var(--fs-xs);
+}

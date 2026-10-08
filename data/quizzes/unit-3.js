@@ -151,6 +151,175 @@
       answer: 1,
       explain: "T2 saw T1's unfinished work. Isolation requires that each transaction be unaware of others running at the same time.",
       link: "#isolation"
+    },
+    /* 3.3 Schedules */
+    {
+      id: "q3.3-01",
+      topic: "3.3",
+      type: "mcq",
+      question: "What does a schedule show?",
+      options: [
+        "The time at which each transaction was written by the programmer",
+        "The chronological order in which the instructions of concurrent transactions are executed",
+        "The list of tables used by a transaction",
+        "The backup timetable of the database"
+      ],
+      answer: 1,
+      explain: "A schedule is the time order of the instructions of concurrent transactions.",
+      link: "#what"
+    },
+    {
+      id: "q3.3-02",
+      topic: "3.3",
+      type: "mcq",
+      question: "How many different serial schedules are there for 3 transactions?",
+      options: ["3", "6", "9", "27"],
+      answer: 1,
+      explain: "There are n! serial schedules. 3! = 3 × 2 × 1 = 6.",
+      link: "#serial"
+    },
+    {
+      id: "q3.3-03",
+      topic: "3.3",
+      type: "tf",
+      question: "Every concurrent schedule gives the same result as some serial schedule.",
+      answer: false,
+      explain: "False. Schedule 4 ends with A + B = 3050, which no serial schedule gives. Only serializable schedules are safe.",
+      link: "#concurrent"
+    },
+    {
+      id: "q3.3-04",
+      topic: "3.3",
+      type: "multi",
+      question: "Why do databases run transactions concurrently? Choose all that apply.",
+      options: [
+        "Better throughput: more transactions finish per second",
+        "Shorter average waiting time",
+        "Concurrent schedules are always correct",
+        "The CPU can work while another transaction waits for the disk"
+      ],
+      answer: [0, 1, 3],
+      explain: "Concurrency improves throughput, resource use and waiting time. It is not always correct, which is why concurrency control is needed.",
+      link: "#why"
+    },
+    {
+      id: "q3.3-05",
+      topic: "3.3",
+      type: "mcq",
+      question: "In r1(A) w1(A) r2(A) c2 a1, T2 reads A from T1 and commits before T1 aborts. What kind of schedule is this?",
+      options: ["Strict", "Cascadeless", "Recoverable", "Not recoverable"],
+      answer: 3,
+      explain: "T2 read from T1 but committed first. When T1 aborts, T2 cannot be rolled back, so the schedule is not recoverable.",
+      link: "#recoverable"
+    },
+    {
+      id: "q3.3-06",
+      topic: "3.3",
+      type: "mcq",
+      question: "One transaction aborts and two others must roll back because they read its uncommitted data. What is this called?",
+      options: ["Deadlock", "Cascading rollback", "Lost update", "Starvation"],
+      answer: 1,
+      explain: "A chain of rollbacks caused by one failure is a cascading rollback. Cascadeless schedules avoid it.",
+      link: "#cascadeless"
+    },
+    {
+      id: "q3.3-07",
+      topic: "3.3",
+      type: "mcq",
+      question: "In w1(A) w2(A) c1 c2, no one reads uncommitted data. Which statement is true?",
+      options: [
+        "It is cascadeless but not strict",
+        "It is strict",
+        "It is not recoverable",
+        "It is not cascadeless"
+      ],
+      answer: 0,
+      explain: "There are no dirty reads, so it is cascadeless. But T2 writes A before T1 commits, so it is not strict.",
+      link: "#cascadeless"
+    },
+    /* 3.4 Serializability */
+    {
+      id: "q3.4-01",
+      topic: "3.4",
+      type: "mcq",
+      question: "Which pair of instructions does NOT conflict? (T1 and T2 are different transactions.)",
+      options: ["read(Q) of T1 and write(Q) of T2", "write(Q) of T1 and read(Q) of T2", "read(Q) of T1 and read(Q) of T2", "write(Q) of T1 and write(Q) of T2"],
+      answer: 2,
+      explain: "Two reads of the same item never conflict, because both see the same value in either order.",
+      link: "#conflict"
+    },
+    {
+      id: "q3.4-02",
+      topic: "3.4",
+      type: "tf",
+      question: "write(A) of T1 and read(B) of T2 conflict.",
+      answer: false,
+      explain: "False. They use different data items, so they can be swapped freely.",
+      link: "#conflict"
+    },
+    {
+      id: "q3.4-03",
+      topic: "3.4",
+      type: "mcq",
+      question: "The precedence graph of a schedule has the edges T1 → T2, T2 → T3 and T3 → T1. What can you say?",
+      options: [
+        "It is conflict serializable, equivalent to T1, T2, T3",
+        "It is not conflict serializable, because the graph has a cycle",
+        "It is serial",
+        "It is conflict serializable, equivalent to T3, T2, T1"
+      ],
+      answer: 1,
+      explain: "T1 → T2 → T3 → T1 is a cycle, so no serial order can satisfy all the edges.",
+      link: "#test"
+    },
+    {
+      id: "q3.4-04",
+      topic: "3.4",
+      type: "mcq",
+      question: "In schedule r1(A) w2(A) r3(B) w1(B), which edges are in the precedence graph?",
+      options: ["T1 → T2 only", "T1 → T2 and T3 → T1", "T2 → T1 and T1 → T3", "No edges"],
+      answer: 1,
+      explain: "r1(A) before w2(A) gives T1 → T2. r3(B) before w1(B) gives T3 → T1. There is no cycle, so the serial order is T3, T1, T2.",
+      link: "#test"
+    },
+    {
+      id: "q3.4-05",
+      topic: "3.4",
+      type: "multi",
+      question: "Which are conditions of view equivalence? Choose all that apply.",
+      options: [
+        "A transaction that reads the initial value of Q in one schedule also does so in the other",
+        "A transaction that reads Q written by Tj in one schedule also does so in the other",
+        "The same transaction does the final write of Q in both",
+        "Both schedules have the same number of swaps"
+      ],
+      answer: [0, 1, 2],
+      explain: "View equivalence has three conditions: initial reads, reads-from and final writes.",
+      link: "#view-ser"
+    },
+    {
+      id: "q3.4-06",
+      topic: "3.4",
+      type: "tf",
+      question: "Every view serializable schedule is also conflict serializable.",
+      answer: false,
+      explain: "False. It is the other way round. Schedule 8, with blind writes, is view serializable but not conflict serializable.",
+      link: "#view-ser"
+    },
+    {
+      id: "q3.4-07",
+      topic: "3.4",
+      type: "mcq",
+      question: "What is a blind write?",
+      options: [
+        "A write that is never committed",
+        "A write of an item that the transaction has not read",
+        "A write done without a lock",
+        "A write to the log file"
+      ],
+      answer: 1,
+      explain: "A blind write writes Q without reading it first. Schedules that are view but not conflict serializable always have blind writes.",
+      link: "#view-ser"
     }
   ]);
 })();
