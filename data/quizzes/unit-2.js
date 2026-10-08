@@ -659,6 +659,64 @@
       answer: true,
       explain: "True. If X → Y, each X value has a set of exactly one Y value, so X →→ Y holds.",
       link: "#rules"
+    },
+    {
+      id: "q2.10-01",
+      topic: "2.10",
+      type: "mcq",
+      question: "What does the join dependency *(R1, R2, R3) on R say?",
+      options: ["R1, R2 and R3 have a common key", "R always equals the natural join of its projections on R1, R2 and R3", "R1 → R2 → R3", "R has no spurious rows only when split into two"],
+      answer: 1,
+      explain: "A JD says that splitting R into those parts and joining them back is always lossless.",
+      link: "#jd"
+    },
+    {
+      id: "q2.10-02",
+      topic: "2.10",
+      type: "tf",
+      question: "A multivalued dependency is a join dependency with two parts.",
+      answer: true,
+      explain: "True. X →→ Y holds exactly when *(X ∪ Y, X ∪ Z) holds, where Z is the rest of R.",
+      link: "#jd"
+    },
+    {
+      id: "q2.10-03",
+      topic: "2.10",
+      type: "mcq",
+      question: "Supply(seller, company, product) follows the seller rule. Splitting it into (seller, company) and (company, product) adds (Kumar, Godrej, AC). What does that show?",
+      options: ["The table is not in 1NF", "This two-way split is lossy", "The three-way split is lossy too", "seller → company"],
+      answer: 1,
+      explain: "A row that was never in the table appeared after the join, so the split loses information. The three-way split removes it.",
+      link: "#example"
+    },
+    {
+      id: "q2.10-04",
+      topic: "2.10",
+      type: "mcq",
+      question: "A relation is in 5NF (PJNF) when:",
+      options: ["It has no MVDs", "Every non-trivial JD is implied by its candidate keys", "It has only two attributes", "Every attribute is prime"],
+      answer: 1,
+      explain: "5NF allows only the join dependencies that follow from the keys, which cause no redundancy.",
+      link: "#fifth"
+    },
+    {
+      id: "q2.10-05",
+      topic: "2.10",
+      type: "multi",
+      question: "Which statements about Supply(seller, company, product) are true? Select all that apply.",
+      options: ["It is in BCNF", "It is in 4NF", "It is in 5NF", "Its 5NF design has three tables"],
+      answer: [0, 1, 3],
+      explain: "It has no non-trivial FD or MVD, so it is in BCNF and 4NF. Its three-part JD is not implied by the key, so it is not in 5NF until split into three tables.",
+      link: "#decompose"
+    },
+    {
+      id: "q2.10-06",
+      topic: "2.10",
+      type: "order",
+      question: "Put the normal forms in order, from weakest to strongest.",
+      options: ["1NF", "2NF", "3NF", "BCNF", "4NF", "5NF"],
+      explain: "Each normal form includes all the ones before it.",
+      link: "#summary"
     }
   ]);
 })();
