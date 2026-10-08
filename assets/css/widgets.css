@@ -2067,3 +2067,181 @@
   font-size: var(--fs-sm);
   color: var(--text);
 }
+
+/* ---------- V18 Lock manager and two phase locking ---------- */
+
+.lk-stage {
+  max-height: 40rem;
+  overflow: auto;
+}
+
+.lk-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.lk-left {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.lk-table {
+  width: auto;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.lk-table th,
+.lk-table td {
+  padding: 2px var(--sp-3);
+  min-width: 7.5rem;
+  text-align: left;
+}
+
+.lk-table tr.is-lock td {
+  color: var(--primary);
+}
+
+.lk-table tr.is-current td {
+  background: var(--u3-soft);
+  font-weight: 600;
+}
+
+.lk-table tr.is-wait td {
+  color: var(--warning);
+}
+
+.lk-table tr.is-bad td {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.lk-tag {
+  display: inline-block;
+  margin-left: var(--sp-1);
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.lk-tag.is-yes {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.lk-tag.is-no {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.lk-side {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  flex: 0 1 20rem;
+}
+
+.lk-locks {
+  width: auto;
+  margin: 0;
+  font-size: var(--fs-xs);
+}
+
+.lk-locks th,
+.lk-locks td {
+  padding: 2px var(--sp-2);
+  text-align: left;
+}
+
+.lk-waits {
+  margin: var(--sp-1) 0 0;
+  color: var(--warning);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+
+.lk-matrix {
+  width: auto;
+  margin: 0;
+  font-size: var(--fs-xs);
+}
+
+.lk-matrix caption {
+  caption-side: top;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.lk-matrix th,
+.lk-matrix td {
+  padding: 2px var(--sp-2);
+  text-align: center;
+}
+
+.lk-matrix td.is-yes {
+  color: var(--success);
+}
+
+.lk-matrix td.is-no {
+  color: var(--danger);
+}
+
+.lk-matrix td.is-on {
+  outline: 3px solid var(--u3);
+  outline-offset: -3px;
+  font-weight: 700;
+}
+
+.lk-chart-box {
+  flex-basis: 100%;
+}
+
+.lk-chart {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  font-family: var(--font-sans);
+}
+
+.lk-axis {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.lk-line {
+  fill: none;
+  stroke-width: 2.5;
+  stroke: var(--primary);
+}
+
+.lk-line.t1 {
+  stroke: var(--accent);
+}
+
+.lk-line.t2 {
+  stroke: var(--u3);
+}
+
+.lk-ctext {
+  fill: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.lk-point {
+  stroke: var(--danger);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+}
+
+.lk-ptext {
+  fill: var(--danger);
+  font-size: 10px;
+}

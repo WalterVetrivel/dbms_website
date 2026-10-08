@@ -142,7 +142,7 @@
           </div>
           <p>Worse, if T<sub>j</sub> then updates A or B using these wrong values, the database can stay inconsistent even after both transactions finish.</p>
           <p>The simple fix is to run transactions <strong>serially</strong>, one after the other. But that is slow. Isolation allows transactions to run at the same time, as long as the result is the same as running them one after another in some order.</p>
-          <p><strong>Responsible:</strong> the <strong>concurrency-control system</strong> of the DBMS, for example by using locks (see Locking Protocols).</p>
+          <p><strong>Responsible:</strong> the <strong>concurrency-control system</strong> of the DBMS, for example by using locks (see <a href="locking-protocols.html">Locking Protocols</a>).</p>
         </section>
 
         <section id="durability" class="topic-section" aria-labelledby="durability-title">

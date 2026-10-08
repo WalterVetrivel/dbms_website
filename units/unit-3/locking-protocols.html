@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Locking Protocols | DBMS Study Guide</title>
+  <meta name="description" content="Learn lock-based concurrency control: shared and exclusive locks, the lock compatibility matrix, lock-S, lock-X and unlock, the lock manager and lock table, why unlocking too early is unsafe, and starvation. Includes an interactive lock manager.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="3" data-topic="3.6" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-3">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-3">Unit III</span>
+            <span class="badge badge-level" title="Topic number">Topic 3.6</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO3</span>
+          </div>
+          <h1>Locking Protocols</h1>
+          <p class="lead">The most common way to control concurrent transactions is to make them lock data before using it. This page explains the two lock modes, when a lock can be granted, and why the timing of unlocks matters.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Explain shared and exclusive locks and draw the compatibility matrix.</li>
+              <li>Write a transaction with lock-S, lock-X and unlock instructions.</li>
+              <li>Explain the role of the lock manager and the lock table.</li>
+              <li>Show why unlocking too early gives wrong results, and define a locking protocol and starvation.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#locks">What is a lock?</a></li>
+            <li><a href="#modes">Shared and exclusive locks</a></li>
+            <li><a href="#compat">The compatibility matrix</a></li>
+            <li><a href="#example">Example: unlocking too early</a></li>
+            <li><a href="#protocol">What is a locking protocol?</a></li>
+            <li><a href="#manager">The lock manager</a></li>
+            <li><a href="#starvation">Starvation</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="locks" class="topic-section" aria-labelledby="locks-title">
+          <h2 id="locks-title">What is a lock?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>lock</strong> is a mechanism that controls concurrent access to a data item. A transaction may access a data item <strong>only if it holds a lock</strong> on that item. While one transaction holds a lock, a lock may be denied to other transactions to prevent wrong results.</p>
+          </div>
+          <p>To keep a schedule serializable, data items should be accessed in a <strong>mutually exclusive</strong> way: while one transaction is changing an item, no other transaction may change it. Locking is the most widely used way to do this.</p>
+        </section>
+
+        <section id="modes" class="topic-section" aria-labelledby="modes-title">
+          <h2 id="modes-title">Shared and exclusive locks</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Shared lock (S)</h3>
+              <p class="muted">If T<sub>i</sub> holds a shared-mode lock on Q, T<sub>i</sub> can <strong>read</strong> Q but <strong>cannot write</strong> it. Many transactions can hold S locks on Q at the same time. Requested with <code>lock-S(Q)</code>.</p>
+            </div>
+            <div class="card">
+              <h3>Exclusive lock (X)</h3>
+              <p class="muted">If T<sub>i</sub> holds an exclusive-mode lock on Q, T<sub>i</sub> can <strong>both read and write</strong> Q. No other transaction can hold any lock on Q. Requested with <code>lock-X(Q)</code>.</p>
+            </div>
+          </div>
+          <p>A transaction releases a lock with <code>unlock(Q)</code>. It asks for the mode it needs: S if it only reads Q, X if it will write Q. The request goes to the <strong>concurrency-control manager</strong>, and the transaction can go on only after the lock is <strong>granted</strong>.</p>
+        </section>
+
+        <section id="compat" class="topic-section" aria-labelledby="compat-title">
+          <h2 id="compat-title">The compatibility matrix</h2>
+          <p>Suppose T<sub>i</sub> asks for a lock of mode A on Q, while another transaction T<sub>j</sub> already holds a lock of mode B on Q. If T<sub>i</sub> can be granted the lock at once, <strong>mode A is compatible with mode B</strong>. This is shown in a matrix, comp(A, B).</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Lock compatibility matrix comp(A, B)</caption>
+              <thead><tr><th scope="col">Requested (A) \ Held (B)</th><th scope="col">S</th><th scope="col">X</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">S</th><td>true</td><td>false</td></tr>
+                <tr><th scope="row">X</th><td>false</td><td>false</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Only shared with shared is compatible. So <strong>many readers</strong> can work together, but a <strong>writer</strong> must be alone. If the lock is not compatible, the requesting transaction <strong>waits</strong> until all incompatible locks held by others are released.</p>
+        </section>
+
+        <section id="example" class="topic-section" aria-labelledby="example-title">
+          <h2 id="example-title">Example: unlocking too early</h2>
+          <p>Accounts A = ₹100 and B = ₹200. T1 moves ₹50 from B to A. T2 displays A + B, which should be ₹300.</p>
+          <div class="grid grid-sm">
+            <div>
+              <pre><code>T1: lock-X(B);
+    read(B);
+    B := B − 50;
+    write(B);
+    unlock(B);
+    lock-X(A);
+    read(A);
+    A := A + 50;
+    write(A);
+    unlock(A).</code></pre>
+            </div>
+            <div>
+              <pre><code>T2: lock-S(A);
+    read(A);
+    unlock(A);
+    lock-S(B);
+    read(B);
+    unlock(B);
+    display(A + B).</code></pre>
+            </div>
+          </div>
+          <p>Run serially, T2 always shows ₹300. But this concurrent schedule is possible:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Schedule 1: T2 displays ₹250</caption>
+              <thead><tr><th scope="col">T1</th><th scope="col">T2</th><th scope="col">Concurrency-control manager</th></tr></thead>
+              <tbody>
+                <tr><td>lock-X(B)</td><td></td><td>grant-X(B, T1)</td></tr>
+                <tr><td>read(B); B := B − 50; write(B)<br>unlock(B)</td><td></td><td>B = 150 on disk</td></tr>
+                <tr><td></td><td>lock-S(A)</td><td>grant-S(A, T2)</td></tr>
+                <tr><td></td><td>read(A) → 100<br>unlock(A)</td><td></td></tr>
+                <tr><td></td><td>lock-S(B)</td><td>grant-S(B, T2)</td></tr>
+                <tr><td></td><td>read(B) → 150<br>unlock(B)<br>display(A + B) → 250</td><td></td></tr>
+                <tr><td>lock-X(A)</td><td></td><td>grant-X(A, T1)</td></tr>
+                <tr><td>read(A); A := A + 50; write(A)<br>unlock(A)</td><td></td><td>A = 150 on disk</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>T2 shows ₹250, which is wrong. Every access was locked, yet the result is wrong. The reason: <strong>T1 unlocked B too early</strong>, so T2 saw the database halfway through T1's transfer.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>“Using locks” is not enough for serializability. <strong>When</strong> locks are released matters. A rule about lock and unlock timing, such as two phase locking, is needed.</p>
+          </div>
+          <p>If instead T1 and T2 delay their unlocks to the end, the wrong total cannot happen. But then a <strong>deadlock</strong> becomes possible: T1 holds X on B and waits for A, while T2 holds S on A and waits for B. See Deadlock.</p>
+        </section>
+
+        <section id="protocol" class="topic-section" aria-labelledby="protocol-title">
+          <h2 id="protocol-title">What is a locking protocol?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A <strong>locking protocol</strong> is a set of rules, followed by every transaction, that says <strong>when a transaction may lock and unlock</strong> each data item. A locking protocol restricts the set of possible schedules, so that only conflict serializable ones can happen.</p>
+          </div>
+          <p>A schedule S is <strong>legal</strong> under a protocol if it can be produced by transactions that follow the protocol's rules. A protocol <strong>ensures conflict serializability</strong> if all its legal schedules are conflict serializable.</p>
+          <p>Examples of locking protocols:</p>
+          <ul>
+            <li><strong>Two phase locking (2PL)</strong> and its strict and rigorous forms (next topic).</li>
+            <li><strong>Graph-based protocols</strong>, such as the tree protocol, where items must be locked in a fixed order.</li>
+            <li><strong>Multiple granularity locking</strong>, where a transaction can lock a whole table, a page or a single row, using intention locks (IS, IX, SIX).</li>
+          </ul>
+        </section>
+
+        <section id="manager" class="topic-section" aria-labelledby="manager-title">
+          <h2 id="manager-title">The lock manager</h2>
+          <p>The <strong>lock manager</strong> is the part of the DBMS that grants and releases locks. Transactions send it lock and unlock requests as messages, and it replies with grant messages (or asks the transaction to roll back, if there is a deadlock).</p>
+          <p>It keeps a <strong>lock table</strong> in main memory. The lock table is usually a hash table on the name of the data item. For each item it stores a linked list of requests, in the order they arrived. Each request records the transaction, the lock mode and whether it has been granted.</p>
+          <figure class="figure">
+            <div class="widget-stage" tabindex="0">
+              <svg viewBox="0 0 520 150" width="520" role="img" aria-labelledby="lt-svg-title" style="max-width:100%;height:auto">
+                <title id="lt-svg-title">Lock table. Item A has a list: T2 S granted, then T3 S granted, then T1 X waiting. Item B has a list: T1 X granted.</title>
+                <g style="font:13px var(--font-sans)">
+                  <rect x="10" y="20" width="60" height="44" rx="6" style="fill:var(--u3-soft);stroke:var(--u3);stroke-width:2"/>
+                  <text x="40" y="47" text-anchor="middle" style="fill:var(--text);font-weight:600">A</text>
+                  <rect x="10" y="86" width="60" height="44" rx="6" style="fill:var(--u3-soft);stroke:var(--u3);stroke-width:2"/>
+                  <text x="40" y="113" text-anchor="middle" style="fill:var(--text);font-weight:600">B</text>
+                  <rect x="110" y="20" width="110" height="44" rx="6" style="fill:var(--success-soft);stroke:var(--success);stroke-width:2"/>
+                  <text x="165" y="47" text-anchor="middle" style="fill:var(--text)">T2: S, granted</text>
+                  <rect x="250" y="20" width="110" height="44" rx="6" style="fill:var(--success-soft);stroke:var(--success);stroke-width:2"/>
+                  <text x="305" y="47" text-anchor="middle" style="fill:var(--text)">T3: S, granted</text>
+                  <rect x="390" y="20" width="120" height="44" rx="6" style="fill:var(--warning-soft);stroke:var(--warning);stroke-width:2;stroke-dasharray:5 3"/>
+                  <text x="450" y="47" text-anchor="middle" style="fill:var(--text)">T1: X, waiting</text>
+                  <rect x="110" y="86" width="110" height="44" rx="6" style="fill:var(--success-soft);stroke:var(--success);stroke-width:2"/>
+                  <text x="165" y="113" text-anchor="middle" style="fill:var(--text)">T1: X, granted</text>
+                </g>
+                <g style="stroke:var(--text-muted);stroke-width:2">
+                  <line x1="70" y1="42" x2="110" y2="42"/><line x1="220" y1="42" x2="250" y2="42"/><line x1="360" y1="42" x2="390" y2="42"/>
+                  <line x1="70" y1="108" x2="110" y2="108"/>
+                </g>
+              </svg>
+            </div>
+            <figcaption>A lock table. T2 and T3 share A; T1's request for an X lock on A waits until both release it.</figcaption>
+          </figure>
+          <ul>
+            <li><strong>Lock request:</strong> the request is added to the end of the item's list. It is granted if it is compatible with all earlier requests, and all earlier requests have been granted.</li>
+            <li><strong>Unlock:</strong> the request is removed, and the next waiting requests are checked to see whether they can now be granted.</li>
+            <li><strong>Abort:</strong> all requests of the aborted transaction are removed.</li>
+          </ul>
+        </section>
+
+        <section id="starvation" class="topic-section" aria-labelledby="starvation-title">
+          <h2 id="starvation-title">Starvation</h2>
+          <p>Suppose T2 holds an S lock on Q, and T1 asks for an X lock on Q, so T1 waits. Then T3 asks for an S lock on Q. S is compatible with S, so T3 is granted at once. Then T4 comes for S, and so on. Each time one reader leaves, another has arrived. T1 may <strong>never</strong> get its X lock.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Starvation</strong> is a situation where a transaction waits indefinitely for a lock and never makes progress, although the system as a whole keeps working.</p>
+          </div>
+          <p><strong>How to avoid it:</strong> grant a lock on Q only if no earlier request for Q is still waiting. Then T3's S request waits behind T1's X request, and requests are served in the order they arrived (first come, first served).</p>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>The widget starts with the rule “unlock as soon as possible”, which gives schedule 1 above. Press <strong>Next</strong> to follow each lock request, the lock table and the matrix check. Then change the rule to basic two phase locking and play again.</p>
+          <div class="widget" data-widget="locking" data-scenario="transfer" data-rule="early">
+            <noscript><p class="widget-narration">The lock manager needs JavaScript. Schedule 1 above shows the same steps.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>With “unlock as soon as possible”, at which step does T2 read the half-done value of B?</li>
+              <li>Switch to “Basic two phase locking”. Which request has to wait now, and what does T2 display?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Library reference book</h3>
+              <p class="muted">Many students may read a reference book in the library at once (shared). But to correct its pages, the librarian takes it away from everyone (exclusive).</p>
+            </div>
+            <div class="card">
+              <h3>MySQL row locks</h3>
+              <p class="muted">InnoDB uses shared and exclusive row locks. <code>SELECT ... FOR SHARE</code> takes S locks and <code>SELECT ... FOR UPDATE</code> takes X locks. See SQL Facilities.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>A transaction must hold a lock on an item before it accesses it.</li>
+              <li>Shared (S): read only, many holders. Exclusive (X): read and write, one holder.</li>
+              <li>Compatibility: only S with S is true; any pair with X is false.</li>
+              <li>An incompatible request waits until the conflicting locks are released.</li>
+              <li>Unlocking too early can still give wrong results (T2 displays 250 instead of 300).</li>
+              <li>A locking protocol is a set of rules for when to lock and unlock, to ensure serializability.</li>
+              <li>The lock manager keeps a lock table: a hash table of items with lists of requests.</li>
+              <li>Starvation: a transaction waits forever; avoided by serving requests in arrival order.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit III question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="3.6"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="3.6"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 18 “Concurrency Control”, Section 18.1 (lock-based protocols: locks, granting of locks and implementation of locking).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 21, Section 21.1.1 (types of locks and system lock tables).</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/innodb-locking.html">InnoDB Locking</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-3.js"></script>
+  <script src="../../data/quizzes/unit-3.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/locking.js"></script>
+</body>
+</html>

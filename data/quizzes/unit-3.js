@@ -390,6 +390,66 @@
       answer: 1,
       explain: "The total mixed an old value of A with a new value of B: the incorrect summary problem.",
       link: "#summary"
+    },
+    /* 3.6 Locking Protocols */
+    {
+      id: "q3.6-01",
+      topic: "3.6",
+      type: "mcq",
+      question: "T1 holds a shared lock on Q. Which request by T2 on Q can be granted at once?",
+      options: ["lock-S(Q)", "lock-X(Q)", "Both", "Neither"],
+      answer: 0,
+      explain: "Only S is compatible with S. An X request must wait until T1 releases its lock.",
+      link: "#compat"
+    },
+    {
+      id: "q3.6-02",
+      topic: "3.6",
+      type: "tf",
+      question: "A transaction holding a shared lock on Q may write Q.",
+      answer: false,
+      explain: "False. A shared lock allows reading only. To write Q, the transaction needs an exclusive lock.",
+      link: "#modes"
+    },
+    {
+      id: "q3.6-03",
+      topic: "3.6",
+      type: "mcq",
+      question: "In the lock compatibility matrix for S and X, how many entries are true?",
+      options: ["0", "1", "2", "3"],
+      answer: 1,
+      explain: "Only comp(S, S) is true. Every pair that includes X is false.",
+      link: "#compat"
+    },
+    {
+      id: "q3.6-04",
+      topic: "3.6",
+      type: "mcq",
+      question: "T1 locks and unlocks B, then locks A. T2 reads A and B in between and displays 250 instead of 300. What caused this?",
+      options: ["T2 used exclusive locks", "T1 unlocked B too early", "The lock table was full", "A deadlock"],
+      answer: 1,
+      explain: "T1 released B before it had finished the transfer, so T2 saw a half-done state. Locking alone is not enough; a protocol is needed.",
+      link: "#example"
+    },
+    {
+      id: "q3.6-05",
+      topic: "3.6",
+      type: "mcq",
+      question: "What does the lock manager use to keep track of locks?",
+      options: ["The log file", "A lock table, usually a hash table on the item name", "The data dictionary on disk", "A B+ tree on the transaction id"],
+      answer: 1,
+      explain: "The lock table in main memory maps each data item to a list of lock requests, in arrival order.",
+      link: "#manager"
+    },
+    {
+      id: "q3.6-06",
+      topic: "3.6",
+      type: "mcq",
+      question: "A transaction waiting for an X lock never gets it because new S requests keep being granted. What is this called?",
+      options: ["Deadlock", "Starvation", "Cascading rollback", "Lock conversion"],
+      answer: 1,
+      explain: "This is starvation. It is avoided by granting a request only if no earlier request on the same item is waiting.",
+      link: "#starvation"
     }
   ]);
 })();
