@@ -221,6 +221,76 @@
       answer: 2,
       explain: "Rectangles are entity sets and diamonds are relationship sets.",
       link: "#er"
+    },
+    /* 1.4 Database System Architecture */
+    {
+      id: "q1.4-01",
+      topic: "1.4",
+      type: "mcq",
+      question: "Which part of the query processor records table definitions in the data dictionary?",
+      options: ["DML compiler", "DDL interpreter", "Query evaluation engine", "Buffer manager"],
+      answer: 1,
+      explain: "The DDL interpreter reads DDL statements such as CREATE TABLE and records the definitions in the data dictionary.",
+      link: "#query-processor"
+    },
+    {
+      id: "q1.4-02",
+      topic: "1.4",
+      type: "mcq",
+      question: "Which component picks the cheapest evaluation plan for a query?",
+      options: ["File manager", "DML compiler and organizer (query optimization)", "Authorization manager", "DDL interpreter"],
+      answer: 1,
+      explain: "The DML compiler translates the query into a plan and, through query optimization, chooses the lowest-cost plan.",
+      link: "#query-processor"
+    },
+    {
+      id: "q1.4-03",
+      topic: "1.4",
+      type: "multi",
+      question: "Which of these are parts of the storage manager? Select all that apply.",
+      options: ["Buffer manager", "Transaction manager", "Query evaluation engine", "File manager"],
+      answer: [0, 1, 3],
+      explain: "The storage manager has the authorization and integrity manager, transaction manager, file manager and buffer manager. The query evaluation engine is in the query processor.",
+      link: "#storage-manager"
+    },
+    {
+      id: "q1.4-04",
+      topic: "1.4",
+      type: "mcq",
+      question: "What does the data dictionary store?",
+      options: ["The rows of every table", "Metadata, such as the schema and constraints", "Only backup copies", "The query results"],
+      answer: 1,
+      explain: "The data dictionary stores metadata: data about data, such as the schema of each table.",
+      link: "#disk"
+    },
+    {
+      id: "q1.4-05",
+      topic: "1.4",
+      type: "mcq",
+      question: "A bank clerk uses a ready-made form to deposit money. What type of database user is the clerk?",
+      options: ["Sophisticated user", "Application programmer", "Naive user", "Database administrator"],
+      answer: 2,
+      explain: "Naive users work through application interfaces such as forms, without writing queries.",
+      link: "#users"
+    },
+    {
+      id: "q1.4-06",
+      topic: "1.4",
+      type: "tf",
+      question: "In a three-tier architecture, the client machine sends SQL directly to the database system.",
+      answer: false,
+      explain: "False. In three-tier, the client talks to an application server, and only the server talks to the database.",
+      link: "#tiers"
+    },
+    {
+      id: "q1.4-07",
+      topic: "1.4",
+      type: "mcq",
+      question: "Which component brings data from disk into main memory and decides what to keep there?",
+      options: ["Buffer manager", "File manager", "Transaction manager", "DDL interpreter"],
+      answer: 0,
+      explain: "The buffer manager fetches blocks into memory and decides what to cache.",
+      link: "#storage-manager"
     }
   ]);
 })();

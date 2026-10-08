@@ -2749,3 +2749,97 @@
 .ab-note.is-new {
   color: var(--text);
 }
+
+/* ---------- V2 DBMS architecture explorer ---------- */
+
+.ar-stage {
+  background: var(--bg);
+}
+
+.ar-svg {
+  display: block;
+  max-width: none;
+  margin: 0 auto;
+  font-family: var(--font-sans);
+  font-size: 13px;
+}
+
+.ar-box {
+  fill: var(--surface);
+  stroke: var(--border-strong);
+  stroke-dasharray: 6 4;
+}
+
+.ar-boxlabel {
+  fill: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ar-link {
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+}
+
+.ar-link.is-on {
+  stroke: var(--primary);
+  stroke-width: 3;
+}
+
+.ar-part {
+  cursor: pointer;
+}
+
+.ar-part rect {
+  fill: var(--surface-2);
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+}
+
+.ar-part text {
+  fill: var(--text);
+}
+
+.ar-qp rect {
+  fill: var(--primary-soft);
+}
+
+.ar-sm rect {
+  fill: var(--accent-soft);
+}
+
+.ar-part.is-done rect {
+  stroke: var(--primary);
+  stroke-dasharray: 4 3;
+}
+
+.ar-part.is-on rect {
+  fill: var(--primary);
+  stroke: var(--primary-strong);
+  stroke-width: 2.5;
+}
+
+.ar-part.is-on text {
+  fill: var(--on-primary);
+  font-weight: 700;
+}
+
+.ar-part:focus {
+  outline: none;
+}
+
+.ar-part:focus-visible rect {
+  stroke: var(--text);
+  stroke-width: 3;
+}
+
+.ar-sql code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+[data-widget="architecture"] [hidden] {
+  display: none;
+}

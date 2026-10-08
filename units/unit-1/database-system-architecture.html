@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Database System Architecture | DBMS Study Guide</title>
+  <meta name="description" content="Learn the structure of a database system: the query processor, the storage manager, disk storage, the types of database users and the DBA, and two-tier and three-tier architectures, with an interactive explorer.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="1" data-topic="1.4" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-1">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-1">Unit I</span>
+            <span class="badge badge-level" title="Topic number">Topic 1.4</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+          </div>
+          <h1>Database System Architecture</h1>
+          <p class="lead">A database system is made of parts that work together. This page explains each part, follows one query through them, and shows how applications connect to the database in two-tier and three-tier designs.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Draw the overall structure of a database system.</li>
+              <li>Explain the parts of the query processor and the storage manager.</li>
+              <li>Name the data structures kept on disk.</li>
+              <li>Describe the types of database users, the role of the DBA, and two-tier and three-tier architectures.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#overview">The overall structure</a></li>
+            <li><a href="#users">Database users and the DBA</a></li>
+            <li><a href="#query-processor">Query processor</a></li>
+            <li><a href="#storage-manager">Storage manager</a></li>
+            <li><a href="#disk">Disk storage</a></li>
+            <li><a href="#try">Try it: explore the architecture</a></li>
+            <li><a href="#tiers">Two-tier and three-tier architecture</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="overview" class="topic-section" aria-labelledby="overview-title">
+          <h2 id="overview-title">The overall structure</h2>
+          <p>A database system is divided into parts, and each part has one job. The two main parts are the <strong>query processor</strong> and the <strong>storage manager</strong>. At the top are the users and the tools they use. At the bottom is the <strong>disk storage</strong>.</p>
+          <figure class="figure">
+            <svg viewBox="0 0 640 400" width="640" height="400" role="img" aria-labelledby="arch-fig-title" style="max-width:100%;height:auto">
+              <title id="arch-fig-title">Structure of a database system. Users at the top use application interfaces, application programs, query tools and administration tools. These connect to the query processor, which has the DML compiler and organizer, the DDL interpreter and the query evaluation engine. Below it is the storage manager with the authorization and integrity manager, transaction manager, file manager and buffer manager. At the bottom is disk storage with data files, the data dictionary, indices and statistical data.</title>
+              <g font-family="Inter, system-ui, sans-serif" font-size="12" text-anchor="middle">
+                <rect x="10" y="10" width="620" height="56" rx="8" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="320" y="32" font-weight="700" style="fill:var(--text)">Users: naive users, application programmers, sophisticated users, DBA</text>
+                <text x="320" y="52" style="fill:var(--text-muted)">Tools: application interfaces, application programs, query tools, administration tools</text>
+                <line x1="320" y1="66" x2="320" y2="86" stroke-width="2" style="stroke:var(--text-muted)"/>
+                <rect x="10" y="86" width="620" height="110" rx="8" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="320" y="106" font-weight="700" style="fill:var(--text)">Query processor</text>
+                <rect x="30" y="118" width="280" height="30" rx="6" style="fill:var(--surface);stroke:var(--primary)"/>
+                <text x="170" y="138" style="fill:var(--text)">DML compiler and organizer</text>
+                <rect x="330" y="118" width="280" height="30" rx="6" style="fill:var(--surface);stroke:var(--primary)"/>
+                <text x="470" y="138" style="fill:var(--text)">DDL interpreter</text>
+                <rect x="30" y="156" width="580" height="30" rx="6" style="fill:var(--surface);stroke:var(--primary)"/>
+                <text x="320" y="176" style="fill:var(--text)">Query evaluation engine</text>
+                <line x1="320" y1="196" x2="320" y2="216" stroke-width="2" style="stroke:var(--text-muted)"/>
+                <rect x="10" y="216" width="620" height="100" rx="8" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="320" y="236" font-weight="700" style="fill:var(--text)">Storage manager</text>
+                <rect x="30" y="246" width="280" height="28" rx="6" style="fill:var(--surface);stroke:var(--accent)"/>
+                <text x="170" y="265" style="fill:var(--text)">Authorization and integrity manager</text>
+                <rect x="330" y="246" width="280" height="28" rx="6" style="fill:var(--surface);stroke:var(--accent)"/>
+                <text x="470" y="265" style="fill:var(--text)">Transaction manager</text>
+                <rect x="30" y="280" width="280" height="28" rx="6" style="fill:var(--surface);stroke:var(--accent)"/>
+                <text x="170" y="299" style="fill:var(--text)">File manager</text>
+                <rect x="330" y="280" width="280" height="28" rx="6" style="fill:var(--surface);stroke:var(--accent)"/>
+                <text x="470" y="299" style="fill:var(--text)">Buffer manager</text>
+                <line x1="320" y1="316" x2="320" y2="336" stroke-width="2" style="stroke:var(--text-muted)"/>
+                <rect x="10" y="336" width="620" height="54" rx="14" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="320" y="358" font-weight="700" style="fill:var(--text)">Disk storage</text>
+                <text x="320" y="378" style="fill:var(--text-muted)">Data files · Data dictionary · Indices · Statistical data</text>
+              </g>
+            </svg>
+            <figcaption>The structure of a database system. Draw this diagram in your answer.</figcaption>
+          </figure>
+        </section>
+
+        <section id="users" class="topic-section" aria-labelledby="users-title">
+          <h2 id="users-title">Database users and the DBA</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Types of database users</caption>
+              <thead><tr><th scope="col">User</th><th scope="col">Who they are</th><th scope="col">How they use the system</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Naive users</th><td>Bank clerks, ticket counter staff, people shopping online</td><td>Through ready-made <strong>application interfaces</strong>, such as forms</td></tr>
+                <tr><th scope="row">Application programmers</th><td>Software developers</td><td>Write <strong>application programs</strong> that contain SQL</td></tr>
+                <tr><th scope="row">Sophisticated users</th><td>Analysts and engineers</td><td>Write their own queries in <strong>query tools</strong></td></tr>
+                <tr><th scope="row">Database administrator (DBA)</th><td>The person in central control of the data and programs</td><td>Uses <strong>administration tools</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Duties of the DBA</h3>
+          <ul>
+            <li><strong>Schema definition:</strong> creates the database schema by running DDL statements.</li>
+            <li><strong>Storage structure and access method:</strong> decides how data is stored and which indexes to build.</li>
+            <li><strong>Schema and physical changes:</strong> changes the design as needs change.</li>
+            <li><strong>Granting authorization:</strong> decides which user may access which data.</li>
+            <li><strong>Routine maintenance:</strong> takes backups, watches free disk space and speeds up slow queries.</li>
+          </ul>
+        </section>
+
+        <section id="query-processor" class="topic-section" aria-labelledby="qp-title">
+          <h2 id="qp-title">Query processor</h2>
+          <p>The query processor understands the user's statements and works out how to run them. It has three parts.</p>
+          <ol>
+            <li><strong>DDL interpreter:</strong> reads DDL statements and records the definitions in the <strong>data dictionary</strong>.</li>
+            <li><strong>DML compiler (and organizer):</strong> translates DML statements into an <strong>evaluation plan</strong> of low-level instructions that the query evaluation engine understands. A query can be run in many ways that give the same result. The DML compiler also does <strong>query optimization</strong>: it picks the plan with the lowest cost.</li>
+            <li><strong>Query evaluation engine:</strong> runs the low-level instructions made by the DML compiler.</li>
+          </ol>
+          <div class="callout callout-note">
+            <div class="callout-title">Note</div>
+            <p>An evaluation plan is like a route on a map app. Many routes reach the same place. The optimizer picks the fastest one, using facts about the data, such as how many rows each table has. See <a href="../unit-4/query-processing-overview.html">Query Processing Overview</a> in Unit IV for the full story.</p>
+          </div>
+        </section>
+
+        <section id="storage-manager" class="topic-section" aria-labelledby="sm-title">
+          <h2 id="sm-title">Storage manager</h2>
+          <p>The storage manager sits between the data on disk and the programs and queries sent to the system. Its job is <strong>storing, retrieving and updating</strong> data. It has four parts.</p>
+          <ol>
+            <li><strong>Authorization and integrity manager:</strong> checks that the user has the right to access the data, and tests the integrity constraints.</li>
+            <li><strong>Transaction manager:</strong> keeps the database consistent even if the system fails, and makes sure that transactions running at the same time do not conflict.</li>
+            <li><strong>File manager:</strong> gives out space on disk and looks after the structures that hold the data on disk.</li>
+            <li><strong>Buffer manager:</strong> fetches data from disk into main memory and decides what to keep in memory. It lets the database handle data much larger than main memory, so it is a critical part.</li>
+          </ol>
+        </section>
+
+        <section id="disk" class="topic-section" aria-labelledby="disk-title">
+          <h2 id="disk-title">Disk storage</h2>
+          <p>The storage manager keeps these data structures on disk:</p>
+          <ul>
+            <li><strong>Data files:</strong> store the database itself.</li>
+            <li><strong>Data dictionary:</strong> stores <strong>metadata</strong> (data about data), such as the schema of each table, its constraints and the users' rights.</li>
+            <li><strong>Indices:</strong> give fast access to data items, like the index at the back of a book.</li>
+            <li><strong>Statistical data:</strong> facts such as the number of rows in each table. The optimizer uses them to choose a plan.</li>
+          </ul>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: explore the architecture</h2>
+          <p>In “Explore the parts”, tap any box to read its role. In “Follow a statement”, step through a SELECT, an UPDATE or a CREATE TABLE and watch which parts it uses.</p>
+          <div class="widget" data-widget="architecture">
+            <noscript><p class="widget-narration">The architecture explorer needs JavaScript. The diagram and lists above describe every part.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Follow the CREATE TABLE statement. Why does it never reach the DML compiler?</li>
+              <li>Follow the UPDATE. Which part makes sure the ₹500 withdrawal is not lost after a power cut?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="tiers" class="topic-section" aria-labelledby="tiers-title">
+          <h2 id="tiers-title">Two-tier and three-tier architecture</h2>
+          <p>The database usually runs on a server, and users work on their own machines. There are two common ways to connect them.</p>
+          <figure class="figure">
+            <svg viewBox="0 0 600 230" width="600" height="230" role="img" aria-labelledby="tier-fig-title" style="max-width:100%;height:auto">
+              <title id="tier-fig-title">Two-tier: the client machine runs the application and talks directly to the database system on the server. Three-tier: the client runs only an interface, which talks to an application server, which talks to the database system.</title>
+              <g font-family="Inter, system-ui, sans-serif" font-size="13" text-anchor="middle">
+                <text x="150" y="20" font-weight="700" style="fill:var(--text)">Two-tier</text>
+                <rect x="60" y="34" width="180" height="44" rx="8" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="150" y="61" style="fill:var(--text)">Client: application</text>
+                <line x1="150" y1="78" x2="150" y2="150" stroke-width="2" style="stroke:var(--text-muted)"/>
+                <text x="158" y="118" font-size="11" text-anchor="start" style="fill:var(--text-muted)">SQL over the network</text>
+                <rect x="60" y="150" width="180" height="44" rx="8" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="150" y="177" style="fill:var(--text)">Server: database system</text>
+                <text x="450" y="20" font-weight="700" style="fill:var(--text)">Three-tier</text>
+                <rect x="360" y="34" width="180" height="40" rx="8" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="450" y="59" style="fill:var(--text)">Client: browser or app</text>
+                <line x1="450" y1="74" x2="450" y2="94" stroke-width="2" style="stroke:var(--text-muted)"/>
+                <rect x="360" y="94" width="180" height="40" rx="8" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="450" y="119" style="fill:var(--text)">Application server</text>
+                <line x1="450" y1="134" x2="450" y2="154" stroke-width="2" style="stroke:var(--text-muted)"/>
+                <rect x="360" y="154" width="180" height="40" rx="8" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="450" y="179" style="fill:var(--text)">Database system</text>
+              </g>
+            </svg>
+            <figcaption>In three-tier, the client never talks to the database directly.</figcaption>
+          </figure>
+          <div class="table-wrap">
+            <table>
+              <caption>Two-tier and three-tier compared</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Two-tier</th><th scope="col">Three-tier</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Where the business logic runs</th><td>On the client</td><td>On the application server</td></tr>
+                <tr><th scope="row">Client talks to</th><td>The database, using SQL (for example, through JDBC)</td><td>The application server only</td></tr>
+                <tr><th scope="row">Security</th><td>Lower, because every client reaches the database</td><td>Higher, because only the server reaches the database</td></tr>
+                <tr><th scope="row">Suits</th><td>Small groups, such as one office</td><td>Large web applications with many users</td></tr>
+                <tr><th scope="row">Example</th><td>A billing program in a shop that connects to a database on the shop's server</td><td>An online shopping website</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>For the 16-mark question, draw the structure diagram first. Then explain the users, the query processor (three parts), the storage manager (four parts) and the disk structures (four items). Add two-tier and three-tier at the end if time allows.</p>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>IRCTC booking</h3>
+              <p class="muted">Your phone app (client) talks to IRCTC's servers (application server), which talk to the database. This is three-tier. Passengers are naive users.</p>
+            </div>
+            <div class="card">
+              <h3>College lab</h3>
+              <p class="muted">In the lab, you type SQL in MySQL Workbench. You are a sophisticated user, and Workbench is a query tool.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>The two main parts are the query processor and the storage manager.</li>
+              <li>Query processor: DDL interpreter, DML compiler (with query optimization) and query evaluation engine.</li>
+              <li>Storage manager: authorization and integrity manager, transaction manager, file manager and buffer manager.</li>
+              <li>Disk storage: data files, data dictionary (metadata), indices and statistical data.</li>
+              <li>Users: naive users, application programmers, sophisticated users and the DBA.</li>
+              <li>The DBA defines the schema, plans storage, grants access and does routine maintenance.</li>
+              <li>Two-tier: the client talks to the database. Three-tier: the client talks to an application server, which talks to the database.</li>
+            </ul>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>The DDL interpreter writes to the <strong>data dictionary</strong>, not to the data files. A CREATE TABLE stores the table's definition, not its rows.</p>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit I question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="1.4"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="1.4"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 1, Sections 1.5 to 1.8 (database engine, architecture, users and administrators).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 2, Sections 2.4 and 2.5 (the database system environment and client/server architectures).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-1.js"></script>
+  <script src="../../data/quizzes/unit-1.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/architecture.js"></script>
+</body>
+</html>
