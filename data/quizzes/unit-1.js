@@ -78,6 +78,74 @@
       answer: 0,
       explain: "A file system has no easy way to ask new questions, so each one needs a new program.",
       link: "#problems"
+    },
+    /* 1.2 Views of Data */
+    {
+      id: "q1.2-01",
+      topic: "1.2",
+      type: "order",
+      question: "Put the three levels of abstraction in order, from the lowest to the highest.",
+      options: ["Physical level", "Logical level", "View level"],
+      explain: "The physical level is the lowest, the logical level is in the middle and the view level is the highest.",
+      link: "#levels"
+    },
+    {
+      id: "q1.2-02",
+      topic: "1.2",
+      type: "mcq",
+      question: "Which level describes what data is stored in the database and the relationships among the data?",
+      options: ["Physical level", "Logical level", "View level", "Disk level"],
+      answer: 1,
+      explain: "The logical level describes what data is stored and how it is related. The physical level describes how it is stored.",
+      link: "#levels"
+    },
+    {
+      id: "q1.2-03",
+      topic: "1.2",
+      type: "mcq",
+      question: "A college adds a new index and moves its data files to a faster disk. Programs work without any change. Which property is this?",
+      options: ["Logical data independence", "Physical data independence", "Data redundancy", "Atomicity"],
+      answer: 1,
+      explain: "A change at the physical level that does not affect the logical schema shows physical data independence.",
+      link: "#independence"
+    },
+    {
+      id: "q1.2-04",
+      topic: "1.2",
+      type: "tf",
+      question: "The instance of a database changes every time data is inserted, deleted or updated, but the schema changes rarely.",
+      answer: true,
+      explain: "True. The schema is the overall design. The instance is the data at one moment.",
+      link: "#schema"
+    },
+    {
+      id: "q1.2-05",
+      topic: "1.2",
+      type: "mcq",
+      question: "What is a schema at the view level called?",
+      options: ["Physical schema", "Logical schema", "Subschema", "Instance"],
+      answer: 2,
+      explain: "A database can have several views. Each view's schema is a subschema.",
+      link: "#schema"
+    },
+    {
+      id: "q1.2-06",
+      topic: "1.2",
+      type: "tf",
+      question: "Logical data independence is easier to achieve than physical data independence.",
+      answer: false,
+      explain: "False. Programs depend on the tables they use, so logical data independence is harder to achieve.",
+      link: "#independence"
+    },
+    {
+      id: "q1.2-07",
+      topic: "1.2",
+      type: "multi",
+      question: "Which changes need logical data independence to keep the views unchanged? Select all that apply.",
+      options: ["Adding a column to a table", "Splitting one table into two", "Moving data files to a new disk", "Adding an index"],
+      answer: [0, 1],
+      explain: "Adding a column and splitting a table change the logical schema. Moving files and adding an index are physical changes.",
+      link: "#independence"
     }
   ]);
 })();

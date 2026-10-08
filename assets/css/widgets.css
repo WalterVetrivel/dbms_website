@@ -2597,3 +2597,155 @@
   font-size: var(--fs-xs);
   font-weight: 700;
 }
+
+/* ---------- V1 Three levels of abstraction ---------- */
+
+.ab-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-4);
+}
+
+@media (min-width: 760px) {
+  .ab-wrap {
+    grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+  }
+}
+
+.ab-levels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.ab-level {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-height: 44px;
+  padding: var(--sp-3);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ab-level:hover {
+  background: var(--surface-2);
+}
+
+.ab-level.is-current {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-soft);
+}
+
+.ab-level.is-changed {
+  background: var(--warning-soft);
+}
+
+.ab-level.is-same {
+  background: var(--success-soft);
+}
+
+.ab-level.is-grown {
+  background: var(--surface-2);
+}
+
+.ab-name {
+  font-weight: 700;
+}
+
+.ab-tag {
+  display: inline-block;
+  margin-left: var(--sp-1);
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+
+.ab-what,
+.ab-who {
+  font-size: var(--fs-sm);
+}
+
+.ab-who {
+  color: var(--text-muted);
+}
+
+.ab-map {
+  padding: var(--sp-1) var(--sp-3);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.ab-map.is-on {
+  color: var(--warning);
+  font-weight: 700;
+}
+
+.ab-detail {
+  min-width: 0;
+}
+
+.ab-cap {
+  margin-bottom: var(--sp-2);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ab-kind {
+  color: var(--primary);
+}
+
+.ab-views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+}
+
+.ab-views table {
+  margin: 0;
+}
+
+.ab-code {
+  margin: 0 0 var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  overflow-x: auto;
+  font-size: var(--fs-xs);
+}
+
+.ab-code mark,
+.ab-list mark {
+  background: var(--warning-soft);
+  color: var(--text);
+  padding: 0 2px;
+}
+
+.ab-list {
+  margin: 0 0 var(--sp-3);
+  padding-left: var(--sp-5);
+  font-size: var(--fs-sm);
+}
+
+.ab-note {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.ab-note.is-new {
+  color: var(--text);
+}
