@@ -1902,3 +1902,168 @@
   background: var(--warning-soft);
   font-size: var(--fs-xs);
 }
+
+/* ---------- V16 Concurrency problems and V22 Isolation levels ---------- */
+
+.an-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.an-left {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.an-table {
+  width: auto;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.an-table th,
+.an-table td {
+  padding: var(--sp-1) var(--sp-3);
+  min-width: 8rem;
+  text-align: left;
+}
+
+.an-table .an-n,
+.an-table th:first-child {
+  min-width: 0;
+  color: var(--text-muted);
+}
+
+.an-table tr.is-todo td {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.an-table tr.is-current td {
+  background: var(--u3-soft);
+  font-weight: 600;
+}
+
+.an-table tr.is-bad td {
+  background: var(--danger-soft);
+  font-weight: 600;
+}
+
+.an-wait {
+  display: inline-block;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--warning-soft);
+  color: var(--warning);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.an-side {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  flex: 0 1 18rem;
+}
+
+.an-box {
+  flex: 1 1 7rem;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: var(--fs-sm);
+}
+
+.an-db {
+  flex-basis: 100%;
+  border-color: var(--u3);
+  background: var(--u3-soft);
+}
+
+.an-cap {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.an-val {
+  font-family: var(--font-mono);
+}
+
+.an-key {
+  color: var(--text-muted);
+}
+
+.an-end {
+  margin: var(--sp-4) 0 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.an-end.is-bad {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.an-end.is-ok {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.il-matrix {
+  padding: var(--sp-3) var(--sp-4) 0;
+  overflow-x: auto;
+}
+
+.il-table {
+  margin: 0;
+  font-size: var(--fs-sm);
+}
+
+.il-table th,
+.il-table td {
+  padding: var(--sp-1) var(--sp-3);
+  text-align: center;
+}
+
+.il-table th[scope="row"] {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.il-table .is-allowed {
+  color: var(--danger);
+}
+
+.il-table .is-prevented {
+  color: var(--success);
+}
+
+.il-table tr.is-row th,
+.il-table tr.is-row td {
+  background: var(--u3-soft);
+  font-weight: 600;
+}
+
+.il-table th.is-col {
+  text-decoration: underline;
+}
+
+.il-table td.is-pick {
+  outline: 3px solid var(--u3);
+  outline-offset: -3px;
+}
+
+.il-verdict {
+  font-size: var(--fs-sm);
+  color: var(--text);
+}

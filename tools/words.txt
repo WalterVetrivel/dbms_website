@@ -64,6 +64,7 @@ multidatabase
 multisets
 multitable
 multivalued
+multiversion
 multiway
 Nandhini
 Narang
@@ -100,6 +101,7 @@ subtransactions
 Sudarshan
 superkey
 Swamynathan
+Tatkal
 Venkataraman
 Vetrivel
 WITHSCORES

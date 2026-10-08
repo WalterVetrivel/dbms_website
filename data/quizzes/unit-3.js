@@ -320,6 +320,76 @@
       answer: 1,
       explain: "A blind write writes Q without reading it first. Schedules that are view but not conflict serializable always have blind writes.",
       link: "#view-ser"
+    },
+    /* 3.5 Concurrency Control and Need for Concurrency */
+    {
+      id: "q3.5-01",
+      topic: "3.5",
+      type: "multi",
+      question: "Why do databases allow transactions to run concurrently? Choose all that apply.",
+      options: ["Better throughput", "Better use of the CPU and disks", "Shorter average waiting time", "It removes the need for locks"],
+      answer: [0, 1, 2],
+      explain: "Concurrency improves throughput, resource use and response time. It creates the need for concurrency control, not the other way round.",
+      link: "#need"
+    },
+    {
+      id: "q3.5-02",
+      topic: "3.5",
+      type: "mcq",
+      question: "T1 and T2 both read A = 1000. T1 writes 950, then T2 writes 1100. Which problem is this?",
+      options: ["Dirty read", "Lost update", "Phantom", "Unrepeatable read"],
+      answer: 1,
+      explain: "T2's write overwrote T1's update, so T1's change was lost.",
+      link: "#lost-update"
+    },
+    {
+      id: "q3.5-03",
+      topic: "3.5",
+      type: "mcq",
+      question: "T2 reads a value written by T1 before T1 commits, and T1 then aborts. Which problem is this?",
+      options: ["Dirty read (temporary update)", "Lost update", "Incorrect summary", "Phantom"],
+      answer: 0,
+      explain: "Reading uncommitted data is a dirty read. The value never existed in any committed state.",
+      link: "#dirty-read"
+    },
+    {
+      id: "q3.5-04",
+      topic: "3.5",
+      type: "mcq",
+      question: "T1 runs the same SELECT ... WHERE dept = 'CSE' twice and the second time sees an extra row that T2 inserted and committed. Which problem is this?",
+      options: ["Unrepeatable read", "Lost update", "Phantom", "Dirty read"],
+      answer: 2,
+      explain: "A new row matching the condition appeared: a phantom. No existing row changed.",
+      link: "#phantom"
+    },
+    {
+      id: "q3.5-05",
+      topic: "3.5",
+      type: "tf",
+      question: "In an unrepeatable read, the transaction that changed the item had committed before the second read.",
+      answer: true,
+      explain: "True. T2 changed and committed A between T1's two reads, so T1 saw two different committed values.",
+      link: "#unrepeatable"
+    },
+    {
+      id: "q3.5-06",
+      topic: "3.5",
+      type: "mcq",
+      question: "Which kind of protocol lets transactions run freely and checks for conflicts only just before commit?",
+      options: ["Lock-based", "Timestamp-based", "Validation-based (optimistic)", "Two phase locking"],
+      answer: 2,
+      explain: "Optimistic, or validation-based, control assumes conflicts are rare and checks for them at the end.",
+      link: "#protocols"
+    },
+    {
+      id: "q3.5-07",
+      topic: "3.5",
+      type: "mcq",
+      question: "T2 adds up A and B while T1 moves ₹50 from A to B, and T2 reports ₹3050 instead of ₹3000. What is this called?",
+      options: ["Lost update", "Incorrect summary", "Cascading rollback", "Deadlock"],
+      answer: 1,
+      explain: "The total mixed an old value of A with a new value of B: the incorrect summary problem.",
+      link: "#summary"
     }
   ]);
 })();

@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Concurrency Control and Need for Concurrency | DBMS Study Guide</title>
+  <meta name="description" content="Learn why databases run transactions concurrently and the problems this causes without control: lost update, dirty read, unrepeatable read, incorrect summary and phantom. Includes a step-by-step player for each problem and the main types of concurrency control protocol.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="3" data-topic="3.5" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-3">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-3">Unit III</span>
+            <span class="badge badge-level" title="Topic number">Topic 3.5</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO3</span>
+          </div>
+          <h1>Concurrency Control and Need for Concurrency</h1>
+          <p class="lead">Running many transactions at once makes a database fast, but their steps can interfere. This page shows the classic problems that appear without control, and the main ways a DBMS prevents them.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Explain the need for concurrent execution of transactions.</li>
+              <li>Explain the lost update, dirty read, unrepeatable read, incorrect summary and phantom problems with examples.</li>
+              <li>Define concurrency control and list the main kinds of concurrency control protocol.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#need">Need for concurrency</a></li>
+            <li><a href="#control">What is concurrency control?</a></li>
+            <li><a href="#lost-update">Lost update problem</a></li>
+            <li><a href="#dirty-read">Dirty read problem</a></li>
+            <li><a href="#unrepeatable">Unrepeatable read problem</a></li>
+            <li><a href="#summary">Incorrect summary problem</a></li>
+            <li><a href="#phantom">Phantom problem</a></li>
+            <li><a href="#protocols">Concurrency control protocols</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="need" class="topic-section" aria-labelledby="need-title">
+          <h2 id="need-title">Need for concurrency</h2>
+          <p>A railway booking site gets thousands of requests every minute. If the database ran them one at a time (a <a href="schedules.html">serial schedule</a>), each user would wait for everyone in front of them. So databases run many transactions <strong>concurrently</strong>, with their steps interleaved.</p>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Better throughput and resource use</h3>
+              <p class="muted">A transaction spends much of its time waiting for the disk. While one waits, another can use the CPU. More transactions finish per second, and the CPU and disks stay busy.</p>
+            </div>
+            <div class="card">
+              <h3>Shorter waiting time</h3>
+              <p class="muted">A short transaction need not wait behind a long one. This lowers the average response time, so users get answers faster.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="control" class="topic-section" aria-labelledby="control-title">
+          <h2 id="control-title">What is concurrency control?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Concurrency control</strong> is the part of the DBMS that controls the interaction among concurrent transactions, so that the database stays consistent. It allows only <strong>serializable</strong> schedules, and preferably <strong>recoverable and cascadeless</strong> ones.</p>
+          </div>
+          <p>Without concurrency control, the interleaved steps of transactions can break <strong>isolation</strong> and leave the database wrong. The next sections show the classic problems. Each uses the account balance A = ₹1000.</p>
+        </section>
+
+        <section id="lost-update" class="topic-section" aria-labelledby="lost-update-title">
+          <h2 id="lost-update-title">Lost update problem</h2>
+          <p>Two transactions read the same item and both update it. The second write overwrites the first, so one update is <strong>lost</strong>.</p>
+          <div class="grid grid-sm">
+            <div class="table-wrap">
+              <table>
+                <caption>Lost update: T1 withdraws ₹50, T2 deposits ₹100</caption>
+                <thead><tr><th scope="col">T1</th><th scope="col">T2</th><th scope="col">A in database</th></tr></thead>
+                <tbody>
+                  <tr><td>read(A) → 1000</td><td></td><td>1000</td></tr>
+                  <tr><td></td><td>read(A) → 1000</td><td>1000</td></tr>
+                  <tr><td>A := A − 50<br>write(A)</td><td></td><td>950</td></tr>
+                  <tr><td></td><td>A := A + 100<br>write(A)</td><td>1100</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>The correct final balance is 1000 − 50 + 100 = ₹1050. The database shows ₹1100, so T1's withdrawal is lost. This is also called a <strong>write-write conflict</strong>.</p>
+          </div>
+        </section>
+
+        <section id="dirty-read" class="topic-section" aria-labelledby="dirty-read-title">
+          <h2 id="dirty-read-title">Dirty read problem</h2>
+          <p>A transaction reads a value written by another transaction that has <strong>not committed</strong>. If that transaction then aborts, the value read was never valid. Elmasri calls this the <strong>temporary update</strong> problem.</p>
+          <div class="grid grid-sm">
+            <div class="table-wrap">
+              <table>
+                <caption>Dirty read: T1 aborts after T2 reads its value</caption>
+                <thead><tr><th scope="col">T1</th><th scope="col">T2</th><th scope="col">A in database</th></tr></thead>
+                <tbody>
+                  <tr><td>read(A)<br>A := A − 50<br>write(A)</td><td></td><td>950 (uncommitted)</td></tr>
+                  <tr><td></td><td>read(A) → 950</td><td>950</td></tr>
+                  <tr><td>abort</td><td></td><td>1000 (rolled back)</td></tr>
+                  <tr><td></td><td>commit (used 950)</td><td>1000</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>T2 worked with ₹950, a value that never existed in any committed state. This is a <strong>write-read conflict</strong>. It also causes the <a href="schedules.html#cascadeless">cascading rollback</a> problem.</p>
+          </div>
+        </section>
+
+        <section id="unrepeatable" class="topic-section" aria-labelledby="unrepeatable-title">
+          <h2 id="unrepeatable-title">Unrepeatable read problem</h2>
+          <p>A transaction reads the same item twice and gets <strong>different values</strong>, because another transaction changed and committed it in between. It is also called the <strong>non-repeatable read</strong> or <strong>inconsistent retrieval</strong> problem.</p>
+          <div class="grid grid-sm">
+            <div class="table-wrap">
+              <table>
+                <caption>Unrepeatable read</caption>
+                <thead><tr><th scope="col">T1</th><th scope="col">T2</th><th scope="col">A in database</th></tr></thead>
+                <tbody>
+                  <tr><td>read(A) → 1000</td><td></td><td>1000</td></tr>
+                  <tr><td></td><td>read(A)<br>A := A − 50<br>write(A)<br>commit</td><td>950</td></tr>
+                  <tr><td>read(A) → 950</td><td></td><td>950</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>T1 might check that the balance is enough, then read it again to print a receipt, and get a different number. This is a <strong>read-write conflict</strong>.</p>
+          </div>
+        </section>
+
+        <section id="summary" class="topic-section" aria-labelledby="summary-title">
+          <h2 id="summary-title">Incorrect summary problem</h2>
+          <p>One transaction computes a total (an aggregate, such as SUM) while another transaction is updating some of the items. The total uses some old and some new values, so it is wrong.</p>
+          <div class="grid grid-sm">
+            <div class="table-wrap">
+              <table>
+                <caption>Incorrect summary: T1 moves ₹50 from A to B while T2 adds A + B</caption>
+                <thead><tr><th scope="col">T1</th><th scope="col">T2</th></tr></thead>
+                <tbody>
+                  <tr><td></td><td>sum := 0<br>read(A) → 1000; sum := 1000</td></tr>
+                  <tr><td>read(A); A := A − 50; write(A)<br>read(B); B := B + 50; write(B)</td><td></td></tr>
+                  <tr><td></td><td>read(B) → 2050; sum := 3050</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>With A = ₹1000 and B = ₹2000, the true total is always ₹3000. T2 reads A before the transfer and B after it, so it reports ₹3050.</p>
+          </div>
+        </section>
+
+        <section id="phantom" class="topic-section" aria-labelledby="phantom-title">
+          <h2 id="phantom-title">Phantom problem</h2>
+          <p>A transaction runs a query over a <strong>range of rows</strong> (a condition) twice. In between, another transaction <strong>inserts</strong> (or deletes) a row that matches the condition and commits. The second query sees a row that was not there before, a <strong>phantom</strong>.</p>
+          <div class="grid grid-sm">
+            <div class="table-wrap">
+              <table>
+                <caption>Phantom</caption>
+                <thead><tr><th scope="col">T1</th><th scope="col">T2</th></tr></thead>
+                <tbody>
+                  <tr><td>SELECT COUNT(*) FROM student WHERE dept = 'CSE'; → 3</td><td></td></tr>
+                  <tr><td></td><td>INSERT INTO student VALUES (104, 'Divya', 'CSE');<br>COMMIT;</td></tr>
+                  <tr><td>SELECT COUNT(*) FROM student WHERE dept = 'CSE'; → 4</td><td></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>The difference from an unrepeatable read: here no existing row changed. A <strong>new</strong> row appeared. Locking only the rows that T1 read does not stop it, because the new row did not exist when T1 read.</p>
+          </div>
+        </section>
+
+        <section id="protocols" class="topic-section" aria-labelledby="protocols-title">
+          <h2 id="protocols-title">Concurrency control protocols</h2>
+          <p>A <strong>concurrency control protocol</strong> (or scheme) is a set of rules that every transaction follows so that only safe schedules happen. The main kinds are:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Kinds of concurrency control protocols</caption>
+              <thead><tr><th scope="col">Protocol</th><th scope="col">Idea</th><th scope="col">Example</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Lock-based</th><td>A transaction must lock an item before using it. Conflicting requests wait.</td><td>Two phase locking</td></tr>
+                <tr><th scope="row">Timestamp-based</th><td>Each transaction gets a timestamp when it starts. Conflicting operations must run in timestamp order, or the late transaction is rolled back.</td><td>Timestamp ordering protocol</td></tr>
+                <tr><th scope="row">Validation-based (optimistic)</th><td>Transactions run freely on private copies. Before commit, the system checks for conflicts and rolls back if there are any.</td><td>Optimistic concurrency control</td></tr>
+                <tr><th scope="row">Multiversion</th><td>Each write makes a new version of the item. Readers read an older, committed version and never wait for writers.</td><td>Snapshot isolation in MySQL InnoDB, Oracle and PostgreSQL</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Problems and how they are prevented</caption>
+              <thead><tr><th scope="col">Problem</th><th scope="col">Conflict</th><th scope="col">Prevented by</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Lost update</th><td>Write-write</td><td>Exclusive locks held until commit</td></tr>
+                <tr><th scope="row">Dirty read</th><td>Write-read</td><td>Reading only committed data (strict 2PL)</td></tr>
+                <tr><th scope="row">Unrepeatable read</th><td>Read-write</td><td>Shared locks held until commit</td></tr>
+                <tr><th scope="row">Incorrect summary</th><td>Read-write</td><td>Shared locks on every item summed</td></tr>
+                <tr><th scope="row">Phantom</th><td>Insert or delete in a range</td><td>Index (range) locks, or the SERIALIZABLE isolation level</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>For “discuss the need for concurrency control”, start with the two merits of concurrency, then give each problem as a two-column table with values, then list the protocols. The SQL isolation levels are defined by which of these problems they allow.</p>
+          </div>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>Choose a problem and press <strong>Next</strong> to run one step at a time. Watch the value in the database and in each transaction's buffer.</p>
+          <div class="widget" data-widget="anomaly-player" data-scenario="lost-update">
+            <noscript><p class="widget-narration">The concurrency problem player needs JavaScript. The tables above show the same steps.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>In “Lost update”, at which step does T2 make its mistake? What value should it have read?</li>
+              <li>Compare “Unrepeatable read” and “Phantom”. Which one changes an existing row?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Tatkal booking</h3>
+              <p class="muted">At 10 a.m. many users try to book the last few berths at the same moment. Without concurrency control, two users could both see “1 seat left” and both be given the same berth (a lost update).</p>
+            </div>
+            <div class="card">
+              <h3>Joint bank account</h3>
+              <p class="muted">Two people use the same account at two ATMs at once. The bank's database locks the balance, so one withdrawal waits for the other to finish.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Concurrency gives better throughput, better resource use and shorter waiting time.</li>
+              <li>Concurrency control keeps concurrent schedules serializable and recoverable.</li>
+              <li>Lost update: a later write overwrites an earlier one (write-write).</li>
+              <li>Dirty read: reading uncommitted data that may be rolled back (write-read).</li>
+              <li>Unrepeatable read: the same item gives two values in one transaction (read-write).</li>
+              <li>Incorrect summary: an aggregate mixes old and new values.</li>
+              <li>Phantom: a repeated range query sees newly inserted rows.</li>
+              <li>Protocols: lock-based, timestamp-based, validation-based and multiversion.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit III question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="3.5"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="3.5"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 17, Section 17.5 (concurrent executions), and Chapter 18 “Concurrency Control”.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 20, Section 20.1.3 (why concurrency control is needed), and Chapter 21 “Concurrency Control Techniques”.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-3.js"></script>
+  <script src="../../data/quizzes/unit-3.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/anomalies.js"></script>
+</body>
+</html>
