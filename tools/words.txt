@@ -118,3 +118,15 @@ Ranchana
 mysqldump
 mysqlbinlog
 binlog
+subschema
+subschemas
+IDMS
+CODASYL
+IRCTC
+Bachman
+Ritchie
+cust
+equijoin
+sname
+QUEL
+hosteller

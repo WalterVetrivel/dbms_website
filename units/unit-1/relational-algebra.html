@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Relational Algebra | DBMS Study Guide</title>
+  <meta name="description" content="Learn relational algebra: select, project, union, intersection, set difference, Cartesian product, rename, theta join, equijoin, natural join, outer joins, division and assignment, each with a worked example and an interactive playground.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="1" data-topic="1.9" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-1">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-1">Unit I</span>
+            <span class="badge badge-level" title="Topic number">Topic 1.9</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+          </div>
+          <h1>Relational Algebra</h1>
+          <p class="lead">Relational algebra is a small set of operations that take relations as input and give a relation as output. SQL is built on it. This page explains every operation with small tables, and the playground lets you run each one.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define relational algebra and say why it is procedural.</li>
+              <li>Write and evaluate select, project, set, product, rename and join expressions.</li>
+              <li>Use division for “for all” queries and outer joins for unmatched tuples.</li>
+              <li>Combine operations into one expression for a query.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is relational algebra?</a></li>
+            <li><a href="#sample">The sample relations</a></li>
+            <li><a href="#select">Select (σ)</a></li>
+            <li><a href="#project">Project (π)</a></li>
+            <li><a href="#set-ops">Union, intersection and set difference</a></li>
+            <li><a href="#product">Cartesian product (×)</a></li>
+            <li><a href="#rename">Rename (ρ)</a></li>
+            <li><a href="#joins">Joins: theta join, equijoin and natural join</a></li>
+            <li><a href="#outer">Outer joins</a></li>
+            <li><a href="#division">Division (÷)</a></li>
+            <li><a href="#assignment">Assignment (←)</a></li>
+            <li><a href="#try">Try it: relational algebra playground</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is relational algebra?</h2>
+          <p>In school algebra, operators such as + and × take numbers and give a number. In relational algebra, operators take <strong>relations</strong> (tables) and give a <strong>relation</strong>. So the output of one operation can be the input of the next.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Relational algebra</strong> is a <strong>procedural query language</strong>. It consists of a set of operations that take one or two relations as input and produce a new relation as their result.</p>
+          </div>
+          <ul>
+            <li><strong>Procedural</strong> means the query says the steps, in order, to compute the answer. (SQL is <strong>declarative</strong>: it says what you want, and the DBMS decides the steps.)</li>
+            <li>A sequence of operations forms a <strong>relational algebra expression</strong>. Its result is also a relation.</li>
+            <li>The query processor turns every SQL query into a relational algebra expression before running it.</li>
+          </ul>
+          <div class="table-wrap">
+            <table>
+              <caption>The operations at a glance</caption>
+              <thead><tr><th scope="col">Operation</th><th scope="col">Symbol</th><th scope="col">Inputs</th><th scope="col">Kind</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Select</th><td>σ (sigma)</td><td>One relation</td><td>Fundamental</td></tr>
+                <tr><th scope="row">Project</th><td>π (pi)</td><td>One relation</td><td>Fundamental</td></tr>
+                <tr><th scope="row">Rename</th><td>ρ (rho)</td><td>One relation</td><td>Fundamental</td></tr>
+                <tr><th scope="row">Union</th><td>∪</td><td>Two relations</td><td>Fundamental</td></tr>
+                <tr><th scope="row">Set difference</th><td>−</td><td>Two relations</td><td>Fundamental</td></tr>
+                <tr><th scope="row">Cartesian product</th><td>×</td><td>Two relations</td><td>Fundamental</td></tr>
+                <tr><th scope="row">Intersection</th><td>∩</td><td>Two relations</td><td>Additional</td></tr>
+                <tr><th scope="row">Joins (theta, natural, outer)</th><td>⋈, ⟕, ⟖, ⟗</td><td>Two relations</td><td>Additional</td></tr>
+                <tr><th scope="row">Division</th><td>÷</td><td>Two relations</td><td>Additional</td></tr>
+                <tr><th scope="row">Assignment</th><td>←</td><td>An expression</td><td>Additional</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The six <strong>fundamental</strong> operations can express any query. The <strong>additional</strong> operations do not add power, but they make long expressions much shorter.</p>
+        </section>
+
+        <section id="sample" class="topic-section" aria-labelledby="sample-title">
+          <h2 id="sample-title">The sample relations</h2>
+          <p>Most examples on this page use these three relations.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Student</caption>
+              <thead><tr><th scope="col">sid</th><th scope="col">sname</th><th scope="col">age</th><th scope="col">city</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Anitha</td><td>19</td><td>Salem</td></tr>
+                <tr><td>2</td><td>Bharath</td><td>21</td><td>Chennai</td></tr>
+                <tr><td>3</td><td>Charan</td><td>18</td><td>Salem</td></tr>
+                <tr><td>4</td><td>Divya</td><td>20</td><td>Erode</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Reserve (which student reserved which book)</caption>
+              <thead><tr><th scope="col">sid</th><th scope="col">isbn</th></tr></thead>
+              <tbody><tr><td>1</td><td>005</td></tr><tr><td>2</td><td>007</td></tr><tr><td>1</td><td>007</td></tr></tbody>
+            </table>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Book</caption>
+              <thead><tr><th scope="col">isbn</th><th scope="col">bname</th></tr></thead>
+              <tbody><tr><td>005</td><td>DBMS</td></tr><tr><td>007</td><td>Java</td></tr><tr><td>009</td><td>Python</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="select" class="topic-section" aria-labelledby="select-title">
+          <h2 id="select-title">Select (σ)</h2>
+          <p>Select picks the <strong>tuples (rows)</strong> that satisfy a condition, called the <strong>predicate</strong>. It keeps all the attributes.</p>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>σ predicate (relation)</code></pre>
+          </div>
+          <p><strong>Query:</strong> find the students older than 18.</p>
+          <div class="code-block">
+            <span class="code-label">Relational algebra</span>
+            <pre><code>σ age &gt; 18 (Student)</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Result</caption>
+              <thead><tr><th scope="col">sid</th><th scope="col">sname</th><th scope="col">age</th><th scope="col">city</th></tr></thead>
+              <tbody><tr><td>1</td><td>Anitha</td><td>19</td><td>Salem</td></tr><tr><td>2</td><td>Bharath</td><td>21</td><td>Chennai</td></tr><tr><td>4</td><td>Divya</td><td>20</td><td>Erode</td></tr></tbody>
+            </table>
+          </div>
+          <p>The predicate can use =, ≠, &lt;, ≤, &gt; and ≥, joined by ∧ (and), ∨ (or) and ¬ (not). For example, <code>σ age &gt; 18 ∧ city = 'Salem' (Student)</code> gives only Anitha.</p>
+        </section>
+
+        <section id="project" class="topic-section" aria-labelledby="project-title">
+          <h2 id="project-title">Project (π)</h2>
+          <p>Project picks the <strong>attributes (columns)</strong> you list and drops the rest. Because a relation is a set, any <strong>duplicate tuples are removed</strong>.</p>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>π A1, A2, ..., An (relation)</code></pre>
+          </div>
+          <p><strong>Query:</strong> list the cities of the students.</p>
+          <div class="code-block">
+            <span class="code-label">Relational algebra</span>
+            <pre><code>π city (Student)</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Result: Salem appears once, not twice</caption>
+              <thead><tr><th scope="col">city</th></tr></thead>
+              <tbody><tr><td>Salem</td></tr><tr><td>Chennai</td></tr><tr><td>Erode</td></tr></tbody>
+            </table>
+          </div>
+          <p><strong>Combining σ and π:</strong> the names of students from Salem are <code>π sname (σ city = 'Salem' (Student))</code> = {Anitha, Charan}. The inner operation runs first.</p>
+        </section>
+
+        <section id="set-ops" class="topic-section" aria-labelledby="set-title">
+          <h2 id="set-title">Union, intersection and set difference</h2>
+          <p>These work like the set operations in mathematics. The two relations must be <strong>union compatible</strong>:</p>
+          <ol>
+            <li>They have the <strong>same number of attributes</strong>.</li>
+            <li>The domains of matching attributes are <strong>the same</strong>.</li>
+          </ol>
+          <div class="table-wrap">
+            <table>
+              <caption>Full_Time and Part_Time employees</caption>
+              <thead><tr><th scope="col">Full_Time.ename</th><th scope="col">Part_Time.ename</th></tr></thead>
+              <tbody><tr><td>Ganesh</td><td>Hari</td></tr><tr><td>Hari</td><td>Janani</td></tr><tr><td>Indu</td><td></td></tr></tbody>
+            </table>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Set operations on Full_Time (F) and Part_Time (P)</caption>
+              <thead><tr><th scope="col">Operation</th><th scope="col">Meaning</th><th scope="col">Result</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">F ∪ P (union)</th><td>Tuples in F, or in P, or in both; duplicates removed</td><td>Ganesh, Hari, Indu, Janani</td></tr>
+                <tr><th scope="row">F ∩ P (intersection)</th><td>Tuples in both F and P</td><td>Hari</td></tr>
+                <tr><th scope="row">F − P (set difference)</th><td>Tuples in F but not in P</td><td>Ganesh, Indu</td></tr>
+                <tr><th scope="row">P − F</th><td>Tuples in P but not in F</td><td>Janani</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Union and intersection give the same result in either order. <strong>Set difference does not</strong>: F − P ≠ P − F. Intersection is not fundamental, because r ∩ s = r − (r − s).</p>
+          <p>With different relations, project first to make them compatible: <code>π sname (Student) ∪ π bname (Book)</code> lists every student name and every book name in one column.</p>
+        </section>
+
+        <section id="product" class="topic-section" aria-labelledby="product-title">
+          <h2 id="product-title">Cartesian product (×)</h2>
+          <p>The Cartesian product <code>r × s</code> pairs <strong>every</strong> tuple of r with <strong>every</strong> tuple of s. If r has n<sub>1</sub> tuples and s has n<sub>2</sub>, the result has n<sub>1</sub> × n<sub>2</sub> tuples. Student × Reserve has 4 × 3 = 12 tuples.</p>
+          <p>Most of those pairs are meaningless, because they join a student to another student's reservation. So a product is nearly always followed by a select.</p>
+          <p><strong>Query:</strong> find the names of students who reserved the book with isbn 005.</p>
+          <div class="code-block">
+            <span class="code-label">Relational algebra</span>
+            <pre><code>π sname (σ Student.sid = Reserve.sid ∧ Reserve.isbn = '005' (Student × Reserve))</code></pre>
+          </div>
+          <p>Result: <strong>Anitha</strong>. When both relations have an attribute with the same name (sid), we write the relation name in front: Student.sid and Reserve.sid.</p>
+        </section>
+
+        <section id="rename" class="topic-section" aria-labelledby="rename-title">
+          <h2 id="rename-title">Rename (ρ)</h2>
+          <p>The results of relational algebra expressions have no name. Rename gives a name to a relation (and, if needed, to its attributes).</p>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>ρ x (E)                 -- the result of E is named x
+ρ x(A1, A2, ..., An) (E)  -- also renames the attributes</code></pre>
+          </div>
+          <p><strong>Example:</strong> <code>ρ Student_names (π sid, sname (Student))</code> creates a relation called Student_names with the attributes sid and sname.</p>
+          <p>Rename is needed when a relation is joined with <strong>itself</strong>. To find students older than Anitha, we need two copies of Student with different names:</p>
+          <div class="code-block">
+            <span class="code-label">Relational algebra</span>
+            <pre><code>π S.sname (σ S.age &gt; A.age ∧ A.sname = 'Anitha' (ρ S (Student) × ρ A (Student)))</code></pre>
+          </div>
+          <p>Result: Bharath and Divya.</p>
+        </section>
+
+        <section id="joins" class="topic-section" aria-labelledby="joins-title">
+          <h2 id="joins-title">Joins: theta join, equijoin and natural join</h2>
+          <p>A <strong>join</strong> combines related tuples from two relations into single tuples. It is a Cartesian product followed by a selection, written as one operation.</p>
+          <h3>Theta join</h3>
+          <p>The theta join uses any condition θ, built with =, ≠, &lt;, ≤, &gt; or ≥:</p>
+          <div class="code-block">
+            <span class="code-label">Definition</span>
+            <pre><code>r ⋈θ s = σθ (r × s)</code></pre>
+          </div>
+          <h3>Equijoin</h3>
+          <p>An <strong>equijoin</strong> is a theta join whose condition uses only <strong>=</strong>. <code>Student ⋈ Student.sid = Reserve.sid Reserve</code> is an equijoin. The result keeps <strong>both</strong> sid columns.</p>
+          <h3>Natural join</h3>
+          <p>The <strong>natural join</strong> <code>r ⋈ s</code> needs no condition. It matches tuples that have <strong>equal values in all the attributes with the same name</strong>, and keeps each common attribute <strong>only once</strong>.</p>
+          <p><strong>Query:</strong> list the reserved books with their names.</p>
+          <div class="code-block">
+            <span class="code-label">Relational algebra</span>
+            <pre><code>Reserve ⋈ Book</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Result of Reserve ⋈ Book (isbn appears once)</caption>
+              <thead><tr><th scope="col">sid</th><th scope="col">isbn</th><th scope="col">bname</th></tr></thead>
+              <tbody><tr><td>1</td><td>005</td><td>DBMS</td></tr><tr><td>2</td><td>007</td><td>Java</td></tr><tr><td>1</td><td>007</td><td>Java</td></tr></tbody>
+            </table>
+          </div>
+          <p>Book 009 (Python) is reserved by no one, so it does not appear. Those three joins are all <strong>inner joins</strong>: unmatched tuples are dropped.</p>
+          <p><strong>Query:</strong> find the names of students who reserved the book “DBMS”: <code>π sname (σ bname = 'DBMS' (Student ⋈ Reserve ⋈ Book))</code> = {Anitha}.</p>
+        </section>
+
+        <section id="outer" class="topic-section" aria-labelledby="outer-title">
+          <h2 id="outer-title">Outer joins</h2>
+          <p>An outer join keeps the tuples that have <strong>no match</strong>, and fills the missing attributes with <strong>NULL</strong>. Take these two relations:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Emp</caption>
+              <thead><tr><th scope="col">ename</th><th scope="col">dno</th></tr></thead>
+              <tbody><tr><td>Ganesh</td><td>10</td></tr><tr><td>Hari</td><td>20</td></tr><tr><td>Indu</td><td>NULL</td></tr></tbody>
+            </table>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Dept</caption>
+              <thead><tr><th scope="col">dno</th><th scope="col">dname</th></tr></thead>
+              <tbody><tr><td>10</td><td>CSE</td></tr><tr><td>20</td><td>IT</td></tr><tr><td>30</td><td>ECE</td></tr></tbody>
+            </table>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>The three outer joins of Emp and Dept</caption>
+              <thead><tr><th scope="col">Join</th><th scope="col">Symbol</th><th scope="col">Keeps</th><th scope="col">Extra tuple in the result</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Left outer join</th><td>Emp ⟕ Dept</td><td>All tuples of the left relation</td><td>(Indu, NULL, NULL)</td></tr>
+                <tr><th scope="row">Right outer join</th><td>Emp ⟖ Dept</td><td>All tuples of the right relation</td><td>(NULL, 30, ECE)</td></tr>
+                <tr><th scope="row">Full outer join</th><td>Emp ⟗ Dept</td><td>All tuples of both relations</td><td>Both of the above</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>All three also contain the matched tuples (Ganesh, 10, CSE) and (Hari, 20, IT).</p>
+        </section>
+
+        <section id="division" class="topic-section" aria-labelledby="division-title">
+          <h2 id="division-title">Division (÷)</h2>
+          <p>Division answers questions with the words <strong>“for all”</strong> or <strong>“every”</strong>. If r has attributes (x, y) and s has attribute (y), then <code>r ÷ s</code> gives the x values that appear in r <strong>with every y value in s</strong>.</p>
+          <p><strong>Query:</strong> find the customers who have an account in <strong>all</strong> branches.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Account</caption>
+              <thead><tr><th scope="col">cname</th><th scope="col">branch</th></tr></thead>
+              <tbody><tr><td>Asha</td><td>Salem</td></tr><tr><td>Asha</td><td>Erode</td></tr><tr><td>Babu</td><td>Salem</td></tr><tr><td>Chitra</td><td>Erode</td></tr></tbody>
+            </table>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Branch</caption>
+              <thead><tr><th scope="col">branch</th></tr></thead>
+              <tbody><tr><td>Salem</td></tr><tr><td>Erode</td></tr></tbody>
+            </table>
+          </div>
+          <p><code>Account ÷ Branch</code> = {<strong>Asha</strong>}. Babu has no account in Erode, and Chitra has none in Salem.</p>
+          <p>Division can be written with fundamental operations: <code>r ÷ s = π x (r) − π x ((π x (r) × s) − r)</code>. The inner part finds the (customer, branch) pairs that are missing; subtracting their customers leaves those with nothing missing.</p>
+        </section>
+
+        <section id="assignment" class="topic-section" aria-labelledby="assign-title">
+          <h2 id="assign-title">Assignment (←)</h2>
+          <p>Assignment stores the result of an expression in a temporary relation variable, so a long query can be written in steps:</p>
+          <div class="code-block">
+            <span class="code-label">Relational algebra</span>
+            <pre><code>temp1 ← σ city = 'Salem' (Student)
+temp2 ← temp1 ⋈ Reserve
+result ← π sname (temp2)</code></pre>
+          </div>
+          <p>The result is {Anitha}: the only student from Salem with a reservation.</p>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: relational algebra playground</h2>
+          <p>Pick an operator and its parameter. Green rows in the inputs take part in the result; blue columns are the ones kept; orange rows are kept by an outer join with NULL. Open “Same query in SQL” to see the matching SQL.</p>
+          <div class="widget" data-widget="relational-algebra" data-op="select">
+            <noscript><p class="widget-narration">The playground needs JavaScript. Every operation is worked out in the tables above.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Project on “city”. How many tuples come out, and why not four?</li>
+              <li>Compare Full_Time − Part_Time with Part_Time − Full_Time.</li>
+              <li>Switch between the three outer joins and watch which NULL rows appear.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Shopping filters</h3>
+              <p class="muted">On a shopping site, “price below ₹500” is a select, showing only name and price is a project, and showing each product with its seller is a join.</p>
+            </div>
+            <div class="card">
+              <h3>Scholarship list</h3>
+              <p class="muted">“Students who passed every subject” is a division: students ÷ subjects, using the pass records.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Relational algebra is a procedural query language; each operation takes relations and gives a relation.</li>
+              <li>Fundamental operations: select σ, project π, union ∪, set difference −, Cartesian product × and rename ρ.</li>
+              <li>σ picks rows by a predicate; π picks columns and removes duplicates.</li>
+              <li>Union, intersection and difference need union-compatible relations; r − s ≠ s − r.</li>
+              <li>Theta join = σθ(r × s); an equijoin uses only =; a natural join matches common attributes and keeps them once.</li>
+              <li>Outer joins keep unmatched tuples and fill the gaps with NULL (left ⟕, right ⟖, full ⟗).</li>
+              <li>Division (÷) answers “for all” queries; assignment (←) stores a partial result.</li>
+            </ul>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Do not mix up σ and π. <strong>σ selects rows</strong>; <strong>π projects columns</strong>. Note that the SQL keyword SELECT does the job of π, not σ. The WHERE clause does the job of σ.</p>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit I question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="1.9"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="1.9"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 2, Section 2.6 “The Relational Algebra”.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 8, Sections 8.1 to 8.4.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-1.js"></script>
+  <script src="../../data/quizzes/unit-1.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/relational-algebra.js"></script>
+</body>
+</html>

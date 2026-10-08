@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Views of Data | DBMS Study Guide</title>
+  <meta name="description" content="Learn data abstraction and its three levels (physical, logical and view), instances and schemas, and physical and logical data independence, with an interactive three-level diagram.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="1" data-topic="1.2" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-1">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-1">Unit I</span>
+            <span class="badge badge-level" title="Topic number">Topic 1.2</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+          </div>
+          <h1>Views of Data</h1>
+          <p class="lead">A database hides the details of how data is stored, and shows each user only what they need. This page explains the three levels of abstraction, the difference between a schema and an instance, and data independence.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define data abstraction and name its three levels.</li>
+              <li>Explain what each level describes, with an example.</li>
+              <li>Tell a schema from an instance.</li>
+              <li>Differentiate between physical and logical data independence.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#abstraction">Data abstraction</a></li>
+            <li><a href="#levels">The three levels of abstraction</a></li>
+            <li><a href="#schema">Instances and schemas</a></li>
+            <li><a href="#independence">Data independence</a></li>
+            <li><a href="#try">Try it: the three levels</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="abstraction" class="topic-section" aria-labelledby="abstraction-title">
+          <h2 id="abstraction-title">Data abstraction</h2>
+          <p>When you book a train ticket, you see trains, seats and fares. You do not see the files, blocks or indexes inside the railway's computers. The system hides those details from you.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Data abstraction</strong> means showing users only the data they need and hiding the details of how the data is stored and maintained.</p>
+          </div>
+          <p>A main purpose of a database system is to give users an <strong>abstract view</strong> of the data. Many users are not computer experts, so the system hides the complex parts at several levels. This is called the <strong>view of data</strong>.</p>
+        </section>
+
+        <section id="levels" class="topic-section" aria-labelledby="levels-title">
+          <h2 id="levels-title">The three levels of abstraction</h2>
+          <figure class="figure">
+            <svg viewBox="0 0 560 300" width="560" height="300" role="img" aria-labelledby="levels-fig-title" style="max-width:100%;height:auto">
+              <title id="levels-fig-title">Three levels of abstraction: many views at the top, one logical level in the middle and one physical level at the bottom.</title>
+              <g font-family="Inter, system-ui, sans-serif" font-size="14" text-anchor="middle">
+                <rect x="20" y="20" width="150" height="44" rx="8" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="95" y="47" style="fill:var(--text)">View 1</text>
+                <rect x="205" y="20" width="150" height="44" rx="8" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="280" y="47" style="fill:var(--text)">View 2</text>
+                <rect x="390" y="20" width="150" height="44" rx="8" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="465" y="47" style="fill:var(--text)">… View n</text>
+                <line x1="95" y1="64" x2="250" y2="130" stroke-width="2" style="stroke:var(--border-strong)"/>
+                <line x1="280" y1="64" x2="280" y2="130" stroke-width="2" style="stroke:var(--border-strong)"/>
+                <line x1="465" y1="64" x2="310" y2="130" stroke-width="2" style="stroke:var(--border-strong)"/>
+                <rect x="130" y="130" width="300" height="48" rx="8" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="280" y="159" font-weight="700" style="fill:var(--text)">Logical level</text>
+                <line x1="280" y1="178" x2="280" y2="236" stroke-width="2" style="stroke:var(--border-strong)"/>
+                <rect x="130" y="236" width="300" height="48" rx="8" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="280" y="265" font-weight="700" style="fill:var(--text)">Physical level</text>
+                <text x="280" y="110" font-size="12" style="fill:var(--text-muted)">View level</text>
+              </g>
+            </svg>
+            <figcaption>Many views sit on one logical level, which sits on one physical level.</figcaption>
+          </figure>
+          <div class="table-wrap">
+            <table>
+              <caption>What each level describes</caption>
+              <thead><tr><th scope="col">Level</th><th scope="col">Describes</th><th scope="col">Used by</th><th scope="col">College example</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Physical level (lowest)</th><td><strong>How</strong> the data is actually stored, using complex low-level data structures</td><td>The DBMS and system programmers</td><td>Student records are kept in 16 KB blocks in a file, with an index on roll number</td></tr>
+                <tr><th scope="row">Logical level (middle)</th><td><strong>What</strong> data is stored and the relationships among the data</td><td>Database administrator and programmers</td><td><code>student(roll_no, name, dept, phone, fees_paid, room)</code></td></tr>
+                <tr><th scope="row">View level (highest)</th><td>Only <strong>part</strong> of the database, for one group of users</td><td>End users, such as a clerk</td><td>The hostel warden sees roll number, name and room, but not fees</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Physical level</h3>
+          <p>This is the lowest level. It describes how the records are stored, for example, as blocks of bytes in a file on disk. Most database systems hide these details from programmers.</p>
+          <h3>Logical level</h3>
+          <p>This level describes the whole database using a small number of simple structures, such as tables. The programmer works at this level. The database administrator also uses it to decide what information to keep. Using a simple structure at the logical level may need complex structures at the physical level, but the user does not need to know that.</p>
+          <h3>View level</h3>
+          <p>This is the highest level. Many users need only part of the database. A view gives each user just that part, which makes the system simpler to use. The system can give many views of the same database. A view also adds <strong>security</strong>, because a user cannot see data outside their view.</p>
+          <div class="callout callout-example">
+            <div class="callout-title">Example from the notes</div>
+            <p>A record type <code>employee</code> has four fields: <code>emp_id</code>, <code>emp_name</code>, <code>dept_no</code> and <code>salary</code>.</p>
+            <ul>
+              <li><strong>Physical level:</strong> each employee record is a block of storage locations in a row.</li>
+              <li><strong>Logical level:</strong> the record type and its four fields with their data types are defined here.</li>
+              <li><strong>View level:</strong> a clerk may see the employee's name and id, but not the salary.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="schema" class="topic-section" aria-labelledby="schema-title">
+          <h2 id="schema-title">Instances and schemas</h2>
+          <p>In a program, you declare a variable once (<code>int marks;</code>), and its value changes many times. The declaration is like a <strong>schema</strong>. The value at one moment is like an <strong>instance</strong>.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definitions</div>
+            <ul>
+              <li><strong>Schema:</strong> the overall design of the database. It changes rarely.</li>
+              <li><strong>Instance:</strong> the collection of information stored in the database at a particular moment. It changes every time data is inserted, deleted or updated.</li>
+            </ul>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Schema</span>
+            <pre><code>student(roll_no, name, dept, marks)</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>An instance of student, at 10 a.m. today</caption>
+              <thead><tr><th scope="col">roll_no</th><th scope="col">name</th><th scope="col">dept</th><th scope="col">marks</th></tr></thead>
+              <tbody>
+                <tr><td>23CS041</td><td>Priya</td><td>CSE</td><td>88</td></tr>
+                <tr><td>23IT007</td><td>Arun</td><td>IT</td><td>76</td></tr>
+                <tr><td>23CS052</td><td>Meena</td><td>CSE</td><td>91</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>If a new student is admitted at 11 a.m., the instance changes. The schema stays the same.</p>
+          <h3>Types of schema</h3>
+          <p>There is one schema for each level of abstraction:</p>
+          <ul>
+            <li><strong>Physical schema:</strong> the database design at the physical level.</li>
+            <li><strong>Logical schema:</strong> the database design at the logical level. It is the most important one, because programs are written using it.</li>
+            <li><strong>Subschema:</strong> a schema at the view level. A database can have several subschemas, one for each view.</li>
+          </ul>
+        </section>
+
+        <section id="independence" class="topic-section" aria-labelledby="independence-title">
+          <h2 id="independence-title">Data independence</h2>
+          <p>Each level is connected to the level below it by a <strong>mapping</strong>. When one level changes, the DBMS changes the mapping, so the level above it does not have to change. This is called data independence.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>Data independence</strong> is the ability to change the schema at one level without having to change the schema at the next higher level.</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Physical and logical data independence</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Physical data independence</th><th scope="col">Logical data independence</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Meaning</th><td>Change the physical schema without changing the logical schema</td><td>Change the logical schema without changing the views or application programs</td></tr>
+                <tr><th scope="row">Mapping that absorbs it</th><td>Logical–physical mapping</td><td>View–logical mapping</td></tr>
+                <tr><th scope="row">Example changes</th><td>Move files to a new disk, add an index, change the file organization</td><td>Add a column, add a table, split one table into two</td></tr>
+                <tr><th scope="row">How hard</th><td>Easier to achieve</td><td>Harder to achieve, because programs depend on the tables they use</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>“Physical changes do not reach the logical level; logical changes do not reach the views.” Write this line, then give one example change for each.</p>
+          </div>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: the three levels</h2>
+          <p>Pick a level to see the same student data at that level. Then apply a change and watch which level changes, which mapping is updated and which levels stay the same.</p>
+          <div class="widget" data-widget="abstraction">
+            <noscript><p class="widget-narration">The interactive diagram needs JavaScript. The figure and the tables above show the same three levels.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Apply “Move the data to an SSD”. Which two levels stay unchanged?</li>
+              <li>Apply “Split student into student and hostel_allotment”, then open the view level. Does the warden still see the room?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>UPI app</h3>
+              <p class="muted">You see your balance and your last few payments. That is your view. The bank's logical schema has accounts, customers and transactions. The physical level is spread over many servers you never see.</p>
+            </div>
+            <div class="card">
+              <h3>College portal upgrade</h3>
+              <p class="muted">The college moves its database to a new server with faster disks. Students log in the next day and see the same pages. That is physical data independence.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>Data abstraction hides how data is stored and shows users only what they need.</li>
+              <li>Physical level: how data is stored. Logical level: what data is stored and how it is related. View level: part of the database for one user group.</li>
+              <li>There is one physical schema and one logical schema, but there can be many views (subschemas).</li>
+              <li>Schema: the overall design, which rarely changes. Instance: the data at one moment, which changes often.</li>
+              <li>Physical data independence: change storage without changing the logical schema.</li>
+              <li>Logical data independence: change the logical schema without changing views or programs.</li>
+              <li>Logical data independence is harder to achieve than physical data independence.</li>
+            </ul>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Do not say the view level shows “the whole database in a simple way”. That is the logical level. The view level shows only <strong>part</strong> of the database.</p>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit I question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="1.2"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="1.2"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 1, Section 1.3 “View of Data”.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 2, Sections 2.1 and 2.2 (schemas, instances, the three-schema architecture and data independence).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-1.js"></script>
+  <script src="../../data/quizzes/unit-1.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/abstraction.js"></script>
+</body>
+</html>
