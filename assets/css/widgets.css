@@ -3719,3 +3719,27 @@
   font-size: var(--fs-sm);
   overflow-wrap: anywhere;
 }
+
+/* Join visualizer (V11) */
+.jv-tab tr.jv-on td {
+  box-shadow: inset 0 2px 0 var(--primary), inset 0 -2px 0 var(--primary);
+  font-weight: 700;
+}
+
+.jv-tab tr.jv-match td {
+  background: var(--accent-soft);
+  font-weight: 700;
+}
+
+.jv-tab tr.jv-new td {
+  background: var(--success-soft);
+}
+
+.jv-tab td.jv-null {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.jv-tab td.jv-key {
+  text-decoration: underline;
+}

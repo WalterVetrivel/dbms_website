@@ -922,6 +922,84 @@
       answer: 1,
       explain: "Only Item4 (Com3, 50), Item7 (Com1, 150) and Item10 (Com3, 120) have QTY > 3. Com3's total is 50 + 120 = 170.",
       link: "#group-by"
+    },
+    {
+      id: "q2.14-01",
+      topic: "2.14",
+      type: "mcq",
+      question: "student has 4 rows, one with dept_id NULL. department has 3 rows, one with no students. How many rows does the INNER JOIN on dept_id return?",
+      options: ["3", "4", "5", "12"],
+      answer: 0,
+      explain: "Only the 3 students with a matching department are paired. The NULL row and the empty department have no partner.",
+      link: "#inner"
+    },
+    {
+      id: "q2.14-02",
+      topic: "2.14",
+      type: "mcq",
+      question: "Which join keeps every row of the left table, with NULL where there is no match?",
+      options: ["INNER JOIN", "LEFT OUTER JOIN", "RIGHT OUTER JOIN", "CROSS JOIN"],
+      answer: 1,
+      explain: "A left outer join keeps all left rows and pads the right-side columns with NULL when nothing matches.",
+      link: "#left"
+    },
+    {
+      id: "q2.14-03",
+      topic: "2.14",
+      type: "tf",
+      question: "MySQL supports the FULL OUTER JOIN keyword.",
+      answer: false,
+      explain: "False. In MySQL, write a LEFT JOIN, then UNION, then the same query as a RIGHT JOIN.",
+      link: "#full"
+    },
+    {
+      id: "q2.14-04",
+      topic: "2.14",
+      type: "mcq",
+      question: "Table A has 4 rows and table B has 3 rows. How many rows does A CROSS JOIN B return?",
+      options: ["7", "12", "4", "3"],
+      answer: 1,
+      explain: "A cross join pairs every row of A with every row of B: 4 × 3 = 12.",
+      link: "#cross"
+    },
+    {
+      id: "q2.14-05",
+      topic: "2.14",
+      type: "mcq",
+      question: "employee(emp_id, name, manager_id) lists each employee's manager. Which query shows each employee with the manager's name?",
+      options: ["A self join of employee with two aliases on e.manager_id = m.emp_id", "A cross join of employee with itself", "A natural join of employee with itself", "GROUP BY manager_id"],
+      answer: 0,
+      explain: "A self join uses the table twice: e for the employee and m for the manager.",
+      link: "#self"
+    },
+    {
+      id: "q2.14-06",
+      topic: "2.14",
+      type: "tf",
+      question: "In a LEFT JOIN, moving a condition on the right table from ON to WHERE can remove left rows from the result.",
+      answer: true,
+      explain: "True. WHERE runs after the join and rejects the NULL-padded rows, so the left join acts like an inner join.",
+      link: "#on-where"
+    },
+    {
+      id: "q2.14-07",
+      topic: "2.14",
+      type: "mcq",
+      question: "department LEFT JOIN student, grouped by department. Which expression gives 0 for a department with no students?",
+      options: ["COUNT(*)", "COUNT(s.roll)", "SUM(s.roll)", "MAX(s.roll)"],
+      answer: 1,
+      explain: "The unmatched row has NULL in s.roll, so COUNT(s.roll) gives 0. COUNT(*) counts the row and gives 1.",
+      link: "#uses"
+    },
+    {
+      id: "q2.14-08",
+      topic: "2.14",
+      type: "mcq",
+      question: "What does NATURAL JOIN match on?",
+      options: ["The primary key only", "Every column with the same name in both tables", "Nothing; it is a cross join", "The first column of each table"],
+      answer: 1,
+      explain: "NATURAL JOIN uses all same-named columns and shows each once. USING (column) names the column explicitly, which is safer.",
+      link: "#natural"
     }
   ]);
 })();
