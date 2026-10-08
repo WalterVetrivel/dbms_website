@@ -197,7 +197,12 @@
           <p>In the Marks table above, <strong>RegNo</strong> is a foreign key that refers to Student, and <strong>CourseID</strong> is a foreign key that refers to Course. Every CourseID in Marks must already exist in Course. You cannot enter marks for a course “CS999” that does not exist.</p>
           <div class="code-block">
             <span class="code-label">SQL</span>
-            <pre><code>CREATE TABLE marks (
+            <pre><code>CREATE TABLE course (
+  course_id CHAR(5) PRIMARY KEY,
+  title     VARCHAR(40)
+);
+
+CREATE TABLE marks (
   reg_no    CHAR(10),
   course_id CHAR(5),
   marks     INT,

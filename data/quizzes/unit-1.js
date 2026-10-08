@@ -496,6 +496,76 @@
       answer: 0,
       explain: "A composite key has two or more attributes, such as {RollNo, Dept}. Other kinds of keys may or may not be composite.",
       link: "#composite-key"
+    },
+    /* 1.8 Constraints */
+    {
+      id: "q1.8-01",
+      topic: "1.8",
+      type: "mcq",
+      question: "Which rule says that a primary key value can never be NULL?",
+      options: ["Referential integrity", "Entity integrity", "Domain constraint", "Check constraint"],
+      answer: 1,
+      explain: "The entity integrity rule says no attribute of a primary key may be NULL.",
+      link: "#entity"
+    },
+    {
+      id: "q1.8-02",
+      topic: "1.8",
+      type: "mcq",
+      question: "An order is inserted for customer C9, but C9 is not in the Customer table. Which rule rejects it?",
+      options: ["Entity integrity", "Referential integrity", "NOT NULL", "UNIQUE"],
+      answer: 1,
+      explain: "A foreign key value must match an existing primary key value in the parent table. That is referential integrity.",
+      link: "#referential"
+    },
+    {
+      id: "q1.8-03",
+      topic: "1.8",
+      type: "mcq",
+      question: "Which constraint keeps marks between 0 and 100?",
+      options: ["CHECK (marks BETWEEN 0 AND 100)", "UNIQUE (marks)", "DEFAULT 0", "FOREIGN KEY (marks)"],
+      answer: 0,
+      explain: "A CHECK constraint tests a condition on every value. It narrows the domain of marks.",
+      link: "#domain"
+    },
+    {
+      id: "q1.8-04",
+      topic: "1.8",
+      type: "tf",
+      question: "By default, deleting a parent row also deletes all its child rows.",
+      answer: false,
+      explain: "False. The default is RESTRICT (NO ACTION): the delete is rejected. Child rows are deleted only with ON DELETE CASCADE.",
+      link: "#referential"
+    },
+    {
+      id: "q1.8-05",
+      topic: "1.8",
+      type: "mcq",
+      question: "A customer is deleted, and their orders should stay, but with no customer linked. Which action fits?",
+      options: ["ON DELETE CASCADE", "ON DELETE SET NULL", "ON DELETE RESTRICT", "NOT NULL"],
+      answer: 1,
+      explain: "SET NULL keeps the child rows and sets their foreign key to NULL.",
+      link: "#referential"
+    },
+    {
+      id: "q1.8-06",
+      topic: "1.8",
+      type: "multi",
+      question: "Which statements about UNIQUE and PRIMARY KEY are true? Select all that apply.",
+      options: ["A table can have many UNIQUE constraints", "A table can have only one primary key", "A UNIQUE column can never hold NULL", "Both forbid repeated values"],
+      answer: [0, 1, 3],
+      explain: "A UNIQUE column may hold NULL. Only the primary key forbids NULL, and a table has just one primary key.",
+      link: "#column"
+    },
+    {
+      id: "q1.8-07",
+      topic: "1.8",
+      type: "mcq",
+      question: "What does a DEFAULT constraint do?",
+      options: ["Rejects NULL values", "Gives a value when an INSERT does not supply one", "Links two tables", "Stops repeated values"],
+      answer: 1,
+      explain: "DEFAULT fills in a value when none is given. It does not reject anything.",
+      link: "#column"
     }
   ]);
 })();

@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Constraints | DBMS Study Guide</title>
+  <meta name="description" content="Learn integrity constraints in the relational model: domain, key, NOT NULL, UNIQUE, CHECK and DEFAULT constraints, and the entity integrity and referential integrity rules, with MySQL examples.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="1" data-topic="1.8" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-1">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-1">Unit I</span>
+            <span class="badge badge-level" title="Topic number">Topic 1.8</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L2: Understand</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+          </div>
+          <h1>Constraints</h1>
+          <p class="lead">Constraints are rules that the database checks on every change, so wrong data never gets in. This page explains each kind of constraint, shows how to write it in SQL, and shows what the DBMS does when a rule is broken.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define an integrity constraint and list its types.</li>
+              <li>Write domain, key, NOT NULL, UNIQUE, CHECK and DEFAULT constraints in SQL.</li>
+              <li>Explain the entity integrity and referential integrity rules with examples.</li>
+              <li>Choose what happens to child rows when a parent row is deleted.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is an integrity constraint?</a></li>
+            <li><a href="#domain">Domain constraint</a></li>
+            <li><a href="#key">Key constraint</a></li>
+            <li><a href="#column">NOT NULL, UNIQUE, CHECK and DEFAULT</a></li>
+            <li><a href="#entity">Entity integrity rule</a></li>
+            <li><a href="#referential">Referential integrity rule</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is an integrity constraint?</h2>
+          <p>Marks must be between 0 and 100. Every student must have a register number. You cannot enter marks for a course that does not exist. These are rules about the data. If we write them in the database, the DBMS checks them on every insert, update and delete.</p>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>An <strong>integrity constraint</strong> is a rule that the data in a database must satisfy. It keeps the data <strong>correct and consistent</strong>. Database integrity means the data is accurate.</p>
+          </div>
+          <p>If a change breaks a constraint, the DBMS <strong>rejects</strong> the change with an error. The data stays correct.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Types of integrity constraints</caption>
+              <thead><tr><th scope="col">Constraint</th><th scope="col">Rule</th><th scope="col">SQL</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Domain constraint</th><td>Each value must come from the attribute's domain</td><td>Data type, <code>CHECK</code></td></tr>
+                <tr><th scope="row">Key constraint</th><td>No two tuples have the same key value</td><td><code>PRIMARY KEY</code>, <code>UNIQUE</code></td></tr>
+                <tr><th scope="row">NOT NULL constraint</th><td>The value must be given</td><td><code>NOT NULL</code></td></tr>
+                <tr><th scope="row">Entity integrity</th><td>A primary key value can never be NULL</td><td><code>PRIMARY KEY</code></td></tr>
+                <tr><th scope="row">Referential integrity</th><td>A foreign key value must match an existing primary key value, or be NULL</td><td><code>FOREIGN KEY ... REFERENCES</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="domain" class="topic-section" aria-labelledby="domain-title">
+          <h2 id="domain-title">Domain constraint</h2>
+          <p>A <strong>domain</strong> is the set of values allowed for an attribute. The domain of a date is all valid dates. The domain of day-of-week is Monday to Sunday. A domain constraint says that every value of the attribute must be in its domain.</p>
+          <p>The simplest domain constraint is the <strong>data type</strong>. A column of type <code>INT</code> cannot hold “abc”. A <code>CHECK</code> clause narrows the domain further:</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>CREATE TABLE marks (
+  reg_no    CHAR(10),
+  course_id CHAR(5),
+  marks     INT CHECK (marks BETWEEN 0 AND 100)
+);</code></pre>
+          </div>
+          <p>Standard SQL also lets you name a domain once and reuse it. This works in PostgreSQL, but not in MySQL:</p>
+          <div class="code-block">
+            <span class="code-label">Standard SQL (PostgreSQL)</span>
+            <pre><code>CREATE DOMAIN id_value INT
+  CONSTRAINT id_test CHECK (VALUE > 100);
+
+CREATE TABLE student (
+  stu_id   id_value PRIMARY KEY,
+  stu_name CHAR(30),
+  stu_age  INT
+);</code></pre>
+          </div>
+        </section>
+
+        <section id="key" class="topic-section" aria-labelledby="key-title-c">
+          <h2 id="key-title-c">Key constraint</h2>
+          <p>A key constraint says that a certain <strong>minimal</strong> set of attributes identifies each tuple. It has two parts:</p>
+          <ol>
+            <li>No two different tuples may have the same values in all the attributes of the key.</li>
+            <li>No smaller part of the key is enough to identify a tuple.</li>
+          </ol>
+          <p>In SQL, the primary key is declared with <code>PRIMARY KEY</code>. Other candidate keys are declared with <code>UNIQUE</code>. A table can have only one primary key, but many UNIQUE constraints.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>CREATE TABLE student (
+  roll_no INT,
+  name    CHAR(20),
+  age     INT,
+  UNIQUE (name, age),
+  CONSTRAINT student_key PRIMARY KEY (roll_no)
+);</code></pre>
+          </div>
+          <p>Here roll_no is the primary key, and the pair (name, age) is also a key. Read more in <a href="keys.html">Keys</a>.</p>
+        </section>
+
+        <section id="column" class="topic-section" aria-labelledby="column-title">
+          <h2 id="column-title">NOT NULL, UNIQUE, CHECK and DEFAULT</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Column constraints</caption>
+              <thead><tr><th scope="col">Constraint</th><th scope="col">Meaning</th><th scope="col">Example</th></tr></thead>
+              <tbody>
+                <tr><th scope="row"><code>NOT NULL</code></th><td>The column must always have a value. By default, a column may hold NULL.</td><td><code>name VARCHAR(20) NOT NULL</code></td></tr>
+                <tr><th scope="row"><code>UNIQUE</code></th><td>No two rows may have the same value. NULL is allowed, and many rows may be NULL.</td><td><code>email VARCHAR(40) UNIQUE</code></td></tr>
+                <tr><th scope="row"><code>CHECK</code></th><td>Every value must make the condition true (or unknown, for NULL).</td><td><code>CHECK (price &gt; 0)</code></td></tr>
+                <tr><th scope="row"><code>DEFAULT</code></th><td>The value used when an INSERT gives none. Not a check, but often listed with them.</td><td><code>city VARCHAR(20) DEFAULT 'Salem'</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>CREATE TABLE employee (
+  emp_id      INT           NOT NULL,
+  name        VARCHAR(20)   NOT NULL,
+  designation VARCHAR(20)   NOT NULL,
+  salary      DECIMAL(12,2) CHECK (salary &gt; 0),
+  city        VARCHAR(20)   DEFAULT 'Salem',
+  PRIMARY KEY (emp_id)
+);
+
+-- add a constraint to a table that already exists
+ALTER TABLE employee ADD CONSTRAINT uq_name UNIQUE (name);</code></pre>
+          </div>
+          <div class="callout callout-note">
+            <div class="callout-title">Note</div>
+            <p>MySQL checks <code>CHECK</code> constraints from version 8.0.16 onwards. Older versions read them but ignored them.</p>
+          </div>
+        </section>
+
+        <section id="entity" class="topic-section" aria-labelledby="entity-title">
+          <h2 id="entity-title">Entity integrity rule</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>The <strong>entity integrity rule</strong> states that no attribute of a primary key can be NULL.</p>
+          </div>
+          <p><strong>Why:</strong> the primary key is how we find a row. To read, change or delete a row, we must know its key. If the key were NULL (unknown), the row could not be identified, and two such rows could not be told apart.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>INSERT INTO student (roll_no, name, age) VALUES (NULL, 'Kavin', 19);
+-- ERROR 1048 (23000): Column 'roll_no' cannot be null</code></pre>
+          </div>
+        </section>
+
+        <section id="referential" class="topic-section" aria-labelledby="ref-title">
+          <h2 id="ref-title">Referential integrity rule</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>The <strong>referential integrity rule</strong> states that every value of a foreign key must <strong>match an existing primary key value</strong> in the referenced (parent) table, or be NULL.</p>
+          </div>
+          <p>Take two tables: Customer (parent) and Orders (child). CustID in Orders is a foreign key that refers to CustID in Customer.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Customer (parent)</caption>
+              <thead><tr><th scope="col">CustID (PK)</th><th scope="col">Name</th></tr></thead>
+              <tbody><tr><td>C1</td><td>Harini</td></tr><tr><td>C2</td><td>Imran</td></tr></tbody>
+            </table>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Orders (child)</caption>
+              <thead><tr><th scope="col">OrderID (PK)</th><th scope="col">CustID (FK)</th><th scope="col">Amount</th></tr></thead>
+              <tbody><tr><td>501</td><td>C1</td><td>1200</td></tr><tr><td>502</td><td>C2</td><td>650</td></tr><tr><td>503</td><td>C1</td><td>300</td></tr></tbody>
+            </table>
+          </div>
+          <p>The rule stops three kinds of wrong change:</p>
+          <ol>
+            <li><strong>Insert into the child:</strong> an order for customer C9 is rejected, because C9 is not in Customer.</li>
+            <li><strong>Delete from the parent:</strong> deleting customer C1 would leave orders 501 and 503 pointing to nobody.</li>
+            <li><strong>Update the parent key:</strong> changing C1 to C7 in Customer would also leave those orders pointing to nobody.</li>
+          </ol>
+          <p>For the second and third cases, the designer chooses what the DBMS should do:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Referential actions</caption>
+              <thead><tr><th scope="col">Action</th><th scope="col">What happens when the parent row is deleted (or its key changed)</th></tr></thead>
+              <tbody>
+                <tr><th scope="row"><code>RESTRICT</code> / <code>NO ACTION</code></th><td>The change is rejected while child rows exist. This is the default.</td></tr>
+                <tr><th scope="row"><code>CASCADE</code></th><td>The child rows are deleted too (or their foreign key is changed to the new value).</td></tr>
+                <tr><th scope="row"><code>SET NULL</code></th><td>The foreign key in the child rows is set to NULL.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>CREATE TABLE customer (
+  cust_id CHAR(3) PRIMARY KEY,
+  name    VARCHAR(30)
+);
+
+CREATE TABLE orders (
+  order_id INT PRIMARY KEY,
+  cust_id  CHAR(3),
+  amount   DECIMAL(10,2),
+  FOREIGN KEY (cust_id) REFERENCES customer (cust_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);</code></pre>
+          </div>
+          <h3>Merits of referential integrity</h3>
+          <ul>
+            <li>No row in one table points to a missing row in another table.</li>
+            <li>Linked tables always agree with each other.</li>
+            <li>A parent row that is still in use cannot be deleted by mistake.</li>
+            <li>A child row cannot be added unless its parent exists.</li>
+          </ul>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>For “entity integrity and referential integrity”, give each rule in one line, say <strong>why</strong> it matters, and show one rejected change for each. A foreign key is the <strong>tool</strong>; referential integrity is the <strong>rule</strong> the tool enforces.</p>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>College admission form</h3>
+              <p class="muted">The form will not submit without a name (NOT NULL), rejects a cut-off mark above 200 (CHECK), and refuses an email already used (UNIQUE).</p>
+            </div>
+            <div class="card">
+              <h3>Online shopping</h3>
+              <p class="muted">You cannot place an order for a product ID that does not exist. If the shop removes a product, old orders keep it, so the shop uses RESTRICT, not CASCADE.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>An integrity constraint is a rule the data must satisfy; the DBMS rejects changes that break it.</li>
+              <li>Domain constraint: values must come from the attribute's domain (data type, CHECK).</li>
+              <li>Key constraint: no two tuples share a key value (PRIMARY KEY, UNIQUE).</li>
+              <li>NOT NULL forces a value; UNIQUE forbids repeats; CHECK tests a condition; DEFAULT fills a missing value.</li>
+              <li>Entity integrity: a primary key can never be NULL.</li>
+              <li>Referential integrity: a foreign key must match an existing primary key, or be NULL.</li>
+              <li>ON DELETE and ON UPDATE choose RESTRICT, CASCADE or SET NULL for the child rows.</li>
+            </ul>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Referential integrity does not always delete the child rows. That happens only with <code>ON DELETE CASCADE</code>. By default, the DBMS refuses to delete a parent row that still has children.</p>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit I question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="1.8"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="1.8"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 4, Section 4.4 “Integrity Constraints”.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 5, Section 5.2 (relational model constraints).</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-table-check-constraints.html">CHECK constraints</a> and <a href="https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html">FOREIGN KEY constraints</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-1.js"></script>
+  <script src="../../data/quizzes/unit-1.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+</body>
+</html>
