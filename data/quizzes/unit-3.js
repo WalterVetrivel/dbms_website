@@ -589,6 +589,76 @@
       answer: 1,
       explain: "Too long a time leaves a deadlock in place; too short rolls back transactions that were only waiting.",
       link: "#timeout"
+    },,
+    /* 3.9 Transaction Recovery */
+    {
+      id: "q3.9-01",
+      topic: "3.9",
+      type: "mcq",
+      question: "A power cut stops the system. Main memory is lost but the disk is fine. What kind of failure is this?",
+      options: ["Logical error", "System crash", "Disk failure", "Deadlock"],
+      answer: 1,
+      explain: "A system crash loses the contents of volatile storage, but non-volatile storage is not harmed (the fail-stop assumption).",
+      link: "#failures"
+    },
+    {
+      id: "q3.9-02",
+      topic: "3.9",
+      type: "mcq",
+      question: "Where must the log be kept?",
+      options: ["Volatile storage", "Main memory buffer", "Stable storage", "Cache"],
+      answer: 2,
+      explain: "Recovery depends on the log, so it is kept on stable storage, which is built from several copies on independent media.",
+      link: "#storage"
+    },
+    {
+      id: "q3.9-03",
+      topic: "3.9",
+      type: "tf",
+      question: "Under the write-ahead logging rule, a changed data block may be written to disk before its log record.",
+      answer: false,
+      explain: "False. The log record must reach stable storage first, so the old value is always available for undo.",
+      link: "#log"
+    },
+    {
+      id: "q3.9-04",
+      topic: "3.9",
+      type: "mcq",
+      question: "With deferred database modification, what is done after a crash for a transaction that has a start record but no commit record?",
+      options: ["Undo it", "Redo it", "Nothing", "Undo then redo it"],
+      answer: 2,
+      explain: "Under deferred modification the transaction never changed the database, so it is simply ignored.",
+      link: "#deferred"
+    },
+    {
+      id: "q3.9-05",
+      topic: "3.9",
+      type: "mcq",
+      question: "The log under immediate modification ends with <T0 start>, <T0, A, 1000, 950>, <T0, B, 2000, 2050>. What are A and B after recovery?",
+      options: ["A = 950, B = 2050", "A = 1000, B = 2000", "A = 950, B = 2000", "A = 1000, B = 2050"],
+      answer: 1,
+      explain: "T0 has no commit record, so undo(T0) restores the old values A = 1000 and B = 2000.",
+      link: "#immediate"
+    },
+    {
+      id: "q3.9-06",
+      topic: "3.9",
+      type: "mcq",
+      question: "What is the main benefit of a checkpoint?",
+      options: ["It makes transactions run faster", "Recovery need not read the whole log", "It removes the need for a log", "It prevents deadlock"],
+      answer: 1,
+      explain: "Everything before the checkpoint is on disk, so recovery starts at the last checkpoint instead of the beginning of the log.",
+      link: "#checkpoints"
+    },
+    {
+      id: "q3.9-07",
+      topic: "3.9",
+      type: "mcq",
+      question: "In shadow paging, how does a transaction commit?",
+      options: ["By writing a commit record to the log", "By switching the database pointer to the current page table", "By copying the shadow table over the current table", "By redoing all its writes"],
+      answer: 1,
+      explain: "After the changed pages and the current page table are on disk, one atomic write makes the root pointer point to the current page table.",
+      link: "#shadow"
     },
   ]);
 })();

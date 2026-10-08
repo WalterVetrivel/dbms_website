@@ -2359,3 +2359,98 @@
   font-size: var(--fs-xs);
   color: var(--text-muted);
 }
+
+/* ---------- V20 Log-based recovery ---------- */
+
+.lr-stage {
+  max-height: 40rem;
+  overflow: auto;
+}
+
+.lr-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.lr-log-box {
+  flex: 1 1 16rem;
+  max-width: 24rem;
+}
+
+.lr-log {
+  margin: var(--sp-1) 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.lr-log li {
+  padding: 2px var(--sp-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.lr-log li.is-mark {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.lr-log li.is-undo {
+  color: var(--danger);
+}
+
+.lr-log li.is-current {
+  background: var(--u3-soft);
+  font-weight: 700;
+}
+
+.lr-no {
+  display: inline-block;
+  min-width: 1.75rem;
+  color: var(--text-muted);
+}
+
+.lr-side {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  flex: 0 1 18rem;
+}
+
+.lr-phase {
+  flex-basis: 100%;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-align: center;
+}
+
+.lr-phase.is-crash {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.lr-phase.is-done {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.lr-lost {
+  color: var(--danger);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+
+.lr-undo {
+  flex-basis: 100%;
+}
+
+.an-val.is-changed {
+  background: var(--warning-soft);
+  font-weight: 700;
+}
