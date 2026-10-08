@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Built by tools/build-revision.mjs from the Key points of each topic page. Edit the topic pages, then run the script again. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit II Revision Sheet | DBMS Study Guide</title>
+  <meta name="description" content="The key points of every Unit II topic (Database Design) on one sheet that prints on about two A4 pages.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="revision" data-unit="2" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content content-wide">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        <header class="u-2 rev-head">
+          <span class="eyebrow">Unit II: Database Design</span>
+          <h1>Unit II Revision Sheet</h1>
+          <p class="lead">The key points of all 17 topics in one place. Read it the day before the exam, or print it on about two A4 pages.</p>
+        </header>
+
+        <div class="btn-row no-print">
+          <button type="button" class="btn btn-primary" data-print>Print the sheet</button>
+          <a class="btn" href="../quizzes/unit-2.html">Take the Unit II quiz</a>
+          <a class="btn" href="../question-bank/unit-2.html">Unit II question bank</a>
+        </div>
+
+        <div class="rev-sheet u-2">
+          <section class="rev-topic" id="t2-1" aria-labelledby="t2-1-title">
+            <h2 id="t2-1-title"><a href="../units/unit-2/entity-relationship-model.html"><span class="rev-num">2.1</span> Entity-Relationship Model</a></h2>
+            <ul>
+              <li>The E-R model is a conceptual model built in the conceptual design step, before any table exists.</li>
+              <li>Entity set: rectangle. Attribute: ellipse. Relationship set: diamond.</li>
+              <li>Attribute types: simple or composite, single-valued or multivalued (double ellipse), stored or derived (dashed ellipse), and key (underlined).</li>
+              <li>Mapping cardinality: 1 : 1, 1 : N, N : 1 or M : N. It gives the largest number of partners.</li>
+              <li>Total participation (double line): every entity takes part. Partial (single line): some may not.</li>
+              <li>A weak entity set has no key of its own. Its key is the owner's key + its discriminator.</li>
+              <li>A relationship set can have descriptive attributes, such as Grade on Takes.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-2" aria-labelledby="t2-2-title">
+            <h2 id="t2-2-title"><a href="../units/unit-2/er-diagrams.html"><span class="rev-num">2.2</span> E-R Diagrams</a></h2>
+            <ul>
+              <li>Nouns become entity sets (rectangles); verbs become relationship sets (diamonds).</li>
+              <li>Underline the key of every strong entity set; give a weak entity set a dashed-underlined partial key.</li>
+              <li>A fact that needs both sides of a relationship is an attribute of the relationship.</li>
+              <li>Write 1, N or M on each line, and use a double line for total participation.</li>
+              <li>No foreign keys in an E-R diagram: the relationship line is the link.</li>
+              <li>Always state your assumptions under the diagram.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-3" aria-labelledby="t2-3-title">
+            <h2 id="t2-3-title"><a href="../units/unit-2/er-to-relational-mapping.html"><span class="rev-num">2.3</span> ER-to-Relational Mapping</a></h2>
+            <ul>
+              <li>Strong entity set: a table with its simple attributes; its key is the primary key.</li>
+              <li>Weak entity set: a table whose primary key is the owner's key + the partial key.</li>
+              <li>1 : N: the foreign key goes into the many side. 1 : 1: into either side, preferably the total side.</li>
+              <li>M : N: a new table whose primary key is both foreign keys, plus the relationship attributes.</li>
+              <li>Multivalued attribute: a new table (owner key, value). Composite: one column per part. Derived: not stored.</li>
+              <li>A relationship table holds only keys and the relationship's own attributes.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-4" aria-labelledby="t2-4-title">
+            <h2 id="t2-4-title"><a href="../units/unit-2/functional-dependencies.html"><span class="rev-num">2.4</span> Functional Dependencies</a></h2>
+            <ul>
+              <li>X → Y: tuples that agree on X must agree on Y. FDs come from the meaning of the data.</li>
+              <li>Types: trivial, non-trivial, full, partial (on part of a key) and transitive (through a non-key).</li>
+              <li>Armstrong's axioms: reflexivity, augmentation and transitivity. Union, decomposition and pseudotransitivity are derived from them.</li>
+              <li>F<sup>+</sup> is every FD implied by F. X<sup>+</sup> is every attribute X determines.</li>
+              <li>X is a superkey if X<sup>+</sup> is all attributes; a candidate key if it is also minimal.</li>
+              <li>Attributes never on a right side are in every candidate key.</li>
+              <li>Canonical cover: split right sides, remove extraneous left-side attributes, remove redundant FDs, combine.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-5" aria-labelledby="t2-5-title">
+            <h2 id="t2-5-title"><a href="../units/unit-2/non-loss-decomposition.html"><span class="rev-num">2.5</span> Non-loss Decomposition</a></h2>
+            <ul>
+              <li>Redundancy causes the update, insertion and deletion anomalies.</li>
+              <li>Decomposition splits R into R1, ..., Rn whose union is R.</li>
+              <li>Non-loss (lossless-join): R1 ⋈ R2 ⋈ ... ⋈ Rn = R, with no spurious tuples.</li>
+              <li>Two parts: lossless if R1 ∩ R2 → R1 or R1 ∩ R2 → R2 (the common attributes are a superkey of one part).</li>
+              <li>Three or more parts: use the tableau test; lossless if some row becomes all a's.</li>
+              <li>Lossless join is required; dependency preservation is desirable.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-6" aria-labelledby="t2-6-title">
+            <h2 id="t2-6-title"><a href="../units/unit-2/first-second-and-third-normal-forms.html"><span class="rev-num">2.6</span> First, Second and Third Normal Forms</a></h2>
+            <ul>
+              <li>Normalization splits tables using FDs so that each fact is stored once. Every split must be lossless.</li>
+              <li>1NF: every cell holds one atomic value.</li>
+              <li>A prime attribute is part of some candidate key; a non-prime attribute is not.</li>
+              <li>2NF: 1NF and no partial dependency (no non-prime attribute depends on part of a key).</li>
+              <li>3NF: 2NF and no transitive dependency. Test: for every FD X → A, X is a superkey or A is prime.</li>
+              <li>To fix a violation X → Y, move X and Y to a new table and keep X in the old one.</li>
+              <li>A table whose keys all have one attribute is in 2NF as soon as it is in 1NF.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-7" aria-labelledby="t2-7-title">
+            <h2 id="t2-7-title"><a href="../units/unit-2/dependency-preservation.html"><span class="rev-num">2.7</span> Dependency Preservation</a></h2>
+            <ul>
+              <li>Fi, the restriction of F to Ri, holds the FDs of F+ that use only attributes of Ri.</li>
+              <li>Dependency preserving: (F1 ∪ ... ∪ Fn)+ = F+.</li>
+              <li>Test: every FD X → Y of F must have Y in X+ computed under F1 ∪ ... ∪ Fn.</li>
+              <li>An FD that fits inside one part is always preserved.</li>
+              <li>A lost FD can only be checked with a join, for example in a trigger.</li>
+              <li>Lossless join is required; dependency preservation is desirable. 3NF can always have both; BCNF sometimes cannot.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-8" aria-labelledby="t2-8-title">
+            <h2 id="t2-8-title"><a href="../units/unit-2/boyce-codd-normal-form.html"><span class="rev-num">2.8</span> Boyce-Codd Normal Form</a></h2>
+            <ul>
+              <li>BCNF: for every non-trivial FD X → Y, X is a superkey.</li>
+              <li>3NF also allows X → A when A is prime. BCNF removes that exception.</li>
+              <li>3NF and BCNF differ only when candidate keys overlap.</li>
+              <li>To decompose, split on a violating X → Y into (X ∪ Y) and (R − (Y − X)), and repeat.</li>
+              <li>BCNF decomposition is always lossless but may lose an FD; 3NF can always keep both.</li>
+              <li>Every relation with two attributes is in BCNF.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-9" aria-labelledby="t2-9-title">
+            <h2 id="t2-9-title"><a href="../units/unit-2/multivalued-dependencies-and-fourth-normal-form.html"><span class="rev-num">2.9</span> Multivalued Dependencies and Fourth Normal Form</a></h2>
+            <ul>
+              <li>X →→ Y: each X value has a set of Y values, independent of the other attributes.</li>
+              <li>MVDs come in pairs: X →→ Y gives X →→ R − X − Y.</li>
+              <li>Every FD is an MVD. An MVD is trivial if Y ⊆ X or X ∪ Y = R.</li>
+              <li>R splits losslessly into (X ∪ Y) and (X ∪ Z) exactly when X →→ Y holds.</li>
+              <li>4NF: for every non-trivial MVD X →→ Y, X is a superkey. 4NF implies BCNF.</li>
+              <li>A BCNF table can still repeat data when it stores two independent lists; 4NF splits them.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-10" aria-labelledby="t2-10-title">
+            <h2 id="t2-10-title"><a href="../units/unit-2/join-dependencies-and-fifth-normal-form.html"><span class="rev-num">2.10</span> Join Dependencies and Fifth Normal Form</a></h2>
+            <ul>
+              <li>*(R1, ..., Rn) holds if R always equals the join of its projections on R1, ..., Rn.</li>
+              <li>An MVD is a join dependency with two parts.</li>
+              <li>Some tables are lossy for every split into two but lossless for a split into three.</li>
+              <li>5NF (PJNF): every non-trivial JD is implied by the candidate keys.</li>
+              <li>To reach 5NF, split the table on its join dependency, one table per part.</li>
+              <li>5NF ⊂ 4NF ⊂ BCNF ⊂ 3NF ⊂ 2NF ⊂ 1NF.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-11" aria-labelledby="t2-11-title">
+            <h2 id="t2-11-title"><a href="../units/unit-2/sql-set-operations.html"><span class="rev-num">2.11</span> SQL Set Operations</a></h2>
+            <ul>
+              <li>Set operations combine two SELECT results with the same number of columns and compatible types.</li>
+              <li>UNION: rows in either result, duplicates removed. UNION ALL keeps duplicates.</li>
+              <li>INTERSECT: rows in both results. EXCEPT: rows in the first but not the second.</li>
+              <li>MySQL uses EXCEPT, not MINUS. INTERSECT and EXCEPT need MySQL 8.0.31 or later.</li>
+              <li>Put one ORDER BY at the end. Without it, the order is not guaranteed.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-12" aria-labelledby="t2-12-title">
+            <h2 id="t2-12-title"><a href="../units/unit-2/aggregate-functions.html"><span class="rev-num">2.12</span> Aggregate Functions</a></h2>
+            <ul>
+              <li>COUNT, SUM, AVG, MIN and MAX each return one value from many rows.</li>
+              <li>COUNT(*) counts rows; COUNT(column) counts non-NULL values; COUNT(DISTINCT column) counts different values.</li>
+              <li>SUM and AVG work on numbers only. MIN and MAX also work on text and dates.</li>
+              <li>All aggregates except COUNT(*) skip NULL. With no rows, COUNT gives 0 and the others give NULL.</li>
+              <li>WHERE runs before aggregation, so aggregates cannot go in WHERE. Use HAVING.</li>
+              <li>A plain column beside an aggregate needs GROUP BY.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-13" aria-labelledby="t2-13-title">
+            <h2 id="t2-13-title"><a href="../units/unit-2/group-by-and-having.html"><span class="rev-num">2.13</span> GROUP BY and HAVING</a></h2>
+            <ul>
+              <li>GROUP BY forms groups of rows with equal values; aggregates then give one result per group.</li>
+              <li>Each SELECT column must be in GROUP BY or inside an aggregate.</li>
+              <li>HAVING filters groups and can use aggregates; WHERE filters rows and cannot.</li>
+              <li>Order of execution: FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY.</li>
+              <li>Put plain-column conditions in WHERE, so fewer rows are grouped.</li>
+              <li>GROUP BY does not sort; use ORDER BY.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-14" aria-labelledby="t2-14-title">
+            <h2 id="t2-14-title"><a href="../units/unit-2/joins.html"><span class="rev-num">2.14</span> Joins</a></h2>
+            <ul>
+              <li>An inner join keeps only matching pairs. NULL never matches anything.</li>
+              <li>Left and right outer joins also keep unmatched rows of one side, padded with NULL.</li>
+              <li>MySQL has no FULL OUTER JOIN; write LEFT JOIN UNION RIGHT JOIN.</li>
+              <li>A cross join returns every pair: rows(A) × rows(B).</li>
+              <li>A self join uses one table twice, with two aliases.</li>
+              <li>In an outer join, a condition on the optional side belongs in ON, not WHERE.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-15" aria-labelledby="t2-15-title">
+            <h2 id="t2-15-title"><a href="../units/unit-2/sub-queries.html"><span class="rev-num">2.15</span> Sub Queries</a></h2>
+            <ul>
+              <li>A subquery is a SELECT in brackets inside another statement. It can be in WHERE, HAVING, FROM or SELECT.</li>
+              <li>A single-row subquery returns one value and works with =, &lt;, &gt; and the like. Using = with many rows gives error 1242.</li>
+              <li>A multiple-row subquery needs IN, ANY or ALL. &gt; ANY means above the smallest; &gt; ALL means above the largest.</li>
+              <li>A correlated subquery uses a column of the outer query and runs once per outer row.</li>
+              <li>EXISTS tests whether the subquery returns any row. NOT EXISTS is safer than NOT IN when NULL values are possible.</li>
+              <li>A subquery in FROM is a derived table and needs an alias.</li>
+              <li>ORDER BY is allowed in a subquery; it matters together with LIMIT. GROUP BY groups rows; it does not sort.</li>
+              <li>In MySQL, UPDATE and DELETE cannot read the table they change in a subquery (error 1093).</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-16" aria-labelledby="t2-16-title">
+            <h2 id="t2-16-title"><a href="../units/unit-2/views.html"><span class="rev-num">2.16</span> Views</a></h2>
+            <ul>
+              <li>A view is a stored SELECT query that acts as a virtual table. It holds no data of its own.</li>
+              <li>A view always shows the current data of its base tables.</li>
+              <li>A simple one-table view is updatable. Changes go to the base table.</li>
+              <li>Views with aggregates, DISTINCT, GROUP BY, HAVING or UNION are read-only.</li>
+              <li>WITH CHECK OPTION rejects rows that would not appear in the view.</li>
+              <li>Use CREATE OR REPLACE VIEW or ALTER VIEW to change a view, and DROP VIEW to remove it. Dropping a view never deletes table data.</li>
+              <li>Views help with security, simpler queries and logical data independence.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t2-17" aria-labelledby="t2-17-title">
+            <h2 id="t2-17-title"><a href="../units/unit-2/triggers.html"><span class="rev-num">2.17</span> Triggers</a></h2>
+            <ul>
+              <li>A trigger is SQL that runs automatically on INSERT, UPDATE or DELETE on a table.</li>
+              <li>It follows the event-condition-action model.</li>
+              <li>BEFORE triggers can change NEW or stop the change. AFTER triggers react to a change already made.</li>
+              <li>MySQL triggers are row-level: FOR EACH ROW. They run once per changed row.</li>
+              <li>INSERT has only NEW, DELETE has only OLD, and UPDATE has both.</li>
+              <li>SIGNAL SQLSTATE '45000' raises an error and makes the whole statement fail.</li>
+              <li>Use DELIMITER in the mysql client for a trigger body with BEGIN ... END.</li>
+              <li>Keep triggers short. Prefer a CHECK constraint when it is enough.</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/revision.js"></script>
+</body>
+</html>

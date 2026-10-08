@@ -519,7 +519,7 @@
       answer: true,
       explain: "True. An upgrade acts like getting a new lock, so it belongs to the growing phase. A downgrade belongs to the shrinking phase.",
       link: "#conversion"
-    },,
+    },
     /* 3.8 Deadlock */
     {
       id: "q3.8-01",
@@ -589,7 +589,7 @@
       answer: 1,
       explain: "Too long a time leaves a deadlock in place; too short rolls back transactions that were only waiting.",
       link: "#timeout"
-    },,
+    },
     /* 3.9 Transaction Recovery */
     {
       id: "q3.9-01",
@@ -659,7 +659,7 @@
       answer: 1,
       explain: "After the changed pages and the current page table are on disk, one atomic write makes the root pointer point to the current page table.",
       link: "#shadow"
-    },,
+    },
     /* 3.10 Save Points */
     {
       id: "q3.10-01",
@@ -718,7 +718,7 @@
       answer: 1,
       explain: "COMMIT ends the transaction and removes all its savepoints, so SP1 no longer exists.",
       link: "#rules"
-    },,
+    },
     /* 3.11 Isolation Levels */
     {
       id: "q3.11-01",
@@ -788,7 +788,7 @@
       answer: 1,
       explain: "The shared lock is released straight after the read. That is why a second read may see a newer committed value.",
       link: "#levels"
-    },,
+    },
     /* 3.12 SQL Facilities for Concurrency and Recovery */
     {
       id: "q3.12-01",
@@ -848,7 +848,7 @@
       answer: 1,
       explain: "InnoDB has rolled the transaction back to break the deadlock, so the program should retry it.",
       link: "#waits"
-    },,
+    },
     /* 3.13 Backup and Recovery System */
     {
       id: "q3.13-01",
@@ -908,7 +908,7 @@
       answer: 2,
       explain: "Two-very-safe commits only when the commit record is at both sites, so no commit can happen if one site is down.",
       link: "#remote"
-    },,
+    },
     /* 3.14 SQL DCL and TCL Commands */
     {
       id: "q3.14-01",

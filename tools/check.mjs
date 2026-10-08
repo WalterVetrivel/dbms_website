@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
+import { buildRevision } from "./build-revision.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SKIP_DIRS = new Set([".git", "node_modules", "tools", ".github"]);
@@ -164,7 +165,61 @@ for (const t of topics) {
   if (questions.length && !mapped.has(t.id)) warn(`data/topics.js [${t.id}]`, "no question bank item is mapped to this topic");
 }
 
-// 5. Readability (Flesch reading ease). A warning only.
+// 5. Quiz data. Every item needs a valid answer and a link to a section of its topic page.
+const zDir = path.join(ROOT, "data", "quizzes");
+const zFiles = fs.existsSync(zDir) ? fs.readdirSync(zDir).filter((f) => f.endsWith(".js")).sort() : [];
+for (const f of zFiles) {
+  const before = (D.quizzes || []).length;
+  vm.runInContext(fs.readFileSync(path.join(zDir, f), "utf8"), ctx, { filename: f });
+  const added = D.quizzes.slice(before);
+  if (Object.keys(added).length !== added.length) err(`data/quizzes/${f}`, "has an empty slot in its list (look for a doubled comma)");
+}
+const quizzes = (D.quizzes || []).filter(Boolean);
+const zIds = new Set();
+const perUnit = {};
+const pageHtml = {};
+const TYPES = new Set(["mcq", "multi", "tf", "order"]);
+for (const q of quizzes) {
+  const where = `data/quizzes [${q.id}]`;
+  if (zIds.has(q.id)) err(where, "duplicate id");
+  zIds.add(q.id);
+  const t = topics.find((x) => x.id === q.topic);
+  if (!t) { err(where, `refers to unknown topic ${q.topic}`); continue; }
+  if (!new RegExp(`^q${t.id.replace(".", "\\.")}-\\d+$`).test(q.id || "")) err(where, "id does not match its topic (expected q<topic>-<number>)");
+  perUnit[t.unit] = (perUnit[t.unit] || 0) + 1;
+  if (!TYPES.has(q.type)) { err(where, `bad type "${q.type}"`); continue; }
+  if (!q.question || !q.explain) err(where, "missing question or explanation");
+  const n = (q.options || []).length;
+  if (q.type === "tf") {
+    if (typeof q.answer !== "boolean") err(where, "a true or false answer must be true or false");
+  } else if (n < 2) err(where, "needs at least two options");
+  else if (q.type === "mcq" && !(Number.isInteger(q.answer) && q.answer >= 0 && q.answer < n)) err(where, "answer is not an option number");
+  else if (q.type === "multi" && !(Array.isArray(q.answer) && q.answer.length && q.answer.every((a) => Number.isInteger(a) && a >= 0 && a < n))) err(where, "answer must list option numbers");
+  if (!q.link) warn(where, "has no link to its topic section");
+  else if (t.status === "published") {
+    const file = path.join(ROOT, "units", `unit-${t.unit}`, `${t.slug}.html`);
+    pageHtml[file] = pageHtml[file] || (fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "");
+    if (!q.link.startsWith("#") || !pageHtml[file].includes(`id="${q.link.slice(1)}"`)) err(where, `link ${q.link} is not a section of ${rel(file)}`);
+  }
+}
+for (const u of units) {
+  const live = topics.filter((t) => t.unit === u.n && t.status === "published").length;
+  if (live === topics.filter((t) => t.unit === u.n).length && (perUnit[u.n] || 0) < 40) {
+    err(`data/quizzes/unit-${u.n}.js`, `has ${perUnit[u.n] || 0} items (a unit quiz needs at least 40)`);
+  }
+}
+
+// 6. Revision sheets must match the Key points on the topic pages.
+try {
+  for (const [file, html] of Object.entries(buildRevision())) {
+    const full = path.join(ROOT, file);
+    if (!fs.existsSync(full) || fs.readFileSync(full, "utf8") !== html) err(file, "is out of date; run node tools/build-revision.mjs");
+  }
+} catch (e) {
+  err("tools/build-revision.mjs", e.message);
+}
+
+// 7. Readability (Flesch reading ease). A warning only.
 function syllables(word) {
   word = word.toLowerCase().replace(/[^a-z]/g, "");
   if (!word) return 0;
@@ -201,7 +256,7 @@ for (const f of htmlFiles) {
 
 console.log("Reading ease (higher is easier):");
 for (const [f, s] of report.sort((a, b) => a[1] - b[1])) console.log(`  ${s.toFixed(0).padStart(4)}  ${f}`);
-console.log(`\nChecked ${htmlFiles.length} pages, ${textFiles.length} text files, ${topics.length} topics, ${questions.length} questions.`);
+console.log(`\nChecked ${htmlFiles.length} pages, ${textFiles.length} text files, ${topics.length} topics, ${questions.length} questions, ${quizzes.length} quiz items.`);
 for (const w of warnings) console.log(`warning  ${w}`);
 for (const e of errors) console.log(`error    ${e}`);
 console.log(`\n${errors.length} errors, ${warnings.length} warnings`);

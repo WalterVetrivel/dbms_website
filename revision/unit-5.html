@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Built by tools/build-revision.mjs from the Key points of each topic page. Edit the topic pages, then run the script again. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit V Revision Sheet | DBMS Study Guide</title>
+  <meta name="description" content="The key points of every Unit V topic (Advanced Topics) on one sheet that prints on about two A4 pages.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="revision" data-unit="5" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content content-wide">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        <header class="u-5 rev-head">
+          <span class="eyebrow">Unit V: Advanced Topics</span>
+          <h1>Unit V Revision Sheet</h1>
+          <p class="lead">The key points of all 15 topics in one place. Read it the day before the exam, or print it on about two A4 pages.</p>
+        </header>
+
+        <div class="btn-row no-print">
+          <button type="button" class="btn btn-primary" data-print>Print the sheet</button>
+          <a class="btn" href="../quizzes/unit-5.html">Take the Unit V quiz</a>
+          <a class="btn" href="../question-bank/unit-5.html">Unit V question bank</a>
+        </div>
+
+        <div class="rev-sheet u-5">
+          <section class="rev-topic" id="t5-1" aria-labelledby="t5-1-title">
+            <h2 id="t5-1-title"><a href="../units/unit-5/distributed-database-architecture.html"><span class="rev-num">5.1</span> Distributed Databases: Architecture</a></h2>
+            <ul>
+              <li>A distributed database stores related data at several sites joined by a network, but looks like one database to users.</li>
+              <li>Each site has its own local DBMS and database; a DDBMS manages the whole system.</li>
+              <li>A request that cannot be answered locally is sent to the site that holds the data.</li>
+              <li>Replication keeps copies at several sites: better availability, but costly updates.</li>
+              <li>Horizontal fragmentation splits rows with σ and is rebuilt with union (∪).</li>
+              <li>Vertical fragmentation splits columns with π, keeps the key in every fragment, and is rebuilt with join (⋈).</li>
+              <li>Mixed fragmentation uses both splits.</li>
+              <li>Transparency hides fragmentation, replication and location from the user.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t5-2" aria-labelledby="t5-2-title">
+            <h2 id="t5-2-title"><a href="../units/unit-5/types-of-distributed-databases.html"><span class="rev-num">5.2</span> Types of Distributed Databases</a></h2>
+            <ul>
+              <li>The type depends on two things: whether sites use the same software (homogeneity) and how much control each site keeps (autonomy).</li>
+              <li>Homogeneous: same DBMS and schema at all sites; sites know each other and cooperate fully.</li>
+              <li>Heterogeneous: sites may use different DBMS software, schemas or data models; middleware translates between them.</li>
+              <li>Federated (multidatabase): each database keeps its own control and shares only some data through a common layer.</li>
+              <li>There are four kinds of autonomy. They are design, communication, execution and association.</li>
+              <li>A homogeneous system is easy to manage. A heterogeneous system lets old databases work together.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t5-3" aria-labelledby="t5-3-title">
+            <h2 id="t5-3-title"><a href="../units/unit-5/distributed-transaction-processing.html"><span class="rev-num">5.3</span> Transaction Processing</a></h2>
+            <ul>
+              <li>A global (distributed) transaction uses data at more than one site; a local transaction uses only one site.</li>
+              <li>The transaction coordinator starts, splits and ends transactions; the transaction manager runs them at its own site and keeps the log.</li>
+              <li>Failure modes: site failure, lost message, link failure and network partition.</li>
+              <li>2PC phase 1: prepare T, then each site logs &lt;ready T&gt; or &lt;no T&gt; and votes.</li>
+              <li>2PC phase 2: commit only if all vote ready; the coordinator logs &lt;commit T&gt; or &lt;abort T&gt; and tells every site.</li>
+              <li>A recovering site with no &lt;ready T&gt; aborts T; with &lt;ready T&gt; only, it must ask what was decided.</li>
+              <li>2PC can block: if the coordinator fails after all sites are ready, they must wait for it.</li>
+              <li>3PC adds a pre-commit phase so that a new coordinator can decide, avoiding blocking when there is no partition.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t5-4" aria-labelledby="t5-4-title">
+            <h2 id="t5-4-title"><a href="../units/unit-5/nosql-introduction.html"><span class="rev-num">5.4</span> NoSQL Databases: Introduction</a></h2>
+            <ul>
+              <li>NoSQL means “not only SQL”. It is a non-relational database with a flexible schema.</li>
+              <li>It is needed for big data, varied data, high availability and easy scaling.</li>
+              <li>Relational databases mostly scale up (bigger server). NoSQL databases scale out (more servers).</li>
+              <li>BASE means basically available, soft state and eventual consistency. It trades strict consistency for availability.</li>
+              <li>The four types are document, key-value, column-based and graph databases.</li>
+              <li>Choose a relational database for strict correctness and complex queries. Choose NoSQL for huge, fast-changing data.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t5-5" aria-labelledby="t5-5-title">
+            <h2 id="t5-5-title"><a href="../units/unit-5/cap-theorem.html"><span class="rev-num">5.5</span> CAP Theorem</a></h2>
+            <ul>
+              <li>C: every read sees the latest write. A: every request gets an answer. P: the system works when the network splits.</li>
+              <li>The CAP theorem says a distributed system can guarantee at most two of C, A and P at the same time.</li>
+              <li>Partitions cannot be avoided across many servers, so the real choice during a partition is C or A.</li>
+              <li>CP systems refuse or wait (HBase, MongoDB). AP systems answer with possibly old data (Cassandra, CouchDB, DynamoDB).</li>
+              <li>CA is possible only on a single site, such as MySQL on one server.</li>
+              <li>BASE and eventual consistency are the AP choice. The C in CAP is not the C in ACID.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t5-6" aria-labelledby="t5-6-title">
+            <h2 id="t5-6-title"><a href="../units/unit-5/document-based-systems.html"><span class="rev-num">5.6</span> Document Based Systems</a></h2>
+            <ul>
+              <li>A document database stores data as JSON-like documents grouped into collections.</li>
+              <li>A document has fields; values can be arrays or embedded documents. <code>_id</code> is the unique key.</li>
+              <li>Documents in one collection can have different fields (flexible schema).</li>
+              <li>Embed data that is read together; refer to data that is shared or grows without limit.</li>
+              <li>MongoDB uses commands such as <code>insertOne</code>, <code>find</code>, <code>updateOne</code> and <code>deleteOne</code>.</li>
+              <li>MongoDB and CouchDB are the two best-known document databases.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t5-7" aria-labelledby="t5-7-title">
+            <h2 id="t5-7-title"><a href="../units/unit-5/key-value-stores.html"><span class="rev-num">5.7</span> Key Value Stores</a></h2>
+            <ul>
+              <li>A key-value store keeps data as a unique key and a value; it finds data only by key.</li>
+              <li>The basic operations are put, get and delete (SET, GET and DEL in Redis).</li>
+              <li>Keys are designed from what the app knows, such as <code>cart:42</code>.</li>
+              <li>Keys are spread over servers by hashing; consistent hashing makes adding servers easy.</li>
+              <li>Uses: caches, login sessions with expiry, shopping carts, counters and leaderboards.</li>
+              <li>Examples: Redis (in memory) and Amazon DynamoDB (managed cloud service).</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t5-8" aria-labelledby="t5-8-title">
+            <h2 id="t5-8-title"><a href="../units/unit-5/column-based-systems.html"><span class="rev-num">5.8</span> Column Based Systems</a></h2>
+            <ul>
+              <li>A column-based (wide-column) database stores rows by row key, with columns grouped into column families.</li>
+              <li>Families are declared; columns are not. Each row can have different columns, and missing cells are not stored.</li>
+              <li>Cells can keep several versions with timestamps.</li>
+              <li>HBase uses <code>put</code>, <code>get</code> and <code>scan</code>; Cassandra uses CQL with a partition key and clustering columns.</li>
+              <li>Tables are designed around the queries; there are no joins.</li>
+              <li>Examples: Apache HBase and Apache Cassandra. Uses: sensor data, logs, messages, time series.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t5-9" aria-labelledby="t5-9-title">
+            <h2 id="t5-9-title"><a href="../units/unit-5/graph-databases.html"><span class="rev-num">5.9</span> Graph Databases</a></h2>
+            <ul>
+              <li>A graph database stores nodes (entities), relationships (edges) and properties on both.</li>
+              <li>Labels group nodes, such as <code>:Person</code>; relationships are named and directed, such as <code>KNOWS</code>.</li>
+              <li>Links are stored directly (index-free adjacency), so multi-hop queries are fast.</li>
+              <li>Neo4j uses Cypher: <code>MATCH (a)-[:KNOWS]-&gt;(b) RETURN b</code>.</li>
+              <li>Uses: social networks, fraud detection, recommendations and routes.</li>
+              <li>Examples: Neo4j, Amazon Neptune, ArangoDB and JanusGraph.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t5-10" aria-labelledby="t5-10-title">
+            <h2 id="t5-10-title"><a href="../units/unit-5/database-security-issues.html"><span class="rev-num">5.10</span> Database Security: Security Issues</a></h2>
+            <ul>
+              <li>Database security protects data against unauthorized access, wrong changes and loss.</li>
+              <li>The issues are legal and ethical, policy, system, and data and user level issues.</li>
+              <li>Threats cause loss of integrity, availability or confidentiality (CIA).</li>
+              <li>The four control measures are access control, inference control, flow control and encryption.</li>
+              <li>Inference control stops users from working out private values from summary answers.</li>
+              <li>The DBA creates accounts, grants and revokes privileges, assigns security levels and keeps the audit log.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t5-11" aria-labelledby="t5-11-title">
+            <h2 id="t5-11-title"><a href="../units/unit-5/access-control-based-on-privileges.html"><span class="rev-num">5.11</span> Access Control Based on Privileges</a></h2>
+            <ul>
+              <li>A privilege is a right to do one action on one object. DAC grants and revokes privileges at the owner's choice.</li>
+              <li>Privileges exist at the account level and at the table (relation) level, even down to columns.</li>
+              <li>The access matrix has subjects as rows, objects as columns and privileges in the cells.</li>
+              <li><code>GRANT ... ON ... TO</code> gives privileges; <code>REVOKE ... ON ... FROM</code> takes them back. Views limit rows.</li>
+              <li><code>WITH GRANT OPTION</code> lets privileges spread; <code>REVOKE ... CASCADE</code> removes the spread copies in standard SQL.</li>
+              <li>MAC uses clearance and classification levels. Bell-LaPadula: no read up, no write down.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t5-12" aria-labelledby="t5-12-title">
+            <h2 id="t5-12-title"><a href="../units/unit-5/role-based-access-control.html"><span class="rev-num">5.12</span> Role Based Access Control</a></h2>
+            <ul>
+              <li>RBAC gives privileges to roles and roles to users. A user can have many roles.</li>
+              <li>The three parts are users, roles and permissions.</li>
+              <li>In a role hierarchy, a senior role inherits the privileges of junior roles.</li>
+              <li>Separation of duties keeps conflicting roles, such as entry and approval, apart.</li>
+              <li>MySQL 8.4: <code>CREATE ROLE</code>, <code>GRANT ... TO role</code>, <code>GRANT role TO user</code>, then <code>SET DEFAULT ROLE</code> or <code>SET ROLE</code>.</li>
+              <li>RBAC is easier to manage at scale than DAC and more flexible than MAC.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t5-13" aria-labelledby="t5-13-title">
+            <h2 id="t5-13-title"><a href="../units/unit-5/sql-injection.html"><span class="rev-num">5.13</span> SQL Injection</a></h2>
+            <ul>
+              <li>SQL injection happens when user input is joined into an SQL query and changes its meaning.</li>
+              <li>A quote in the input closes the string early; what follows runs as SQL.</li>
+              <li>Classic attacks: <code>' OR '1'='1</code> (always true), <code>admin' -- </code> (comment) and <code>UNION SELECT</code> (steal data).</li>
+              <li>Types: in-band (tautology, UNION, error based), blind (boolean, time based), stacked, out-of-band and second order.</li>
+              <li>Impacts: login bypass, data theft, data change or loss, and server takeover.</li>
+              <li>Prevention: prepared statements first, plus allow-list validation, least privilege and hidden errors.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t5-14" aria-labelledby="t5-14-title">
+            <h2 id="t5-14-title"><a href="../units/unit-5/encryption-and-public-key-infrastructures.html"><span class="rev-num">5.14</span> Encryption and Public Key Infrastructures</a></h2>
+            <ul>
+              <li>Encryption turns plaintext into ciphertext with a key; decryption reverses it.</li>
+              <li>Symmetric (AES): one shared key, fast, but the key is hard to share.</li>
+              <li>Asymmetric (RSA): public key to encrypt, private key to decrypt; slower; solves key sharing.</li>
+              <li>Passwords are hashed with a salt, not encrypted.</li>
+              <li>A digital signature is a hash encrypted with the sender's private key and checked with their public key.</li>
+              <li>PKI is the system of certificate authorities, certificates, policies and revocation that makes public keys trustworthy. MySQL uses it for TLS connections.</li>
+            </ul>
+          </section>
+          <section class="rev-topic" id="t5-15" aria-labelledby="t5-15-title">
+            <h2 id="t5-15-title"><a href="../units/unit-5/database-security-challenges.html"><span class="rev-num">5.15</span> Challenges</a></h2>
+            <ul>
+              <li>Database security is never finished, because attacks, systems and laws keep changing.</li>
+              <li>Data quality: users must be able to trust that data is right, complete and from a known source.</li>
+              <li>Intellectual property: hidden marks in the data (watermarks and fingerprints) prove who owns it and trace leaks.</li>
+              <li>Survivability: confinement, damage assessment, reconfiguration, repair and fault treatment.</li>
+              <li>Privacy: removing names is not enough. Blur ages, PIN codes and similar details so each person looks like several others (k-anonymity).</li>
+              <li>Newer challenges include cloud settings, insiders, ransomware, NoSQL defaults, devices and AI.</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/revision.js"></script>
+</body>
+</html>
