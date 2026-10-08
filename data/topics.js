@@ -106,7 +106,7 @@ DBMS.topics = [
   { id: "3.11", unit: 3, slug: "isolation-levels", title: "Isolation Levels", level: "L2", textbooks: ["S17", "E20"], covers: "Read uncommitted, read committed, repeatable read, serializable; phenomena each allows", status: "published", prereqs: ["3.5"], related: ["3.10", "3.12", "3.7"], widgets: ["V22"] },
   { id: "3.12", unit: 3, slug: "sql-facilities-for-concurrency-and-recovery", title: "SQL Facilities for Concurrency and Recovery", level: "L2", textbooks: ["S17", "E20"], covers: "START TRANSACTION, SET TRANSACTION, SELECT ... FOR UPDATE and FOR SHARE, LOCK TABLES", status: "published", prereqs: ["3.11", "3.6"], related: ["3.13", "3.14", "3.10"] },
   { id: "3.13", unit: 3, slug: "backup-and-recovery-system", title: "Backup and Recovery System", level: "L2", textbooks: ["S19", "E22"], covers: "Full, incremental and differential backups, binary log, point-in-time recovery", status: "published", prereqs: ["3.9"], related: ["3.12", "4.1"] },
-  { id: "3.14", unit: 3, slug: "sql-dcl-and-tcl-commands", title: "SQL DCL and TCL Commands", level: "L3", textbooks: ["S4", "E7"], covers: "GRANT, REVOKE, COMMIT, ROLLBACK and SAVEPOINT", status: "planned", prereqs: [], related: [] },
+  { id: "3.14", unit: 3, slug: "sql-dcl-and-tcl-commands", title: "SQL DCL and TCL Commands", level: "L3", textbooks: ["S4", "E7"], covers: "GRANT, REVOKE; COMMIT, ROLLBACK, SAVEPOINT", status: "published", prereqs: ["3.1"], related: ["3.10", "3.12", "5.11", "5.12"], widgets: ["V21"] },
 
   // Unit IV
   { id: "4.1", unit: 4, slug: "raid", title: "RAID", level: "L2", textbooks: ["S12", "E16"], covers: "Striping, mirroring, parity and RAID levels 0 to 6", status: "published", prereqs: [], related: ["4.2", "4.3"], widgets: ["V23"] },

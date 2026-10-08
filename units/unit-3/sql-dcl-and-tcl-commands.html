@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SQL DCL and TCL Commands | DBMS Study Guide</title>
+  <meta name="description" content="Learn the SQL data control language (GRANT and REVOKE, with privileges, users, roles and WITH GRANT OPTION) and transaction control language (COMMIT, ROLLBACK and SAVEPOINT), with the game store examples from the lab, the steps for commit and rollback, and how DCL and TCL differ.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="3" data-topic="3.14" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-3">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-3">Unit III</span>
+            <span class="badge badge-level" title="Topic number">Topic 3.14</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO3</span>
+          </div>
+          <h1>SQL DCL and TCL Commands</h1>
+          <p class="lead">DCL decides who may do what to the data. TCL decides when a group of changes becomes permanent or is undone. Together they keep a shared database safe from wrong users and half-done work.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Place DCL and TCL among the SQL command groups, and state how they differ.</li>
+              <li>Write GRANT and REVOKE statements for users and roles, with and without WITH GRANT OPTION.</li>
+              <li>Write a transaction with COMMIT, ROLLBACK and SAVEPOINT, and explain each step.</li>
+              <li>Apply DCL and TCL to the game store database from the lab.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#groups">SQL command groups</a></li>
+            <li><a href="#grant">DCL: GRANT</a></li>
+            <li><a href="#revoke">DCL: REVOKE</a></li>
+            <li><a href="#roles">Roles and the lab example</a></li>
+            <li><a href="#tcl">TCL: COMMIT, ROLLBACK and SAVEPOINT</a></li>
+            <li><a href="#steps">Steps for commit and rollback</a></li>
+            <li><a href="#compare">DCL and TCL compared</a></li>
+            <li><a href="#try-it">Try it yourself</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="groups" class="topic-section" aria-labelledby="groups-title">
+          <h2 id="groups-title">SQL command groups</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Groups of SQL commands</caption>
+              <thead><tr><th scope="col">Group</th><th scope="col">Full name</th><th scope="col">Purpose</th><th scope="col">Commands</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">DDL</th><td>Data definition language</td><td>Define and change the structure of tables</td><td>CREATE, ALTER, DROP, TRUNCATE, RENAME</td></tr>
+                <tr><th scope="row">DML</th><td>Data manipulation language</td><td>Read and change the data in tables</td><td>SELECT, INSERT, UPDATE, DELETE</td></tr>
+                <tr><th scope="row">DCL</th><td>Data control language</td><td>Give and take away access rights</td><td>GRANT, REVOKE</td></tr>
+                <tr><th scope="row">TCL</th><td>Transaction control language</td><td>Manage transactions</td><td>COMMIT, ROLLBACK, SAVEPOINT</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Some books list SELECT on its own as DQL (data query language). TCL is sometimes counted with DML, since it controls DML changes.</p>
+        </section>
+
+        <section id="grant" class="topic-section" aria-labelledby="grant-title">
+          <h2 id="grant-title">DCL: GRANT</h2>
+          <p>GRANT gives privileges on a database object to users or roles. The DCL commands are used to enforce database security when many users share one database.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>GRANT privilege_name [, privilege_name ...]
+ON object_name
+TO {user_name | PUBLIC | role_name}
+[WITH GRANT OPTION];</code></pre>
+          </div>
+          <ul>
+            <li><strong>privilege_name:</strong> the right being given, such as SELECT, INSERT, UPDATE, DELETE, EXECUTE, or ALL PRIVILEGES.</li>
+            <li><strong>object_name:</strong> a database object such as a table, view or stored procedure.</li>
+            <li><strong>user_name:</strong> the user who receives the privilege. In MySQL, a user is written as <code>'name'@'host'</code>.</li>
+            <li><strong>PUBLIC:</strong> every user (standard SQL; MySQL does not support it).</li>
+            <li><strong>role_name:</strong> a named set of privileges.</li>
+            <li><strong>WITH GRANT OPTION:</strong> lets the user pass the same privilege on to other users.</li>
+          </ul>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>-- read-only access to one table
+GRANT SELECT ON Employee_Info TO user1;
+
+-- several privileges at once, and the right to pass them on
+GRANT SELECT, INSERT, UPDATE ON college.marks TO 'hod'@'localhost' WITH GRANT OPTION;
+
+-- privilege on chosen columns only
+GRANT UPDATE (PhoneNumber, Address) ON Employee_Info TO 'clerk'@'localhost';
+
+-- every privilege on every table of a database
+GRANT ALL PRIVILEGES ON college.* TO 'admin'@'localhost';</code></pre>
+          </div>
+          <p>A grant chain and what happens when it is broken are explained in <a href="../unit-5/access-control-based-on-privileges.html#propagation">Access Control Based on Privileges</a>.</p>
+        </section>
+
+        <section id="revoke" class="topic-section" aria-labelledby="revoke-title">
+          <h2 id="revoke-title">DCL: REVOKE</h2>
+          <p>REVOKE withdraws privileges that were given with GRANT.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>REVOKE privilege_name [, privilege_name ...]
+ON object_name
+FROM {user_name | PUBLIC | role_name};</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>REVOKE SELECT ON Employee_Info FROM user1;
+REVOKE GRANT OPTION ON college.marks FROM 'hod'@'localhost';   -- keeps the privileges, removes the right to pass them on
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'admin'@'localhost';</code></pre>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>GRANT uses <strong>TO</strong>; REVOKE uses <strong>FROM</strong>. <code>REVOKE SELECT ON Employee_Info TO user1;</code> is a syntax error.</p>
+          </div>
+          <p>In standard SQL, <code>REVOKE ... CASCADE</code> also takes the privilege away from everyone who received it through this user, and <code>RESTRICT</code> refuses to revoke if anyone did. <code>SHOW GRANTS FOR 'name'@'host';</code> lists a MySQL user's privileges.</p>
+        </section>
+
+        <section id="roles" class="topic-section" aria-labelledby="roles-title">
+          <h2 id="roles-title">Roles and the lab example</h2>
+          <p>A <strong>role</strong> groups privileges, so they can be given to many users at once. When a job changes, you change the role instead of every user. See <a href="../unit-5/role-based-access-control.html#mysql">Role-Based Access Control</a> for more.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE ROLE 'store_staff';
+GRANT SELECT, INSERT, UPDATE ON GameStore.* TO 'store_staff';
+GRANT 'store_staff' TO 'ravi'@'localhost', 'meena'@'localhost';
+SET DEFAULT ROLE 'store_staff' TO 'ravi'@'localhost', 'meena'@'localhost';</code></pre>
+          </div>
+          <p>In the lab, a new <code>customer</code> user may only browse the games, not change them:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE USER 'customer'@'localhost' IDENTIFIED BY '';
+GRANT SELECT ON Games TO 'customer'@'localhost';
+REVOKE INSERT, UPDATE, DELETE ON Games FROM 'customer'@'localhost';
+SHOW GRANTS FOR 'customer'@'localhost';</code></pre>
+          </div>
+          <p>Logged in as <code>customer</code>, <code>SELECT * FROM Games;</code> works, but <code>UPDATE Games SET CurrentPrice = 0;</code> fails with “UPDATE command denied to user”.</p>
+        </section>
+
+        <section id="tcl" class="topic-section" aria-labelledby="tcl-title">
+          <h2 id="tcl-title">TCL: COMMIT, ROLLBACK and SAVEPOINT</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>TCL commands</caption>
+              <thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead>
+              <tbody>
+                <tr><td><code>COMMIT;</code></td><td>Saves all changes made in the current transaction permanently. They can no longer be rolled back.</td></tr>
+                <tr><td><code>ROLLBACK;</code></td><td>Undoes all changes not yet committed, returning the database to its last committed state.</td></tr>
+                <tr><td><code>SAVEPOINT name;</code></td><td>Sets a point inside the transaction to which you can roll back without undoing everything.</td></tr>
+                <tr><td><code>ROLLBACK TO name;</code></td><td>Undoes only the changes made after that savepoint.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>START TRANSACTION (BEGIN TRANSACTION in SQL Server) and SET TRANSACTION also control transactions; see <a href="sql-facilities-for-concurrency-and-recovery.html#boundaries">SQL Facilities for Concurrency and Recovery</a>.</p>
+          <div class="code-block">
+            <span class="code-label">COMMIT</span>
+            <pre><code>START TRANSACTION;
+UPDATE Shippings SET status = 'Shipped'
+  WHERE shipping_id = 1;
+COMMIT;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">ROLLBACK</span>
+            <pre><code>START TRANSACTION;
+DELETE FROM Orders WHERE order_id = 5;
+-- after some checks, cancel
+ROLLBACK;   -- order 5 is back</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">SAVEPOINT</span>
+            <pre><code>START TRANSACTION;
+UPDATE Customers SET age = 32
+  WHERE customer_id = 1;
+SAVEPOINT SP1;
+UPDATE Customers SET country = 'Canada'
+  WHERE customer_id = 2;
+ROLLBACK TO SP1;  -- only customer 2's change is undone
+COMMIT;           -- customer 1's change is saved</code></pre>
+          </div>
+          <p>Savepoints are covered in detail on <a href="save-points.html">Save Points</a>.</p>
+        </section>
+
+        <section id="steps" class="topic-section" aria-labelledby="steps-title">
+          <h2 id="steps-title">Steps for commit and rollback</h2>
+          <p>The game purchase from the lab, written as a transaction that either commits or rolls back:</p>
+          <ol>
+            <li><strong>Start the transaction:</strong> <code>START TRANSACTION;</code>. From here on, changes are not permanent.</li>
+            <li><strong>Record the purchase:</strong> <code>INSERT INTO Transactions(TransactionDate, UserID) VALUES (NOW(), 1);</code> and save the new ID with <code>SELECT LAST_INSERT_ID() INTO @T_ID;</code></li>
+            <li><strong>Copy the cart:</strong> insert each game in the user's cart into PurchaseHistory with its current price.</li>
+            <li><strong>Empty the cart:</strong> <code>DELETE FROM Cart WHERE UserID = 1;</code></li>
+            <li><strong>Check:</strong> if any statement failed (for example, a game was removed from the store), go to step 6. Otherwise go to step 7.</li>
+            <li><strong>Roll back:</strong> <code>ROLLBACK;</code> undoes steps 2 to 4. The cart is still full and no purchase is recorded.</li>
+            <li><strong>Commit:</strong> <code>COMMIT;</code> makes steps 2 to 4 permanent together. Other users now see the purchase.</li>
+            <li><strong>Verify:</strong> <code>SELECT</code> from Transactions, PurchaseHistory and Cart to see the result.</li>
+          </ol>
+          <p>In a stored procedure, step 5 is done by an error handler:</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>DELIMITER //
+CREATE PROCEDURE checkout(IN p_user INT)
+BEGIN
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;                      -- any error: undo everything
+  END;
+  START TRANSACTION;
+  INSERT INTO Transactions(TransactionDate, UserID) VALUES (NOW(), p_user);
+  INSERT INTO PurchaseHistory(TransactionID, GameID, SalePrice)
+    SELECT LAST_INSERT_ID(), Cart.GameID, Games.CurrentPrice
+    FROM Cart INNER JOIN Games ON Cart.GameID = Games.GameID
+    WHERE Cart.UserID = p_user;
+  DELETE FROM Cart WHERE UserID = p_user;
+  COMMIT;                          -- no error: save everything
+END //
+DELIMITER ;</code></pre>
+          </div>
+        </section>
+
+        <section id="compare" class="topic-section" aria-labelledby="compare-title">
+          <h2 id="compare-title">DCL and TCL compared</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>DCL compared with TCL</caption>
+              <thead><tr><th scope="col"></th><th scope="col">DCL</th><th scope="col">TCL</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Stands for</th><td>Data control language</td><td>Transaction control language</td></tr>
+                <tr><th scope="row">Controls</th><td>Who can access which data (security)</td><td>When changes become permanent or are undone (transactions)</td></tr>
+                <tr><th scope="row">Commands</th><td>GRANT, REVOKE</td><td>COMMIT, ROLLBACK, SAVEPOINT</td></tr>
+                <tr><th scope="row">Works on</th><td>Users, roles and privileges on objects</td><td>The changes made by DML statements</td></tr>
+                <tr><th scope="row">Usually run by</th><td>The database administrator or object owner</td><td>Any user or program that changes data</td></tr>
+                <tr><th scope="row">ACID link</th><td>Not part of ACID; part of security</td><td>Atomicity and durability</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="try-it" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it yourself</h2>
+          <p>Choose a set of statements and press <strong>Play</strong> to see what COMMIT, ROLLBACK and ROLLBACK TO each undo or keep. Choose “Build your own” to run TCL commands one at a time on the CUSTOMERS table.</p>
+          <div class="widget" data-widget="savepoints" data-scenario="whole">
+            <noscript><p class="widget-narration">The TCL timeline needs JavaScript. The examples above show the same commands.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>In “ROLLBACK without a savepoint name”, which changes are undone, and which savepoints are left?</li>
+              <li>Run “COMMIT removes all savepoints”. Why does the final ROLLBACK have nothing to undo?</li>
+              <li>In “Build your own”, update row 4, commit, update row 5, and roll back. What is row 4's salary now?</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>College ERP</h3>
+              <p class="muted">Students get SELECT on their own marks through a view, staff get UPDATE on the marks of their own subjects, and only the exam cell can GRANT. Each marks entry is a transaction: if saving one subject fails, the whole entry is rolled back.</p>
+            </div>
+            <div class="card">
+              <h3>Online shop</h3>
+              <p class="muted">The website connects as a user with only SELECT, INSERT and UPDATE on the order tables. Even if an attacker finds a bug, they cannot DROP a table, because that privilege was never granted.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>DCL: GRANT gives privileges, REVOKE takes them away. GRANT ... TO; REVOKE ... FROM.</li>
+              <li>WITH GRANT OPTION lets the receiver pass the privilege on.</li>
+              <li>Roles group privileges so they can be given to many users at once.</li>
+              <li>TCL: COMMIT saves, ROLLBACK undoes, SAVEPOINT marks a point for a partial rollback.</li>
+              <li>A transaction runs from START TRANSACTION to COMMIT or ROLLBACK.</li>
+              <li>DCL is about security; TCL is about atomicity and durability.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit III question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="3.14"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="3.14"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 4, Section 4.3 (transactions) and Section 4.7 (authorization).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 7 (more SQL), and Chapter 30 on granting and revoking privileges.</li>
+            <li>MySQL Reference Manual: “GRANT Statement”, “REVOKE Statement” and “START TRANSACTION, COMMIT, and ROLLBACK Statements”.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-3.js"></script>
+  <script src="../../data/quizzes/unit-3.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/savepoints.js"></script>
+</body>
+</html>

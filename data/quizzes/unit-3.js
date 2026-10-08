@@ -908,6 +908,66 @@
       answer: 2,
       explain: "Two-very-safe commits only when the commit record is at both sites, so no commit can happen if one site is down.",
       link: "#remote"
+    },,
+    /* 3.14 SQL DCL and TCL Commands */
+    {
+      id: "q3.14-01",
+      topic: "3.14",
+      type: "mcq",
+      question: "Which pair of commands makes up DCL?",
+      options: ["COMMIT and ROLLBACK", "GRANT and REVOKE", "CREATE and DROP", "INSERT and DELETE"],
+      answer: 1,
+      explain: "Data control language gives and takes away access rights with GRANT and REVOKE.",
+      link: "#groups"
+    },
+    {
+      id: "q3.14-02",
+      topic: "3.14",
+      type: "mcq",
+      question: "Which statement is correct?",
+      options: ["REVOKE SELECT ON Games TO user1;", "REVOKE SELECT ON Games FROM user1;", "GRANT SELECT ON Games FROM user1;", "GRANT SELECT TO user1 ON Games;"],
+      answer: 1,
+      explain: "GRANT ... ON object TO user; REVOKE ... ON object FROM user.",
+      link: "#revoke"
+    },
+    {
+      id: "q3.14-03",
+      topic: "3.14",
+      type: "mcq",
+      question: "What does WITH GRANT OPTION add to a GRANT?",
+      options: ["It grants every privilege", "The receiver may pass the privilege on to others", "The privilege cannot be revoked", "The privilege lasts one session"],
+      answer: 1,
+      explain: "WITH GRANT OPTION lets the receiving user grant the same privilege to other users.",
+      link: "#grant"
+    },
+    {
+      id: "q3.14-04",
+      topic: "3.14",
+      type: "tf",
+      question: "After COMMIT, the changes of the transaction can still be undone with ROLLBACK.",
+      answer: false,
+      explain: "False. COMMIT makes the changes permanent. ROLLBACK only undoes changes that are not yet committed.",
+      link: "#tcl"
+    },
+    {
+      id: "q3.14-05",
+      topic: "3.14",
+      type: "mcq",
+      question: "A checkout transaction fails while copying the cart into the purchase history. What should the program run?",
+      options: ["COMMIT", "ROLLBACK", "GRANT", "SAVEPOINT"],
+      answer: 1,
+      explain: "ROLLBACK undoes the partial work, so the cart is still full and no purchase is recorded.",
+      link: "#steps"
+    },
+    {
+      id: "q3.14-06",
+      topic: "3.14",
+      type: "mcq",
+      question: "Which is a key difference between DCL and TCL?",
+      options: ["DCL controls access; TCL controls when changes become permanent", "DCL changes table structure; TCL changes data", "Both control access", "TCL is used only by the administrator"],
+      answer: 0,
+      explain: "DCL is about security (who may do what). TCL is about transactions (commit, rollback and savepoints).",
+      link: "#compare"
     },
   ]);
 })();

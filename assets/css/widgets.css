@@ -2461,6 +2461,10 @@
   align-items: flex-end;
 }
 
+.sp-tools[hidden] {
+  display: none;
+}
+
 .sp-stage {
   max-height: 44rem;
   overflow: auto;
