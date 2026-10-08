@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overview of the SQL Query Language | DBMS Study Guide</title>
+  <meta name="description" content="Learn what SQL is, its short history, its parts (DDL, DML, DCL, TCL, integrity, view definition, embedded and dynamic SQL, authorization) and the basic SQL data types, with MySQL examples.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="1" data-topic="1.10" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-1">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-1">Unit I</span>
+            <span class="badge badge-level" title="Topic number">Topic 1.10</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+          </div>
+          <h1>Overview of the SQL Query Language</h1>
+          <p class="lead">SQL is the language every relational database understands. This page gives its history, the parts of the language with one command from each, and the data types you will use when you create tables.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>State the purpose of SQL.</li>
+              <li>List the parts of SQL and give an example command for each.</li>
+              <li>Choose a suitable data type for a column.</li>
+              <li>Tell CHAR from VARCHAR and read a DECIMAL(p, d) type.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is SQL?</a></li>
+            <li><a href="#history">A short history</a></li>
+            <li><a href="#parts">Parts of SQL</a></li>
+            <li><a href="#types">Basic data types</a></li>
+            <li><a href="#rules">Writing SQL: basic rules</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is SQL?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>SQL (Structured Query Language)</strong> is the standard language for <strong>defining, querying, changing and controlling</strong> data in a relational database.</p>
+          </div>
+          <p>SQL is <strong>declarative</strong> (non-procedural). You say <strong>what</strong> data you want, not <strong>how</strong> to find it. The DBMS works out the steps.</p>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT name FROM student WHERE city = 'Salem';</code></pre>
+          </div>
+          <p>This one line says “give me the names of students from Salem”. It does not say which file to open or which index to use.</p>
+          <h3>Purpose of SQL</h3>
+          <ul>
+            <li>Create and change the structure of tables (schema).</li>
+            <li>Insert, update, delete and retrieve data.</li>
+            <li>Declare integrity constraints and views.</li>
+            <li>Control who can access the data, and group changes into transactions.</li>
+            <li>Give one common language that works on MySQL, Oracle, SQL Server, PostgreSQL and others.</li>
+          </ul>
+        </section>
+
+        <section id="history" class="topic-section" aria-labelledby="history-title">
+          <h2 id="history-title">A short history</h2>
+          <ul>
+            <li><strong>1970:</strong> E. F. Codd publishes the relational model.</li>
+            <li><strong>Mid-1970s:</strong> IBM builds System R and its language <strong>SEQUEL</strong> (Structured English Query Language), later renamed SQL.</li>
+            <li><strong>1979:</strong> Oracle releases the first commercial SQL database.</li>
+            <li><strong>1986:</strong> ANSI and ISO publish the first SQL standard (SQL-86).</li>
+            <li><strong>Later standards:</strong> SQL-92, SQL:1999 (triggers, recursive queries), SQL:2003 (XML), SQL:2016 (JSON), and SQL:2023.</li>
+          </ul>
+          <p>Every product follows the standard closely, but each adds its own features. On this site, all SQL runs on <strong>MySQL 8.4</strong> unless the label says otherwise.</p>
+        </section>
+
+        <section id="parts" class="topic-section" aria-labelledby="parts-title">
+          <h2 id="parts-title">Parts of SQL</h2>
+          <p>SQL commands are grouped by what they do. The four main groups are DDL, DML, DCL and TCL.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>The main parts of SQL</caption>
+              <thead><tr><th scope="col">Part</th><th scope="col">Purpose</th><th scope="col">Commands</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">DDL: Data Definition Language</th><td>Define, change and delete the schema (tables, views, indexes)</td><td>CREATE, ALTER, DROP, TRUNCATE, RENAME</td></tr>
+                <tr><th scope="row">DML: Data Manipulation Language</th><td>Insert, change, delete and retrieve the data</td><td>INSERT, UPDATE, DELETE, SELECT</td></tr>
+                <tr><th scope="row">DCL: Data Control Language</th><td>Give and take away access rights</td><td>GRANT, REVOKE</td></tr>
+                <tr><th scope="row">TCL: Transaction Control Language</th><td>Mark the start and end of transactions</td><td>COMMIT, ROLLBACK, SAVEPOINT</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>CREATE TABLE student (roll_no INT PRIMARY KEY, name VARCHAR(30), city VARCHAR(20));  -- DDL
+INSERT INTO student VALUES (1, 'Anitha', 'Salem');                                    -- DML
+SELECT name FROM student WHERE city = 'Salem';                                        -- DML (query)
+START TRANSACTION;                                                                     -- TCL
+UPDATE student SET city = 'Erode' WHERE roll_no = 1;                                  -- DML
+ROLLBACK;                                                                              -- TCL: undo the update</code></pre>
+          </div>
+          <p>The textbook also lists these parts of the language:</p>
+          <ul>
+            <li><strong>Integrity:</strong> DDL commands that declare constraints the data must satisfy (see <a href="constraints.html">Constraints</a>).</li>
+            <li><strong>View definition:</strong> DDL commands that define views, such as <code>CREATE VIEW</code>.</li>
+            <li><strong>Transaction control:</strong> commands for the start and end of transactions (TCL).</li>
+            <li><strong>Embedded SQL and dynamic SQL:</strong> how SQL statements are placed inside programs written in C, C++, Java or Python.</li>
+            <li><strong>Authorization:</strong> commands that give access rights to relations and views (DCL).</li>
+          </ul>
+          <p>Some books also call SELECT a separate part, <strong>DQL</strong> (Data Query Language). The textbook counts it as DML.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Note</div>
+            <p>DCL and TCL are covered in full in Unit III: <a href="../unit-3/sql-dcl-and-tcl-commands.html">SQL DCL and TCL Commands</a>.</p>
+          </div>
+        </section>
+
+        <section id="types" class="topic-section" aria-labelledby="types-title">
+          <h2 id="types-title">Basic data types</h2>
+          <p>Each column has a <strong>data type</strong>. It decides which values the column can hold, how much space each value takes, and which operations make sense (you can add numbers, but not names).</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Common SQL data types</caption>
+              <thead><tr><th scope="col">Type</th><th scope="col">Holds</th><th scope="col">Example column</th></tr></thead>
+              <tbody>
+                <tr><th scope="row"><code>CHAR(n)</code></th><td>A fixed-length string of exactly n characters, padded with spaces</td><td><code>gender CHAR(1)</code>, <code>pin CHAR(6)</code></td></tr>
+                <tr><th scope="row"><code>VARCHAR(n)</code></th><td>A variable-length string of at most n characters</td><td><code>name VARCHAR(30)</code></td></tr>
+                <tr><th scope="row"><code>INT</code></th><td>A whole number (in MySQL, about −2.1 billion to 2.1 billion)</td><td><code>age INT</code></td></tr>
+                <tr><th scope="row"><code>SMALLINT</code></th><td>A smaller whole number (−32768 to 32767 in MySQL)</td><td><code>credits SMALLINT</code></td></tr>
+                <tr><th scope="row"><code>NUMERIC(p, d)</code> or <code>DECIMAL(p, d)</code></th><td>An exact number with p digits in all, d of them after the decimal point</td><td><code>fees DECIMAL(8,2)</code></td></tr>
+                <tr><th scope="row"><code>REAL</code>, <code>DOUBLE</code></th><td>Floating-point numbers (approximate)</td><td><code>temperature DOUBLE</code></td></tr>
+                <tr><th scope="row"><code>FLOAT(n)</code></th><td>A floating-point number with at least n binary digits of precision</td><td><code>reading FLOAT(24)</code></td></tr>
+                <tr><th scope="row"><code>DATE</code></th><td>A calendar date, written 'YYYY-MM-DD'</td><td><code>dob DATE</code></td></tr>
+                <tr><th scope="row"><code>TIME</code></th><td>A time of day, written 'HH:MM:SS'</td><td><code>class_start TIME</code></td></tr>
+                <tr><th scope="row"><code>TIMESTAMP</code>, <code>DATETIME</code></th><td>A date and a time together</td><td><code>paid_at DATETIME</code></td></tr>
+                <tr><th scope="row"><code>BOOLEAN</code></th><td>True or false (MySQL stores it as TINYINT(1))</td><td><code>is_hosteller BOOLEAN</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>CHAR and VARCHAR compared</h3>
+          <ul>
+            <li><code>CHAR(10)</code> always uses 10 characters. 'Ram' is stored as 'Ram' plus 7 spaces. Use it when every value has the same length, such as a PIN code.</li>
+            <li><code>VARCHAR(10)</code> uses only as much space as the value needs, up to 10. Use it for names and addresses.</li>
+          </ul>
+          <h3>Reading DECIMAL(p, d)</h3>
+          <p><code>DECIMAL(5,2)</code> holds 5 digits in all, 2 after the point. So the largest value is <strong>999.99</strong>. <code>NUMERIC(3,1)</code> allows 44.5 but not 444.5, because 444.5 needs 4 digits.</p>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes say that <code>numeric(3,2)</code> allows 333.11. It does not. Three digits in all, with two after the point, gives at most <strong>9.99</strong>. Count <strong>all</strong> the digits for p, not only those before the point.</p>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Exam tip</div>
+            <p>Use DECIMAL, not FLOAT, for money. FLOAT stores an approximation, so 0.1 + 0.2 may not be exactly 0.3.</p>
+          </div>
+        </section>
+
+        <section id="rules" class="topic-section" aria-labelledby="rules-title">
+          <h2 id="rules-title">Writing SQL: basic rules</h2>
+          <ul>
+            <li>Keywords such as SELECT are not case-sensitive. We write them in capitals so they stand out.</li>
+            <li>Each statement ends with a semicolon (<code>;</code>).</li>
+            <li>Text and date values go in <strong>single quotes</strong>: <code>'Salem'</code>, <code>'2026-10-08'</code>. Numbers do not.</li>
+            <li>A comment starts with <code>--</code> (two hyphens and a space) and runs to the end of the line.</li>
+            <li>A statement can span many lines. Spaces and line breaks are only for readability.</li>
+          </ul>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Behind every app screen</h3>
+              <p class="muted">When you open your order history on a shopping app, the server runs a SELECT. When you place an order, it runs an INSERT inside a transaction that ends with COMMIT.</p>
+            </div>
+            <div class="card">
+              <h3>Data analyst jobs</h3>
+              <p class="muted">SQL is one of the most asked skills in placement tests for software and analyst roles, because nearly every company keeps its data in a relational database.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>SQL is the standard, declarative language of relational databases.</li>
+              <li>It began as SEQUEL at IBM in the 1970s; the first ANSI standard was SQL-86.</li>
+              <li>DDL defines the schema: CREATE, ALTER, DROP, TRUNCATE, RENAME.</li>
+              <li>DML works on the data: INSERT, UPDATE, DELETE, SELECT.</li>
+              <li>DCL controls access (GRANT, REVOKE); TCL controls transactions (COMMIT, ROLLBACK, SAVEPOINT).</li>
+              <li>CHAR(n) is fixed length; VARCHAR(n) is variable length.</li>
+              <li>DECIMAL(p, d): p digits in all, d after the decimal point.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit I question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="1.10"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="1.10"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 3, Sections 3.1 and 3.2 (overview of SQL and basic types).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 6, Section 6.1.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/data-types.html">Data Types</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-1.js"></script>
+  <script src="../../data/quizzes/unit-1.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+</body>
+</html>

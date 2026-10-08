@@ -128,3 +128,5 @@ Ritchie
 cust
 equijoin
 sname
+QUEL
+hosteller

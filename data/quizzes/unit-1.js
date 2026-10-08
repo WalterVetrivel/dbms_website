@@ -646,6 +646,76 @@
       answer: 1,
       explain: "A left outer join keeps every tuple of the left relation and fills the missing attributes with NULL.",
       link: "#outer"
+    },
+    /* 1.10 Overview of the SQL Query Language */
+    {
+      id: "q1.10-01",
+      topic: "1.10",
+      type: "mcq",
+      question: "To which part of SQL does ALTER TABLE belong?",
+      options: ["DML", "DDL", "DCL", "TCL"],
+      answer: 1,
+      explain: "ALTER changes the structure (schema) of a table, so it is a DDL command.",
+      link: "#parts"
+    },
+    {
+      id: "q1.10-02",
+      topic: "1.10",
+      type: "mcq",
+      question: "Which commands form the Data Control Language (DCL)?",
+      options: ["COMMIT and ROLLBACK", "GRANT and REVOKE", "INSERT and DELETE", "CREATE and DROP"],
+      answer: 1,
+      explain: "DCL gives and takes away access rights with GRANT and REVOKE.",
+      link: "#parts"
+    },
+    {
+      id: "q1.10-03",
+      topic: "1.10",
+      type: "mcq",
+      question: "What is the largest value a DECIMAL(5,2) column can hold?",
+      options: ["99999.99", "999.99", "99.999", "5.2"],
+      answer: 1,
+      explain: "DECIMAL(5,2) has 5 digits in all, 2 after the point, so the largest value is 999.99.",
+      link: "#types"
+    },
+    {
+      id: "q1.10-04",
+      topic: "1.10",
+      type: "tf",
+      question: "SQL is a declarative language: you say what data you want, and the DBMS decides how to get it.",
+      answer: true,
+      explain: "True. SQL is non-procedural. Relational algebra, in contrast, is procedural.",
+      link: "#what"
+    },
+    {
+      id: "q1.10-05",
+      topic: "1.10",
+      type: "mcq",
+      question: "Which data type suits a six-digit PIN code that always has six characters?",
+      options: ["CHAR(6)", "VARCHAR(255)", "FLOAT", "DATE"],
+      answer: 0,
+      explain: "CHAR(n) is fixed length, which fits values that always have the same length.",
+      link: "#types"
+    },
+    {
+      id: "q1.10-06",
+      topic: "1.10",
+      type: "multi",
+      question: "Which are DML commands? Select all that apply.",
+      options: ["INSERT", "UPDATE", "TRUNCATE", "SELECT"],
+      answer: [0, 1, 3],
+      explain: "INSERT, UPDATE, DELETE and SELECT are DML. TRUNCATE is DDL.",
+      link: "#parts"
+    },
+    {
+      id: "q1.10-07",
+      topic: "1.10",
+      type: "mcq",
+      question: "What was SQL first called at IBM?",
+      options: ["QUEL", "SEQUEL", "PL/SQL", "QBE"],
+      answer: 1,
+      explain: "IBM's System R project named it SEQUEL, Structured English Query Language.",
+      link: "#history"
     }
   ]);
 })();
