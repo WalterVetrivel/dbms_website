@@ -200,7 +200,7 @@ X → Y is preserved if Y ⊆ result</code></pre>
             <li>R(A, B, C) with F = {A → B, B → C} is split into (A, B) and (A, C). It is lossless, because A is a key of both. But B → C is lost.</li>
             <li>R(A, B, C, D) with F = {A → B, C → D} is split into (A, B) and (C, D). Every FD fits in one part. But the parts share no attribute, so the split is lossy.</li>
           </ul>
-          <p>The classic BCNF case is Enrollment(sid, course, teacher) with (sid, course) → teacher and teacher → course. Every BCNF split loses (sid, course) → teacher. This is why designers sometimes stop at 3NF. Boyce-Codd Normal Form covers it in detail.</p>
+          <p>The classic BCNF case is Enrollment(sid, course, teacher) with (sid, course) → teacher and teacher → course. Every BCNF split loses (sid, course) → teacher. This is why designers sometimes stop at 3NF. <a href="boyce-codd-normal-form.html">Boyce-Codd Normal Form</a> covers it in detail.</p>
         </section>
 
         <section id="try" class="topic-section" aria-labelledby="try-title">

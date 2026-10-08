@@ -514,6 +514,83 @@
       answer: 2,
       explain: "Its attributes are in different tables, so no key in one table can check it. A trigger or a query must join the tables.",
       link: "#sql"
+    },
+    {
+      id: "q2.8-01",
+      topic: "2.8",
+      type: "mcq",
+      question: "A relation is in BCNF when, for every non-trivial FD X → Y:",
+      options: ["X is a superkey", "Y is a prime attribute", "X is a superkey or Y is prime", "X is a single attribute"],
+      answer: 0,
+      explain: "BCNF needs every determinant to be a superkey. “X is a superkey or Y is prime” is the 3NF rule.",
+      link: "#definition"
+    },
+    {
+      id: "q2.8-02",
+      topic: "2.8",
+      type: "tf",
+      question: "Every relation in BCNF is also in 3NF.",
+      answer: true,
+      explain: "True. If X is a superkey for every FD, the 3NF condition “X is a superkey or A is prime” always holds.",
+      link: "#gap"
+    },
+    {
+      id: "q2.8-03",
+      topic: "2.8",
+      type: "mcq",
+      question: "Enrollment(sid, course, teacher) has (sid, course) → teacher and teacher → course. What is its highest normal form?",
+      options: ["1NF", "2NF", "3NF", "BCNF"],
+      answer: 2,
+      explain: "The keys are {sid, course} and {sid, teacher}, so every attribute is prime and the relation is in 3NF. teacher is not a superkey, so teacher → course breaks BCNF.",
+      link: "#example"
+    },
+    {
+      id: "q2.8-04",
+      topic: "2.8",
+      type: "mcq",
+      question: "R(A, B, C, D) with AB → C, AB → D, C → A, B → D. What is its highest normal form?",
+      options: ["1NF", "2NF", "3NF", "BCNF"],
+      answer: 0,
+      explain: "The keys are AB and BC, and D is non-prime. B → D is a partial dependency, so R is not in 2NF.",
+      link: "#test"
+    },
+    {
+      id: "q2.8-05",
+      topic: "2.8",
+      type: "tf",
+      question: "Every relation with exactly two attributes is in BCNF.",
+      answer: true,
+      explain: "True. Any non-trivial FD on R(A, B) is A → B or B → A, and its left side is then a key.",
+      link: "#more"
+    },
+    {
+      id: "q2.8-06",
+      topic: "2.8",
+      type: "multi",
+      question: "Which statements about BCNF decomposition are true? Select all that apply.",
+      options: ["It is always lossless", "It is always dependency preserving", "It may lose an FD", "It splits on an FD whose left side is not a superkey"],
+      answer: [0, 2, 3],
+      explain: "Each split keeps X as a key of one part, so it is lossless. But an FD can end up across tables, as (sid, course) → teacher does.",
+      link: "#decompose"
+    },
+    {
+      id: "q2.8-07",
+      topic: "2.8",
+      type: "mcq",
+      question: "When can a relation be in 3NF but not in BCNF?",
+      options: ["When it has a repeating group", "When it has a partial dependency", "When it has overlapping candidate keys", "When it has only one candidate key"],
+      answer: 2,
+      explain: "The gap needs an FD X → A with A prime and X not a superkey. That only happens when candidate keys overlap.",
+      link: "#gap"
+    },
+    {
+      id: "q2.8-08",
+      topic: "2.8",
+      type: "order",
+      question: "Put the steps for finding the highest normal form of a relation in order.",
+      options: ["Find all candidate keys and the prime attributes", "Check BCNF: is every left side a superkey?", "Check 3NF: is every left side a superkey or every right side prime?", "Check 2NF: is there a partial dependency?"],
+      explain: "Keys first, because every test uses them. Then test from the top (BCNF) down until one passes.",
+      link: "#test"
     }
   ]);
 })();

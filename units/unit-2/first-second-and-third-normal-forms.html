@@ -106,7 +106,7 @@
               </tbody>
             </table>
           </div>
-          <p>BCNF is covered in Boyce-Codd Normal Form. The animator on this page goes all the way to BCNF, so you can see where it differs from 3NF.</p>
+          <p>BCNF is covered in <a href="boyce-codd-normal-form.html">Boyce-Codd Normal Form</a>. The animator on this page goes all the way to BCNF, so you can see where it differs from 3NF.</p>
         </section>
 
         <section id="first" class="topic-section" aria-labelledby="first-title">
@@ -307,7 +307,7 @@ Enrollment(<u>StudentID</u>, <u>CourseID</u>)</code></pre>
           <p>A transitive dependency would appear if the table also stored, say, the instructor's room: CourseID → Instructor → Room. Then Room would move to Instructor(Instructor, Room).</p>
           <div class="callout callout-tip">
             <div class="callout-title">A different rule changes the answer</div>
-            <p>Suppose instead that a course has several instructors, and each instructor teaches only one course. Then {StudentID, CourseID} → Instructor and Instructor → CourseID. The 3NF tables still allow redundancy, and the fix is BCNF. Choose the second example in the animator to see it. Boyce-Codd Normal Form explains this case.</p>
+            <p>Suppose instead that a course has several instructors, and each instructor teaches only one course. Then {StudentID, CourseID} → Instructor and Instructor → CourseID. The 3NF tables still allow redundancy, and the fix is BCNF. Choose the second example in the animator to see it. <a href="boyce-codd-normal-form.html">Boyce-Codd Normal Form</a> explains this case.</p>
           </div>
         </section>
 

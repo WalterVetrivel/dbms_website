@@ -89,7 +89,7 @@
         ["3", "C", "Ankita"],
         ["4", "Java", "Pooja"]
       ],
-      names: { "sid,teacher": "Student", "course,teacher": "Course" }
+      names: { "sid,teacher": "Student", "course,teacher": "Teacher" }
     }
   ];
 
