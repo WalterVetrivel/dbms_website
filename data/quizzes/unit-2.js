@@ -591,6 +591,74 @@
       options: ["Find all candidate keys and the prime attributes", "Check BCNF: is every left side a superkey?", "Check 3NF: is every left side a superkey or every right side prime?", "Check 2NF: is there a partial dependency?"],
       explain: "Keys first, because every test uses them. Then test from the top (BCNF) down until one passes.",
       link: "#test"
+    },
+    {
+      id: "q2.9-01",
+      topic: "2.9",
+      type: "mcq",
+      question: "Student(sid, course, skill) stores each student's courses and spoken languages, which are unrelated. Which dependency holds?",
+      options: ["sid → course", "sid →→ course", "course → skill", "course →→ skill"],
+      answer: 1,
+      explain: "A student has a set of courses that is independent of the student's skills. That is the MVD sid →→ course (and sid →→ skill).",
+      link: "#mvd"
+    },
+    {
+      id: "q2.9-02",
+      topic: "2.9",
+      type: "tf",
+      question: "Student(sid, course, skill) with sid →→ course and no FDs is in BCNF.",
+      answer: true,
+      explain: "True. No non-trivial FD holds, so BCNF has nothing to complain about. The redundancy comes from the MVD, which 4NF handles.",
+      link: "#problem"
+    },
+    {
+      id: "q2.9-03",
+      topic: "2.9",
+      type: "mcq",
+      question: "In R(A, B, C), A →→ B holds. Which other MVD must hold?",
+      options: ["B →→ C", "A →→ C", "C →→ A", "None"],
+      answer: 1,
+      explain: "Complementation: X →→ Y gives X →→ R − X − Y. Here that is A →→ C.",
+      link: "#rules"
+    },
+    {
+      id: "q2.9-04",
+      topic: "2.9",
+      type: "multi",
+      question: "Which MVDs are trivial in R(A, B, C)? Select all that apply.",
+      options: ["A →→ A", "A →→ BC", "A →→ B", "AB →→ C"],
+      answer: [0, 1, 3],
+      explain: "An MVD is trivial if Y ⊆ X or X ∪ Y = R. A →→ A has Y ⊆ X; A →→ BC and AB →→ C cover all of R. A →→ B is not trivial.",
+      link: "#rules"
+    },
+    {
+      id: "q2.9-05",
+      topic: "2.9",
+      type: "mcq",
+      question: "A relation is in 4NF when, for every non-trivial MVD X →→ Y:",
+      options: ["Y is prime", "X is a superkey", "X is a single attribute", "Y is a superkey"],
+      answer: 1,
+      explain: "4NF is the BCNF rule applied to MVDs: the left side must be a superkey.",
+      link: "#fourth"
+    },
+    {
+      id: "q2.9-06",
+      topic: "2.9",
+      type: "mcq",
+      question: "How should Student(sid, course, skill), with sid →→ course, be split into 4NF?",
+      options: ["(sid, course) and (course, skill)", "(sid, course) and (sid, skill)", "(sid) and (course, skill)", "(sid, skill) and (course, skill)"],
+      answer: 1,
+      explain: "Split on X →→ Y into (X ∪ Y) and (X ∪ the rest). sid stays in both, and the join gives back exactly the original rows.",
+      link: "#decompose"
+    },
+    {
+      id: "q2.9-07",
+      topic: "2.9",
+      type: "tf",
+      question: "Every functional dependency is also a multivalued dependency.",
+      answer: true,
+      explain: "True. If X → Y, each X value has a set of exactly one Y value, so X →→ Y holds.",
+      link: "#rules"
     }
   ]);
 })();

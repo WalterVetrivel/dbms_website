@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Multivalued Dependencies and Fourth Normal Form | DBMS Study Guide</title>
+  <meta name="description" content="Learn what a multivalued dependency (MVD) is, how it causes redundancy that BCNF cannot see, the rules for MVDs, and how fourth normal form (4NF) removes it, with worked examples, SQL and an interactive split-and-join checker.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="2" data-topic="2.9" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-2">Unit II</span>
+            <span class="badge badge-level" title="Topic number">Topic 2.9</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO2</span>
+          </div>
+          <h1>Multivalued Dependencies and Fourth Normal Form</h1>
+          <p class="lead">Some tables repeat data even though they are in BCNF. This happens when one attribute has two independent lists of values, such as a student's courses and a student's skills. A multivalued dependency describes this, and fourth normal form removes it.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Define a multivalued dependency and recognize one in a table.</li>
+              <li>Tell trivial MVDs from non-trivial ones, and relate MVDs to FDs.</li>
+              <li>Define 4NF and decompose a relation into 4NF without loss.</li>
+              <li>Compare 4NF with BCNF.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#problem">The problem BCNF misses</a></li>
+            <li><a href="#mvd">Multivalued dependency</a></li>
+            <li><a href="#rules">Rules for MVDs</a></li>
+            <li><a href="#fourth">Fourth normal form (4NF)</a></li>
+            <li><a href="#decompose">Decomposing into 4NF</a></li>
+            <li><a href="#second-example">A second example</a></li>
+            <li><a href="#compare">BCNF and 4NF compared</a></li>
+            <li><a href="#try">Try it: split and join checker</a></li>
+            <li><a href="#sql">The 4NF tables in SQL</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="problem" class="topic-section" aria-labelledby="prob-title">
+          <h2 id="prob-title">The problem BCNF misses</h2>
+          <p>A college records the courses each student takes and the languages (skills) each student speaks. The two lists have nothing to do with each other.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Student(sid, course, skill)</caption>
+              <thead><tr><th scope="col">sid</th><th scope="col">course</th><th scope="col">skill</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>C</td><td>English</td></tr>
+                <tr><td>1</td><td>C</td><td>German</td></tr>
+                <tr><td>1</td><td>Java</td><td>English</td></tr>
+                <tr><td>1</td><td>Java</td><td>German</td></tr>
+                <tr><td>2</td><td>C</td><td>Tamil</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li>Student 1 takes 2 courses and speaks 2 languages, so the table needs 2 × 2 = 4 rows. Each course is stored twice, and each language is stored twice.</li>
+            <li>No FD holds here. sid does not determine course, and sid does not determine skill. The only key is {sid, course, skill}, so the table <strong>is in BCNF</strong>.</li>
+            <li>Yet it has anomalies. If student 1 learns French, we must add <strong>two</strong> rows, one for each course. Adding only one would wrongly suggest French is linked to one course.</li>
+          </ul>
+          <p>The cause is not an FD. It is a <strong>multivalued dependency</strong>.</p>
+        </section>
+
+        <section id="mvd" class="topic-section" aria-labelledby="mvd-title">
+          <h2 id="mvd-title">Multivalued dependency</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>Let X and Y be sets of attributes of R, and let Z = R − X − Y be the rest. The <strong>multivalued dependency</strong> X →→ Y (“X multi-determines Y”) holds if each X value has a <strong>set</strong> of Y values that does not depend on Z.</p>
+            <p>Formally: take any two rows t1 and t2 that agree on X. Then there must also be a row t3 with the same X value, the Y value of t1 and the Z value of t2.</p>
+          </div>
+          <p>In Student, sid →→ course holds. Rows (1, C, English) and (1, Java, German) agree on sid. So the rows (1, C, German) and (1, Java, English) must also be there, and they are. Every course of a student appears with every skill of that student.</p>
+          <p>For a relation R(A, B, C), an MVD A →→ B needs three things:</p>
+          <ol>
+            <li>One A value has <strong>several</strong> B values.</li>
+            <li>The relation has at least three attributes.</li>
+            <li>B and C are <strong>independent</strong> of each other, for a fixed A.</li>
+          </ol>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes say an MVD exists whenever “for one value of A there are many values of B”. That is not enough. In Enrollment(sid, course, teacher), one student has many courses, but the teacher depends on the course. So sid →→ course does not hold there. The B values must be independent of the rest.</p>
+            <p>The symbol is a double arrow, →→. A single arrow means an FD.</p>
+          </div>
+        </section>
+
+        <section id="rules" class="topic-section" aria-labelledby="rules-title">
+          <h2 id="rules-title">Rules for MVDs</h2>
+          <ul>
+            <li><strong>Complementation:</strong> if X →→ Y holds, then X →→ R − X − Y holds too. In Student, sid →→ course gives sid →→ skill. MVDs come in pairs.</li>
+            <li><strong>Trivial MVD:</strong> X →→ Y is trivial if Y ⊆ X, or if X ∪ Y = R. A trivial MVD holds in every relation, so it says nothing.</li>
+            <li><strong>Every FD is an MVD:</strong> if X → Y, then X →→ Y. Each X value has a set of exactly one Y value.</li>
+            <li><strong>Lossless split:</strong> R splits into (X ∪ Y) and (X ∪ Z) without loss <strong>if and only if</strong> X →→ Y holds. This is the exact test for a two-way split.</li>
+          </ul>
+          <p>The last rule shows that an MVD is the condition for a lossless split into two. A join dependency, in the next topic, extends this to three or more parts.</p>
+        </section>
+
+        <section id="fourth" class="topic-section" aria-labelledby="fourth-title">
+          <h2 id="fourth-title">Fourth normal form (4NF)</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p>A relation R is in <strong>fourth normal form</strong> if, for every <strong>non-trivial</strong> MVD X →→ Y that holds on R, <strong>X is a superkey</strong> of R.</p>
+          </div>
+          <ul>
+            <li>This is the BCNF rule with MVDs in place of FDs.</li>
+            <li>Every FD is an MVD, so a 4NF relation is always in BCNF.</li>
+            <li>Student is not in 4NF: sid →→ course is non-trivial, and sid is not a superkey.</li>
+          </ul>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Common mistake</div>
+            <p>Some notes say a table is in 4NF if it is in BCNF and “has no multivalued dependency”. Every relation has trivial MVDs, and an MVD whose left side is a superkey is harmless. The correct rule is: no non-trivial MVD whose left side is not a superkey.</p>
+          </div>
+        </section>
+
+        <section id="decompose" class="topic-section" aria-labelledby="dec-title">
+          <h2 id="dec-title">Decomposing into 4NF</h2>
+          <ol class="steps">
+            <li>Find a non-trivial MVD X →→ Y where X is not a superkey.</li>
+            <li>Split R into R1 = X ∪ Y and R2 = R − (Y − X).</li>
+            <li>The split is lossless, by the rule above.</li>
+            <li>Repeat on R1 and R2 until every table is in 4NF.</li>
+          </ol>
+          <p>For Student, sid →→ course gives:</p>
+          <div class="code-block">
+            <span class="code-label">4NF tables</span>
+            <pre><code>Student_Course(<u>sid</u>, <u>course</u>)
+Student_Skill(<u>sid</u>, <u>skill</u>)</code></pre>
+          </div>
+          <div class="grid grid-sm">
+            <div class="table-wrap">
+              <table>
+                <caption>Student_Course</caption>
+                <thead><tr><th scope="col">sid</th><th scope="col">course</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>C</td></tr>
+                  <tr><td>1</td><td>Java</td></tr>
+                  <tr><td>2</td><td>C</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <caption>Student_Skill</caption>
+                <thead><tr><th scope="col">sid</th><th scope="col">skill</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>English</td></tr>
+                  <tr><td>1</td><td>German</td></tr>
+                  <tr><td>2</td><td>Tamil</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p>Each course and each skill of a student is now stored once. Joining the two tables on sid gives back all 5 original rows, and adding French for student 1 needs one row.</p>
+        </section>
+
+        <section id="second-example" class="topic-section" aria-labelledby="ex2-title">
+          <h2 id="ex2-title">A second example</h2>
+          <p>Course(course, teacher, book): any teacher of a course may use any of the course's books.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Course(course, teacher, book)</caption>
+              <thead><tr><th scope="col">course</th><th scope="col">teacher</th><th scope="col">book</th></tr></thead>
+              <tbody>
+                <tr><td>DBMS</td><td>Ravi</td><td>Korth</td></tr>
+                <tr><td>DBMS</td><td>Ravi</td><td>Navathe</td></tr>
+                <tr><td>DBMS</td><td>Meena</td><td>Korth</td></tr>
+                <tr><td>DBMS</td><td>Meena</td><td>Navathe</td></tr>
+                <tr><td>OS</td><td>Ravi</td><td>Galvin</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li>course →→ teacher and course →→ book hold. The teachers and books of a course are independent lists.</li>
+            <li>The key is all three attributes, so the table is in BCNF but not in 4NF.</li>
+            <li>4NF tables: Course_Teacher(course, teacher) and Course_Book(course, book).</li>
+          </ul>
+          <p>If the rule changes, so that each teacher uses only some books, the MVD no longer holds. Then the three-column table is needed, and it is already in 4NF.</p>
+        </section>
+
+        <section id="compare" class="topic-section" aria-labelledby="cmp-title">
+          <h2 id="cmp-title">BCNF and 4NF compared</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Comparing BCNF and 4NF</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">BCNF</th><th scope="col">4NF</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Based on</th><td>Functional dependencies</td><td>Multivalued dependencies (which include FDs)</td></tr>
+                <tr><th scope="row">Rule</th><td>Every non-trivial FD X → Y has X a superkey</td><td>Every non-trivial MVD X →→ Y has X a superkey</td></tr>
+                <tr><th scope="row">Removes</th><td>Redundancy from FDs</td><td>Also redundancy from independent multi-valued facts</td></tr>
+                <tr><th scope="row">Strength</th><td>Weaker</td><td>Stronger: every 4NF table is in BCNF</td></tr>
+                <tr><th scope="row">Typical example</th><td>Enrollment(sid, course, teacher)</td><td>Student(sid, course, skill)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="try" class="topic-section" aria-labelledby="try-title">
+          <h2 id="try-title">Try it: split and join checker</h2>
+          <p>The checker splits the table, then joins the parts back. Spurious rows are shown in red. Switch a row off to see what happens when the MVD stops holding.</p>
+          <div class="widget" data-widget="join-check" data-preset="0">
+            <noscript><p class="widget-narration">The checker needs JavaScript. Student(sid, course, skill) split into (sid, course) and (sid, skill) joins back to exactly the 5 original rows, because sid →→ course holds.</p></noscript>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Things to try</div>
+            <ul>
+              <li>Switch off the row (1, Java, German). Does the 4NF split still join back correctly? Why not?</li>
+              <li>Choose the split (sid, course) and (course, skill). Where do the spurious rows come from?</li>
+              <li>Choose the Course table and compare its two splits.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="sql" class="topic-section" aria-labelledby="sql-title">
+          <h2 id="sql-title">The 4NF tables in SQL</h2>
+          <div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE Student_Course (
+  sid    INT,
+  course VARCHAR(20),
+  PRIMARY KEY (sid, course)
+);
+
+CREATE TABLE Student_Skill (
+  sid   INT,
+  skill VARCHAR(20),
+  PRIMARY KEY (sid, skill)
+);
+
+INSERT INTO Student_Course VALUES (1, 'C'), (1, 'Java'), (2, 'C');
+INSERT INTO Student_Skill VALUES (1, 'English'), (1, 'German'), (2, 'Tamil');
+
+-- Student 1 learns French: one new row, not one per course.
+INSERT INTO Student_Skill VALUES (1, 'French');
+
+SELECT c.sid, c.course, s.skill
+FROM Student_Course c
+JOIN Student_Skill s ON s.sid = c.sid
+ORDER BY c.sid, c.course, s.skill;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+-----+--------+---------+
+| sid | course | skill   |
++-----+--------+---------+
+|   1 | C      | English |
+|   1 | C      | French  |
+|   1 | C      | German  |
+|   1 | Java   | English |
+|   1 | Java   | French  |
+|   1 | Java   | German  |
+|   2 | C      | Tamil   |
++-----+--------+---------+</code></pre>
+          </div>
+          <p>One insert added French to both of student 1's courses in the joined view. In the old table we would have needed two inserts, and forgetting one would break the data.</p>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Restaurant menus</h3>
+              <p class="muted">A restaurant has several branches and a list of dishes it delivers. If every branch delivers every dish, store Restaurant_Branch and Restaurant_Dish separately, not every branch-dish pair.</p>
+            </div>
+            <div class="card">
+              <h3>Employee profiles</h3>
+              <p class="muted">An employee's phone numbers and certificates are independent lists. Keeping them in one table forces every phone to be paired with every certificate.</p>
+            </div>
+            <div class="card">
+              <h3>Product options</h3>
+              <p class="muted">A shirt comes in several colors and several sizes, and every color comes in every size. Storing colors and sizes separately is the 4NF design.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>X →→ Y: each X value has a set of Y values, independent of the other attributes.</li>
+              <li>MVDs come in pairs: X →→ Y gives X →→ R − X − Y.</li>
+              <li>Every FD is an MVD. An MVD is trivial if Y ⊆ X or X ∪ Y = R.</li>
+              <li>R splits losslessly into (X ∪ Y) and (X ∪ Z) exactly when X →→ Y holds.</li>
+              <li>4NF: for every non-trivial MVD X →→ Y, X is a superkey. 4NF implies BCNF.</li>
+              <li>A BCNF table can still repeat data when it stores two independent lists; 4NF splits them.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit II question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="2.9"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="2.9"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 7, Section 7.6 (decomposition using multivalued dependencies and fourth normal form).</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 14, Section 14.6 (multivalued dependency and fourth normal form).</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-2.js"></script>
+  <script src="../../data/quizzes/unit-2.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+  <script src="../../assets/js/widgets/player.js"></script>
+  <script src="../../assets/js/widgets/join-check.js"></script>
+</body>
+</html>

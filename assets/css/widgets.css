@@ -3643,3 +3643,45 @@
   color: var(--text);
   overflow-wrap: anywhere;
 }
+
+/* Split and join checker (V9, 4NF and 5NF) */
+.jc-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-3);
+}
+
+.jc-rows {
+  flex: 1 1 100%;
+  min-width: 0;
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.jc-rows legend {
+  padding: 0 var(--sp-1);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.jc-rows > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-4);
+}
+
+.jc-row {
+  display: inline-flex;
+  gap: var(--sp-2);
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.so-table tr.jc-extra td {
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-weight: 700;
+}

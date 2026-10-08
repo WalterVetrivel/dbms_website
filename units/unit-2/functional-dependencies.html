@@ -114,7 +114,7 @@
                 <tr><td>Full</td><td>Y depends on the whole of X; remove any attribute from X and the FD fails.</td><td>{RegNo, CourseID} → Marks</td></tr>
                 <tr><td>Partial</td><td>A non-prime attribute depends on <strong>part</strong> of a candidate key.</td><td>RegNo → StudentName (RegNo is part of the key {RegNo, CourseID})</td></tr>
                 <tr><td>Transitive</td><td>X → Y and Y → Z give X → Z, where Y is not a key and Z is non-prime.</td><td>RegNo → Dept and Dept → HOD give RegNo → HOD</td></tr>
-                <tr><td>Multivalued</td><td>X determines a <strong>set</strong> of Y values (X →→ Y).</td><td>Covered in Multivalued Dependencies and Fourth Normal Form</td></tr>
+                <tr><td>Multivalued</td><td>X determines a <strong>set</strong> of Y values (X →→ Y).</td><td>Covered in <a href="multivalued-dependencies-and-fourth-normal-form.html">Multivalued Dependencies and Fourth Normal Form</a></td></tr>
               </tbody>
             </table>
           </div>
