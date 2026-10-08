@@ -22,7 +22,7 @@
         pages: 0.5,
         see: ["1.1#file-system"],
         points: [
-          "Explain how organisations kept data before a DBMS: separate files, each with its own application program.",
+          "Explain how organizations kept data before a DBMS: separate files, each with its own application program.",
           "Use one running example for the whole answer, such as a university with separate files for the office, the library and the hostel."
         ],
         draw: ["Several application programs, each reading its own file (for example accounts file, library file, hostel file)."]
@@ -109,7 +109,7 @@
         pages: 0.75,
         see: ["1.3#hierarchical"],
         points: [
-          "Data is organised as a <strong>tree</strong> of records; each child has exactly one parent (one-to-many).",
+          "Data is organized as a <strong>tree</strong> of records; each child has exactly one parent (one-to-many).",
           "Data is reached by starting at the root and moving down.",
           "Advantages: simple, fast for one-to-many data. Disadvantages: cannot show many-to-many directly, needs duplicate records, changes are hard.",
           "Give one real product, such as IBM IMS."

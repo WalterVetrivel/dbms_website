@@ -661,7 +661,7 @@
         pages: 1.5,
         see: ["5.15#overview", "5.15#quality", "5.15#ip", "5.15#survivability", "5.15#privacy", "5.15#emerging"],
         points: [
-          "Data quality, intellectual property rights, database survivability (confinement, damage assessment, reconfiguration, repair, fault treatment), privacy and anonymisation, newer challenges (cloud, insiders, AI).",
+          "Data quality, intellectual property rights, database survivability (confinement, damage assessment, reconfiguration, repair, fault treatment), privacy and anonymization, newer challenges (cloud, insiders, AI).",
           "One example for each, such as surviving a ransomware attack or making data k-anonymous."
         ],
         table: ["Challenge, what it means, example, how it is handled."]

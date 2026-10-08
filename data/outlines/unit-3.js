@@ -995,7 +995,7 @@
         pages: 0.75,
         see: ["3.3#types", "3.3#try-it"],
         points: [
-          "Summarise the role of each type, then conclude."
+          "Summarize the role of each type, then conclude."
         ],
         draw: ["Nested sets: strict inside cascadeless inside recoverable inside all schedules."],
         table: ["Schedule type, rule, what it guarantees."]
