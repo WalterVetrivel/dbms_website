@@ -856,6 +856,77 @@
       answer: 1,
       explain: "A parent table cannot be dropped while a foreign key still points to it. Drop the child table or its foreign key first.",
       link: "#drop"
+    },
+    {
+      id: "q1.13-01",
+      topic: "1.13",
+      type: "multi",
+      question: "Which of these are DML commands? Pick all that apply.",
+      options: ["INSERT", "DROP", "UPDATE", "DELETE", "ALTER"],
+      answer: [0, 2, 3],
+      explain: "INSERT, UPDATE and DELETE work on rows. DROP and ALTER change the structure, so they are DDL.",
+      link: "#what"
+    },
+    {
+      id: "q1.13-02",
+      topic: "1.13",
+      type: "mcq",
+      question: "What does this statement do to the person table?",
+      code: "UPDATE person SET city = 'Salem';",
+      options: ["Changes the city of the first row only", "Changes the city of every row to Salem", "Fails because WHERE is missing", "Adds a new row with city Salem"],
+      answer: 1,
+      explain: "With no WHERE clause, UPDATE changes every row in the table.",
+      link: "#update"
+    },
+    {
+      id: "q1.13-03",
+      topic: "1.13",
+      type: "mcq",
+      question: "person has aadhaar_no as its primary key and already holds a row with 111. What happens?",
+      code: "INSERT INTO person VALUES (111, 'Farhan', 'Salem', 23);",
+      options: ["The old row is replaced", "A second row with 111 is added", "The insert is rejected with a duplicate key error", "Only the name is changed"],
+      answer: 2,
+      explain: "A primary key must be unique, so the DBMS rejects the row and the table does not change.",
+      link: "#insert"
+    },
+    {
+      id: "q1.13-04",
+      topic: "1.13",
+      type: "tf",
+      question: "DELETE FROM person; removes every row but keeps the table.",
+      answer: true,
+      explain: "True. DELETE removes rows only. DROP TABLE would remove the table itself.",
+      link: "#delete"
+    },
+    {
+      id: "q1.13-05",
+      topic: "1.13",
+      type: "order",
+      question: "Put these statements in an order that works for a new student table.",
+      options: ["CREATE TABLE student (...)", "ALTER TABLE student ADD marks INT", "INSERT INTO student VALUES (...)", "UPDATE student SET marks = 70 WHERE roll_no = 3", "SELECT name, marks FROM student"],
+      explain: "The table must exist before it can be altered, and the marks column must exist before rows that use it are added and changed. SELECT reads the final rows.",
+      link: "#worked"
+    },
+    {
+      id: "q1.13-06",
+      topic: "1.13",
+      type: "mcq",
+      question: "Predict the output: how many rows does the last SELECT count?",
+      code: "-- person has 4 rows\nSTART TRANSACTION;\nDELETE FROM person;\nROLLBACK;\nSELECT COUNT(*) FROM person;",
+      options: ["0", "1", "4", "An error"],
+      answer: 2,
+      explain: "ROLLBACK undoes the DELETE, so all 4 rows are back.",
+      link: "#rollback"
+    },
+    {
+      id: "q1.13-07",
+      topic: "1.13",
+      type: "mcq",
+      question: "SQL is called a declarative DML. What does that mean?",
+      options: ["You say what data you want, not how to get it", "You must say each step to find the data", "It can only declare tables", "It runs only on one product"],
+      answer: 0,
+      explain: "A declarative language says what is needed. The DBMS works out how to get it. Relational algebra, by contrast, is procedural.",
+      link: "#what"
     }
   ]);
 })();

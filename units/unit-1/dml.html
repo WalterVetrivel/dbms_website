@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DML | DBMS Study Guide</title>
+  <meta name="description" content="Learn the SQL Data Manipulation Language: INSERT, UPDATE, DELETE and SELECT, with before-and-after tables, a full worked script, and how ROLLBACK undoes DML changes in MySQL.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/widgets.css">
+  <link rel="stylesheet" href="../../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../../" data-page="topic" data-unit="1" data-topic="1.13" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content u-1">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head">
+          <div class="badges">
+            <span class="badge badge-unit u-1">Unit I</span>
+            <span class="badge badge-level" title="Topic number">Topic 1.13</span>
+            <span class="badge badge-level" title="Bloom level from the syllabus">L3: Apply</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+          </div>
+          <h1>DML</h1>
+          <p class="lead">DML commands work on the rows inside the tables: they add, change, remove and read data. This page runs each command on one small table and shows the table before and after.</p>
+        </header>
+
+        <section class="outcomes" aria-labelledby="outcomes-title">
+          <h2 id="outcomes-title" class="visually-hidden">Learning outcomes</h2>
+          <div class="callout callout-note">
+            <div class="callout-title">After this page you can</div>
+            <ul>
+              <li>Insert one row or many rows into a table.</li>
+              <li>Change rows with UPDATE and remove them with DELETE.</li>
+              <li>Explain why WHERE matters in UPDATE and DELETE.</li>
+              <li>Write a full script using CREATE, ALTER, INSERT, UPDATE, DELETE and SELECT.</li>
+              <li>Undo DML changes with ROLLBACK.</li>
+            </ul>
+          </div>
+        </section>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#what">What is DML?</a></li>
+            <li><a href="#sample">The sample table</a></li>
+            <li><a href="#insert">INSERT</a></li>
+            <li><a href="#update">UPDATE</a></li>
+            <li><a href="#delete">DELETE</a></li>
+            <li><a href="#select">SELECT</a></li>
+            <li><a href="#rollback">Undoing DML with ROLLBACK</a></li>
+            <li><a href="#worked">Worked example: DDL and DML together</a></li>
+            <li><a href="#ddl-vs-dml">DML compared with DDL</a></li>
+            <li><a href="#real-world">In real life</a></li>
+            <li><a href="#key-points">Key points</a></li>
+            <li><a href="#questions">Important questions</a></li>
+            <li><a href="#quiz">Quick quiz</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="what" class="topic-section" aria-labelledby="what-title">
+          <h2 id="what-title">What is DML?</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Definition</div>
+            <p><strong>DML (Data Manipulation Language)</strong> is the part of SQL used to <strong>insert, change, delete and retrieve</strong> the data stored in tables.</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>The four DML commands</caption>
+              <thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">INSERT</th><td>Adds new rows.</td></tr>
+                <tr><th scope="row">UPDATE</th><td>Changes values in existing rows.</td></tr>
+                <tr><th scope="row">DELETE</th><td>Removes rows.</td></tr>
+                <tr><th scope="row">SELECT</th><td>Reads rows (a query).</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The textbook names two kinds of DML:</p>
+          <ul>
+            <li><strong>Procedural DML:</strong> the user says <strong>what</strong> data is needed and <strong>how</strong> to get it, step by step. Relational algebra is procedural.</li>
+            <li><strong>Declarative (non-procedural) DML:</strong> the user says only <strong>what</strong> data is needed. SQL is declarative.</li>
+          </ul>
+          <p>The part of DML that reads data is called the <strong>query language</strong>.</p>
+        </section>
+
+        <section id="sample" class="topic-section" aria-labelledby="sample-title">
+          <h2 id="sample-title">The sample table</h2>
+          <p>Every example on this page uses this small <code>person</code> table, a shorter form of the <code>person_details</code> table from the <a href="ddl.html">DDL</a> page.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>CREATE TABLE person (
+  aadhaar_no INT PRIMARY KEY,
+  first_name VARCHAR(20) NOT NULL,
+  city       VARCHAR(20),
+  age        INT
+);</code></pre>
+          </div>
+          <p>The table starts empty. We fill it in the next section.</p>
+        </section>
+
+        <section id="insert" class="topic-section" aria-labelledby="insert-title">
+          <h2 id="insert-title">INSERT</h2>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>INSERT INTO table_name (col1, col2, ...)
+VALUES (value1, value2, ...);</code></pre>
+          </div>
+          <h3>One row, all columns</h3>
+          <p>If you give a value for every column in table order, the column list can be left out.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>INSERT INTO person VALUES (111, 'Anitha', 'Salem', 20);</code></pre>
+          </div>
+          <h3>One row, some columns</h3>
+          <p>Columns you leave out get their default value, or NULL if there is no default.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>INSERT INTO person (aadhaar_no, first_name, city) VALUES (222, 'Bala', 'Erode');</code></pre>
+          </div>
+          <h3>Many rows at once</h3>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>INSERT INTO person (aadhaar_no, first_name, city, age) VALUES
+  (333, 'Charan', 'Salem',   21),
+  (444, 'Divya',  'Chennai', 19),
+  (555, 'Ezhil',  'Erode',   22);</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>person after the three INSERT statements</caption>
+              <thead><tr><th scope="col">aadhaar_no</th><th scope="col">first_name</th><th scope="col">city</th><th scope="col">age</th></tr></thead>
+              <tbody>
+                <tr><td>111</td><td>Anitha</td><td>Salem</td><td>20</td></tr>
+                <tr><td>222</td><td>Bala</td><td>Erode</td><td>NULL</td></tr>
+                <tr><td>333</td><td>Charan</td><td>Salem</td><td>21</td></tr>
+                <tr><td>444</td><td>Divya</td><td>Chennai</td><td>19</td></tr>
+                <tr><td>555</td><td>Ezhil</td><td>Erode</td><td>22</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Rows that break a rule</h3>
+          <p>The DBMS checks every constraint before it adds a row. Both of these are rejected and the table does not change:</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>INSERT INTO person VALUES (111, 'Farhan', 'Salem', 23);   -- ERROR: duplicate primary key 111
+INSERT INTO person (aadhaar_no, city) VALUES (666, 'Salem'); -- ERROR: first_name cannot be NULL</code></pre>
+          </div>
+          <h3>Copy rows from a query</h3>
+          <p><code>INSERT ... SELECT</code> adds the result of a query to another table with matching columns.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>CREATE TABLE salem_person (aadhaar_no INT, first_name VARCHAR(20));
+INSERT INTO salem_person
+  SELECT aadhaar_no, first_name FROM person WHERE city = 'Salem';   -- adds 2 rows</code></pre>
+          </div>
+        </section>
+
+        <section id="update" class="topic-section" aria-labelledby="update-title">
+          <h2 id="update-title">UPDATE</h2>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>UPDATE table_name
+SET col1 = value1, col2 = value2, ...
+WHERE condition;</code></pre>
+          </div>
+          <p>UPDATE changes only the rows that match WHERE. Every other row stays the same.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>UPDATE person SET city = 'Chennai' WHERE aadhaar_no = 333;
+UPDATE person SET age = 20 WHERE aadhaar_no = 222;
+UPDATE person SET age = age + 1 WHERE city = 'Erode';</code></pre>
+          </div>
+          <p>The last statement uses the old value of a column to work out the new one. It adds one year to both people from Erode.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>person after the three UPDATE statements (changed values in bold)</caption>
+              <thead><tr><th scope="col">aadhaar_no</th><th scope="col">first_name</th><th scope="col">city</th><th scope="col">age</th></tr></thead>
+              <tbody>
+                <tr><td>111</td><td>Anitha</td><td>Salem</td><td>20</td></tr>
+                <tr><td>222</td><td>Bala</td><td>Erode</td><td><strong>21</strong></td></tr>
+                <tr><td>333</td><td>Charan</td><td><strong>Chennai</strong></td><td>21</td></tr>
+                <tr><td>444</td><td>Divya</td><td>Chennai</td><td>19</td></tr>
+                <tr><td>555</td><td>Ezhil</td><td>Erode</td><td><strong>23</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-warning">
+            <div class="callout-title">Watch out</div>
+            <p>An UPDATE <strong>without WHERE</strong> changes every row. <code>UPDATE person SET city = 'Salem';</code> moves everyone to Salem. The notes also drop the equals sign (<code>SET city 'Chennai'</code>); SQL needs <code>SET city = 'Chennai'</code>.</p>
+          </div>
+        </section>
+
+        <section id="delete" class="topic-section" aria-labelledby="delete-title">
+          <h2 id="delete-title">DELETE</h2>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>DELETE FROM table_name WHERE condition;</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>DELETE FROM person WHERE aadhaar_no = 444;</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>person after the DELETE (Divya is gone)</caption>
+              <thead><tr><th scope="col">aadhaar_no</th><th scope="col">first_name</th><th scope="col">city</th><th scope="col">age</th></tr></thead>
+              <tbody>
+                <tr><td>111</td><td>Anitha</td><td>Salem</td><td>20</td></tr>
+                <tr><td>222</td><td>Bala</td><td>Erode</td><td>21</td></tr>
+                <tr><td>333</td><td>Charan</td><td>Chennai</td><td>21</td></tr>
+                <tr><td>555</td><td>Ezhil</td><td>Erode</td><td>23</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><code>DELETE FROM person;</code> with no WHERE removes every row but keeps the empty table. For a big table, <code>TRUNCATE</code> does the same job faster; see <a href="ddl.html#truncate">DROP, TRUNCATE and DELETE</a>.</p>
+          <p>If another table has a foreign key that points to a row, the DBMS refuses to delete that row unless the key says <code>ON DELETE CASCADE</code> or <code>ON DELETE SET NULL</code> (see <a href="constraints.html">Constraints</a>).</p>
+        </section>
+
+        <section id="select" class="topic-section" aria-labelledby="select-title">
+          <h2 id="select-title">SELECT</h2>
+          <p>SELECT reads rows and never changes the table. Its full structure is on the <a href="basic-structure-of-sql-queries.html">Basic Structure of SQL Queries</a> page. Here are the common forms on the <code>person</code> table:</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>SELECT * FROM person;                                     -- all rows, all columns
+SELECT first_name, city FROM person WHERE age &gt; 20;       -- Bala, Charan, Ezhil
+SELECT DISTINCT city FROM person;                         -- Salem, Erode, Chennai
+SELECT first_name FROM person ORDER BY age DESC, first_name;  -- Ezhil, Bala, Charan, Anitha</code></pre>
+          </div>
+          <p>Bala and Charan are both 21, so the second sort column, <code>first_name</code>, puts Bala first.</p>
+        </section>
+
+        <section id="rollback" class="topic-section" aria-labelledby="rollback-title">
+          <h2 id="rollback-title">Undoing DML with ROLLBACK</h2>
+          <p>Unlike DDL, DML changes can be undone until they are committed. In MySQL, start a transaction first, because each statement is committed on its own by default.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>START TRANSACTION;
+DELETE FROM person;              -- oops, no WHERE
+SELECT COUNT(*) FROM person;     -- 0
+ROLLBACK;
+SELECT COUNT(*) FROM person;     -- 4: every row is back</code></pre>
+          </div>
+          <p>COMMIT makes the changes permanent. Transactions are covered in Unit III: <a href="../unit-3/sql-dcl-and-tcl-commands.html">SQL DCL and TCL Commands</a>.</p>
+        </section>
+
+        <section id="worked" class="topic-section" aria-labelledby="worked-title">
+          <h2 id="worked-title">Worked example: DDL and DML together</h2>
+          <p>This script builds a <code>student</code> table and uses all six commands a long answer asks for: CREATE, ALTER, INSERT, UPDATE, DELETE and SELECT.</p>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>-- DDL: define the structure
+CREATE TABLE student (
+  roll_no INT PRIMARY KEY,
+  name    VARCHAR(30) NOT NULL,
+  dept    CHAR(4)
+);
+ALTER TABLE student ADD marks INT CHECK (marks BETWEEN 0 AND 100);
+
+-- DML: work on the data
+INSERT INTO student VALUES
+  (1, 'Anitha', 'CSE', 88),
+  (2, 'Bala',   'ECE', 72),
+  (3, 'Charan', 'CSE', 65),
+  (4, 'Divya',  'MECH', 91);
+UPDATE student SET marks = 70 WHERE roll_no = 3;
+DELETE FROM student WHERE dept = 'MECH';
+SELECT name, marks FROM student WHERE dept = 'CSE' ORDER BY marks DESC;</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption>Result of the final SELECT</caption>
+              <thead><tr><th scope="col">name</th><th scope="col">marks</th></tr></thead>
+              <tbody>
+                <tr><td>Anitha</td><td>88</td></tr>
+                <tr><td>Charan</td><td>70</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Step by step: CREATE makes an empty table with three columns, and ALTER adds a fourth. INSERT adds four rows. UPDATE raises Charan's marks to 70. DELETE removes Divya, the only MECH student. SELECT lists the CSE students, highest marks first.</p>
+        </section>
+
+        <section id="ddl-vs-dml" class="topic-section" aria-labelledby="vs-title">
+          <h2 id="vs-title">DML compared with DDL</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>DDL and DML side by side</caption>
+              <thead><tr><th scope="col"></th><th scope="col">DDL</th><th scope="col">DML</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Works on</th><td>The structure (schema)</td><td>The data (rows)</td></tr>
+                <tr><th scope="row">Commands</th><td>CREATE, ALTER, DROP, TRUNCATE, RENAME</td><td>INSERT, UPDATE, DELETE, SELECT</td></tr>
+                <tr><th scope="row">WHERE clause</th><td>Not used</td><td>Used to pick rows</td></tr>
+                <tr><th scope="row">Rollback in MySQL</th><td>No (auto-committed)</td><td>Yes, inside a transaction</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The full comparison is on the <a href="ddl.html#ddl-vs-dml">DDL</a> page.</p>
+        </section>
+
+        <section id="real-world" class="topic-section" aria-labelledby="real-title">
+          <h2 id="real-title">In real life</h2>
+          <div class="grid grid-sm">
+            <div class="card">
+              <h3>Online sign-up</h3>
+              <p class="muted">Creating an account on a website runs an INSERT. Changing your phone number later runs an UPDATE with WHERE user_id = your id.</p>
+            </div>
+            <div class="card">
+              <h3>Shopping cart</h3>
+              <p class="muted">Adding an item is an INSERT, changing the quantity is an UPDATE, removing it is a DELETE, and showing the cart is a SELECT.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="key-points" class="topic-section" aria-labelledby="key-title">
+          <h2 id="key-title">Key points</h2>
+          <div class="key-points">
+            <ul>
+              <li>DML works on rows: INSERT, UPDATE, DELETE and SELECT.</li>
+              <li>INSERT can add one row, many rows, or the result of a SELECT.</li>
+              <li>UPDATE ... SET ... WHERE changes chosen rows; without WHERE it changes every row.</li>
+              <li>DELETE FROM ... WHERE removes chosen rows; without WHERE it empties the table.</li>
+              <li>Every INSERT, UPDATE and DELETE must satisfy the table's constraints.</li>
+              <li>DML can be undone with ROLLBACK before COMMIT; DDL cannot.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="questions" class="topic-section" aria-labelledby="questions-title">
+          <h2 id="questions-title">Important questions</h2>
+          <p>These questions are from the Unit I question bank. Open a 2-mark question to see a sample answer.</p>
+          <div data-questions data-topic="1.13"></div>
+        </section>
+
+        <section id="quiz" class="topic-section" aria-labelledby="quiz-title">
+          <h2 id="quiz-title">Quick quiz</h2>
+          <p>Answer all the questions, then press “Check my answers”. Your best score is saved on this device.</p>
+          <div data-quiz data-topic="1.13"></div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 3, Section 3.9.</li>
+            <li>Elmasri and Navathe, <cite>Fundamentals of Database Systems</cite>, 7th edition: Chapter 6, Section 6.4.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/sql-data-manipulation-statements.html">Data Manipulation Statements</a>.</li>
+            <li>More books, websites and videos are on the <a href="../../resources.html">Resources</a> page.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <div id="topic-links"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="mark-done" aria-pressed="false">Mark as done</button>
+          </div>
+          <nav id="pager" class="pager" aria-label="Previous and next topics"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../../data/site.js"></script>
+  <script src="../../data/topics.js"></script>
+  <script src="../../data/questions/unit-1.js"></script>
+  <script src="../../data/quizzes/unit-1.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/questions.js"></script>
+  <script src="../../assets/js/quiz.js"></script>
+</body>
+</html>

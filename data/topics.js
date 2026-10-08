@@ -71,7 +71,7 @@ DBMS.topics = [
   { id: "1.10", unit: 1, slug: "overview-of-sql", title: "Overview of the SQL Query Language", level: "L3", textbooks: ["S3", "E6"], covers: "The parts of SQL (DDL, DML, DCL and TCL) and the basic data types", status: "published", prereqs: ["1.5"], related: ["1.11", "1.12", "1.13", "3.14"] },
   { id: "1.11", unit: 1, slug: "basic-structure-of-sql-queries", title: "Basic Structure of SQL Queries", level: "L3", textbooks: ["S3", "E6"], covers: "SELECT, FROM and WHERE, queries on more than one table, and ORDER BY", status: "published", prereqs: ["1.9", "1.10"], related: ["1.13", "2.13", "2.14"], widgets: ["V5"] },
   { id: "1.12", unit: 1, slug: "ddl", title: "DDL", level: "L3", textbooks: ["S3", "S4", "E6"], covers: "CREATE, ALTER, DROP, TRUNCATE and RENAME, with constraints", status: "published", prereqs: ["1.8", "1.10"], related: ["1.7", "1.13"] },
-  { id: "1.13", unit: 1, slug: "dml", title: "DML", level: "L3", textbooks: ["S3", "E6"], covers: "INSERT, UPDATE, DELETE and SELECT", status: "planned", prereqs: [], related: [] },
+  { id: "1.13", unit: 1, slug: "dml", title: "DML", level: "L3", textbooks: ["S3", "E6"], covers: "INSERT, UPDATE, DELETE and SELECT", status: "published", prereqs: ["1.10", "1.12"], related: ["1.11", "2.12"] },
 
   // Unit II
   { id: "2.1", unit: 2, slug: "entity-relationship-model", title: "Entity-Relationship Model", level: "L2", textbooks: ["S6", "E3"], covers: "Entities, attributes, relationships, mapping cardinality, participation and weak entity sets", status: "planned", prereqs: [], related: [] },
