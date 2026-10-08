@@ -785,6 +785,75 @@
       answer: 2,
       explain: "One ORDER BY at the end sorts the whole combined result.",
       link: "#order"
+    },
+    {
+      id: "q2.12-01",
+      topic: "2.12",
+      type: "mcq",
+      question: "A table has 11 rows. One row has NULL in COST. What does COUNT(COST) return?",
+      options: ["11", "10", "NULL", "0"],
+      answer: 1,
+      explain: "COUNT(column) counts only non-NULL values. COUNT(*) would return 11.",
+      link: "#nulls"
+    },
+    {
+      id: "q2.12-02",
+      topic: "2.12",
+      type: "mcq",
+      question: "COST values are 20, 40 and NULL. What does AVG(COST) return?",
+      options: ["20", "30", "NULL", "60"],
+      answer: 1,
+      explain: "AVG skips NULL: (20 + 40) ÷ 2 = 30.",
+      link: "#nulls"
+    },
+    {
+      id: "q2.12-03",
+      topic: "2.12",
+      type: "mcq",
+      question: "PRODUCT_MAST has rates 10, 25, 30, 10, 20, 25, 30, 10, 25, 30. What is SUM(DISTINCT RATE)?",
+      options: ["215", "85", "4", "30"],
+      answer: 1,
+      explain: "The different rates are 10, 20, 25 and 30, which add up to 85.",
+      link: "#sum"
+    },
+    {
+      id: "q2.12-04",
+      topic: "2.12",
+      type: "multi",
+      question: "Which aggregate functions also work on text columns? Select all that apply.",
+      options: ["COUNT", "SUM", "MIN", "MAX"],
+      answer: [0, 2, 3],
+      explain: "COUNT counts any values. MIN and MAX compare text alphabetically. SUM and AVG need numbers.",
+      link: "#what"
+    },
+    {
+      id: "q2.12-05",
+      topic: "2.12",
+      type: "tf",
+      question: "SELECT COUNT(*) FROM PRODUCT_MAST WHERE SUM(COST) > 100; is a valid query.",
+      answer: false,
+      explain: "False. WHERE runs before aggregation, so it cannot use SUM. Conditions on aggregates go in HAVING.",
+      link: "#rules"
+    },
+    {
+      id: "q2.12-06",
+      topic: "2.12",
+      type: "mcq",
+      question: "No row matches the WHERE clause. What does SUM(COST) return?",
+      options: ["0", "NULL", "An error", "The total of all rows"],
+      answer: 1,
+      explain: "SUM, AVG, MIN and MAX return NULL when there are no values. COUNT returns 0.",
+      link: "#nulls"
+    },
+    {
+      id: "q2.12-07",
+      topic: "2.12",
+      type: "mcq",
+      question: "PRODUCT holds Item1 to Item10. What does MAX(PRODUCT) return?",
+      options: ["Item10", "Item9", "Item1", "10"],
+      answer: 1,
+      explain: "Text is compared character by character. 'Item9' is greater than 'Item10' because 9 comes after 1.",
+      link: "#minmax"
     }
   ]);
 })();
