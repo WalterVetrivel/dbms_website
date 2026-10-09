@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exercise 3: Foreign Keys | DBMS Study Guide</title>
+  <meta name="description" content="Lab exercise 3 explained: add foreign keys to the game store tables in MySQL, choose ON DELETE CASCADE or SET NULL, and test referential integrity.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/widgets.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lab" data-lab="3" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head lab-head">
+          <div class="badges">
+            <span class="badge badge-unit">Lab exercise 3</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+            <span class="badge badge-level">MySQL</span>
+          </div>
+          <h1>Create a set of tables, add foreign key constraints and incorporate referential integrity</h1>
+          <p class="lead">Link the tables together with foreign keys, decide what happens when a referenced row is deleted, and test that MySQL refuses rows that point to nothing.</p>
+        </header>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#aim">Aim</a></li>
+            <li><a href="#steps">Steps</a></li>
+            <li><a href="#plan">Plan the foreign keys</a></li>
+            <li><a href="#add">Add the foreign keys</a></li>
+            <li><a href="#test-insert">Test: a value with no match</a></li>
+            <li><a href="#test-set-null">Test: ON DELETE SET NULL</a></li>
+            <li><a href="#test-cascade">Test: ON DELETE CASCADE</a></li>
+            <li><a href="#changes">Changes from the record</a></li>
+            <li><a href="#errors">Common errors</a></li>
+            <li><a href="#viva">Viva questions</a></li>
+            <li><a href="#result">Result</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="aim" class="topic-section" aria-labelledby="aim-title">
+          <h2 id="aim-title">Aim</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Aim</div>
+            <p>To add foreign keys and enforce referential integrity in the database.</p>
+          </div>
+          <h3>Read these topics first</h3>
+          <div id="lab-topics"></div>
+          <p>Finish <a href="ex-02-ddl-dml-constraints.html">Exercise 2</a> first. A foreign key can only point to a column that is a primary key (or UNIQUE), so the keys from Exercise 2 must be in place.</p>
+        </section>
+
+        <section id="steps" class="topic-section" aria-labelledby="steps-title">
+          <h2 id="steps-title">Steps</h2>
+          <ol class="steps">
+            <li><strong>Identify the foreign keys.</strong> A foreign key column may only hold values that exist in the column it refers to. For example, a game may only name a developer that is in the Developers table.</li>
+            <li><strong>Decide what happens on delete.</strong> When a referenced row is deleted, either delete the rows that refer to it (CASCADE) or set their foreign key to NULL (SET NULL).</li>
+            <li><strong>Add the foreign keys</strong> with ALTER TABLE.</li>
+            <li><strong>Test them.</strong> Insert a value with no match (it should fail). Then insert correct values, delete the referenced row and see what happens.</li>
+          </ol>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>ALTER TABLE TableName ADD CONSTRAINT ConstraintName
+  FOREIGN KEY (Column) REFERENCES ParentTable (Column)
+  ON DELETE CASCADE;          -- or ON DELETE SET NULL</code></pre>
+          </div>
+        </section>
+
+        <section id="plan" class="topic-section" aria-labelledby="plan-title">
+          <h2 id="plan-title">Plan the foreign keys</h2>
+          <p>The table that holds the foreign key is the <strong>child</strong>. The table it points to is the <strong>parent</strong>.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>The seven foreign keys and the delete rule chosen for each</caption>
+              <thead><tr><th scope="col">Child column</th><th scope="col">Parent column</th><th scope="col">On delete</th><th scope="col">Why</th></tr></thead>
+              <tbody>
+                <tr><td>Games.DeveloperID</td><td>Developers.DeveloperID</td><td>SET NULL</td><td>If a developer is removed, keep its games for sale.</td></tr>
+                <tr><td>Games.PublisherID</td><td>Publishers.PublisherID</td><td>SET NULL</td><td>The same reason.</td></tr>
+                <tr><td>Cart.UserID</td><td>Users.UserID</td><td>CASCADE</td><td>A deleted user's cart is no longer needed.</td></tr>
+                <tr><td>Cart.GameID</td><td>Games.GameID</td><td>CASCADE</td><td>A game that is no longer sold must leave every cart.</td></tr>
+                <tr><td>Transactions.UserID</td><td>Users.UserID</td><td>SET NULL</td><td>Keep sales records even if the user deletes the account.</td></tr>
+                <tr><td>PurchaseHistory.TransactionID</td><td>Transactions.TransactionID</td><td>CASCADE</td><td>The lines of a deleted transaction go with it.</td></tr>
+                <tr><td>PurchaseHistory.GameID</td><td>Games.GameID</td><td>CASCADE</td><td>The record's choice. In a real shop, sales history is usually kept (see the viva questions).</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-note">
+            <div class="callout-title">Be careful with CASCADE</div>
+            <p>One DELETE on a parent can silently remove many child rows. Use it only when the child rows really have no meaning without the parent.</p>
+          </div>
+        </section>
+
+        <section id="add" class="topic-section" aria-labelledby="add-title">
+          <h2 id="add-title">Add the foreign keys</h2>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>ALTER TABLE Games ADD CONSTRAINT Games_FK_1 FOREIGN KEY (DeveloperID)
+  REFERENCES Developers (DeveloperID) ON DELETE SET NULL;
+ALTER TABLE Games ADD CONSTRAINT Games_FK_2 FOREIGN KEY (PublisherID)
+  REFERENCES Publishers (PublisherID) ON DELETE SET NULL;
+ALTER TABLE Cart ADD CONSTRAINT Cart_FK_1 FOREIGN KEY (UserID)
+  REFERENCES Users (UserID) ON DELETE CASCADE;
+ALTER TABLE Cart ADD CONSTRAINT Cart_FK_2 FOREIGN KEY (GameID)
+  REFERENCES Games (GameID) ON DELETE CASCADE;
+ALTER TABLE Transactions ADD CONSTRAINT Transactions_FK FOREIGN KEY (UserID)
+  REFERENCES Users (UserID) ON DELETE SET NULL;
+ALTER TABLE PurchaseHistory ADD CONSTRAINT Purchase_FK_1 FOREIGN KEY (TransactionID)
+  REFERENCES Transactions (TransactionID) ON DELETE CASCADE;
+ALTER TABLE PurchaseHistory ADD CONSTRAINT Purchase_FK_2 FOREIGN KEY (GameID)
+  REFERENCES Games (GameID) ON DELETE CASCADE;</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html">FOREIGN KEY Constraints</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/alter-table.html">ALTER TABLE</a></p>
+          <h3>Clause by clause</h3>
+          <dl class="explain">
+            <dt>ALTER TABLE Games ADD CONSTRAINT Games_FK_1</dt>
+            <dd>Adds a rule named Games_FK_1 to the child table, Games. The name appears in error messages, and you need it to remove the rule later with <code>ALTER TABLE Games DROP FOREIGN KEY Games_FK_1;</code>.</dd>
+            <dt>FOREIGN KEY (DeveloperID)</dt>
+            <dd>The column in Games that must match a parent row.</dd>
+            <dt>REFERENCES Developers (DeveloperID)</dt>
+            <dd>The parent table and column. The parent column must be a primary key or UNIQUE, and both columns must have the same data type (here both are int).</dd>
+            <dt>ON DELETE SET NULL</dt>
+            <dd>When a developer is deleted, MySQL sets DeveloperID to NULL in that developer's games. The child column must allow NULL for this to work.</dd>
+            <dt>ON DELETE CASCADE</dt>
+            <dd>When the parent row is deleted, MySQL deletes the child rows too.</dd>
+          </dl>
+          <p>With no ON DELETE clause, the rule is <strong>RESTRICT</strong>: MySQL refuses to delete a parent row that still has children. You can also add <code>ON UPDATE CASCADE</code> so that changing a parent's ID updates the children.</p>
+          <p>To see the keys, run <code>SHOW CREATE TABLE Games;</code>. Its output ends with these lines:</p>
+          <div class="code-block">
+            <span class="code-label">Part of the SHOW CREATE TABLE Games output</span>
+            <pre class="is-output"><code>  CONSTRAINT `Games_FK_1` FOREIGN KEY (`DeveloperID`) REFERENCES `developers` (`DeveloperID`) ON DELETE SET NULL,
+  CONSTRAINT `Games_FK_2` FOREIGN KEY (`PublisherID`) REFERENCES `publishers` (`PublisherID`) ON DELETE SET NULL,
+  CONSTRAINT `Games_CHK` CHECK ((`BasePrice` &gt; 0))</code></pre>
+          </div>
+        </section>
+
+        <section id="test-insert" class="topic-section" aria-labelledby="test-insert-title">
+          <h2 id="test-insert-title">Test: a value with no match</h2>
+          <p>Developer 501 was deleted in Exercise 2, so this INSERT names a developer that does not exist.</p>
+<div class="code-block">
+  <span class="code-label">MySQL: this gives an error</span>
+  <pre><code>INSERT INTO Games VALUES (102, 'Pokemon Black', '2010-09-18', 501, 700, 'RPG',
+  'Best game in the Pokemon franchise', 50, 10);</code></pre>
+</div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre class="is-output"><code>ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails
+(`games_store`.`games`, CONSTRAINT `Games_FK_1` FOREIGN KEY (`DeveloperID`)
+REFERENCES `developers` (`DeveloperID`) ON DELETE SET NULL)</code></pre>
+          </div>
+          <p>This is referential integrity at work: a child row cannot point to a parent that is not there. Now add the developer first, and the same INSERT succeeds.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>INSERT INTO Developers VALUES (501, 'Game Freak', 'Japan');
+INSERT INTO Games VALUES (102, 'Pokemon Black', '2010-09-18', 501, 700, 'RPG',
+  'Best game in the Pokemon franchise', 50, 10);</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>SELECT * FROM Developers</caption>
+    <thead><tr><th scope="col">DeveloperID</th><th scope="col">DeveloperName</th><th scope="col">DeveloperLocation</th></tr></thead>
+    <tbody>
+      <tr><td class="num">500</td><td>Nintendo</td><td>Japan</td></tr>
+      <tr><td class="num">501</td><td>Game Freak</td><td>Japan</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>SELECT GameID, Title, DeveloperID, PublisherID FROM Games</caption>
+    <thead><tr><th scope="col">GameID</th><th scope="col">Title</th><th scope="col">DeveloperID</th><th scope="col">PublisherID</th></tr></thead>
+    <tbody>
+      <tr><td class="num">101</td><td>Super Mario Bros</td><td class="num">500</td><td class="num">700</td></tr>
+      <tr><td class="num">102</td><td>Pokemon Black</td><td class="num">501</td><td class="num">700</td></tr>
+    </tbody>
+  </table>
+</div>
+        </section>
+
+        <section id="test-set-null" class="topic-section" aria-labelledby="test-set-null-title">
+          <h2 id="test-set-null-title">Test: ON DELETE SET NULL</h2>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>DELETE FROM Developers WHERE DeveloperID = 501;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>SELECT * FROM Developers</caption>
+    <thead><tr><th scope="col">DeveloperID</th><th scope="col">DeveloperName</th><th scope="col">DeveloperLocation</th></tr></thead>
+    <tbody>
+      <tr><td class="num">500</td><td>Nintendo</td><td>Japan</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>SELECT GameID, Title, DeveloperID, PublisherID FROM Games</caption>
+    <thead><tr><th scope="col">GameID</th><th scope="col">Title</th><th scope="col">DeveloperID</th><th scope="col">PublisherID</th></tr></thead>
+    <tbody>
+      <tr><td class="num">101</td><td>Super Mario Bros</td><td class="num">500</td><td class="num">700</td></tr>
+      <tr><td class="num">102</td><td>Pokemon Black</td><td><span class="null">NULL</span></td><td class="num">700</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>The developer is gone, but Pokemon Black is still in the store. Its DeveloperID is now NULL, so it no longer points to a missing row.</p>
+        </section>
+
+        <section id="test-cascade" class="topic-section" aria-labelledby="test-cascade-title">
+          <h2 id="test-cascade-title">Test: ON DELETE CASCADE</h2>
+          <p>The record tests only SET NULL. To see CASCADE, add a short-lived user with one game in the cart, then delete the user.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>INSERT INTO Users VALUES (9, 'demo', 'demo@test.com', 'demo123', '2005-05-05', 'India');
+INSERT INTO Cart VALUES (9, 101);</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>SELECT * FROM Cart, before the DELETE</caption>
+    <thead><tr><th scope="col">UserID</th><th scope="col">GameID</th></tr></thead>
+    <tbody>
+      <tr><td class="num">9</td><td class="num">101</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>DELETE FROM Users WHERE UserID = 9;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>SELECT * FROM Cart, after the DELETE</caption>
+    <thead><tr><th scope="col">UserID</th><th scope="col">GameID</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2"><span class="null">Empty set (no rows)</span></td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>Deleting the user also deleted the cart row, because Cart_FK_1 uses ON DELETE CASCADE.</p>
+        </section>
+
+        <section id="changes" class="topic-section" aria-labelledby="changes-title">
+          <h2 id="changes-title">Changes from the record</h2>
+          <ul>
+            <li>The developer is named “Game Freak” (two words, its real name) and Pokemon Black has its real release date, 2010-09-18.</li>
+            <li>The CASCADE test is added, because the record's step 4 asks for the ON DELETE rules to be tested but shows only SET NULL.</li>
+          </ul>
+        </section>
+
+        <section id="errors" class="topic-section" aria-labelledby="errors-title">
+          <h2 id="errors-title">Common errors</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Errors you may see in this exercise and how to fix them</caption>
+              <thead><tr><th scope="col">Error</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead>
+              <tbody>
+                <tr><td><code>ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails</code></td><td>The value has no match in the parent. When it appears on ALTER TABLE, a row already in the child table has no match.</td><td>Insert the parent row first, or correct or delete the bad child rows, then try again.</td></tr>
+                <tr><td><code>ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails</code></td><td>The parent still has children and the rule is RESTRICT (no ON DELETE clause).</td><td>Delete the child rows first, or define the key with CASCADE or SET NULL.</td></tr>
+                <tr><td><code>ERROR 6125 (HY000): Failed to add the foreign key constraint. Missing unique key for constraint ...</code></td><td>The parent column is not a primary key or UNIQUE. Usually Exercise 2 was skipped.</td><td>Add the primary key to the parent table first.</td></tr>
+                <tr><td><code>ERROR 3780 (HY000): Referencing column ... and referenced column ... are incompatible.</code></td><td>The two columns have different data types (for example int and varchar).</td><td>Make both columns the same type with MODIFY COLUMN.</td></tr>
+                <tr><td><code>ERROR 1830 (HY000): Column 'UserID' cannot be NOT NULL: needed in a foreign key constraint ... SET NULL</code></td><td>ON DELETE SET NULL on a column declared NOT NULL.</td><td>Use CASCADE instead, or allow NULL in the column.</td></tr>
+                <tr><td><code>ERROR 1826 (HY000): Duplicate foreign key constraint name 'Games_FK_1'</code></td><td>The statement was run twice.</td><td>The key already exists. Check with SHOW CREATE TABLE.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="viva" class="topic-section" aria-labelledby="viva-title">
+          <h2 id="viva-title">Viva questions</h2>
+          <details class="accordion">
+            <summary>What is referential integrity?</summary>
+            <div class="accordion-body"><p>The rule that every foreign key value must either match a primary key value in the parent table or be NULL. A child row can never point to a row that does not exist. See <a href="../units/unit-1/constraints.html">Constraints</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is the difference between ON DELETE CASCADE and ON DELETE SET NULL?</summary>
+            <div class="accordion-body"><p>CASCADE deletes the child rows along with the parent. SET NULL keeps the child rows but sets their foreign key to NULL.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What happens on delete if no ON DELETE rule is given?</summary>
+            <div class="accordion-body"><p>MySQL uses RESTRICT (also called NO ACTION): it refuses to delete a parent row that still has child rows and gives error 1451.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Can a foreign key column hold NULL? Can it repeat?</summary>
+            <div class="accordion-body"><p>Yes to both, unless the column is also NOT NULL or part of a primary key. Many games can have the same publisher, and Pokemon Black now has a NULL developer.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Why might a real shop not use CASCADE from Games to PurchaseHistory?</summary>
+            <div class="accordion-body"><p>Deleting a game would erase its sales records, which a business needs for accounts and taxes. A real shop would mark the game as “not for sale” instead of deleting it, or use RESTRICT.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Which table is the parent and which is the child in Games_FK_1?</summary>
+            <div class="accordion-body"><p>Developers is the parent (it is referenced). Games is the child (it holds the foreign key).</p></div>
+          </details>
+        </section>
+
+        <section id="result" class="topic-section" aria-labelledby="result-title">
+          <h2 id="result-title">Result</h2>
+          <div class="callout callout-example">
+            <div class="callout-title">Result</div>
+            <p>The foreign key constraints were successfully implemented and referential integrity was incorporated into the database.</p>
+          </div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Topic pages: <a href="../units/unit-1/keys.html">Keys</a> and <a href="../units/unit-1/constraints.html">Constraints</a>.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html">FOREIGN KEY Constraints</a> and <a href="https://dev.mysql.com/doc/refman/8.4/en/show-create-table.html">SHOW CREATE TABLE</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <nav id="pager" class="pager" aria-label="Previous and next exercises"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exercise 5: Sub-queries and Joins | DBMS Study Guide</title>
+  <meta name="description" content="Lab exercise 5 explained: write sub-queries in WHERE and FROM, find the best-selling game, and combine tables with INNER JOIN and LEFT JOIN in MySQL, with the expected output.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/widgets.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lab" data-lab="5" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head lab-head">
+          <div class="badges">
+            <span class="badge badge-unit">Lab exercise 5</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+            <span class="badge badge-level">MySQL</span>
+          </div>
+          <h1>Query the database tables and explore sub-queries and simple join operations</h1>
+          <p class="lead">Answer questions that need more than one step or more than one table. A sub-query runs a query inside another one. A join puts matching rows of two tables side by side.</p>
+        </header>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#aim">Aim</a></li>
+            <li><a href="#steps">Steps</a></li>
+            <li><a href="#min-max">Sub-query: lowest and highest rating</a></li>
+            <li><a href="#nintendo">Sub-query across two tables</a></li>
+            <li><a href="#best-seller">The best-selling game</a></li>
+            <li><a href="#inner-join">INNER JOIN</a></li>
+            <li><a href="#left-join">LEFT JOIN</a></li>
+            <li><a href="#join-subquery">Joining a sub-query</a></li>
+            <li><a href="#changes">Changes from the record</a></li>
+            <li><a href="#errors">Common errors</a></li>
+            <li><a href="#viva">Viva questions</a></li>
+            <li><a href="#result">Result</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="aim" class="topic-section" aria-labelledby="aim-title">
+          <h2 id="aim-title">Aim</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Aim</div>
+            <p>To query the database using sub-queries and joins.</p>
+          </div>
+          <h3>Read these topics first</h3>
+          <div id="lab-topics"></div>
+          <p>You need the sample data from <a href="ex-04-where-and-aggregates.html#data">Exercise 4</a>, or the <a href="index.html#starter">starter script</a>.</p>
+        </section>
+
+        <section id="steps" class="topic-section" aria-labelledby="steps-title">
+          <h2 id="steps-title">Steps</h2>
+          <ol class="steps">
+            <li><strong>Use sub-queries</strong> to get:
+              <ul>
+                <li>the titles of the games with the lowest and the highest rating;</li>
+                <li>the titles of the games published by Nintendo;</li>
+                <li>(hard) the title of the game with the most sales.</li>
+              </ul>
+            </li>
+            <li><strong>Use joins</strong> to get:
+              <ul>
+                <li>each game title with its publisher's name (INNER JOIN);</li>
+                <li>all publishers with their games, even publishers with no games (LEFT JOIN);</li>
+                <li>the title and number of sales of each game that has sold at least once (join a table with a sub-query).</li>
+              </ul>
+            </li>
+          </ol>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>SELECT * FROM Table1 WHERE Column = (SELECT ... FROM Table2 WHERE Condition);
+
+SELECT Col1, Col2 FROM Table1
+INNER JOIN Table2 ON Table1.Key = Table2.Key;     -- or LEFT JOIN, RIGHT JOIN</code></pre>
+          </div>
+        </section>
+
+        <section id="min-max" class="topic-section" aria-labelledby="min-max-title">
+          <h2 id="min-max-title">Sub-query: lowest and highest rating</h2>
+          <p>In Exercise 4, MIN and MAX gave the ratings but not the titles. A sub-query solves this in one statement.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Title, Rating FROM Games
+WHERE Rating = (SELECT MIN(Rating) FROM Games);
+
+SELECT Title, Rating FROM Games
+WHERE Rating = (SELECT MAX(Rating) FROM Games);</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/subqueries.html">Subqueries</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/scalar-subqueries.html">Scalar subqueries</a></p>
+          <dl class="explain">
+            <dt>(SELECT MIN(Rating) FROM Games)</dt>
+            <dd>The <strong>inner query</strong> runs first and returns one value: 6.90.</dd>
+            <dt>WHERE Rating = ...</dt>
+            <dd>The <strong>outer query</strong> then works like <code>WHERE Rating = 6.90</code> and returns the matching titles.</dd>
+          </dl>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Game with the lowest rating</caption>
+    <thead><tr><th scope="col">Title</th><th scope="col">Rating</th></tr></thead>
+    <tbody>
+      <tr><td>Animal Crossing: New Horizons</td><td class="num">6.90</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Games with the highest rating</caption>
+    <thead><tr><th scope="col">Title</th><th scope="col">Rating</th></tr></thead>
+    <tbody>
+      <tr><td>Super Mario Bros</td><td class="num">10.00</td></tr>
+      <tr><td>Pokemon Black</td><td class="num">10.00</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>Two games share the top rating of 10.00, so both are returned. The query handles ties without any change.</p>
+        </section>
+
+        <section id="nintendo" class="topic-section" aria-labelledby="nintendo-title">
+          <h2 id="nintendo-title">Sub-query across two tables</h2>
+          <p>The publisher's name is in Publishers, but Games stores only the PublisherID. The inner query turns the name into an ID.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Title FROM Games
+WHERE PublisherID = (SELECT PublisherID FROM Publishers
+                     WHERE PublisherName = 'Nintendo');</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Games published by Nintendo</caption>
+    <thead><tr><th scope="col">Title</th></tr></thead>
+    <tbody>
+      <tr><td>Super Mario Bros</td></tr>
+      <tr><td>Pokemon Black</td></tr>
+      <tr><td>The Legend of Zelda: Breath of the Wild</td></tr>
+      <tr><td>Animal Crossing: New Horizons</td></tr>
+    </tbody>
+  </table>
+</div>
+          <dl class="explain">
+            <dt>(SELECT PublisherID FROM Publishers WHERE PublisherName = 'Nintendo')</dt>
+            <dd>Returns 700.</dd>
+            <dt>WHERE PublisherID = 700</dt>
+            <dd>The outer query keeps Nintendo's four games.</dd>
+          </dl>
+          <div class="callout callout-note">
+            <div class="callout-title">= needs exactly one value</div>
+            <p>If the inner query returns more than one row, = fails with “Subquery returns more than 1 row”. For example, three publishers are in the USA. When the inner query may return many rows, use <code>IN</code>:</p>
+            <div class="code-block">
+              <span class="code-label">MySQL</span>
+              <pre><code>SELECT Title FROM Games
+WHERE PublisherID IN (SELECT PublisherID FROM Publishers
+                      WHERE PublisherLocation = 'USA');</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section id="best-seller" class="topic-section" aria-labelledby="best-title">
+          <h2 id="best-title">The best-selling game</h2>
+          <p>This is the record's “hard” query. Build it from the inside out, one step at a time.</p>
+          <h3>Step 1: sales of each game</h3>
+          <p>Each row of PurchaseHistory is one copy sold, so counting the rows of each game gives its sales.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT GameID, COUNT(*) AS Sales FROM PurchaseHistory
+GROUP BY GameID;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Sales of each game</caption>
+    <thead><tr><th scope="col">GameID</th><th scope="col">Sales</th></tr></thead>
+    <tbody>
+      <tr><td class="num">103</td><td class="num">1</td></tr>
+      <tr><td class="num">104</td><td class="num">4</td></tr>
+      <tr><td class="num">108</td><td class="num">1</td></tr>
+      <tr><td class="num">109</td><td class="num">2</td></tr>
+      <tr><td class="num">110</td><td class="num">2</td></tr>
+      <tr><td class="num">111</td><td class="num">1</td></tr>
+    </tbody>
+  </table>
+</div>
+          <h3>Step 2: the highest sales figure</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT MAX(Sales) FROM
+  (SELECT COUNT(*) AS Sales FROM PurchaseHistory GROUP BY GameID) AS SalesCount;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>The highest number of sales</caption>
+    <thead><tr><th scope="col">MAX(Sales)</th></tr></thead>
+    <tbody>
+      <tr><td class="num">4</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>The step 1 query is used in FROM, like a table. This is called a <strong>derived table</strong>, and it must have a name (<code>AS SalesCount</code>).</p>
+          <h3>Step 3: put it together</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Title FROM Games WHERE GameID IN
+  (SELECT GameID FROM PurchaseHistory
+   GROUP BY GameID
+   HAVING COUNT(*) =
+     (SELECT MAX(Sales) FROM
+       (SELECT COUNT(*) AS Sales FROM PurchaseHistory GROUP BY GameID) AS SalesCount));</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>The best-selling game</caption>
+    <thead><tr><th scope="col">Title</th></tr></thead>
+    <tbody>
+      <tr><td>Resident Evil 4</td></tr>
+    </tbody>
+  </table>
+</div>
+          <dl class="explain">
+            <dt>(SELECT MAX(Sales) FROM (...) AS SalesCount)</dt>
+            <dd>The innermost part: 4, the highest sales figure (step 2).</dd>
+            <dt>SELECT GameID FROM PurchaseHistory GROUP BY GameID HAVING COUNT(*) = 4</dt>
+            <dd>The middle part: the ID of every game that sold 4 copies (104).</dd>
+            <dt>SELECT Title FROM Games WHERE GameID IN (...)</dt>
+            <dd>The outer part: turns the ID into a title.</dd>
+          </dl>
+          <p>A shorter way, once you know ORDER BY and LIMIT: <code>SELECT GameID, COUNT(*) AS Sales FROM PurchaseHistory GROUP BY GameID ORDER BY Sales DESC LIMIT 1;</code>. It shows only one game even when two games tie, so the sub-query version is safer.</p>
+        </section>
+
+        <section id="inner-join" class="topic-section" aria-labelledby="inner-title">
+          <h2 id="inner-title">INNER JOIN</h2>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Title, PublisherName FROM Games
+INNER JOIN Publishers ON Games.PublisherID = Publishers.PublisherID
+ORDER BY Games.GameID;</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/join.html">JOIN clause</a></p>
+          <dl class="explain">
+            <dt>FROM Games INNER JOIN Publishers</dt>
+            <dd>Combine rows of the two tables.</dd>
+            <dt>ON Games.PublisherID = Publishers.PublisherID</dt>
+            <dd>The join condition: pair each game with the publisher whose ID matches. It is almost always foreign key = primary key. The table name before the dot says which table's column you mean, because both tables have a PublisherID column.</dd>
+            <dt>INNER</dt>
+            <dd>Keep only rows that found a partner. A game with no publisher, or a publisher with no games, does not appear.</dd>
+            <dt>ORDER BY Games.GameID</dt>
+            <dd>Not in the record. Without it, the row order depends on how MySQL runs the join.</dd>
+          </dl>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Each game with its publisher</caption>
+    <thead><tr><th scope="col">Title</th><th scope="col">PublisherName</th></tr></thead>
+    <tbody>
+      <tr><td>Super Mario Bros</td><td>Nintendo</td></tr>
+      <tr><td>Pokemon Black</td><td>Nintendo</td></tr>
+      <tr><td>Resident Evil 2</td><td>Capcom</td></tr>
+      <tr><td>Resident Evil 4</td><td>Capcom</td></tr>
+      <tr><td>Resident Evil Village</td><td>Capcom</td></tr>
+      <tr><td>Devil May Cry 5</td><td>Capcom</td></tr>
+      <tr><td>Alan Wake 2</td><td>Epic Games</td></tr>
+      <tr><td>God of War</td><td>Sony Interactive Entertainment</td></tr>
+      <tr><td>Grand Theft Auto V</td><td>Rockstar Games</td></tr>
+      <tr><td>The Witcher 3: Wild Hunt</td><td>CD Projekt</td></tr>
+      <tr><td>The Legend of Zelda: Breath of the Wild</td><td>Nintendo</td></tr>
+      <tr><td>Animal Crossing: New Horizons</td><td>Nintendo</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>Ubisoft has no games, so it is missing from this list.</p>
+        </section>
+
+        <section id="left-join" class="topic-section" aria-labelledby="left-title">
+          <h2 id="left-title">LEFT JOIN</h2>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT PublisherName, Title FROM Publishers
+LEFT JOIN Games ON Games.PublisherID = Publishers.PublisherID
+ORDER BY Publishers.PublisherID, Games.GameID;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>All publishers, with their games</caption>
+    <thead><tr><th scope="col">PublisherName</th><th scope="col">Title</th></tr></thead>
+    <tbody>
+      <tr><td>Nintendo</td><td>Super Mario Bros</td></tr>
+      <tr><td>Nintendo</td><td>Pokemon Black</td></tr>
+      <tr><td>Nintendo</td><td>The Legend of Zelda: Breath of the Wild</td></tr>
+      <tr><td>Nintendo</td><td>Animal Crossing: New Horizons</td></tr>
+      <tr><td>Capcom</td><td>Resident Evil 2</td></tr>
+      <tr><td>Capcom</td><td>Resident Evil 4</td></tr>
+      <tr><td>Capcom</td><td>Resident Evil Village</td></tr>
+      <tr><td>Capcom</td><td>Devil May Cry 5</td></tr>
+      <tr><td>Sony Interactive Entertainment</td><td>God of War</td></tr>
+      <tr><td>Rockstar Games</td><td>Grand Theft Auto V</td></tr>
+      <tr><td>Epic Games</td><td>Alan Wake 2</td></tr>
+      <tr><td>CD Projekt</td><td>The Witcher 3: Wild Hunt</td></tr>
+      <tr><td>Ubisoft</td><td><span class="null">NULL</span></td></tr>
+    </tbody>
+  </table>
+</div>
+          <dl class="explain">
+            <dt>FROM Publishers LEFT JOIN Games</dt>
+            <dd>Publishers is the <strong>left</strong> table, because it is written first. Every publisher is kept, even with no matching game.</dd>
+            <dt>NULL in Title</dt>
+            <dd>Ubisoft has no games, so MySQL fills the Games columns with NULL.</dd>
+          </dl>
+          <p>RIGHT JOIN does the reverse and keeps every row of the right table. <code>Games RIGHT JOIN Publishers</code> gives the same result as the query above. MySQL has no FULL OUTER JOIN; the <a href="../units/unit-2/joins.html">Joins</a> page shows how to get one with UNION.</p>
+          <p>To find only the publishers with no games, add <code>WHERE Games.GameID IS NULL</code>.</p>
+        </section>
+
+        <section id="join-subquery" class="topic-section" aria-labelledby="join-subquery-title">
+          <h2 id="join-subquery-title">Joining a sub-query</h2>
+          <p>Join Games with the step 1 query from above, to show titles next to sales.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Title, Sales FROM Games
+INNER JOIN (SELECT GameID, COUNT(*) AS Sales FROM PurchaseHistory
+            GROUP BY GameID) AS GameSales
+ON Games.GameID = GameSales.GameID
+ORDER BY Games.GameID;</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/derived-tables.html">Derived tables</a></p>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Title and sales of each game sold at least once</caption>
+    <thead><tr><th scope="col">Title</th><th scope="col">Sales</th></tr></thead>
+    <tbody>
+      <tr><td>Resident Evil 2</td><td class="num">1</td></tr>
+      <tr><td>Resident Evil 4</td><td class="num">4</td></tr>
+      <tr><td>God of War</td><td class="num">1</td></tr>
+      <tr><td>Grand Theft Auto V</td><td class="num">2</td></tr>
+      <tr><td>The Witcher 3: Wild Hunt</td><td class="num">2</td></tr>
+      <tr><td>The Legend of Zelda: Breath of the Wild</td><td class="num">1</td></tr>
+    </tbody>
+  </table>
+</div>
+          <dl class="explain">
+            <dt>(SELECT GameID, COUNT(*) AS Sales ...) AS GameSales</dt>
+            <dd>A derived table with two columns, GameID and Sales, named GameSales.</dd>
+            <dt>INNER JOIN ... ON Games.GameID = GameSales.GameID</dt>
+            <dd>Matches each game with its sales row. Games that never sold have no row in GameSales, so INNER JOIN leaves them out. Use LEFT JOIN to list them with NULL sales.</dd>
+          </dl>
+          <p>Exercise 7 saves this query as a view, so it can be reused by name.</p>
+        </section>
+
+        <section id="changes" class="topic-section" aria-labelledby="changes-title">
+          <h2 id="changes-title">Changes from the record</h2>
+          <ul>
+            <li>The hard query uses <code>WHERE GameID IN</code> instead of <code>=</code>. With =, the query fails with “Subquery returns more than 1 row” whenever two games tie for the most sales.</li>
+            <li>The join queries have ORDER BY, so your output appears in the same order as the tables here.</li>
+          </ul>
+        </section>
+
+        <section id="errors" class="topic-section" aria-labelledby="errors-title">
+          <h2 id="errors-title">Common errors</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Errors you may see in this exercise and how to fix them</caption>
+              <thead><tr><th scope="col">Error</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead>
+              <tbody>
+                <tr><td><code>ERROR 1242 (21000): Subquery returns more than 1 row</code></td><td>= or &gt; with an inner query that returns many rows.</td><td>Use IN, or make sure the inner query returns one value.</td></tr>
+                <tr><td><code>ERROR 1248 (42000): Every derived table must have its own alias</code></td><td>A sub-query in FROM with no name.</td><td>Add <code>AS SomeName</code> after the closing bracket.</td></tr>
+                <tr><td><code>ERROR 1052 (23000): Column 'PublisherID' in field list is ambiguous</code></td><td>Both tables have the column, and you did not say which.</td><td>Write <code>Games.PublisherID</code> or <code>Publishers.PublisherID</code>.</td></tr>
+                <tr><td>Far too many rows</td><td>The ON condition is missing or wrong, so every row is paired with every other row (a Cartesian product).</td><td>Join on foreign key = primary key.</td></tr>
+                <tr><td>Empty set for the best-selling game</td><td>The sample data was not loaded, so PurchaseHistory is empty.</td><td>Run the sample data block from Exercise 4.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="viva" class="topic-section" aria-labelledby="viva-title">
+          <h2 id="viva-title">Viva questions</h2>
+          <details class="accordion">
+            <summary>What is a sub-query?</summary>
+            <div class="accordion-body"><p>A query written inside another query, in brackets. The inner query's result is used by the outer query, for example in WHERE or FROM. See <a href="../units/unit-2/sub-queries.html">Sub Queries</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is the difference between INNER JOIN and LEFT JOIN?</summary>
+            <div class="accordion-body"><p>INNER JOIN keeps only rows with a match in both tables. LEFT JOIN keeps every row of the left table and fills NULL where the right table has no match. See <a href="../units/unit-2/joins.html">Joins</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is a correlated sub-query?</summary>
+            <div class="accordion-body"><p>A sub-query that uses a column of the outer query, so it runs once for each outer row. Example: <code>SELECT Title FROM Games g WHERE NOT EXISTS (SELECT * FROM PurchaseHistory p WHERE p.GameID = g.GameID);</code> lists games that never sold.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>When should you use IN instead of = with a sub-query?</summary>
+            <div class="accordion-body"><p>When the inner query can return more than one row. = needs exactly one value.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is a derived table?</summary>
+            <div class="accordion-body"><p>A sub-query in the FROM clause. It acts like a temporary table for that one statement and must have an alias.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is a Cartesian product, and when does it happen?</summary>
+            <div class="accordion-body"><p>Every row of one table paired with every row of the other. It happens when a join has no join condition. 12 games × 7 publishers would give 84 rows.</p></div>
+          </details>
+        </section>
+
+        <section id="result" class="topic-section" aria-labelledby="result-title">
+          <h2 id="result-title">Result</h2>
+          <div class="callout callout-example">
+            <div class="callout-title">Result</div>
+            <p>The sub-queries and joins were written successfully to retrieve complex data from multiple tables in the database.</p>
+          </div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Topic pages: <a href="../units/unit-2/sub-queries.html">Sub Queries</a> and <a href="../units/unit-2/joins.html">Joins</a>.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/subqueries.html">Subqueries</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/derived-tables.html">Derived Tables</a> and <a href="https://dev.mysql.com/doc/refman/8.4/en/join.html">JOIN Clause</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <nav id="pager" class="pager" aria-label="Previous and next exercises"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+</body>
+</html>

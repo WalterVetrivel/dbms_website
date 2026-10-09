@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exercise 8: Transactions, DCL and TCL | DBMS Study Guide</title>
+  <meta name="description" content="Lab exercise 8 explained: write a cart checkout as one MySQL transaction with START TRANSACTION, LAST_INSERT_ID, INSERT ... SELECT and COMMIT, try ROLLBACK and SAVEPOINT, and control access with CREATE USER, GRANT and REVOKE.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/widgets.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lab" data-lab="8" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head lab-head">
+          <div class="badges">
+            <span class="badge badge-unit">Lab exercise 8</span>
+            <span class="badge badge-level" title="Course outcome">CO3</span>
+            <span class="badge badge-level">MySQL</span>
+          </div>
+          <h1>Execute complex database transactions and realize DCL and TCL commands</h1>
+          <p class="lead">Buy every game in a cart as one all-or-nothing transaction, practice ROLLBACK and SAVEPOINT, and then create a user who can only read the Games table.</p>
+        </header>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#aim">Aim</a></li>
+            <li><a href="#steps">Steps</a></li>
+            <li><a href="#before">Before the checkout</a></li>
+            <li><a href="#checkout">The checkout transaction</a></li>
+            <li><a href="#after">After the checkout</a></li>
+            <li><a href="#rollback">ROLLBACK and SAVEPOINT</a></li>
+            <li><a href="#dcl">DCL: users and privileges</a></li>
+            <li><a href="#changes">Changes from the record</a></li>
+            <li><a href="#errors">Common errors</a></li>
+            <li><a href="#viva">Viva questions</a></li>
+            <li><a href="#result">Result</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="aim" class="topic-section" aria-labelledby="aim-title">
+          <h2 id="aim-title">Aim</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Aim</div>
+            <ul>
+              <li>To use database transactions along with TCL to handle the purchase of a game.</li>
+              <li>To use DCL commands to control access to the database.</li>
+            </ul>
+          </div>
+          <h3>Read these topics first</h3>
+          <div id="lab-topics"></div>
+          <p>You need the sample data from <a href="ex-04-where-and-aggregates.html#data">Exercise 4</a> (it puts two games in user 1's cart) and the CurrentPrice column from <a href="ex-06-triggers.html#setup">Exercise 6</a>. If you use the <a href="index.html#starter">starter script</a>, run the Exercise 6 set-up after it.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Two meanings of “transaction”</div>
+            <p>The <strong>Transactions table</strong> stores purchases in the store. A <strong>database transaction</strong> is a group of SQL statements that succeed or fail together. This exercise uses a database transaction to add a row to the Transactions table.</p>
+          </div>
+        </section>
+
+        <section id="steps" class="topic-section" aria-labelledby="steps-title">
+          <h2 id="steps-title">Steps</h2>
+          <ol class="steps">
+            <li><strong>Check the tables.</strong> Transactions (with TransactionID as AUTO_INCREMENT), PurchaseHistory and Cart must exist, and the cart must have rows.</li>
+            <li><strong>Write the checkout as one transaction</strong> for user 1:
+              <ul>
+                <li>start the transaction;</li>
+                <li>insert a row into Transactions with today's date and the user ID;</li>
+                <li>get the new TransactionID with LAST_INSERT_ID();</li>
+                <li>copy each game in the cart into PurchaseHistory, with the transaction ID and the game's current price;</li>
+                <li>delete those rows from Cart;</li>
+                <li>commit.</li>
+              </ul>
+            </li>
+            <li><strong>Use DCL:</strong> create a user named customer with the password “password”, give it SELECT on Games, and make sure it cannot INSERT, UPDATE or DELETE.</li>
+          </ol>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>START TRANSACTION;
+  ...statements...
+COMMIT;                       -- or ROLLBACK;
+
+SET @Variable = value;
+SELECT LAST_INSERT_ID() INTO @Variable;
+INSERT INTO Table1 (Col1, Col2) SELECT @Variable, Col FROM Table2 WHERE Condition;
+
+CREATE USER 'user'@'localhost' IDENTIFIED BY 'password';
+GRANT SELECT ON database.TableName TO 'user'@'localhost';
+REVOKE INSERT ON database.TableName FROM 'user'@'localhost';</code></pre>
+          </div>
+        </section>
+
+        <section id="before" class="topic-section" aria-labelledby="before-title">
+          <h2 id="before-title">Before the checkout</h2>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT * FROM Cart WHERE UserID = 1;
+SELECT * FROM Transactions;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>User 1's cart</caption>
+    <thead><tr><th scope="col">UserID</th><th scope="col">GameID</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td class="num">105</td></tr>
+      <tr><td class="num">1</td><td class="num">107</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Transactions so far</caption>
+    <thead><tr><th scope="col">TransactionID</th><th scope="col">TransactionDate</th><th scope="col">UserID</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>2026-07-01</td><td class="num">2</td></tr>
+      <tr><td class="num">2</td><td>2026-07-03</td><td class="num">3</td></tr>
+      <tr><td class="num">3</td><td>2026-07-10</td><td class="num">4</td></tr>
+      <tr><td class="num">4</td><td>2026-08-02</td><td class="num">2</td></tr>
+      <tr><td class="num">5</td><td>2026-08-15</td><td class="num">5</td></tr>
+      <tr><td class="num">6</td><td>2026-09-01</td><td class="num">3</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>User 1 has Resident Evil Village (105) and Alan Wake 2 (107) in the cart. Six purchases exist, so the next TransactionID will be 7.</p>
+        </section>
+
+        <section id="checkout" class="topic-section" aria-labelledby="checkout-title">
+          <h2 id="checkout-title">The checkout transaction</h2>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>START TRANSACTION;
+
+SET @UserID = 1;
+INSERT INTO Transactions (TransactionDate, UserID) VALUES (CURDATE(), @UserID);
+
+SET @T_ID = 0;
+SELECT LAST_INSERT_ID() INTO @T_ID;
+
+INSERT INTO PurchaseHistory (TransactionID, GameID, SalePrice)
+  SELECT @T_ID, Cart.GameID, Games.CurrentPrice
+  FROM Cart INNER JOIN Games ON Cart.GameID = Games.GameID
+  WHERE Cart.UserID = @UserID;
+
+DELETE FROM Cart WHERE UserID = @UserID;
+
+COMMIT;</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/commit.html">START TRANSACTION, COMMIT and ROLLBACK</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/user-variables.html">User variables</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/information-functions.html">LAST_INSERT_ID()</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/insert-select.html">INSERT ... SELECT</a></p>
+          <h3>Line by line</h3>
+          <dl class="explain">
+            <dt>START TRANSACTION;</dt>
+            <dd>Begins a transaction. Until COMMIT, the changes are not permanent and other connections do not see them. MySQL normally commits every statement on its own (<strong>autocommit</strong>); START TRANSACTION turns that off until the next COMMIT or ROLLBACK.</dd>
+            <dt>SET @UserID = 1;</dt>
+            <dd>A <strong>user variable</strong>. Names start with @. It keeps its value until you disconnect, so later statements can use it instead of typing 1 again.</dd>
+            <dt>INSERT INTO Transactions (TransactionDate, UserID) VALUES (CURDATE(), @UserID);</dt>
+            <dd>Adds the purchase. TransactionID is left out, so AUTO_INCREMENT gives it the next number. CURDATE() is today's date.</dd>
+            <dt>SELECT LAST_INSERT_ID() INTO @T_ID;</dt>
+            <dd>LAST_INSERT_ID() returns the AUTO_INCREMENT value just made <strong>by this connection</strong>, so two customers checking out at the same moment each get their own number. INTO stores it in @T_ID. (The record first sets @T_ID to 0; that line is harmless but not needed.)</dd>
+            <dt>INSERT INTO PurchaseHistory (...) SELECT @T_ID, Cart.GameID, Games.CurrentPrice ...</dt>
+            <dd><strong>INSERT ... SELECT</strong>: instead of VALUES, the rows come from a query. Each cart row becomes one PurchaseHistory row. @T_ID is the same in every row.</dd>
+            <dt>FROM Cart INNER JOIN Games ON Cart.GameID = Games.GameID</dt>
+            <dd>The cart has only IDs, so join Games to get each game's CurrentPrice, the price paid today.</dd>
+            <dt>WHERE Cart.UserID = @UserID</dt>
+            <dd>Only user 1's cart, not everyone's.</dd>
+            <dt>DELETE FROM Cart WHERE UserID = @UserID;</dt>
+            <dd>Empties the user's cart, because the games are bought.</dd>
+            <dt>COMMIT;</dt>
+            <dd>Makes all four changes permanent together. If anything failed before this point, run ROLLBACK and none of them happen.</dd>
+          </dl>
+          <div class="callout callout-tip">
+            <div class="callout-title">Why one transaction?</div>
+            <p>Imagine the power fails after the INSERT into PurchaseHistory but before the cart is emptied. Without a transaction, the user has paid and still has the games in the cart. Inside a transaction, MySQL undoes the unfinished work when it restarts. This is <strong>atomicity</strong>, the A in <a href="../units/unit-3/acid-properties.html">ACID</a>.</p>
+          </div>
+        </section>
+
+        <section id="after" class="topic-section" aria-labelledby="after-title">
+          <h2 id="after-title">After the checkout</h2>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT * FROM Transactions WHERE UserID = @UserID;
+SELECT * FROM PurchaseHistory WHERE TransactionID = @T_ID;
+SELECT * FROM Cart WHERE UserID = @UserID;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>User 1's transactions</caption>
+    <thead><tr><th scope="col">TransactionID</th><th scope="col">TransactionDate</th><th scope="col">UserID</th></tr></thead>
+    <tbody>
+      <tr><td class="num">7</td><td>2026-10-09</td><td class="num">1</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="output-note">The date is the day you run it.</p>
+<div class="table-wrap">
+  <table class="output">
+    <caption>The games in transaction 7</caption>
+    <thead><tr><th scope="col">TransactionID</th><th scope="col">GameID</th><th scope="col">SalePrice</th></tr></thead>
+    <tbody>
+      <tr><td class="num">7</td><td class="num">105</td><td class="num">1499.00</td></tr>
+      <tr><td class="num">7</td><td class="num">107</td><td class="num">2499.00</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>User 1's cart after the checkout</caption>
+    <thead><tr><th scope="col">UserID</th><th scope="col">GameID</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2"><span class="null">Empty set (no rows)</span></td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>Two sales rows were added at the current prices (1499.00 and 2499.00), and the cart is empty.</p>
+        </section>
+
+        <section id="rollback" class="topic-section" aria-labelledby="rollback-title">
+          <h2 id="rollback-title">ROLLBACK and SAVEPOINT</h2>
+          <p>The record uses only COMMIT. The other TCL commands are ROLLBACK and SAVEPOINT. Try them on the cart.</p>
+          <h3>ROLLBACK undoes the whole transaction</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>START TRANSACTION;
+DELETE FROM Cart WHERE UserID = 2;
+SELECT * FROM Cart;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Inside the transaction, user 2's cart row is gone</caption>
+    <thead><tr><th scope="col">UserID</th><th scope="col">GameID</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2"><span class="null">Empty set (no rows)</span></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>ROLLBACK;
+SELECT * FROM Cart;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>After ROLLBACK, the row is back</caption>
+    <thead><tr><th scope="col">UserID</th><th scope="col">GameID</th></tr></thead>
+    <tbody>
+      <tr><td class="num">2</td><td class="num">112</td></tr>
+    </tbody>
+  </table>
+</div>
+          <h3>SAVEPOINT undoes part of it</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>START TRANSACTION;
+INSERT INTO Cart VALUES (3, 106);
+SAVEPOINT AfterFirstGame;
+INSERT INTO Cart VALUES (3, 112);
+ROLLBACK TO SAVEPOINT AfterFirstGame;
+COMMIT;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>SELECT * FROM Cart WHERE UserID = 3</caption>
+    <thead><tr><th scope="col">UserID</th><th scope="col">GameID</th></tr></thead>
+    <tbody>
+      <tr><td class="num">3</td><td class="num">106</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/savepoint.html">SAVEPOINT and ROLLBACK TO SAVEPOINT</a></p>
+          <dl class="explain">
+            <dt>SAVEPOINT AfterFirstGame</dt>
+            <dd>Marks a point inside the transaction.</dd>
+            <dt>ROLLBACK TO SAVEPOINT AfterFirstGame</dt>
+            <dd>Undoes only the work after the mark (the second game). The transaction stays open.</dd>
+            <dt>COMMIT</dt>
+            <dd>Saves what is left: the first game only.</dd>
+          </dl>
+          <div class="callout callout-note">
+            <div class="callout-title">DDL cannot be rolled back</div>
+            <p>CREATE, ALTER and DROP commit the open transaction at once in MySQL. A ROLLBACK after them has nothing left to undo.</p>
+          </div>
+        </section>
+
+        <section id="dcl" class="topic-section" aria-labelledby="dcl-title">
+          <h2 id="dcl-title">DCL: users and privileges</h2>
+          <p>Run these as the root user. A new user has no privileges at all, so we grant the four table privileges and then revoke the three that change data. That leaves only SELECT, as the record asks.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>CREATE USER 'customer'@'localhost' IDENTIFIED BY 'password';
+GRANT SELECT, INSERT, UPDATE, DELETE ON games_store.Games TO 'customer'@'localhost';
+REVOKE INSERT, UPDATE, DELETE ON games_store.Games FROM 'customer'@'localhost';
+SHOW GRANTS FOR 'customer'@'localhost';</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-user.html">CREATE USER</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/grant.html">GRANT</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/revoke.html">REVOKE</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/show-grants.html">SHOW GRANTS</a></p>
+          <dl class="explain">
+            <dt>CREATE USER 'customer'@'localhost'</dt>
+            <dd>A MySQL account is a user name <strong>and</strong> a host. 'localhost' means this account can log in only from the same computer.</dd>
+            <dt>IDENTIFIED BY 'password'</dt>
+            <dd>Sets the password. Use a strong one outside the lab.</dd>
+            <dt>GRANT SELECT, INSERT, UPDATE, DELETE ON games_store.Games</dt>
+            <dd>Gives these four privileges on one table. Writing <code>games_store.Games</code> works even when no database is selected. <code>games_store.*</code> would mean every table in the database.</dd>
+            <dt>TO 'customer'@'localhost'</dt>
+            <dd>The account that receives them.</dd>
+            <dt>REVOKE INSERT, UPDATE, DELETE ... FROM 'customer'@'localhost'</dt>
+            <dd>Takes these three back. Note GRANT ... TO but REVOKE ... FROM.</dd>
+          </dl>
+          <div class="code-block">
+            <span class="code-label">Output of SHOW GRANTS</span>
+            <pre class="is-output"><code>+-----------------------------------------------------------------+
+| Grants for customer@localhost                                   |
++-----------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `customer`@`localhost`                    |
+| GRANT SELECT ON `games_store`.`games` TO `customer`@`localhost` |
++-----------------------------------------------------------------+</code></pre>
+          </div>
+          <p>USAGE means “may log in, but nothing else”. The only real privilege left is SELECT on Games.</p>
+          <h3>Test it as the new user</h3>
+          <p>Open a new command prompt and log in as customer: <code>mysql -u customer -p</code>, then type <code>password</code>.</p>
+          <div class="code-block">
+            <span class="code-label">As customer</span>
+            <pre><code>USE games_store;
+SELECT Title, BasePrice FROM Games WHERE GameID = 101;   -- works
+UPDATE Games SET BasePrice = 1 WHERE GameID = 101;       -- refused
+SELECT * FROM Users;                                     -- refused</code></pre>
+          </div>
+          <div class="code-block">
+            <span class="code-label">Output</span>
+            <pre class="is-output"><code>+------------------+-----------+
+| Title            | BasePrice |
++------------------+-----------+
+| Super Mario Bros |     40.00 |
++------------------+-----------+
+ERROR 1142 (42000): UPDATE command denied to user 'customer'@'localhost' for table 'games'
+ERROR 1142 (42000): SELECT command denied to user 'customer'@'localhost' for table 'users'</code></pre>
+          </div>
+          <p>The customer can read games but cannot change prices or see other users' data. This is the <strong>principle of least privilege</strong>: give each account only what it needs.</p>
+          <p>To remove the account after the lab: <code>DROP USER 'customer'@'localhost';</code>.</p>
+        </section>
+
+        <section id="changes" class="topic-section" aria-labelledby="changes-title">
+          <h2 id="changes-title">Changes from the record</h2>
+          <ul>
+            <li><strong>CURDATE() instead of NOW().</strong> TransactionDate is a DATE column. NOW() also gives the time, which MySQL drops with a warning note. CURDATE() gives just the date. (To keep the time, make the column DATETIME, as the record's step 1 suggests with its DateAndTime name.)</li>
+            <li><strong>The check query uses @T_ID.</strong> The record's <code>WHERE TransactionID = (SELECT TransactionID FROM Transactions WHERE UserID = @UserID)</code> fails with “Subquery returns more than 1 row” once the user has bought more than once.</li>
+            <li><strong>The password is 'password'.</strong> The record's step asks for 'password' but its query uses an empty password.</li>
+            <li><strong>GRANT before REVOKE.</strong> The record revokes INSERT, UPDATE and DELETE that were never granted. MySQL 8.4 refuses that with <code>ERROR 1147 (42000): There is no such grant defined for user 'customer' on host 'localhost' on table 'Games'</code>. Granting all four first and then revoking three shows both commands working. (<code>REVOKE IF EXISTS ...</code> is another way: it turns the error into a warning.)</li>
+            <li><strong>games_store.Games</strong> instead of Games, so GRANT works even without USE.</li>
+            <li>ROLLBACK and SAVEPOINT are added so that all three TCL commands are practiced.</li>
+          </ul>
+        </section>
+
+        <section id="errors" class="topic-section" aria-labelledby="errors-title">
+          <h2 id="errors-title">Common errors</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Errors you may see in this exercise and how to fix them</caption>
+              <thead><tr><th scope="col">Error</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead>
+              <tbody>
+                <tr><td><code>ERROR 1062 (23000): Duplicate entry '7-105' for key 'purchasehistory.PRIMARY'</code></td><td>The INSERT ... SELECT ran twice for the same transaction.</td><td>Run ROLLBACK and start again. Inside a transaction, nothing is lost.</td></tr>
+                <tr><td>PurchaseHistory gets 0 rows</td><td>The cart was already empty (for example, after an earlier checkout).</td><td>Add games to the cart: <code>INSERT INTO Cart VALUES (1, 106);</code>.</td></tr>
+                <tr><td>SalePrice is NULL</td><td>CurrentPrice was never filled, because Exercise 6 was skipped.</td><td>Run the Exercise 6 set-up, or use Games.BasePrice.</td></tr>
+                <tr><td><code>ERROR 1242 (21000): Subquery returns more than 1 row</code></td><td>The record's check query, once the user has two purchases.</td><td>Use <code>WHERE TransactionID = @T_ID</code>.</td></tr>
+                <tr><td><code>ERROR 1396 (HY000): Operation CREATE USER failed for 'customer'@'localhost'</code></td><td>The user already exists.</td><td><code>DROP USER 'customer'@'localhost';</code> first, or skip CREATE USER.</td></tr>
+                <tr><td><code>ERROR 1147 (42000): There is no such grant defined ...</code></td><td>REVOKE of a privilege the user does not have.</td><td>GRANT it first, or use <code>REVOKE IF EXISTS</code>.</td></tr>
+                <tr><td><code>ERROR 1046 (3D000): No database selected</code> on GRANT</td><td>The table is named without its database, and there was no USE.</td><td>Write <code>games_store.Games</code>.</td></tr>
+                <tr><td>@T_ID is NULL</td><td>The SET and SELECT ran in a different Workbench tab or connection. User variables belong to one connection.</td><td>Run the whole transaction in one tab, in one go.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="viva" class="topic-section" aria-labelledby="viva-title">
+          <h2 id="viva-title">Viva questions</h2>
+          <details class="accordion">
+            <summary>What is a transaction? State the ACID properties.</summary>
+            <div class="accordion-body"><p>A transaction is a unit of work: a group of operations that must all succeed or all fail. ACID: <strong>Atomicity</strong> (all or nothing), <strong>Consistency</strong> (valid state to valid state), <strong>Isolation</strong> (transactions do not disturb each other) and <strong>Durability</strong> (committed changes survive failures). See <a href="../units/unit-3/acid-properties.html">ACID Properties</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Name the TCL and DCL commands.</summary>
+            <div class="accordion-body"><p>TCL (Transaction Control Language): COMMIT, ROLLBACK and SAVEPOINT (with START TRANSACTION to begin). DCL (Data Control Language): GRANT and REVOKE. See <a href="../units/unit-3/sql-dcl-and-tcl-commands.html">SQL DCL and TCL Commands</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is the difference between COMMIT and ROLLBACK?</summary>
+            <div class="accordion-body"><p>COMMIT makes the transaction's changes permanent. ROLLBACK undoes every change since the transaction started.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is a savepoint?</summary>
+            <div class="accordion-body"><p>A named point inside a transaction. ROLLBACK TO SAVEPOINT undoes only the work after it, and the transaction continues. See <a href="../units/unit-3/save-points.html">Save Points</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is autocommit?</summary>
+            <div class="accordion-body"><p>MySQL's default mode, in which each statement is committed as soon as it finishes. START TRANSACTION suspends it until COMMIT or ROLLBACK. <code>SET autocommit = 0;</code> turns it off for the session.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Why use LAST_INSERT_ID() instead of SELECT MAX(TransactionID)?</summary>
+            <div class="accordion-body"><p>LAST_INSERT_ID() is kept per connection, so it always returns your own new ID. MAX could return another customer's ID if they inserted at the same moment.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is the principle of least privilege?</summary>
+            <div class="accordion-body"><p>Give each user only the privileges needed for their job. The customer account can read games but cannot change them. See <a href="../units/unit-5/access-control-based-on-privileges.html">Access Control Based on Privileges</a>.</p></div>
+          </details>
+        </section>
+
+        <section id="result" class="topic-section" aria-labelledby="result-title">
+          <h2 id="result-title">Result</h2>
+          <div class="callout callout-example">
+            <div class="callout-title">Result</div>
+            <p>The complex transaction for the game purchase operation and the DCL commands were executed successfully.</p>
+          </div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Topic pages: <a href="../units/unit-3/transaction-concepts.html">Transaction Concepts</a>, <a href="../units/unit-3/acid-properties.html">ACID Properties</a>, <a href="../units/unit-3/save-points.html">Save Points</a> and <a href="../units/unit-3/sql-dcl-and-tcl-commands.html">SQL DCL and TCL Commands</a>.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/commit.html">START TRANSACTION, COMMIT and ROLLBACK</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/savepoint.html">SAVEPOINT</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/grant.html">GRANT</a> and <a href="https://dev.mysql.com/doc/refman/8.4/en/revoke.html">REVOKE</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <nav id="pager" class="pager" aria-label="Previous and next exercises"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+</body>
+</html>

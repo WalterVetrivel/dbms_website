@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exercise 9: B+ Tree in C | DBMS Study Guide</title>
+  <meta name="description" content="Lab exercise 9 explained: the record's B+ tree program in C, function by function, what it really builds, and a true B+ tree version that matches the interactive B+ tree visualizer.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/widgets.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lab" data-lab="9" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head lab-head">
+          <div class="badges">
+            <span class="badge badge-unit">Lab exercise 9</span>
+            <span class="badge badge-level" title="Course outcome">CO4</span>
+            <span class="badge badge-level">C</span>
+          </div>
+          <h1>Write a program to implement B+ tree</h1>
+          <p class="lead">Read the record's C program one function at a time and trace the tree it builds. Then compare it with a true B+ tree program and the B+ tree visualizer running the same inserts.</p>
+        </header>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#aim">Aim</a></li>
+            <li><a href="#steps">Steps</a></li>
+            <li><a href="#program">The record's program</a></li>
+            <li><a href="#functions">Function by function</a></li>
+            <li><a href="#trace">Trace: the tree after each insert</a></li>
+            <li><a href="#output">Output</a></li>
+            <li><a href="#b-or-bplus">Is it really a B+ tree?</a></li>
+            <li><a href="#bplus">A true B+ tree version</a></li>
+            <li><a href="#visualizer">Watch the same inserts</a></li>
+            <li><a href="#run">Compile and run</a></li>
+            <li><a href="#errors">Common errors</a></li>
+            <li><a href="#viva">Viva questions</a></li>
+            <li><a href="#result">Result</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="aim" class="topic-section" aria-labelledby="aim-title">
+          <h2 id="aim-title">Aim</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Aim</div>
+            <p>To write a C program to implement B+ tree.</p>
+          </div>
+          <h3>Read these topics first</h3>
+          <div id="lab-topics"></div>
+          <p>You need a C compiler: GCC (through MinGW or Code::Blocks on Windows) or any online C compiler.</p>
+        </section>
+
+        <section id="steps" class="topic-section" aria-labelledby="steps-title">
+          <h2 id="steps-title">Steps</h2>
+          <p>The record describes six steps. Each one becomes a function.</p>
+          <ol class="steps">
+            <li><strong>Create a node</strong> (<code>create_node</code>): allocate memory and set whether it is a leaf. Set the number of keys to 0, and set every child pointer and the next pointer to NULL.</li>
+            <li><strong>Split a child</strong> (<code>split_child</code>): find the middle of a full child. Move the keys after it into a new node (with its children, if it is not a leaf). Then put the middle key into the parent.</li>
+            <li><strong>Insert into a non-full node</strong> (<code>insert_non_full</code>): in a leaf, shift larger keys right and insert. In an internal node, find the right child, split it first if it is full, then go down into it.</li>
+            <li><strong>Insert into the tree</strong> (<code>insert</code>): if the root is full, make a new root above it and split the old root. Then insert.</li>
+            <li><strong>Search</strong> (<code>search</code>): find the first key that is not smaller than the search key. If it is equal, the key is found. Otherwise, go down to the matching child, or stop at a leaf.</li>
+            <li><strong>Traverse</strong> (<code>traverse</code>): print every key in sorted order.</li>
+          </ol>
+        </section>
+
+        <section id="program" class="topic-section" aria-labelledby="program-title">
+          <h2 id="program-title">The record's program</h2>
+          <p>This is the program from the record, with indentation added. Nothing else is changed.</p>
+<div class="code-block">
+  <span class="code-label">C: record program (record.c)</span>
+  <pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdbool.h&gt;
+
+#define ORDER 4 // You can change the order (max keys per node = ORDER - 1)
+
+typedef struct BPlusTreeNode {
+    int keys[ORDER - 1];
+    struct BPlusTreeNode* children[ORDER];
+    int num_keys;
+    bool is_leaf;
+    struct BPlusTreeNode* next; // Only used for leaves (for range queries)
+} BPlusTreeNode;
+
+// Function to create a new node
+BPlusTreeNode* create_node(bool is_leaf) {
+    BPlusTreeNode* node = (BPlusTreeNode*)malloc(sizeof(BPlusTreeNode));
+    node-&gt;is_leaf = is_leaf;
+    node-&gt;num_keys = 0;
+    node-&gt;next = NULL;
+    for (int i = 0; i &lt; ORDER; i++) {
+        node-&gt;children[i] = NULL;
+    }
+    return node;
+}
+
+// Function to split a full child
+void split_child(BPlusTreeNode* parent, int index, BPlusTreeNode* child) {
+    int mid = (ORDER - 1) / 2;
+    BPlusTreeNode* new_child = create_node(child-&gt;is_leaf);
+    new_child-&gt;num_keys = mid;
+
+    // Copy keys to new child
+    for (int i = 0; i &lt; mid; i++) {
+        new_child-&gt;keys[i] = child-&gt;keys[i + mid + 1];
+    }
+
+    // Copy child pointers if not leaf
+    if (!child-&gt;is_leaf) {
+        for (int i = 0; i &lt;= mid; i++) {
+            new_child-&gt;children[i] = child-&gt;children[i + mid + 1];
+        }
+    }
+
+    // Adjust original child
+    child-&gt;num_keys = mid;
+
+    // Shift parent's children and keys to the right
+    for (int i = parent-&gt;num_keys; i &gt; index; i--) {
+        parent-&gt;children[i + 1] = parent-&gt;children[i];
+        parent-&gt;keys[i] = parent-&gt;keys[i - 1];
+    }
+
+    parent-&gt;children[index + 1] = new_child;
+    parent-&gt;keys[index] = child-&gt;keys[mid];
+    parent-&gt;num_keys++;
+}
+
+// Insert key into non-full node
+void insert_non_full(BPlusTreeNode* node, int key) {
+    int i = node-&gt;num_keys - 1;
+
+    if (node-&gt;is_leaf) {
+        // Shift keys to the right
+        while (i &gt;= 0 &amp;&amp; key &lt; node-&gt;keys[i]) {
+            node-&gt;keys[i + 1] = node-&gt;keys[i];
+            i--;
+        }
+        node-&gt;keys[i + 1] = key;
+        node-&gt;num_keys++;
+    } else {
+        while (i &gt;= 0 &amp;&amp; key &lt; node-&gt;keys[i]) {
+            i--;
+        }
+        i++;
+        if (node-&gt;children[i]-&gt;num_keys == ORDER - 1) {
+            split_child(node, i, node-&gt;children[i]);
+            if (key &gt; node-&gt;keys[i]) {
+                i++;
+            }
+        }
+        insert_non_full(node-&gt;children[i], key);
+    }
+}
+
+// Insert into B+ Tree
+void insert(BPlusTreeNode** root_ref, int key) {
+    BPlusTreeNode* r = *root_ref;
+    if (r-&gt;num_keys == ORDER - 1) {
+        BPlusTreeNode* s = create_node(false);
+        *root_ref = s;
+        s-&gt;children[0] = r;
+        split_child(s, 0, r);
+        insert_non_full(s, key);
+    } else {
+        insert_non_full(r, key);
+    }
+}
+
+// Search key in B+ Tree
+bool search(BPlusTreeNode* node, int key) {
+    int i = 0;
+    while (i &lt; node-&gt;num_keys &amp;&amp; key &gt; node-&gt;keys[i]) {
+        i++;
+    }
+    if (i &lt; node-&gt;num_keys &amp;&amp; key == node-&gt;keys[i]) {
+        return true;
+    }
+    if (node-&gt;is_leaf) {
+        return false;
+    }
+    return search(node-&gt;children[i], key);
+}
+
+// Traverse the tree in order
+void traverse(BPlusTreeNode* node) {
+    int i;
+    for (i = 0; i &lt; node-&gt;num_keys; i++) {
+        if (!node-&gt;is_leaf) {
+            traverse(node-&gt;children[i]);
+        }
+        printf("%d ", node-&gt;keys[i]);
+    }
+    if (!node-&gt;is_leaf) {
+        traverse(node-&gt;children[i]);
+    }
+}
+
+// Free memory (optional utility)
+void free_tree(BPlusTreeNode* node) {
+    if (node == NULL) return;
+    if (!node-&gt;is_leaf) {
+        for (int i = 0; i &lt;= node-&gt;num_keys; i++) {
+            free_tree(node-&gt;children[i]);
+        }
+    }
+    free(node);
+}
+
+// Driver code
+int main() {
+    BPlusTreeNode* root = create_node(true);
+    int keys[] = {10, 20, 5, 6, 12, 30, 7, 17};
+    int n = sizeof(keys) / sizeof(keys[0]);
+
+    for (int i = 0; i &lt; n; i++) {
+        insert(&amp;root, keys[i]);
+    }
+
+    printf("B+ Tree Traversal:\n");
+    traverse(root);
+    printf("\n");
+
+    int search_key = 6;
+    if (search(root, search_key)) {
+        printf("Key %d found in B+ Tree.\n", search_key);
+    } else {
+        printf("Key %d NOT found in B+ Tree.\n", search_key);
+    }
+
+    free_tree(root);
+    return 0;
+}</code></pre>
+</div>
+        </section>
+
+        <section id="functions" class="topic-section" aria-labelledby="functions-title">
+          <h2 id="functions-title">Function by function</h2>
+          <h3>The node structure</h3>
+          <dl class="explain">
+            <dt>#define ORDER 4</dt>
+            <dd>The order: the largest number of children (pointers) a node can have. A node holds at most ORDER − 1 = 3 keys. In the notes this number is called <strong>n</strong>.</dd>
+            <dt>int keys[ORDER - 1];</dt>
+            <dd>Room for 3 keys, kept in sorted order.</dd>
+            <dt>struct BPlusTreeNode* children[ORDER];</dt>
+            <dd>Room for 4 child pointers. A node with k keys uses k + 1 of them.</dd>
+            <dt>int num_keys; bool is_leaf;</dt>
+            <dd>How many keys are in use, and whether the node is a leaf. <code>bool</code> needs <code>&lt;stdbool.h&gt;</code>.</dd>
+            <dt>struct BPlusTreeNode* next;</dt>
+            <dd>Meant to link each leaf to the next leaf, for range queries. (The program never sets it; see <a href="#b-or-bplus">below</a>.)</dd>
+          </dl>
+
+          <h3>create_node(is_leaf)</h3>
+          <dl class="explain">
+            <dt>malloc(sizeof(BPlusTreeNode))</dt>
+            <dd>Gets memory for one node from the heap.</dd>
+            <dt>node-&gt;num_keys = 0; node-&gt;next = NULL;</dt>
+            <dd>A new node is empty and not linked to anything.</dd>
+            <dt>for (...) node-&gt;children[i] = NULL;</dt>
+            <dd>Every child pointer starts as NULL, so the program never follows a garbage address.</dd>
+          </dl>
+
+          <h3>split_child(parent, index, child)</h3>
+          <p>Called only when <code>child</code> is full (3 keys). With ORDER 4, <code>mid = (4 − 1) / 2 = 1</code>.</p>
+          <dl class="explain">
+            <dt>new_child = create_node(child-&gt;is_leaf); new_child-&gt;num_keys = mid;</dt>
+            <dd>A new right sibling at the same level, which will hold 1 key.</dd>
+            <dt>new_child-&gt;keys[i] = child-&gt;keys[i + mid + 1];</dt>
+            <dd>Copies the keys <em>after</em> the middle one (here only keys[2]) into the new node.</dd>
+            <dt>new_child-&gt;children[i] = child-&gt;children[i + mid + 1];</dt>
+            <dd>For an internal node, the matching child pointers move too.</dd>
+            <dt>child-&gt;num_keys = mid;</dt>
+            <dd>The old node keeps only keys[0]. Keys[1] (the middle) and keys[2] are no longer counted.</dd>
+            <dt>for (i = parent-&gt;num_keys; i &gt; index; i--) ...</dt>
+            <dd>Shifts the parent's keys and pointers one place right to make a gap at <code>index</code>.</dd>
+            <dt>parent-&gt;children[index + 1] = new_child; parent-&gt;keys[index] = child-&gt;keys[mid];</dt>
+            <dd>Puts the new node to the right of the old one, and moves the middle key up into the parent.</dd>
+          </dl>
+          <p>Example: a full leaf [5 10 20] splits into [5] and [20], and 10 goes up to the parent.</p>
+
+          <h3>insert_non_full(node, key)</h3>
+          <dl class="explain">
+            <dt>if (node-&gt;is_leaf) { while (i &gt;= 0 &amp;&amp; key &lt; node-&gt;keys[i]) ... }</dt>
+            <dd>In a leaf: walk from the last key backwards, shifting each larger key one place right, then drop the new key into the gap. This is one step of insertion sort.</dd>
+            <dt>else { while (...) i--; i++; }</dt>
+            <dd>In an internal node: find which child the key belongs under.</dd>
+            <dt>if (node-&gt;children[i]-&gt;num_keys == ORDER - 1) split_child(...)</dt>
+            <dd>If that child is full, split it <strong>before</strong> going down. Then a split never has to travel back up.</dd>
+            <dt>if (key &gt; node-&gt;keys[i]) i++;</dt>
+            <dd>After the split, the key that moved up decides whether to go into the left or the right half.</dd>
+            <dt>insert_non_full(node-&gt;children[i], key);</dt>
+            <dd>Recursion: repeat one level down, until a leaf is reached.</dd>
+          </dl>
+
+          <h3>insert(root_ref, key)</h3>
+          <dl class="explain">
+            <dt>BPlusTreeNode** root_ref</dt>
+            <dd>A pointer to the root pointer, because the root can change.</dd>
+            <dt>if (r-&gt;num_keys == ORDER - 1)</dt>
+            <dd>The root is full. Make a new empty root <code>s</code>, put the old root under it as child 0, and split the old root. The middle key moves up into <code>s</code>. <strong>This is the only way the tree grows taller</strong>, so every leaf stays at the same depth.</dd>
+            <dt>else insert_non_full(r, key);</dt>
+            <dd>The root has room, so insert normally.</dd>
+          </dl>
+
+          <h3>search(node, key)</h3>
+          <dl class="explain">
+            <dt>while (i &lt; node-&gt;num_keys &amp;&amp; key &gt; node-&gt;keys[i]) i++;</dt>
+            <dd>Skip the keys smaller than the search key.</dd>
+            <dt>if (... key == node-&gt;keys[i]) return true;</dt>
+            <dd>Found in this node, even if it is an internal node.</dd>
+            <dt>if (node-&gt;is_leaf) return false;</dt>
+            <dd>A leaf with no match: the key is not in the tree.</dd>
+            <dt>return search(node-&gt;children[i], key);</dt>
+            <dd>Otherwise go down to child i and repeat. The work is one node per level, so search takes O(log n) steps.</dd>
+          </dl>
+
+          <h3>traverse(node) and free_tree(node)</h3>
+          <dl class="explain">
+            <dt>traverse</dt>
+            <dd>An in-order walk: visit child 0, print key 0, visit child 1, print key 1, and so on, then the last child. Keys come out sorted.</dd>
+            <dt>free_tree</dt>
+            <dd>Frees the children first and then the node itself (a post-order walk), so no memory is leaked.</dd>
+          </dl>
+
+          <h3>main()</h3>
+          <dl class="explain">
+            <dt>BPlusTreeNode* root = create_node(true);</dt>
+            <dd>An empty tree is a single empty leaf.</dd>
+            <dt>int n = sizeof(keys) / sizeof(keys[0]);</dt>
+            <dd>The number of keys in the array: 32 bytes ÷ 4 bytes = 8.</dd>
+            <dt>insert(&amp;root, keys[i]);</dt>
+            <dd>Inserts 10, 20, 5, 6, 12, 30, 7 and 17 in that order. <code>&amp;root</code> lets insert change the root.</dd>
+          </dl>
+        </section>
+
+        <section id="trace" class="topic-section" aria-labelledby="trace-title">
+          <h2 id="trace-title">Trace: the tree after each insert</h2>
+          <p>Brackets show one node. Indented nodes are the children of the node above.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>The record program's tree after each insert (ORDER 4)</caption>
+              <thead><tr><th scope="col">Insert</th><th scope="col">What happens</th><th scope="col">Tree</th></tr></thead>
+              <tbody>
+                <tr><td>10</td><td>The root leaf has room.</td><td><code>[10]</code></td></tr>
+                <tr><td>20</td><td>Room.</td><td><code>[10 20]</code></td></tr>
+                <tr><td>5</td><td>Room; 5 goes first.</td><td><code>[5 10 20]</code> (full)</td></tr>
+                <tr><td>6</td><td>The root is full, so it splits first: 10 moves up into a new root, [5] and [20] become its children. Then 6 goes into [5].</td><td><code>[10]</code><br><code>&nbsp;&nbsp;[5 6]</code> <code>[20]</code></td></tr>
+                <tr><td>12</td><td>12 &gt; 10, so the right leaf.</td><td><code>[10]</code><br><code>&nbsp;&nbsp;[5 6]</code> <code>[12 20]</code></td></tr>
+                <tr><td>30</td><td>Right leaf.</td><td><code>[10]</code><br><code>&nbsp;&nbsp;[5 6]</code> <code>[12 20 30]</code></td></tr>
+                <tr><td>7</td><td>Left leaf.</td><td><code>[10]</code><br><code>&nbsp;&nbsp;[5 6 7]</code> <code>[12 20 30]</code></td></tr>
+                <tr><td>17</td><td>17 goes right, but [12 20 30] is full. It splits first: 20 moves up, giving [12] and [30]. 17 &lt; 20, so it goes into [12].</td><td><code>[10 20]</code><br><code>&nbsp;&nbsp;[5 6 7]</code> <code>[12 17]</code> <code>[30]</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="output" class="topic-section" aria-labelledby="output-title">
+          <h2 id="output-title">Output</h2>
+<div class="code-block">
+  <span class="code-label">Output</span>
+  <pre class="is-output"><code>B+ Tree Traversal:
+5 6 7 10 12 17 20 30
+Key 6 found in B+ Tree.</code></pre>
+</div>
+          <p>The record's output page shows “Search for 15: Not Found” as well, but the program never searches for 15. To test it, add a second search in main, for example <code>search(root, 15)</code>, which returns false.</p>
+        </section>
+
+        <section id="b-or-bplus" class="topic-section" aria-labelledby="b-or-bplus-title">
+          <h2 id="b-or-bplus-title">Is it really a B+ tree?</h2>
+          <p>Look at the final tree from the trace. 10 and 20 are in the root, but <strong>not in any leaf</strong>. A B+ tree keeps <em>every</em> key in a leaf and links the leaves in a chain. So the record's program actually builds a <strong>B tree</strong>.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>What a B+ tree needs, and what the record's program does</caption>
+              <thead><tr><th scope="col">B+ tree rule</th><th scope="col">Record program</th></tr></thead>
+              <tbody>
+                <tr><td>When a leaf splits, a <strong>copy</strong> of the middle key goes up, and the key stays in the leaf.</td><td>The middle key <strong>moves</strong> up and leaves the leaf (B tree style).</td></tr>
+                <tr><td>Every key is in a leaf; internal nodes hold only guide keys.</td><td>10 and 20 are only in the root.</td></tr>
+                <tr><td>Leaves are linked by <code>next</code> pointers.</td><td><code>next</code> is set to NULL and never changed.</td></tr>
+                <tr><td>Search always ends at a leaf.</td><td>Search can stop at an internal node.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">A second problem: “You can change the order”</div>
+            <p>The comment on <code>ORDER</code> is true only for <strong>even</strong> values. With ORDER 5, <code>mid</code> is 2 and split_child copies <code>keys[4]</code>, which is past the end of the 4-key array. The program then prints <code>5 6 7 10 20 0 12 30 0 17</code>, with stray zeros and keys out of order. ORDER 3 crashes.</p>
+          </div>
+          <p>For the lab exam, write the record's program (it compiles and gives the expected output). For the viva, be ready to say how a B+ tree differs. The next section shows the changes.</p>
+        </section>
+
+        <section id="bplus" class="topic-section" aria-labelledby="bplus-title">
+          <h2 id="bplus-title">A true B+ tree version</h2>
+          <p>This version follows the B+ tree rules from the <a href="../units/unit-4/b-plus-tree-index-files.html">B+ Tree Index Files</a> page and works for any ORDER from 3 up. It builds exactly the same trees as the visualizer below. The struct and create_node are the same as the record's, except for one spare key and pointer slot used while a node is splitting.</p>
+<div class="code-block">
+  <span class="code-label">C: B+ tree (bplus.c)</span>
+  <pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdbool.h&gt;
+
+#define ORDER 4 // n: the most pointers in a node, so a node holds at most ORDER - 1 keys
+
+typedef struct BPlusTreeNode {
+    int keys[ORDER];                         // one spare place for a key before a split
+    struct BPlusTreeNode* children[ORDER + 1];
+    int num_keys;
+    bool is_leaf;
+    struct BPlusTreeNode* next;              // leaf chain, used to read keys in order
+} BPlusTreeNode;
+
+// Make an empty node
+BPlusTreeNode* create_node(bool is_leaf) {
+    BPlusTreeNode* node = (BPlusTreeNode*)malloc(sizeof(BPlusTreeNode));
+    node-&gt;is_leaf = is_leaf;
+    node-&gt;num_keys = 0;
+    node-&gt;next = NULL;
+    for (int i = 0; i &lt;= ORDER; i++) {
+        node-&gt;children[i] = NULL;
+    }
+    return node;
+}
+
+// Split a leaf that has ORDER keys. The right half moves to a new leaf,
+// and a COPY of its first key goes up to the parent.
+BPlusTreeNode* split_leaf(BPlusTreeNode* leaf, int* up_key) {
+    int mid = leaf-&gt;num_keys / 2;
+    BPlusTreeNode* right = create_node(true);
+    for (int i = mid; i &lt; leaf-&gt;num_keys; i++) {
+        right-&gt;keys[right-&gt;num_keys++] = leaf-&gt;keys[i];
+    }
+    leaf-&gt;num_keys = mid;
+    right-&gt;next = leaf-&gt;next;                // link the new leaf into the chain
+    leaf-&gt;next = right;
+    *up_key = right-&gt;keys[0];
+    return right;
+}
+
+// Split an internal node that has ORDER keys. The middle key MOVES up.
+BPlusTreeNode* split_internal(BPlusTreeNode* node, int* up_key) {
+    int mid = node-&gt;num_keys / 2;
+    BPlusTreeNode* right = create_node(false);
+    *up_key = node-&gt;keys[mid];
+    int j = 0;
+    for (int i = mid + 1; i &lt; node-&gt;num_keys; i++, j++) {
+        right-&gt;keys[j] = node-&gt;keys[i];
+        right-&gt;children[j] = node-&gt;children[i];
+    }
+    right-&gt;children[j] = node-&gt;children[node-&gt;num_keys];
+    right-&gt;num_keys = j;
+    node-&gt;num_keys = mid;
+    return right;
+}
+
+// Insert key below node. If node splits, return the new right node
+// and set *up_key to the key the parent must hold; otherwise return NULL.
+BPlusTreeNode* insert_into(BPlusTreeNode* node, int key, int* up_key) {
+    int i = node-&gt;num_keys - 1;
+    if (node-&gt;is_leaf) {
+        while (i &gt;= 0 &amp;&amp; key &lt; node-&gt;keys[i]) {
+            node-&gt;keys[i + 1] = node-&gt;keys[i];
+            i--;
+        }
+        node-&gt;keys[i + 1] = key;
+        node-&gt;num_keys++;
+        if (node-&gt;num_keys &lt; ORDER) return NULL;   // still fits
+        return split_leaf(node, up_key);
+    }
+    while (i &gt;= 0 &amp;&amp; key &lt; node-&gt;keys[i]) {
+        i--;
+    }
+    i++;                                          // child i covers this key
+    int child_up;
+    BPlusTreeNode* new_child = insert_into(node-&gt;children[i], key, &amp;child_up);
+    if (new_child == NULL) return NULL;
+    for (int j = node-&gt;num_keys; j &gt; i; j--) {    // make room at position i
+        node-&gt;keys[j] = node-&gt;keys[j - 1];
+        node-&gt;children[j + 1] = node-&gt;children[j];
+    }
+    node-&gt;keys[i] = child_up;
+    node-&gt;children[i + 1] = new_child;
+    node-&gt;num_keys++;
+    if (node-&gt;num_keys &lt; ORDER) return NULL;
+    return split_internal(node, up_key);
+}
+
+// Insert into the tree. When the root splits, a new root is made.
+void insert(BPlusTreeNode** root_ref, int key) {
+    int up_key;
+    BPlusTreeNode* right = insert_into(*root_ref, key, &amp;up_key);
+    if (right != NULL) {
+        BPlusTreeNode* s = create_node(false);
+        s-&gt;keys[0] = up_key;
+        s-&gt;children[0] = *root_ref;
+        s-&gt;children[1] = right;
+        s-&gt;num_keys = 1;
+        *root_ref = s;
+    }
+}
+
+// Search always goes down to a leaf: every key is stored in a leaf.
+bool search(BPlusTreeNode* node, int key) {
+    while (!node-&gt;is_leaf) {
+        int i = 0;
+        while (i &lt; node-&gt;num_keys &amp;&amp; key &gt;= node-&gt;keys[i]) {
+            i++;
+        }
+        node = node-&gt;children[i];
+    }
+    for (int i = 0; i &lt; node-&gt;num_keys; i++) {
+        if (node-&gt;keys[i] == key) return true;
+    }
+    return false;
+}
+
+// Print the keys in order by walking the leaf chain
+void traverse(BPlusTreeNode* root) {
+    BPlusTreeNode* leaf = root;
+    while (!leaf-&gt;is_leaf) {
+        leaf = leaf-&gt;children[0];
+    }
+    while (leaf != NULL) {
+        for (int i = 0; i &lt; leaf-&gt;num_keys; i++) {
+            printf("%d ", leaf-&gt;keys[i]);
+        }
+        leaf = leaf-&gt;next;
+    }
+}
+
+// Print the tree one node per line, children indented under their parent
+void display(BPlusTreeNode* node, int level) {
+    printf("%*s[", level * 4, "");
+    for (int i = 0; i &lt; node-&gt;num_keys; i++) {
+        printf(i == 0 ? "%d" : " %d", node-&gt;keys[i]);
+    }
+    printf("]%s\n", node-&gt;is_leaf ? " leaf" : "");
+    if (!node-&gt;is_leaf) {
+        for (int i = 0; i &lt;= node-&gt;num_keys; i++) {
+            display(node-&gt;children[i], level + 1);
+        }
+    }
+}
+
+void free_tree(BPlusTreeNode* node) {
+    if (!node-&gt;is_leaf) {
+        for (int i = 0; i &lt;= node-&gt;num_keys; i++) {
+            free_tree(node-&gt;children[i]);
+        }
+    }
+    free(node);
+}
+
+int main() {
+    BPlusTreeNode* root = create_node(true);
+    int keys[] = {10, 20, 5, 6, 12, 30, 7, 17};
+    int n = sizeof(keys) / sizeof(keys[0]);
+    for (int i = 0; i &lt; n; i++) {
+        insert(&amp;root, keys[i]);
+    }
+    printf("B+ Tree:\n");
+    display(root, 0);
+    printf("Traversal: ");
+    traverse(root);
+    printf("\n");
+    int tests[] = {6, 15};
+    for (int i = 0; i &lt; 2; i++) {
+        printf("Search for %d: %s\n", tests[i], search(root, tests[i]) ? "Found" : "Not Found");
+    }
+    free_tree(root);
+    return 0;
+}</code></pre>
+</div>
+<div class="code-block">
+  <span class="code-label">Output</span>
+  <pre class="is-output"><code>B+ Tree:
+[10 20]
+    [5 6 7] leaf
+    [10 12 17] leaf
+    [20 30] leaf
+Traversal: 5 6 7 10 12 17 20 30
+Search for 6: Found
+Search for 15: Not Found</code></pre>
+</div>
+          <p>Now 10 and 20 are in the root <strong>and</strong> in the leaves, and the leaves are chained: [5 6 7] → [10 12 17] → [20 30]. This output also matches the record's expected output for 6 and 15.</p>
+          <h3>What changed, and why</h3>
+          <dl class="explain">
+            <dt>keys[ORDER], children[ORDER + 1]</dt>
+            <dd>One spare slot. A key is first put in its place, and then the node splits if it has ORDER keys (one too many). This “insert, then split” order is the one used in the notes and the visualizer.</dd>
+            <dt>split_leaf</dt>
+            <dd>Keeps the left half, moves the right half to a new leaf, links the new leaf into the <code>next</code> chain, and sends a <strong>copy</strong> of the new leaf's first key up. Nothing leaves the leaf level.</dd>
+            <dt>split_internal</dt>
+            <dd>Splits a guide node. Here the middle key <strong>moves</strong> up, as in a B tree, because internal keys are only signposts.</dd>
+            <dt>insert_into returns the new right node</dt>
+            <dd>The split is reported back up to the parent, which adds the key and pointer and may split in turn. A split at the root makes a new root in insert().</dd>
+            <dt>search uses key &gt;= keys[i]</dt>
+            <dd>An equal key means “go right”, because the copy of a key is the first key of the right leaf. The search always ends at a leaf.</dd>
+            <dt>traverse follows next</dt>
+            <dd>Go down to the leftmost leaf, then walk the chain. This is how a B+ tree answers range queries such as “all keys from 6 to 17”.</dd>
+          </dl>
+        </section>
+
+        <section id="visualizer" class="topic-section" aria-labelledby="visualizer-title">
+          <h2 id="visualizer-title">Watch the same inserts</h2>
+          <p>The visualizer below is loaded with the lab's keys, 10, 20, 5, 6, 12, 30, 7 and 17, with n = 4 pointers per node (ORDER 4). Press Play or Next to watch each insert and split. The last step is the same tree that bplus.c prints. Change n to 3 or 5 and compare with the program after changing ORDER.</p>
+          <div class="widget" data-widget="bplus-tree" data-n="4" data-preset="lab-9">
+            <noscript><p class="widget-narration">The B+ tree visualizer needs JavaScript. The final tree is: root [10 | 20]; leaves [5 | 6 | 7] → [10 | 12 | 17] → [20 | 30].</p></noscript>
+          </div>
+          <p>The two trees differ in the order of the splits too. The record splits a full node <em>on the way down</em>, before it is needed. The B+ tree version splits a node only when it <em>overflows</em>. Both keep the tree balanced.</p>
+        </section>
+
+        <section id="run" class="topic-section" aria-labelledby="run-title">
+          <h2 id="run-title">Compile and run</h2>
+          <div class="code-block">
+            <span class="code-label">Command prompt or terminal</span>
+            <pre><code>gcc record.c -o record
+./record            (on Windows: record.exe)
+
+gcc bplus.c -o bplus
+./bplus             (on Windows: bplus.exe)</code></pre>
+          </div>
+          <p>Both programs compile with no warnings under <code>gcc -Wall -Wextra</code>.</p>
+        </section>
+
+        <section id="errors" class="topic-section" aria-labelledby="errors-title">
+          <h2 id="errors-title">Common errors</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Errors you may see in this exercise and how to fix them</caption>
+              <thead><tr><th scope="col">Error</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead>
+              <tbody>
+                <tr><td><code>error: unknown type name 'bool'</code></td><td><code>#include &lt;stdbool.h&gt;</code> is missing.</td><td>Add it at the top.</td></tr>
+                <tr><td><code>error: 'for' loop initial declarations are only allowed in C99 mode</code></td><td>An old compiler that defaults to C89.</td><td>Compile with <code>gcc -std=c99 record.c</code>.</td></tr>
+                <tr><td><code>Segmentation fault</code></td><td>Often ORDER changed to an odd number in the record program, or a typo in an index such as <code>i + mid + 1</code>.</td><td>Keep ORDER 4 in the record program, or use the B+ tree version.</td></tr>
+                <tr><td>Stray zeros in the traversal</td><td>The same odd-ORDER problem.</td><td>As above.</td></tr>
+                <tr><td><code>undefined reference to 'main'</code> or <code>WinMain</code></td><td>The file was saved as .cpp in an IDE project, or main is misspelled.</td><td>Save as a .c file and check the spelling.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="viva" class="topic-section" aria-labelledby="viva-title">
+          <h2 id="viva-title">Viva questions</h2>
+          <details class="accordion">
+            <summary>What is a B+ tree?</summary>
+            <div class="accordion-body"><p>A balanced search tree used for database indexes. All keys are stored in the leaves, which are at the same depth and linked in order. Internal nodes hold only guide keys. See <a href="../units/unit-4/b-plus-tree-index-files.html">B+ Tree Index Files</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>How is a B+ tree different from a B tree?</summary>
+            <div class="accordion-body"><p>In a B tree each key appears once, in any node, and a search can stop at an internal node. In a B+ tree every key is in a leaf, internal keys are copies, and the leaves are linked, which makes range queries fast. See <a href="../units/unit-4/b-tree-index-files.html">B Tree Index Files</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What does ORDER mean in the program?</summary>
+            <div class="accordion-body"><p>The largest number of child pointers in a node. A node holds at most ORDER − 1 keys. With ORDER 4, at most 3 keys.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Why are the leaves linked?</summary>
+            <div class="accordion-body"><p>To read keys in sorted order, or a range of keys, by moving from leaf to leaf without going back up the tree.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What happens when a node is full?</summary>
+            <div class="accordion-body"><p>It splits into two nodes and a key goes up to the parent. If the root splits, a new root is made and the tree grows one level taller.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is the time complexity of search and insert?</summary>
+            <div class="accordion-body"><p>O(log n), because the tree is balanced and each step goes down one level. With a large fan-out, even millions of keys need only 3 or 4 levels.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Why does the program take BPlusTreeNode** in insert?</summary>
+            <div class="accordion-body"><p>When the root splits, the root pointer in main must change to the new root. Passing its address lets insert change it.</p></div>
+          </details>
+        </section>
+
+        <section id="result" class="topic-section" aria-labelledby="result-title">
+          <h2 id="result-title">Result</h2>
+          <div class="callout callout-example">
+            <div class="callout-title">Result</div>
+            <p>The C program to implement B+ tree was executed successfully.</p>
+          </div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Topic pages: <a href="../units/unit-4/b-plus-tree-index-files.html">B+ Tree Index Files</a> and <a href="../units/unit-4/b-tree-index-files.html">B Tree Index Files</a>.</li>
+            <li>Silberschatz, Korth and Sudarshan, <cite>Database System Concepts</cite>, 7th edition: Chapter 14, Section 14.3.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/index-btree-hash.html">Comparison of B-Tree and Hash Indexes</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <nav id="pager" class="pager" aria-label="Previous and next exercises"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/widgets/bplus-tree.js"></script></body>
+</html>

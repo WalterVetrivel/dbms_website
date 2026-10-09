@@ -27,6 +27,7 @@ Live site: https://waltervetrivel.github.io/dbms_website/
 | `question-bank` | The question bank hub and one page per unit |
 | `quizzes` | The quizzes hub and one 20-question quiz per unit |
 | `revision` | The revision hub and one revision sheet per unit |
+| `labs` | The lab exercises hub, one page per exercise, and the starter SQL script in `labs/files` |
 | `tools` | Check scripts. These are not part of the website. |
 
 ## Run it on your computer

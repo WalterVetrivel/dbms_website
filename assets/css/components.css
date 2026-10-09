@@ -1499,3 +1499,101 @@ a.chip:hover {
 .ol-soon .ol-head {
   margin-bottom: 0;
 }
+
+/* ---------- Lab pages ---------- */
+.lab-head .badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+.side-labs {
+  --unit-color: var(--accent);
+}
+.manual-link {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  margin: calc(-1 * var(--sp-3)) 0 var(--sp-4);
+}
+.explain {
+  margin: 0 0 var(--sp-5);
+  padding: 0;
+}
+.explain dt {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  padding: var(--sp-1) var(--sp-3);
+  border-left: 3px solid var(--primary);
+  background: var(--surface-2);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  overflow-wrap: anywhere;
+}
+.explain dd {
+  margin: var(--sp-1) 0 var(--sp-3) var(--sp-4);
+}
+.table-wrap table.output td,
+.table-wrap table.output th {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+}
+.table-wrap table.output td.num {
+  text-align: right;
+}
+.output .null {
+  color: var(--text-muted);
+  font-style: italic;
+}
+.output-note {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  margin: calc(-1 * var(--sp-4)) 0 var(--sp-5);
+}
+.pair {
+  display: grid;
+  gap: var(--sp-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  margin-bottom: var(--sp-2);
+}
+.pair .code-block {
+  margin-bottom: var(--sp-3);
+}
+.code-block pre.is-output {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.schema .card h3 {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+.schema-cols {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+.schema-cols li + li {
+  margin-top: var(--sp-1);
+}
+.schema-cols small {
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+}
+.schema-key {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+/* A wide diagram keeps a readable size and scrolls sideways on phones. */
+.figure-scroll {
+  overflow-x: auto;
+}
+.figure-scroll svg {
+  display: block;
+  width: 100%;
+  min-width: 600px;
+  max-width: 780px;
+  height: auto;
+}

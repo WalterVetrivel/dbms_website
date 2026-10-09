@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exercise 6: Triggers | DBMS Study Guide</title>
+  <meta name="description" content="Lab exercise 6 explained: write AFTER INSERT, AFTER UPDATE and AFTER DELETE triggers in MySQL that keep a game's current price in step with its offer, using DELIMITER, NEW and OLD.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/widgets.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lab" data-lab="6" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head lab-head">
+          <div class="badges">
+            <span class="badge badge-unit">Lab exercise 6</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+            <span class="badge badge-level">MySQL</span>
+          </div>
+          <h1>Write SQL triggers for insert, update and delete operations</h1>
+          <p class="lead">A trigger is SQL that MySQL runs by itself when a row is inserted, updated or deleted. Here, three triggers keep each game's current price in step with the discount offers on it.</p>
+        </header>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#aim">Aim</a></li>
+            <li><a href="#steps">Steps</a></li>
+            <li><a href="#setup">Initial set-up</a></li>
+            <li><a href="#delimiter">Why DELIMITER?</a></li>
+            <li><a href="#triggers">Create the triggers</a></li>
+            <li><a href="#test">Test the triggers</a></li>
+            <li><a href="#manage">See and remove triggers</a></li>
+            <li><a href="#changes">Changes from the record</a></li>
+            <li><a href="#errors">Common errors</a></li>
+            <li><a href="#viva">Viva questions</a></li>
+            <li><a href="#result">Result</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="aim" class="topic-section" aria-labelledby="aim-title">
+          <h2 id="aim-title">Aim</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Aim</div>
+            <p>To write triggers to update or log information in the database when a row is inserted, before a row is deleted and when a row is updated.</p>
+          </div>
+          <h3>Read these topics first</h3>
+          <div id="lab-topics"></div>
+          <p>You need the Games table with data from <a href="ex-04-where-and-aggregates.html#data">Exercise 4</a>, or the <a href="index.html#starter">starter script</a>.</p>
+        </section>
+
+        <section id="steps" class="topic-section" aria-labelledby="steps-title">
+          <h2 id="steps-title">Steps</h2>
+          <ol class="steps">
+            <li><strong>Initial set-up.</strong> Add a CurrentPrice column to Games and copy the base price into it. Create an Offers table with the GameID as the primary key and the percentage off.</li>
+            <li><strong>Create three triggers:</strong>
+              <ul>
+                <li>when an offer is inserted, set the game's current price using the percentage off;</li>
+                <li>when an offer is updated, change the current price to match;</li>
+                <li>when an offer is deleted, set the current price back to the base price.</li>
+              </ul>
+            </li>
+            <li><strong>Test the triggers</strong> with INSERT, UPDATE and DELETE on Offers, and SELECT on Games to see the effect.</li>
+          </ol>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>DELIMITER $$
+CREATE TRIGGER TriggerName
+AFTER INSERT ON TableName          -- BEFORE or AFTER; INSERT, UPDATE or DELETE
+FOR EACH ROW
+BEGIN
+  Statement1;
+  Statement2;
+END;
+$$
+DELIMITER ;</code></pre>
+          </div>
+        </section>
+
+        <section id="setup" class="topic-section" aria-labelledby="setup-title">
+          <h2 id="setup-title">Initial set-up</h2>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>ALTER TABLE Games ADD COLUMN CurrentPrice decimal(10, 2) AFTER BasePrice;
+UPDATE Games SET CurrentPrice = BasePrice;
+
+CREATE TABLE Offers (
+  GameID        int PRIMARY KEY,
+  PercentageOff int NOT NULL,
+  FOREIGN KEY (GameID) REFERENCES Games (GameID),
+  CHECK (PercentageOff &gt; 0)
+);</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/alter-table.html">ALTER TABLE</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/update.html">UPDATE</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/create-table.html">CREATE TABLE</a></p>
+          <dl class="explain">
+            <dt>ADD COLUMN CurrentPrice decimal(10, 2) AFTER BasePrice</dt>
+            <dd>Adds the price a customer pays today. AFTER places it next to BasePrice in DESC and SELECT *. Existing rows get NULL in the new column.</dd>
+            <dt>UPDATE Games SET CurrentPrice = BasePrice</dt>
+            <dd>No WHERE, on purpose: every game starts with no discount.</dd>
+            <dt>GameID int PRIMARY KEY</dt>
+            <dd>A game can have at most one offer at a time.</dd>
+            <dt>FOREIGN KEY (GameID) REFERENCES Games (GameID)</dt>
+            <dd>An offer must be for a real game.</dd>
+            <dt>CHECK (PercentageOff &gt; 0)</dt>
+            <dd>A 0% or negative discount makes no sense, so it is refused.</dd>
+          </dl>
+        </section>
+
+        <section id="delimiter" class="topic-section" aria-labelledby="delimiter-title">
+          <h2 id="delimiter-title">Why DELIMITER?</h2>
+          <p>A trigger body holds statements that end with <code>;</code>. But the MySQL client sends your text to the server as soon as it sees a <code>;</code>, which would cut the trigger in half. <code>DELIMITER $$</code> tells the client to wait for <code>$$</code> instead. After the triggers, <code>DELIMITER ;</code> switches back.</p>
+          <ul>
+            <li>DELIMITER is a command of the <strong>client</strong> (the command line or Workbench), not an SQL statement the server runs.</li>
+            <li>Do not run any other query between <code>DELIMITER $$</code> and <code>DELIMITER ;</code>, unless you end it with <code>$$</code>.</li>
+            <li>Any rare symbol works, for example <code>//</code>.</li>
+          </ul>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/stored-programs-defining.html">Defining stored programs (DELIMITER)</a></p>
+        </section>
+
+        <section id="triggers" class="topic-section" aria-labelledby="triggers-title">
+          <h2 id="triggers-title">Create the triggers</h2>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>DELIMITER $$
+
+CREATE TRIGGER TRG_Add_Offer
+AFTER INSERT ON Offers
+FOR EACH ROW
+BEGIN
+  UPDATE Games
+  SET CurrentPrice = BasePrice - (BasePrice * NEW.PercentageOff / 100)
+  WHERE GameID = NEW.GameID;
+END;
+$$
+
+CREATE TRIGGER TRG_Update_Offer
+AFTER UPDATE ON Offers
+FOR EACH ROW
+BEGIN
+  UPDATE Games
+  SET CurrentPrice = BasePrice - (BasePrice * NEW.PercentageOff / 100)
+  WHERE GameID = NEW.GameID;
+END;
+$$
+
+CREATE TRIGGER TRG_Delete_Offer
+AFTER DELETE ON Offers
+FOR EACH ROW
+BEGIN
+  UPDATE Games SET CurrentPrice = BasePrice WHERE GameID = OLD.GameID;
+END;
+$$
+
+DELIMITER ;</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-trigger.html">CREATE TRIGGER</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/trigger-syntax.html">Trigger syntax and examples</a></p>
+          <h3>Clause by clause</h3>
+          <dl class="explain">
+            <dt>CREATE TRIGGER TRG_Add_Offer</dt>
+            <dd>The trigger's name. It must be unique in the database.</dd>
+            <dt>AFTER INSERT ON Offers</dt>
+            <dd>The <strong>event</strong> and <strong>timing</strong>: run after a row has been inserted into Offers. AFTER is right here, because the offer row should exist before the price changes. A BEFORE trigger runs first and is used to check or change the new row itself.</dd>
+            <dt>FOR EACH ROW</dt>
+            <dd>Run once for every row affected. An INSERT of three offers fires the trigger three times.</dd>
+            <dt>BEGIN ... END;</dt>
+            <dd>The body. It can hold several statements, each ending with ;.</dd>
+            <dt>NEW.PercentageOff, NEW.GameID</dt>
+            <dd><strong>NEW</strong> is the row being inserted, or the row's new values in an UPDATE.</dd>
+            <dt>BasePrice - (BasePrice * NEW.PercentageOff / 100)</dt>
+            <dd>The discounted price. For 10% off Rs. 40: 40 − (40 × 10 / 100) = 36.</dd>
+            <dt>OLD.GameID</dt>
+            <dd><strong>OLD</strong> is the row as it was before an UPDATE or DELETE. A DELETE trigger has only OLD, because there is no new row. An INSERT trigger has only NEW.</dd>
+          </dl>
+          <div class="table-wrap">
+            <table>
+              <caption>Which row values each trigger can read</caption>
+              <thead><tr><th scope="col">Event</th><th scope="col">OLD</th><th scope="col">NEW</th></tr></thead>
+              <tbody>
+                <tr><td>INSERT</td><td>No</td><td>Yes</td></tr>
+                <tr><td>UPDATE</td><td>Yes</td><td>Yes</td></tr>
+                <tr><td>DELETE</td><td>Yes</td><td>No</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="test" class="topic-section" aria-labelledby="test-title">
+          <h2 id="test-title">Test the triggers</h2>
+          <h3>Before any offer</h3>
+<div class="table-wrap">
+  <table class="output">
+    <caption>SELECT GameID, Title, BasePrice, CurrentPrice FROM Games WHERE GameID = 101</caption>
+    <thead><tr><th scope="col">GameID</th><th scope="col">Title</th><th scope="col">BasePrice</th><th scope="col">CurrentPrice</th></tr></thead>
+    <tbody>
+      <tr><td class="num">101</td><td>Super Mario Bros</td><td class="num">40.00</td><td class="num">40.00</td></tr>
+    </tbody>
+  </table>
+</div>
+          <h3>Insert an offer: 10% off</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>INSERT INTO Offers VALUES (101, 10);</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>SELECT * FROM Offers</caption>
+    <thead><tr><th scope="col">GameID</th><th scope="col">PercentageOff</th></tr></thead>
+    <tbody>
+      <tr><td class="num">101</td><td class="num">10</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Games row 101 after the INSERT</caption>
+    <thead><tr><th scope="col">GameID</th><th scope="col">Title</th><th scope="col">BasePrice</th><th scope="col">CurrentPrice</th></tr></thead>
+    <tbody>
+      <tr><td class="num">101</td><td>Super Mario Bros</td><td class="num">40.00</td><td class="num">36.00</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>We changed only Offers, yet CurrentPrice in Games became 36.00. TRG_Add_Offer did that.</p>
+          <h3>Update the offer: 15% off</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>UPDATE Offers SET PercentageOff = 15 WHERE GameID = 101;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Games row 101 after the UPDATE</caption>
+    <thead><tr><th scope="col">GameID</th><th scope="col">Title</th><th scope="col">BasePrice</th><th scope="col">CurrentPrice</th></tr></thead>
+    <tbody>
+      <tr><td class="num">101</td><td>Super Mario Bros</td><td class="num">40.00</td><td class="num">34.00</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>40 − (40 × 15 / 100) = 34. TRG_Update_Offer used the NEW percentage.</p>
+          <h3>Delete the offer</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>DELETE FROM Offers WHERE GameID = 101;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>SELECT * FROM Offers</caption>
+    <thead><tr><th scope="col">GameID</th><th scope="col">PercentageOff</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2"><span class="null">Empty set (no rows)</span></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Games row 101 after the DELETE</caption>
+    <thead><tr><th scope="col">GameID</th><th scope="col">Title</th><th scope="col">BasePrice</th><th scope="col">CurrentPrice</th></tr></thead>
+    <tbody>
+      <tr><td class="num">101</td><td>Super Mario Bros</td><td class="num">40.00</td><td class="num">40.00</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>TRG_Delete_Offer used OLD.GameID to find the game and reset its price.</p>
+          <h3>Try it yourself: two offers at once</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>INSERT INTO Offers VALUES (104, 25), (109, 50);</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Games 104 and 109 with their offers</caption>
+    <thead><tr><th scope="col">GameID</th><th scope="col">Title</th><th scope="col">BasePrice</th><th scope="col">CurrentPrice</th></tr></thead>
+    <tbody>
+      <tr><td class="num">104</td><td>Resident Evil 4</td><td class="num">2999.00</td><td class="num">2249.25</td></tr>
+      <tr><td class="num">109</td><td>Grand Theft Auto V</td><td class="num">1499.00</td><td class="num">749.50</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>One INSERT, two rows, so the trigger ran twice (FOR EACH ROW). Remove the offers again before you go on, so Exercise 8 uses full prices:</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>DELETE FROM Offers WHERE GameID IN (104, 109);</code></pre>
+</div>
+        </section>
+
+        <section id="manage" class="topic-section" aria-labelledby="manage-title">
+          <h2 id="manage-title">See and remove triggers</h2>
+          <div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>SHOW TRIGGERS;
+DROP TRIGGER TRG_Add_Offer;      -- only if you need to rewrite it</code></pre>
+          </div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/show-triggers.html">SHOW TRIGGERS</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/drop-trigger.html">DROP TRIGGER</a></p>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Main columns of SHOW TRIGGERS</caption>
+    <thead><tr><th scope="col">Trigger</th><th scope="col">Event</th><th scope="col">Table</th><th scope="col">Timing</th></tr></thead>
+    <tbody>
+      <tr><td>TRG_Add_Offer</td><td>INSERT</td><td>Offers</td><td>AFTER</td></tr>
+      <tr><td>TRG_Update_Offer</td><td>UPDATE</td><td>Offers</td><td>AFTER</td></tr>
+      <tr><td>TRG_Delete_Offer</td><td>DELETE</td><td>Offers</td><td>AFTER</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>MySQL has no “CREATE OR REPLACE TRIGGER”. To change a trigger, drop it and create it again.</p>
+        </section>
+
+        <section id="changes" class="topic-section" aria-labelledby="changes-title">
+          <h2 id="changes-title">Changes from the record</h2>
+          <ul>
+            <li>The record's step 1 says <code>AFTER Price</code> and <code>SET CurrentPrice = Price</code>, but the column is BasePrice. The record's queries (and this page) use BasePrice.</li>
+            <li>The record names the column PercentOff in the steps and PercentageOff in the queries. This page uses PercentageOff throughout.</li>
+            <li>The record's aim says “before a row is deleted”, but its delete trigger is AFTER DELETE. AFTER is correct here: the price should reset only once the offer is really gone.</li>
+          </ul>
+        </section>
+
+        <section id="errors" class="topic-section" aria-labelledby="errors-title">
+          <h2 id="errors-title">Common errors</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Errors you may see in this exercise and how to fix them</caption>
+              <thead><tr><th scope="col">Error</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead>
+              <tbody>
+                <tr><td><code>ERROR 1064 (42000)</code> near <code>''</code> at the first <code>;</code> inside BEGIN</td><td>DELIMITER $$ was not run, so the trigger was cut at the first ;.</td><td>Run <code>DELIMITER $$</code> first, end the trigger with $$, then <code>DELIMITER ;</code>.</td></tr>
+                <tr><td><code>ERROR 1359 (HY000): Trigger already exists</code></td><td>The CREATE TRIGGER ran twice.</td><td><code>DROP TRIGGER TRG_Add_Offer;</code> and create it again.</td></tr>
+                <tr><td><code>ERROR 1054 (42S22): Unknown column 'Price' in 'Games'</code></td><td>Copied the step text, which says Price.</td><td>Use BasePrice.</td></tr>
+                <tr><td><code>ERROR 1363 (HY000): There is no NEW row in on DELETE trigger</code></td><td>NEW used in a DELETE trigger.</td><td>Use OLD.</td></tr>
+                <tr><td><code>ERROR 1452 (23000)</code> on <code>INSERT INTO Offers</code></td><td>The GameID does not exist in Games.</td><td>Use an existing GameID.</td></tr>
+                <tr><td><code>ERROR 3819 (HY000): Check constraint 'offers_chk_1' is violated.</code></td><td>A PercentageOff of 0 or less.</td><td>Use a positive percentage.</td></tr>
+                <tr><td>Nothing seems to happen in Workbench</td><td>A leftover <code>DELIMITER $$</code> is still active.</td><td>Run <code>DELIMITER ;</code>.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="viva" class="topic-section" aria-labelledby="viva-title">
+          <h2 id="viva-title">Viva questions</h2>
+          <details class="accordion">
+            <summary>What is a trigger?</summary>
+            <div class="accordion-body"><p>A named block of SQL stored in the database that runs automatically when an INSERT, UPDATE or DELETE happens on a given table. See <a href="../units/unit-2/triggers.html">Triggers</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is the difference between a BEFORE and an AFTER trigger?</summary>
+            <div class="accordion-body"><p>A BEFORE trigger runs before the row is written. It can check or change the NEW values, for example to round a price. An AFTER trigger runs once the row is written, and is used to update other tables or write a log.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What are NEW and OLD?</summary>
+            <div class="accordion-body"><p>NEW holds the row's values after the change (INSERT and UPDATE). OLD holds the values before the change (UPDATE and DELETE).</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What does FOR EACH ROW mean?</summary>
+            <div class="accordion-body"><p>The trigger body runs once for every row the statement changes. MySQL supports only row-level triggers.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>If the base price of a game changes while it has an offer, is CurrentPrice still right?</summary>
+            <div class="accordion-body"><p>No. These triggers are on Offers only. A BEFORE UPDATE trigger on Games could recalculate CurrentPrice from the offer whenever BasePrice changes. New games also start with NULL CurrentPrice, which a BEFORE INSERT trigger on Games could fix.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Why is DELIMITER needed?</summary>
+            <div class="accordion-body"><p>The body contains semicolons. DELIMITER changes the end-of-statement marker in the client, so the whole CREATE TRIGGER reaches the server as one statement.</p></div>
+          </details>
+        </section>
+
+        <section id="result" class="topic-section" aria-labelledby="result-title">
+          <h2 id="result-title">Result</h2>
+          <div class="callout callout-example">
+            <div class="callout-title">Result</div>
+            <p>The triggers were successfully written and executed.</p>
+          </div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Topic page: <a href="../units/unit-2/triggers.html">Triggers</a>, which has an animated trigger timeline.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-trigger.html">CREATE TRIGGER</a> and <a href="https://dev.mysql.com/doc/refman/8.4/en/trigger-syntax.html">Trigger Syntax and Examples</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <nav id="pager" class="pager" aria-label="Previous and next exercises"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+</body>
+</html>

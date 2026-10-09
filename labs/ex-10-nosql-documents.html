@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exercise 10: Document Database (MongoDB) | DBMS Study Guide</title>
+  <meta name="description" content="Lab exercise 10 explained: create a MongoDB database and collection with mongosh, then insert, find, update and delete documents, with the SQL statement that does the same job next to each command.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/widgets.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lab" data-lab="10" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head lab-head">
+          <div class="badges">
+            <span class="badge badge-unit">Lab exercise 10</span>
+            <span class="badge badge-level" title="Course outcome">CO5</span>
+            <span class="badge badge-level">MongoDB</span>
+          </div>
+          <h1>Create a document database using NoSQL</h1>
+          <p class="lead">Store games as documents in MongoDB and practice the four CRUD operations. Each mongosh command sits next to the SQL statement that does the same job.</p>
+        </header>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#aim">Aim</a></li>
+            <li><a href="#steps">Steps</a></li>
+            <li><a href="#setup">Install and connect</a></li>
+            <li><a href="#create-db">Database and collection</a></li>
+            <li><a href="#create">Create: insertOne</a></li>
+            <li><a href="#read">Read: find and findOne</a></li>
+            <li><a href="#update">Update: updateOne</a></li>
+            <li><a href="#delete">Delete: deleteOne</a></li>
+            <li><a href="#more">More to try</a></li>
+            <li><a href="#changes">Changes from the record</a></li>
+            <li><a href="#errors">Common errors</a></li>
+            <li><a href="#viva">Viva questions</a></li>
+            <li><a href="#result">Result</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+
+        <section id="aim" class="topic-section" aria-labelledby="aim-title">
+          <h2 id="aim-title">Aim</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Aim</div>
+            <p>To perform basic CRUD operations on a simple document (NoSQL) database using MongoDB.</p>
+          </div>
+          <h3>Read these topics first</h3>
+          <div id="lab-topics"></div>
+          <p>This exercise does not use MySQL or the games_store database. It builds a small, separate games collection in MongoDB.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Words you will meet</div>
+            <ul>
+              <li>A <strong>document</strong> is one record, written as field: value pairs inside braces. It is like a row.</li>
+              <li>A <strong>collection</strong> is a group of documents. It is like a table, but it has no fixed columns.</li>
+              <li><strong>CRUD</strong> stands for Create, Read, Update and Delete.</li>
+              <li><strong>mongosh</strong> is the MongoDB Shell, where you type commands.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="steps" class="topic-section" aria-labelledby="steps-title">
+          <h2 id="steps-title">Steps</h2>
+          <ol class="steps">
+            <li><strong>Set up MongoDB.</strong> Install MongoDB Community Server and mongosh, or use a free cloud cluster on MongoDB Atlas.</li>
+            <li><strong>Connect</strong> to the server with mongosh.</li>
+            <li><strong>Create a database</strong> with <code>use</code>. MongoDB creates it when you first store data in it.</li>
+            <li><strong>Create a collection</strong> with <code>db.createCollection()</code>.</li>
+            <li><strong>Create:</strong> insert documents with <code>insertOne()</code>.</li>
+            <li><strong>Read:</strong> fetch documents with <code>find()</code> and <code>findOne()</code>.</li>
+            <li><strong>Update:</strong> change a field with <code>updateOne()</code> and <code>$set</code>.</li>
+            <li><strong>Delete:</strong> remove a document with <code>deleteOne()</code>.</li>
+          </ol>
+        </section>
+
+        <section id="setup" class="topic-section" aria-labelledby="setup-title">
+          <h2 id="setup-title">Install and connect</h2>
+          <ol class="steps">
+            <li><strong>Install the server.</strong> Download MongoDB Community Server from <a href="https://www.mongodb.com/try/download/community">mongodb.com/try/download/community</a>. On Windows, the installer can run it as a service, so it starts by itself.</li>
+            <li><strong>Install mongosh.</strong> The shell is a separate download: <a href="https://www.mongodb.com/try/download/shell">mongodb.com/try/download/shell</a>. (MongoDB Compass, the free GUI, also has mongosh built in at the bottom of its window.)</li>
+            <li><strong>Connect.</strong> Open a command prompt and type <code>mongosh</code>. With no address, it connects to the server on your own computer, at <code>mongodb://localhost:27017</code>.</li>
+          </ol>
+          <div class="code-block">
+            <span class="code-label">Command prompt</span>
+            <pre><code>mongosh
+mongosh "mongodb://localhost:27017"
+mongosh "mongodb+srv://cluster0.example.mongodb.net/" --username student</code></pre>
+          </div>
+          <p>The first two lines do the same thing. The third connects to a cloud cluster on Atlas. Atlas shows your own cluster address on its <strong>Connect</strong> page, and mongosh asks for the password.</p>
+          <p class="manual-link">MongoDB manual: <a href="https://www.mongodb.com/docs/manual/administration/install-community/">Install MongoDB Community Edition</a>, <a href="https://www.mongodb.com/docs/mongodb-shell/install/">Install mongosh</a>, <a href="https://www.mongodb.com/docs/mongodb-shell/connect/">Connect to a deployment</a></p>
+          <div class="callout callout-note">
+            <div class="callout-title">mongo or mongosh?</div>
+            <p>The record types <code>mongo</code>. That was the old shell, and MongoDB 6.0 removed it. Current versions only have <code>mongosh</code>. The commands in this exercise are the same in both.</p>
+          </div>
+        </section>
+
+        <section id="create-db" class="topic-section" aria-labelledby="create-db-title">
+          <h2 id="create-db-title">Database and collection</h2>
+<div class="pair">
+<div class="code-block">
+  <span class="code-label">mongosh</span>
+  <pre><code>use gamestore
+db.createCollection('games')</code></pre>
+</div>
+<div class="code-block">
+  <span class="code-label">SQL equivalent</span>
+  <pre><code>CREATE DATABASE gamestore;
+USE gamestore;
+CREATE TABLE games (...);</code></pre>
+</div>
+</div>
+<div class="code-block">
+  <span class="code-label">Output</span>
+  <pre class="is-output"><code>switched to db gamestore
+{ ok: 1 }</code></pre>
+</div>
+          <p class="manual-link">MongoDB manual: <a href="https://www.mongodb.com/docs/manual/core/databases-and-collections/">Databases and collections</a>, <a href="https://www.mongodb.com/docs/manual/reference/method/db.createcollection/">db.createCollection()</a></p>
+          <dl class="explain">
+            <dt>use gamestore</dt>
+            <dd>Switches to the database named gamestore. If it does not exist, MongoDB creates it as soon as you store something in it. There is no CREATE DATABASE command.</dd>
+            <dt>db</dt>
+            <dd>In mongosh, <code>db</code> always means the current database.</dd>
+            <dt>db.createCollection('games')</dt>
+            <dd>Creates an empty collection named games. <code>{ ok: 1 }</code> means it worked. Unlike CREATE TABLE, it names no columns, because each document can have its own fields.</dd>
+          </dl>
+          <p>This step is optional. If you insert into a collection that does not exist, MongoDB creates it for you.</p>
+        </section>
+
+        <section id="create" class="topic-section" aria-labelledby="create-title">
+          <h2 id="create-title">Create: insertOne</h2>
+          <p>Insert two games. Each one is a document with five fields.</p>
+<div class="pair">
+<div class="code-block">
+  <span class="code-label">mongosh</span>
+  <pre><code>db.games.insertOne({
+  gameID: 101,
+  title: 'Control',
+  developer: 'Remedy Entertainment',
+  genre: 'Action Adventure',
+  price: 80
+})
+
+db.games.insertOne({
+  gameID: 102,
+  title: 'Alan Wake 2',
+  developer: 'Remedy Entertainment',
+  genre: 'Survival Horror',
+  price: 80
+})</code></pre>
+</div>
+<div class="code-block">
+  <span class="code-label">SQL equivalent</span>
+  <pre><code>CREATE TABLE games (
+  gameID INT PRIMARY KEY,
+  title VARCHAR(100),
+  developer VARCHAR(100),
+  genre VARCHAR(50),
+  price INT
+);
+
+INSERT INTO games
+VALUES (101, 'Control', 'Remedy Entertainment',
+        'Action Adventure', 80);
+
+INSERT INTO games
+VALUES (102, 'Alan Wake 2', 'Remedy Entertainment',
+        'Survival Horror', 80);</code></pre>
+</div>
+</div>
+<div class="code-block">
+  <span class="code-label">Output (once for each insert)</span>
+  <pre class="is-output"><code>{
+  acknowledged: true,
+  insertedId: ObjectId('6ac87604a3af7dae7a3069b3')
+}</code></pre>
+</div>
+          <p class="manual-link">MongoDB manual: <a href="https://www.mongodb.com/docs/manual/reference/method/db.collection.insertone/">db.collection.insertOne()</a>, <a href="https://www.mongodb.com/docs/manual/core/document/">Documents</a></p>
+          <dl class="explain">
+            <dt>db.games</dt>
+            <dd>The games collection in the current database.</dd>
+            <dt>insertOne({ ... })</dt>
+            <dd>Adds one document. The document is written in braces, as <code>field: value</code> pairs separated by commas. Text goes in quotes. Numbers do not.</dd>
+            <dt>acknowledged: true</dt>
+            <dd>The server received and saved the insert.</dd>
+            <dt>insertedId: ObjectId('...')</dt>
+            <dd>Every document needs a unique <code>_id</code> field, like a primary key. We did not give one, so MongoDB made an ObjectId for us. Your ID will be different, because it is built from the time and a random value.</dd>
+          </dl>
+          <p>Notice that gameID is just a normal field. MongoDB does not stop you from inserting a second document with gameID 101. To make it unique, you would add a unique index: <code>db.games.createIndex({ gameID: 1 }, { unique: true })</code>.</p>
+        </section>
+
+        <section id="read" class="topic-section" aria-labelledby="read-title">
+          <h2 id="read-title">Read: find and findOne</h2>
+<div class="pair">
+<div class="code-block">
+  <span class="code-label">mongosh</span>
+  <pre><code>db.games.find()</code></pre>
+</div>
+<div class="code-block">
+  <span class="code-label">SQL equivalent</span>
+  <pre><code>SELECT * FROM games;</code></pre>
+</div>
+</div>
+<div class="code-block">
+  <span class="code-label">Output</span>
+  <pre class="is-output"><code>[
+  {
+    _id: ObjectId('6ac87604a3af7dae7a3069b3'),
+    gameID: 101,
+    title: 'Control',
+    developer: 'Remedy Entertainment',
+    genre: 'Action Adventure',
+    price: 80
+  },
+  {
+    _id: ObjectId('6ac87604a3af7dae7a3069b4'),
+    gameID: 102,
+    title: 'Alan Wake 2',
+    developer: 'Remedy Entertainment',
+    genre: 'Survival Horror',
+    price: 80
+  }
+]</code></pre>
+</div>
+<div class="pair">
+<div class="code-block">
+  <span class="code-label">mongosh</span>
+  <pre><code>db.games.findOne({ gameID: 102 })</code></pre>
+</div>
+<div class="code-block">
+  <span class="code-label">SQL equivalent</span>
+  <pre><code>SELECT * FROM games WHERE gameID = 102 LIMIT 1;</code></pre>
+</div>
+</div>
+<div class="code-block">
+  <span class="code-label">Output</span>
+  <pre class="is-output"><code>{
+  _id: ObjectId('6ac87604a3af7dae7a3069b4'),
+  gameID: 102,
+  title: 'Alan Wake 2',
+  developer: 'Remedy Entertainment',
+  genre: 'Survival Horror',
+  price: 80
+}</code></pre>
+</div>
+          <p class="manual-link">MongoDB manual: <a href="https://www.mongodb.com/docs/manual/reference/method/db.collection.find/">db.collection.find()</a>, <a href="https://www.mongodb.com/docs/manual/reference/method/db.collection.findone/">db.collection.findOne()</a></p>
+          <dl class="explain">
+            <dt>find()</dt>
+            <dd>Returns every document in the collection. With a filter, such as <code>find({ genre: 'Survival Horror' })</code>, it returns only the matching ones. mongosh shows the first 20 and asks you to type <code>it</code> for more.</dd>
+            <dt>findOne({ gameID: 102 })</dt>
+            <dd>The braces hold the <strong>filter</strong>, like a WHERE clause. <code>{ gameID: 102 }</code> means gameID = 102. findOne returns the first match as one document, not a list. If nothing matches, it returns <code>null</code>.</dd>
+          </dl>
+        </section>
+
+        <section id="update" class="topic-section" aria-labelledby="update-title">
+          <h2 id="update-title">Update: updateOne</h2>
+          <p>Control goes on sale. Change its price to 40 and check it.</p>
+<div class="pair">
+<div class="code-block">
+  <span class="code-label">mongosh</span>
+  <pre><code>db.games.updateOne(
+  { gameID: 101 },
+  { $set: { price: 40 } }
+)
+
+db.games.findOne({ gameID: 101 })</code></pre>
+</div>
+<div class="code-block">
+  <span class="code-label">SQL equivalent</span>
+  <pre><code>UPDATE games SET price = 40 WHERE gameID = 101;
+
+SELECT * FROM games WHERE gameID = 101;</code></pre>
+</div>
+</div>
+<div class="code-block">
+  <span class="code-label">Output</span>
+  <pre class="is-output"><code>{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+{
+  _id: ObjectId('6ac87604a3af7dae7a3069b3'),
+  gameID: 101,
+  title: 'Control',
+  developer: 'Remedy Entertainment',
+  genre: 'Action Adventure',
+  price: 40
+}</code></pre>
+</div>
+          <p class="manual-link">MongoDB manual: <a href="https://www.mongodb.com/docs/manual/reference/method/db.collection.updateone/">db.collection.updateOne()</a>, <a href="https://www.mongodb.com/docs/manual/reference/operator/update/set/">$set</a></p>
+          <dl class="explain">
+            <dt>{ gameID: 101 }</dt>
+            <dd>The first argument is the filter: which document to change. It works like WHERE.</dd>
+            <dt>{ $set: { price: 40 } }</dt>
+            <dd>The second argument says what to change. <code>$set</code> sets the price field to 40 and leaves every other field as it was. It works like SET in SQL. If the field does not exist yet, $set adds it.</dd>
+            <dt>matchedCount: 1, modifiedCount: 1</dt>
+            <dd>One document matched the filter, and one was changed. If the price was already 40, modifiedCount would be 0.</dd>
+            <dt>updateOne</dt>
+            <dd>Changes only the first matching document, even if more match. Use <code>updateMany</code> to change them all.</dd>
+          </dl>
+        </section>
+
+        <section id="delete" class="topic-section" aria-labelledby="delete-title">
+          <h2 id="delete-title">Delete: deleteOne</h2>
+          <p>Remove Alan Wake 2, then list the collection again.</p>
+<div class="pair">
+<div class="code-block">
+  <span class="code-label">mongosh</span>
+  <pre><code>db.games.deleteOne({ gameID: 102 })
+
+db.games.find()</code></pre>
+</div>
+<div class="code-block">
+  <span class="code-label">SQL equivalent</span>
+  <pre><code>DELETE FROM games WHERE gameID = 102 LIMIT 1;
+
+SELECT * FROM games;</code></pre>
+</div>
+</div>
+<div class="code-block">
+  <span class="code-label">Output</span>
+  <pre class="is-output"><code>{ acknowledged: true, deletedCount: 1 }
+[
+  {
+    _id: ObjectId('6ac87604a3af7dae7a3069b3'),
+    gameID: 101,
+    title: 'Control',
+    developer: 'Remedy Entertainment',
+    genre: 'Action Adventure',
+    price: 40
+  }
+]</code></pre>
+</div>
+          <p class="manual-link">MongoDB manual: <a href="https://www.mongodb.com/docs/manual/reference/method/db.collection.deleteone/">db.collection.deleteOne()</a></p>
+          <dl class="explain">
+            <dt>deleteOne({ gameID: 102 })</dt>
+            <dd>Deletes the first document that matches the filter. <code>deletedCount: 1</code> confirms one was removed. If nothing matched, deletedCount is 0 and there is no error.</dd>
+            <dt>find()</dt>
+            <dd>Only Control is left, with its new price of 40.</dd>
+          </dl>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Careful with an empty filter</div>
+            <p><code>db.games.deleteMany({})</code> deletes every document, just like <code>DELETE FROM games;</code> with no WHERE. Always check the filter first with <code>find()</code>.</p>
+          </div>
+        </section>
+
+        <section id="more" class="topic-section" aria-labelledby="more-title">
+          <h2 id="more-title">More to try</h2>
+          <p>These go beyond the record, but they show what makes a document database different. Run them after the steps above.</p>
+          <h3>Insert many, with different fields</h3>
+<div class="pair">
+<div class="code-block">
+  <span class="code-label">mongosh</span>
+  <pre><code>db.games.insertMany([
+  { gameID: 103, title: 'Resident Evil 4',
+    developer: 'Capcom', genre: 'Survival Horror',
+    price: 2999, platforms: ['PC', 'PS5'] },
+  { gameID: 104, title: 'God of War',
+    developer: 'Santa Monica Studio',
+    genre: 'Action Adventure', price: 3299 }
+])</code></pre>
+</div>
+<div class="code-block">
+  <span class="code-label">SQL equivalent</span>
+  <pre><code>INSERT INTO games VALUES
+  (103, 'Resident Evil 4', 'Capcom',
+   'Survival Horror', 2999),
+  (104, 'God of War', 'Santa Monica Studio',
+   'Action Adventure', 3299);</code></pre>
+</div>
+</div>
+<div class="code-block">
+  <span class="code-label">Output</span>
+  <pre class="is-output"><code>{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('6ac87604a3af7dae7a3069b5'),
+    '1': ObjectId('6ac87604a3af7dae7a3069b6')
+  }
+}</code></pre>
+</div>
+          <p>Resident Evil 4 has a <code>platforms</code> field that holds a list. The other games do not have it. A collection allows this. In SQL, every row has the same columns, so the list would need a column for each game or a second table.</p>
+          <h3>Filter, choose fields and sort</h3>
+<div class="pair">
+<div class="code-block">
+  <span class="code-label">mongosh</span>
+  <pre><code>db.games.find(
+  { price: { $gt: 100 } },
+  { _id: 0, title: 1, price: 1 }
+)
+
+db.games.find({}, { _id: 0, title: 1, price: 1 })
+        .sort({ price: -1 })</code></pre>
+</div>
+<div class="code-block">
+  <span class="code-label">SQL equivalent</span>
+  <pre><code>SELECT title, price FROM games
+WHERE price &gt; 100;
+
+SELECT title, price FROM games
+ORDER BY price DESC;</code></pre>
+</div>
+</div>
+<div class="code-block">
+  <span class="code-label">Output</span>
+  <pre class="is-output"><code>[
+  { title: 'Resident Evil 4', price: 2999 },
+  { title: 'God of War', price: 3299 }
+]
+[
+  { title: 'God of War', price: 3299 },
+  { title: 'Resident Evil 4', price: 2999 },
+  { title: 'Control', price: 40 }
+]</code></pre>
+</div>
+          <dl class="explain">
+            <dt>{ price: { $gt: 100 } }</dt>
+            <dd>A filter with a <strong>query operator</strong>. <code>$gt</code> means greater than. Others are <code>$lt</code>, <code>$gte</code>, <code>$lte</code>, <code>$ne</code> and <code>$in</code>.</dd>
+            <dt>{ _id: 0, title: 1, price: 1 }</dt>
+            <dd>The second argument is the <strong>projection</strong>: which fields to show. 1 means show and 0 means hide. It works like the column list after SELECT. _id is shown unless you hide it.</dd>
+            <dt>.sort({ price: -1 })</dt>
+            <dd>Sorts by price. 1 means ascending and -1 means descending, like ORDER BY price DESC.</dd>
+          </dl>
+          <h3>Count and update many</h3>
+<div class="pair">
+<div class="code-block">
+  <span class="code-label">mongosh</span>
+  <pre><code>db.games.countDocuments({ genre: 'Action Adventure' })
+
+db.games.updateMany(
+  { developer: 'Remedy Entertainment' },
+  { $inc: { price: 10 } }
+)</code></pre>
+</div>
+<div class="code-block">
+  <span class="code-label">SQL equivalent</span>
+  <pre><code>SELECT COUNT(*) FROM games
+WHERE genre = 'Action Adventure';
+
+UPDATE games SET price = price + 10
+WHERE developer = 'Remedy Entertainment';</code></pre>
+</div>
+</div>
+<div class="code-block">
+  <span class="code-label">Output</span>
+  <pre class="is-output"><code>2
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}</code></pre>
+</div>
+          <p><code>$inc</code> adds to a number, so Control's price goes from 40 to 50. The SQL column needs <code>price = price + 10</code> to do the same.</p>
+          <p class="manual-link">MongoDB manual: <a href="https://www.mongodb.com/docs/manual/reference/method/db.collection.insertmany/">insertMany()</a>, <a href="https://www.mongodb.com/docs/manual/reference/operator/query/gt/">$gt</a>, <a href="https://www.mongodb.com/docs/manual/reference/method/cursor.sort/">sort()</a>, <a href="https://www.mongodb.com/docs/manual/reference/method/db.collection.countdocuments/">countDocuments()</a>, <a href="https://www.mongodb.com/docs/manual/reference/method/db.collection.updatemany/">updateMany()</a>, <a href="https://www.mongodb.com/docs/manual/reference/operator/update/inc/">$inc</a></p>
+
+          <h3>SQL and MongoDB side by side</h3>
+          <div class="table-wrap">
+            <table>
+              <caption>Words and commands in SQL and in MongoDB</caption>
+              <thead><tr><th scope="col">SQL</th><th scope="col">MongoDB</th></tr></thead>
+              <tbody>
+                <tr><td>Database</td><td>Database</td></tr>
+                <tr><td>Table</td><td>Collection</td></tr>
+                <tr><td>Row</td><td>Document</td></tr>
+                <tr><td>Column</td><td>Field</td></tr>
+                <tr><td>Primary key</td><td>The <code>_id</code> field</td></tr>
+                <tr><td>INSERT</td><td>insertOne, insertMany</td></tr>
+                <tr><td>SELECT ... WHERE</td><td>find, findOne with a filter</td></tr>
+                <tr><td>UPDATE ... SET</td><td>updateOne, updateMany with $set</td></tr>
+                <tr><td>DELETE</td><td>deleteOne, deleteMany</td></tr>
+                <tr><td>Fixed schema (CREATE TABLE)</td><td>Flexible schema: each document can differ</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="changes" class="topic-section" aria-labelledby="changes-title">
+          <h2 id="changes-title">Changes from the record</h2>
+          <ul>
+            <li><strong>mongosh instead of mongo.</strong> The old <code>mongo</code> shell is not part of current MongoDB versions.</li>
+            <li><strong>Straight quotes.</strong> Some of the record's steps use curly quotes, as in <code>db.createCollection(“CollectionName”)</code>. mongosh rejects these with a SyntaxError. Type <code>'</code> or <code>"</code> yourself instead of copying from a word processor.</li>
+            <li><strong>No semicolon after use.</strong> The record's step 3 writes <code>use DatabaseName;</code>. It works, but <code>use</code> is a shell command, not JavaScript, so the semicolon is not needed.</li>
+            <li><strong>The last output.</strong> The record shows <code>[]</code> (an empty list) after deleting game 102. In fact Control (game 101) is still there, as the output above shows. You would only get <code>[]</code> after deleting both games.</li>
+          </ul>
+        </section>
+
+        <section id="errors" class="topic-section" aria-labelledby="errors-title">
+          <h2 id="errors-title">Common errors</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Errors you may see in this exercise and how to fix them</caption>
+              <thead><tr><th scope="col">Error</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead>
+              <tbody>
+                <tr><td><code>'mongo' is not recognized as an internal or external command</code></td><td>The old shell is not installed in current versions.</td><td>Install mongosh and type <code>mongosh</code>.</td></tr>
+                <tr><td><code>MongoNetworkError: connect ECONNREFUSED 127.0.0.1:27017</code></td><td>The MongoDB server is not running.</td><td>Start the MongoDB service (on Windows, in Services), or check the Atlas address.</td></tr>
+                <tr><td><code>SyntaxError: Unexpected character '“'</code></td><td>Curly quotes copied from a document.</td><td>Retype the quotes as straight <code>'</code> or <code>"</code>.</td></tr>
+                <tr><td><code>MongoServerError: Collection gamestore.games already exists</code></td><td>createCollection ran twice. (Some server versions accept the repeat without an error.)</td><td>Skip it, or remove the collection with <code>db.games.drop()</code>.</td></tr>
+                <tr><td><code>ReferenceError: Control is not defined</code></td><td>Text without quotes, such as <code>title: Control</code>.</td><td>Put text in quotes: <code>title: 'Control'</code>.</td></tr>
+                <tr><td>findOne returns <code>null</code></td><td>Nothing matches. Often the type is wrong: <code>{ gameID: '101' }</code> looks for text, but gameID is a number.</td><td>Match the type: <code>{ gameID: 101 }</code>.</td></tr>
+                <tr><td><code>MongoInvalidArgumentError: Update document requires atomic operators</code></td><td>updateOne without $set, as in <code>updateOne({ gameID: 101 }, { price: 40 })</code>.</td><td>Wrap the change in <code>{ $set: { ... } }</code>.</td></tr>
+                <tr><td>Documents seem to vanish</td><td>You are in a different database. A typo in <code>use</code> silently switches to a new, empty one.</td><td>Type <code>db</code> to see the current database and <code>show dbs</code> to list them.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="viva" class="topic-section" aria-labelledby="viva-title">
+          <h2 id="viva-title">Viva questions</h2>
+          <details class="accordion">
+            <summary>What is NoSQL? Name its four main types.</summary>
+            <div class="accordion-body"><p>NoSQL means “not only SQL”: databases that do not store data in fixed tables. The four main types are document stores (MongoDB), key-value stores (Redis), column-based systems (Cassandra) and graph databases (Neo4j). See <a href="../units/unit-5/nosql-introduction.html">NoSQL Databases: Introduction</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is a document and a collection?</summary>
+            <div class="accordion-body"><p>A document is one record made of field-value pairs, stored in a JSON-like format called BSON. A collection is a group of documents, like a table. See <a href="../units/unit-5/document-based-systems.html">Document Based Systems</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is the _id field?</summary>
+            <div class="accordion-body"><p>Every document's unique identifier, like a primary key. If you do not give one, MongoDB creates an ObjectId automatically.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What does “schema-less” or “flexible schema” mean?</summary>
+            <div class="accordion-body"><p>Documents in one collection do not need the same fields. In this exercise, only Resident Evil 4 has a platforms field. A table in SQL forces every row to have the same columns.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is the difference between find and findOne?</summary>
+            <div class="accordion-body"><p>find returns all matching documents (as a cursor that mongosh prints as a list). findOne returns only the first match as a single document, or null if nothing matches.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What does $set do? What happens without it?</summary>
+            <div class="accordion-body"><p>$set changes only the fields you name and keeps the rest. updateOne refuses an update without an operator such as $set. (replaceOne is the method that replaces a whole document.)</p></div>
+          </details>
+          <details class="accordion">
+            <summary>When would you choose MongoDB over MySQL?</summary>
+            <div class="accordion-body"><p>When records have varied or changing fields, when data is naturally nested (a game with its list of platforms), or when the data must be spread over many servers. MySQL is the better choice when you need joins, strict constraints and multi-table transactions, as in the store's purchases.</p></div>
+          </details>
+        </section>
+
+        <section id="result" class="topic-section" aria-labelledby="result-title">
+          <h2 id="result-title">Result</h2>
+          <div class="callout callout-example">
+            <div class="callout-title">Result</div>
+            <p>The CRUD operations were performed successfully on a simple NoSQL (MongoDB) database.</p>
+          </div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Topic pages: <a href="../units/unit-5/nosql-introduction.html">NoSQL Databases: Introduction</a> and <a href="../units/unit-5/document-based-systems.html">Document Based Systems</a>.</li>
+            <li>MongoDB manual: <a href="https://www.mongodb.com/docs/manual/crud/">MongoDB CRUD Operations</a> and the <a href="https://www.mongodb.com/docs/manual/reference/sql-comparison/">SQL to MongoDB Mapping Chart</a>.</li>
+            <li><a href="https://www.mongodb.com/docs/mongodb-shell/">MongoDB Shell (mongosh) documentation</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <nav id="pager" class="pager" aria-label="Previous and next exercises"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+</body>
+</html>

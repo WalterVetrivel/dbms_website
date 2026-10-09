@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exercise 1: Design the Database | DBMS Study Guide</title>
+  <meta name="description" content="Lab exercise 1 explained: plan the tables of an online game store, create them with CREATE TABLE in MySQL, and check them with DESC.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/widgets.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lab" data-lab="1" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head lab-head">
+          <div class="badges">
+            <span class="badge badge-unit">Lab exercise 1</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+            <span class="badge badge-level">MySQL</span>
+          </div>
+          <h1>Design a database and create the required tables</h1>
+          <p class="lead">Plan the tables for an online game store, then create them in MySQL and check their structure. Every later exercise builds on these five tables.</p>
+        </header>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#aim">Aim</a></li>
+            <li><a href="#steps">Steps</a></li>
+            <li><a href="#database">Create the database</a></li>
+            <li><a href="#tables">Create the tables</a></li>
+            <li><a href="#check">Check the tables</a></li>
+            <li><a href="#types">Why these data types?</a></li>
+            <li><a href="#errors">Common errors</a></li>
+            <li><a href="#viva">Viva questions</a></li>
+            <li><a href="#result">Result</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="aim" class="topic-section" aria-labelledby="aim-title">
+          <h2 id="aim-title">Aim</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Aim</div>
+            <p>To create a database for an online game store with the required tables.</p>
+          </div>
+          <h3>Read these topics first</h3>
+          <div id="lab-topics"></div>
+          <p>You need MySQL 8.4 and a way to run SQL: the MySQL command line client or MySQL Workbench. The <a href="index.html#setup">set-up steps</a> are on the Labs page.</p>
+        </section>
+
+        <section id="steps" class="topic-section" aria-labelledby="steps-title">
+          <h2 id="steps-title">Steps</h2>
+          <ol class="steps">
+            <li><strong>Identify the tables and attributes.</strong> Users can buy games in the store, so we need:
+              <ul>
+                <li>a <strong>Users</strong> table: user ID, username, email, password, date of birth and location;</li>
+                <li>a <strong>Games</strong> table: game ID, title, release date, developer ID, publisher ID, genre, description, price and rating;</li>
+                <li><strong>Developers</strong> and <strong>Publishers</strong> tables: ID, name and location;</li>
+                <li>a <strong>Cart</strong> table: the games each user has added to the cart. It needs only the user ID and the game ID.</li>
+              </ul>
+            </li>
+            <li><strong>Write a CREATE TABLE command for each table.</strong> Choose a suitable MySQL data type for each attribute.</li>
+            <li><strong>Check each table with DESC.</strong> It lists the columns and their types.</li>
+          </ol>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>CREATE TABLE TableName (
+  Attribute1 datatype,
+  Attribute2 datatype,
+  ...
+);
+
+DESC TableName;</code></pre>
+          </div>
+        </section>
+
+        <section id="database" class="topic-section" aria-labelledby="database-title">
+          <h2 id="database-title">Create the database</h2>
+          <p>The record starts with CREATE TABLE. On a fresh MySQL server there is no current database yet, so CREATE TABLE fails with “No database selected”. Make a database for the store first and switch to it.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>CREATE DATABASE games_store;
+USE games_store;</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-database.html">CREATE DATABASE</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/use.html">USE</a></p>
+          <dl class="explain">
+            <dt>CREATE DATABASE games_store</dt>
+            <dd>Makes a new, empty database named <code>games_store</code>. A database is a container for tables.</dd>
+            <dt>USE games_store</dt>
+            <dd>Makes it the <strong>current database</strong>. Every table you create next goes inside it. Run USE again each time you open a new connection.</dd>
+          </dl>
+          <div class="callout callout-tip">
+            <div class="callout-title">Starting again</div>
+            <p>To throw everything away and start over, run <code>DROP DATABASE games_store;</code> and then the two commands above. DROP DATABASE deletes every table in it, so use it only on practice data.</p>
+          </div>
+        </section>
+
+        <section id="tables" class="topic-section" aria-labelledby="tables-title">
+          <h2 id="tables-title">Create the tables</h2>
+          <p>Each CREATE TABLE gives the table a name and lists its columns. Each column has a name and a data type, separated by a space. Columns are separated by commas, and there is no comma after the last one.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>CREATE TABLE Users (
+  UserID      int,
+  Username    varchar(191),
+  Email       varchar(191),
+  Password    varchar(255),
+  DateOfBirth date,
+  Location    varchar(191)
+);
+
+CREATE TABLE Games (
+  GameID      int,
+  Title       varchar(191),
+  ReleaseDate date,
+  DeveloperID int,
+  PublisherID int,
+  Genre       varchar(191),
+  Description text,
+  BasePrice   decimal(10, 2),
+  Rating      decimal(10, 2)
+);
+
+CREATE TABLE Publishers (
+  PublisherID       int,
+  PublisherName     varchar(191),
+  PublisherLocation varchar(191)
+);
+
+CREATE TABLE Developers (
+  DeveloperID       int,
+  DeveloperName     varchar(191),
+  DeveloperLocation varchar(191)
+);
+
+CREATE TABLE Cart (
+  UserID int,
+  GameID int
+);</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-table.html">CREATE TABLE</a></p>
+          <h3>Clause by clause</h3>
+          <dl class="explain">
+            <dt>CREATE TABLE Users ( ... );</dt>
+            <dd>Makes a new table named Users. The column list goes inside round brackets, and the statement ends with a semicolon.</dd>
+            <dt>UserID int</dt>
+            <dd>A whole number that identifies each user. Exercise 2 makes it the primary key.</dd>
+            <dt>Username varchar(191), Email varchar(191)</dt>
+            <dd>Text of up to 191 characters. VARCHAR stores only the characters you type, so short names do not waste space.</dd>
+            <dt>Password varchar(255)</dt>
+            <dd>Longer text. A real application stores a <strong>hash</strong> of the password, which can be long, never the password itself.</dd>
+            <dt>DateOfBirth date, ReleaseDate date</dt>
+            <dd>A calendar date written as <code>'YYYY-MM-DD'</code>, for example <code>'2004-03-14'</code>.</dd>
+            <dt>DeveloperID int, PublisherID int</dt>
+            <dd>The ID of the developer and publisher of the game. They will point to the Developers and Publishers tables. Exercise 3 turns them into foreign keys.</dd>
+            <dt>Description text</dt>
+            <dd>Long text with no fixed limit that you have to choose (up to 65,535 bytes).</dd>
+            <dt>BasePrice decimal(10, 2), Rating decimal(10, 2)</dt>
+            <dd>Exact numbers with up to 10 digits, 2 of them after the decimal point, for example <code>2999.00</code> or <code>9.50</code>. Money must be exact, so use DECIMAL, not FLOAT.</dd>
+            <dt>Cart (UserID int, GameID int)</dt>
+            <dd>One row for each game in a user's cart. A user with three games in the cart has three rows. This table links users and games, which have a many-to-many relationship.</dd>
+          </dl>
+          <p>MySQL answers each CREATE TABLE with <code>Query OK, 0 rows affected</code>. The tables exist, but they are empty.</p>
+        </section>
+
+        <section id="check" class="topic-section" aria-labelledby="check-title">
+          <h2 id="check-title">Check the tables</h2>
+          <p><code>DESC</code> (short for DESCRIBE) shows the structure of a table: one row for each column.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>DESC Users;
+DESC Games;
+DESC Publishers;
+DESC Developers;
+DESC Cart;</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/describe.html">DESCRIBE</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/show-columns.html">SHOW COLUMNS</a></p>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of DESC Users</caption>
+    <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Null</th><th scope="col">Key</th><th scope="col">Default</th><th scope="col">Extra</th></tr></thead>
+    <tbody>
+      <tr><td>UserID</td><td>int</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>Username</td><td>varchar(191)</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>Email</td><td>varchar(191)</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>Password</td><td>varchar(255)</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>DateOfBirth</td><td>date</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>Location</td><td>varchar(191)</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of DESC Games</caption>
+    <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Null</th><th scope="col">Key</th><th scope="col">Default</th><th scope="col">Extra</th></tr></thead>
+    <tbody>
+      <tr><td>GameID</td><td>int</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>Title</td><td>varchar(191)</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>ReleaseDate</td><td>date</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>DeveloperID</td><td>int</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>PublisherID</td><td>int</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>Genre</td><td>varchar(191)</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>Description</td><td>text</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>BasePrice</td><td>decimal(10,2)</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>Rating</td><td>decimal(10,2)</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of DESC Publishers</caption>
+    <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Null</th><th scope="col">Key</th><th scope="col">Default</th><th scope="col">Extra</th></tr></thead>
+    <tbody>
+      <tr><td>PublisherID</td><td>int</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>PublisherName</td><td>varchar(191)</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>PublisherLocation</td><td>varchar(191)</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of DESC Developers</caption>
+    <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Null</th><th scope="col">Key</th><th scope="col">Default</th><th scope="col">Extra</th></tr></thead>
+    <tbody>
+      <tr><td>DeveloperID</td><td>int</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>DeveloperName</td><td>varchar(191)</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>DeveloperLocation</td><td>varchar(191)</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of DESC Cart</caption>
+    <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Null</th><th scope="col">Key</th><th scope="col">Default</th><th scope="col">Extra</th></tr></thead>
+    <tbody>
+      <tr><td>UserID</td><td>int</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>GameID</td><td>int</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+          <h3>How to read the output</h3>
+          <dl class="explain">
+            <dt>Field</dt>
+            <dd>The column name.</dd>
+            <dt>Type</dt>
+            <dd>The data type you chose.</dd>
+            <dt>Null</dt>
+            <dd>YES means the column may be left empty. Every column says YES for now, because we have not added any constraints.</dd>
+            <dt>Key</dt>
+            <dd>Empty for now. After Exercise 2 it shows PRI for primary keys and UNI for unique columns.</dd>
+            <dt>Default, Extra</dt>
+            <dd>The value used when an INSERT leaves the column out (NULL here), and extra details such as auto_increment.</dd>
+          </dl>
+          <p>To list every table in the database, run <code>SHOW TABLES;</code>.</p>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of SHOW TABLES</caption>
+    <thead><tr><th scope="col">Tables_in_games_store</th></tr></thead>
+    <tbody>
+      <tr><td>Cart</td></tr>
+      <tr><td>Developers</td></tr>
+      <tr><td>Games</td></tr>
+      <tr><td>Publishers</td></tr>
+      <tr><td>Users</td></tr>
+    </tbody>
+  </table>
+</div>
+          <div class="callout callout-note">
+            <div class="callout-title">Lower case names on Windows</div>
+            <p>MySQL on Windows stores table names in lower case, so SHOW TABLES lists <code>cart</code>, <code>developers</code> and so on. You can still type <code>Users</code> or <code>users</code>. On Linux the names keep their case and must be typed exactly.</p>
+          </div>
+        </section>
+
+        <section id="types" class="topic-section" aria-labelledby="types-title">
+          <h2 id="types-title">Why these data types?</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>The MySQL data types used in this exercise</caption>
+              <thead><tr><th scope="col">Type</th><th scope="col">Stores</th><th scope="col">Used for</th></tr></thead>
+              <tbody>
+                <tr><td><code>int</code></td><td>Whole numbers from about −2.1 billion to 2.1 billion</td><td>IDs</td></tr>
+                <tr><td><code>varchar(n)</code></td><td>Text of up to n characters</td><td>Names, email, title, genre</td></tr>
+                <tr><td><code>text</code></td><td>Long text</td><td>Game description</td></tr>
+                <tr><td><code>date</code></td><td>A date, YYYY-MM-DD</td><td>Date of birth, release date</td></tr>
+                <tr><td><code>decimal(p, s)</code></td><td>An exact number with p digits, s of them after the point</td><td>Price, rating</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Why 191?</div>
+            <p>MySQL stores text in the <code>utf8mb4</code> character set, which uses up to 4 bytes for each character. Older versions could index only 767 bytes of a column, and 191 × 4 = 764 fits. The record uses 191 so that Username and Email can have a UNIQUE index. MySQL 8.4 allows 3072 bytes, so <code>varchar(255)</code> also works today.</p>
+          </div>
+        </section>
+
+        <section id="errors" class="topic-section" aria-labelledby="errors-title">
+          <h2 id="errors-title">Common errors</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Errors you may see in this exercise and how to fix them</caption>
+              <thead><tr><th scope="col">Error</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead>
+              <tbody>
+                <tr><td><code>ERROR 1046 (3D000): No database selected</code></td><td>There is no current database.</td><td>Run <code>USE games_store;</code> first.</td></tr>
+                <tr><td><code>ERROR 1050 (42S01): Table 'Users' already exists</code></td><td>You ran the same CREATE TABLE twice.</td><td>Use DESC to check the table. To make it again, run <code>DROP TABLE Users;</code> first.</td></tr>
+                <tr><td><code>ERROR 1064 (42000): You have an error in your SQL syntax ... near ')'</code></td><td>Usually a comma after the last column, a missing comma between columns, or curly quotes copied from a document.</td><td>Look just before the text shown after “near”. Remove the extra comma or add the missing one.</td></tr>
+                <tr><td><code>ERROR 1146 (42S02): Table 'games_store.user' doesn't exist</code></td><td>A spelling mistake in the table name (here <code>user</code> for <code>Users</code>).</td><td>Run <code>SHOW TABLES;</code> and copy the exact name.</td></tr>
+                <tr><td><code>ERROR 1007 (HY000): Can't create database 'games_store'; database exists</code></td><td>The database was made earlier.</td><td>Just run <code>USE games_store;</code>.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="viva" class="topic-section" aria-labelledby="viva-title">
+          <h2 id="viva-title">Viva questions</h2>
+          <details class="accordion">
+            <summary>What is the difference between CHAR and VARCHAR?</summary>
+            <div class="accordion-body"><p>CHAR(n) always uses n characters and pads short values with spaces. VARCHAR(n) stores only the characters given, up to n, plus a small length field. VARCHAR saves space for values of different lengths, such as names.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Why is DECIMAL used for the price instead of FLOAT?</summary>
+            <div class="accordion-body"><p>DECIMAL stores exact values. FLOAT stores an approximate binary value, so 0.1 + 0.2 may not equal exactly 0.3. Money must be exact.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Is CREATE TABLE a DDL or a DML command?</summary>
+            <div class="accordion-body"><p>DDL (Data Definition Language). It defines the structure of the database. DML commands such as INSERT and SELECT work on the rows. See <a href="../units/unit-1/ddl.html">DDL</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What does DESC show?</summary>
+            <div class="accordion-body"><p>The structure of a table: each column's name, data type, whether it can be NULL, whether it is part of a key, its default value and extra details.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Why is there a separate Cart table instead of a cart column in Users?</summary>
+            <div class="accordion-body"><p>A user can have many games in the cart, and a game can be in many carts. This many-to-many relationship needs its own table with one row for each user–game pair. A single column would have to hold a list, which breaks first normal form.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is a schema?</summary>
+            <div class="accordion-body"><p>The schema is the design of the database: its tables, columns, data types and constraints. It changes rarely. The rows stored at a moment are called the instance.</p></div>
+          </details>
+        </section>
+
+        <section id="result" class="topic-section" aria-labelledby="result-title">
+          <h2 id="result-title">Result</h2>
+          <div class="callout callout-example">
+            <div class="callout-title">Result</div>
+            <p>The required tables for the online game store were successfully created.</p>
+          </div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Topic pages: <a href="../units/unit-1/overview-of-sql.html">Overview of the SQL Query Language</a> (data types) and <a href="../units/unit-1/ddl.html">DDL</a>.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/data-types.html">Data Types</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/create-table.html">CREATE TABLE</a> and <a href="https://dev.mysql.com/doc/refman/8.4/en/identifier-case-sensitivity.html">Identifier Case Sensitivity</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <nav id="pager" class="pager" aria-label="Previous and next exercises"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+</body>
+</html>
