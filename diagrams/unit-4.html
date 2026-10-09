@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Built by tools/build-gallery.mjs from data/gallery.js and the topic pages. Edit those, then run the script again. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit IV Diagrams and Examples | DBMS Study Guide</title>
+  <meta name="description" content="The important diagrams, queries and worked examples of Unit IV (Implementation Techniques) in one place, each linked to its topic page.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/widgets.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="diagrams" data-unit="4" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content u-4">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        <header class="gallery-head">
+          <span class="eyebrow">Unit IV: Implementation Techniques</span>
+          <h1>Unit IV Diagrams and Examples</h1>
+          <p class="lead">3 diagrams, 1 query and 9 worked examples from the Unit IV topics. Use them to practice drawing and writing before the exam. Each one links back to its topic page.</p>
+        </header>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#diagrams">Diagrams</a> <span class="muted">(3)</span></li>
+            <li><a href="#querys">Queries</a> <span class="muted">(1)</span></li>
+            <li><a href="#examples">Worked examples</a> <span class="muted">(9)</span></li>
+          </ol>
+        </nav>
+
+        <section id="diagrams" class="section gallery-kind" aria-labelledby="diagrams-title">
+          <h2 id="diagrams-title">Diagrams</h2>
+          <article class="gallery-item" id="raid-levels" aria-labelledby="raid-levels-title">
+            <h3 id="raid-levels-title">RAID levels 0, 1, 4, 5 and 6</h3>
+            <p class="gallery-note">Striping, mirroring and parity across the disks.</p>
+<figure class="figure">
+            <div class="widget-stage raid-stage" tabindex="0"><table class="raid-table"><caption class="visually-hidden">Blocks on each disk in RAID 0</caption><thead><tr><th scope="col">Stripe</th><th scope="col"><span class="raid-disk">Disk 1</span></th><th scope="col"><span class="raid-disk">Disk 2</span></th><th scope="col"><span class="raid-disk">Disk 3</span></th><th scope="col"><span class="raid-disk">Disk 4</span></th></tr></thead><tbody><tr><th scope="row">1</th><td class="raid-cell kind-data"><span class="raid-name">A1</span></td><td class="raid-cell kind-data"><span class="raid-name">A2</span></td><td class="raid-cell kind-data"><span class="raid-name">A3</span></td><td class="raid-cell kind-data"><span class="raid-name">A4</span></td></tr><tr><th scope="row">2</th><td class="raid-cell kind-data"><span class="raid-name">A5</span></td><td class="raid-cell kind-data"><span class="raid-name">A6</span></td><td class="raid-cell kind-data"><span class="raid-name">A7</span></td><td class="raid-cell kind-data"><span class="raid-name">A8</span></td></tr><tr><th scope="row">3</th><td class="raid-cell kind-data"><span class="raid-name">A9</span></td><td class="raid-cell kind-data"><span class="raid-name">A10</span></td><td class="raid-cell kind-data"><span class="raid-name">A11</span></td><td class="raid-cell kind-data"><span class="raid-name">A12</span></td></tr></tbody></table></div>
+            <figcaption>RAID 0 with 4 disks. Blocks A1 to A12 are spread over all the disks.</figcaption>
+          </figure>
+<figure class="figure">
+            <div class="widget-stage raid-stage" tabindex="0"><table class="raid-table"><caption class="visually-hidden">Blocks on each disk in RAID 1</caption><thead><tr><th scope="col">Stripe</th><th scope="col"><span class="raid-disk">Disk 1</span></th><th scope="col"><span class="raid-disk">Disk 2</span></th></tr></thead><tbody><tr><th scope="row">1</th><td class="raid-cell kind-data"><span class="raid-name">A1</span></td><td class="raid-cell kind-mirror"><span class="raid-name">A1 copy</span></td></tr><tr><th scope="row">2</th><td class="raid-cell kind-data"><span class="raid-name">A2</span></td><td class="raid-cell kind-mirror"><span class="raid-name">A2 copy</span></td></tr><tr><th scope="row">3</th><td class="raid-cell kind-data"><span class="raid-name">A3</span></td><td class="raid-cell kind-mirror"><span class="raid-name">A3 copy</span></td></tr></tbody></table></div>
+            <figcaption>RAID 1 with 2 disks. Disk 2 is an exact copy of disk 1.</figcaption>
+          </figure>
+<figure class="figure">
+            <div class="widget-stage raid-stage" tabindex="0"><table class="raid-table"><caption class="visually-hidden">Blocks on each disk in RAID 4</caption><thead><tr><th scope="col">Stripe</th><th scope="col"><span class="raid-disk">Disk 1</span></th><th scope="col"><span class="raid-disk">Disk 2</span></th><th scope="col"><span class="raid-disk">Disk 3</span></th><th scope="col"><span class="raid-disk">Disk 4</span></th></tr></thead><tbody><tr><th scope="row">1</th><td class="raid-cell kind-data"><span class="raid-name">A1</span></td><td class="raid-cell kind-data"><span class="raid-name">A2</span></td><td class="raid-cell kind-data"><span class="raid-name">A3</span></td><td class="raid-cell kind-p"><span class="raid-name">P1</span></td></tr><tr><th scope="row">2</th><td class="raid-cell kind-data"><span class="raid-name">A4</span></td><td class="raid-cell kind-data"><span class="raid-name">A5</span></td><td class="raid-cell kind-data"><span class="raid-name">A6</span></td><td class="raid-cell kind-p"><span class="raid-name">P2</span></td></tr><tr><th scope="row">3</th><td class="raid-cell kind-data"><span class="raid-name">A7</span></td><td class="raid-cell kind-data"><span class="raid-name">A8</span></td><td class="raid-cell kind-data"><span class="raid-name">A9</span></td><td class="raid-cell kind-p"><span class="raid-name">P3</span></td></tr></tbody></table></div>
+            <figcaption>RAID 4 with 4 disks. Disk 4 holds every parity block.</figcaption>
+          </figure>
+<figure class="figure">
+            <div class="widget-stage raid-stage" tabindex="0"><table class="raid-table"><caption class="visually-hidden">Blocks on each disk in RAID 5</caption><thead><tr><th scope="col">Stripe</th><th scope="col"><span class="raid-disk">Disk 1</span></th><th scope="col"><span class="raid-disk">Disk 2</span></th><th scope="col"><span class="raid-disk">Disk 3</span></th><th scope="col"><span class="raid-disk">Disk 4</span></th></tr></thead><tbody><tr><th scope="row">1</th><td class="raid-cell kind-data"><span class="raid-name">A1</span></td><td class="raid-cell kind-data"><span class="raid-name">A2</span></td><td class="raid-cell kind-data"><span class="raid-name">A3</span></td><td class="raid-cell kind-p"><span class="raid-name">P1</span></td></tr><tr><th scope="row">2</th><td class="raid-cell kind-data"><span class="raid-name">A4</span></td><td class="raid-cell kind-data"><span class="raid-name">A5</span></td><td class="raid-cell kind-p"><span class="raid-name">P2</span></td><td class="raid-cell kind-data"><span class="raid-name">A6</span></td></tr><tr><th scope="row">3</th><td class="raid-cell kind-data"><span class="raid-name">A7</span></td><td class="raid-cell kind-p"><span class="raid-name">P3</span></td><td class="raid-cell kind-data"><span class="raid-name">A8</span></td><td class="raid-cell kind-data"><span class="raid-name">A9</span></td></tr></tbody></table></div>
+            <figcaption>RAID 5 with 4 disks. The parity block moves to a different disk in each stripe.</figcaption>
+          </figure>
+<figure class="figure">
+            <div class="widget-stage raid-stage" tabindex="0"><table class="raid-table"><caption class="visually-hidden">Blocks on each disk in RAID 6</caption><thead><tr><th scope="col">Stripe</th><th scope="col"><span class="raid-disk">Disk 1</span></th><th scope="col"><span class="raid-disk">Disk 2</span></th><th scope="col"><span class="raid-disk">Disk 3</span></th><th scope="col"><span class="raid-disk">Disk 4</span></th><th scope="col"><span class="raid-disk">Disk 5</span></th></tr></thead><tbody><tr><th scope="row">1</th><td class="raid-cell kind-q"><span class="raid-name">Q1</span></td><td class="raid-cell kind-data"><span class="raid-name">A1</span></td><td class="raid-cell kind-data"><span class="raid-name">A2</span></td><td class="raid-cell kind-data"><span class="raid-name">A3</span></td><td class="raid-cell kind-p"><span class="raid-name">P1</span></td></tr><tr><th scope="row">2</th><td class="raid-cell kind-data"><span class="raid-name">A4</span></td><td class="raid-cell kind-data"><span class="raid-name">A5</span></td><td class="raid-cell kind-data"><span class="raid-name">A6</span></td><td class="raid-cell kind-p"><span class="raid-name">P2</span></td><td class="raid-cell kind-q"><span class="raid-name">Q2</span></td></tr><tr><th scope="row">3</th><td class="raid-cell kind-data"><span class="raid-name">A7</span></td><td class="raid-cell kind-data"><span class="raid-name">A8</span></td><td class="raid-cell kind-p"><span class="raid-name">P3</span></td><td class="raid-cell kind-q"><span class="raid-name">Q3</span></td><td class="raid-cell kind-data"><span class="raid-name">A9</span></td></tr></tbody></table></div>
+            <figcaption>RAID 6 with 5 disks. Each stripe has a P block and a Q block, on different disks.</figcaption>
+          </figure>
+            <p class="gallery-source">From <a href="../units/unit-4/raid.html#levels"><span class="rev-num">4.1</span> RAID: RAID levels 0 to 6</a></p>
+          </article>
+          <article class="gallery-item" id="bplus-tree" aria-labelledby="bplus-tree-title">
+            <h3 id="bplus-tree-title">B+ tree</h3>
+            <p class="gallery-note">Internal nodes guide the search. The leaves hold every key and are linked in order.</p>
+<figure class="figure">
+            <div data-bpt-static data-n="4" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31">
+              <noscript><p>Root: [19]. Level 2: [5 | 11] and [29]. Leaves: [2 | 3] → [5 | 7] → [11 | 17] → [19 | 23] → [29 | 31].</p></noscript>
+            </div>
+            <figcaption>A B+ tree with n = 4. The root and the internal nodes (white) guide the search. The leaves (green) hold every key and are linked from left to right by the dashed arrows.</figcaption>
+          </figure>
+            <p class="gallery-source">From <a href="../units/unit-4/b-plus-tree-index-files.html#structure"><span class="rev-num">4.6</span> B+ Tree Index Files: Structure of a B+ tree</a></p>
+          </article>
+          <article class="gallery-item" id="query-tree" aria-labelledby="query-tree-title">
+            <h3 id="query-tree-title">Query trees</h3>
+            <p class="gallery-note">The canonical tree and the optimized tree for the same query. Choose an example to compare them.</p>
+<div class="widget" data-widget="query-tree" data-preset="college">
+            <noscript><p class="widget-narration">The query tree widget needs JavaScript. The worked example above lists the same steps and sizes.</p></noscript>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-4/query-optimization.html#try-it"><span class="rev-num">4.11</span> Query Optimization using Heuristics and Cost Estimation: Try it yourself</a></p>
+          </article>
+        </section>
+
+        <section id="querys" class="section gallery-kind" aria-labelledby="querys-title">
+          <h2 id="querys-title">Queries</h2>
+          <article class="gallery-item" id="explain" aria-labelledby="explain-title">
+            <h3 id="explain-title">Seeing the plan with EXPLAIN</h3>
+            <p class="gallery-note">MySQL shows the plan it chose for a query.</p>
+<div class="code-block">
+            <span class="code-label">SQL (MySQL 8.4)</span>
+            <pre><code>EXPLAIN FORMAT=TREE
+SELECT name
+FROM student
+WHERE marks &lt; 50;
+
+EXPLAIN ANALYZE
+SELECT name
+FROM student
+WHERE marks &lt; 50;</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-4/query-processing-overview.html#mysql"><span class="rev-num">4.10</span> Query Processing Overview: Seeing the plan in MySQL</a></p>
+          </article>
+        </section>
+
+        <section id="examples" class="section gallery-kind" aria-labelledby="examples-title">
+          <h2 id="examples-title">Worked examples</h2>
+          <article class="gallery-item" id="sequential-file" aria-labelledby="sequential-file-title">
+            <h3 id="sequential-file-title">Sequential file</h3>
+            <p class="gallery-note">Records sorted on a search key, each pointing to the next.</p>
+<div class="table-wrap">
+            <table>
+              <caption>A sequential file sorted on RollNo. Each record points to the next one.</caption>
+              <thead><tr><th scope="col">Block</th><th scope="col">Records in RollNo order</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>101 → 104 → 108</td></tr>
+                <tr><td>2</td><td>112 → 115 → 119</td></tr>
+                <tr><td>3</td><td>123 → 126 → 130</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-4/file-organization.html#sequential"><span class="rev-num">4.2</span> File Organization: Sequential file organization</a></p>
+          </article>
+          <article class="gallery-item" id="dense-sparse" aria-labelledby="dense-sparse-title">
+            <h3 id="dense-sparse-title">Dense and sparse index</h3>
+            <p class="gallery-note">A dense index has an entry for every key. A sparse index has one per block.</p>
+<div class="table-wrap">
+            <table>
+              <caption>A dense and a sparse index on RollNo for the same file</caption>
+              <thead><tr><th scope="col">Dense index (15 entries)</th><th scope="col">Sparse index (5 entries)</th></tr></thead>
+              <tbody>
+                <tr><td>101 → B1, 104 → B1, 108 → B1</td><td>101 → B1</td></tr>
+                <tr><td>112 → B2, 115 → B2, 119 → B2</td><td>112 → B2</td></tr>
+                <tr><td>123 → B3, 126 → B3, 130 → B3</td><td>123 → B3</td></tr>
+                <tr><td>134 → B4, 137 → B4, 141 → B4</td><td>134 → B4</td></tr>
+                <tr><td>145 → B5, 148 → B5, 152 → B5</td><td>145 → B5</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-4/ordered-indices.html#dense-sparse"><span class="rev-num">4.5</span> Ordered Indices: Dense and sparse indices</a></p>
+          </article>
+          <article class="gallery-item" id="bplus-qb" aria-labelledby="bplus-qb-title">
+            <h3 id="bplus-qb-title">Build a B+ tree (n = 3)</h3>
+            <p class="gallery-note">Insert 2, 3, 5, 7, 11, 17, 19, 23, 29 and 31 in order, with at most three pointers in a node. This is the question bank problem.</p>
+<div class="table-wrap">
+            <table class="worked">
+              <caption>Building the tree one key at a time</caption>
+              <thead>
+                <tr><th scope="col">Insert</th><th scope="col">What happens</th><th scope="col">Tree after this step</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>2, 3</td><td>The first leaf has room for both keys. This leaf is the root.</td><td>[2 | 3]</td></tr>
+                <tr><td>5</td><td>The leaf has 2, 3, 5: too many. Split it into [2] and [3 | 5]. Copy 3 up into a new root.</td><td>Root [3]<br>Leaves [2] → [3 | 5]</td></tr>
+                <tr><td>7</td><td>The leaf has 3, 5, 7. Split it into [3] and [5 | 7]. Copy 5 up. The root has room.</td><td>Root [3 | 5]<br>Leaves [2] → [3] → [5 | 7]</td></tr>
+                <tr><td>11</td><td>The leaf has 5, 7, 11. Split it into [5] and [7 | 11]. Copy 7 up. Now the root has 3, 5, 7: too many. Split the root into [3] and [7], and move 5 up into a new root.</td><td>Root [5]<br>Level 2 [3] [7]<br>Leaves [2] → [3] → [5] → [7 | 11]</td></tr>
+                <tr><td>17</td><td>The leaf has 7, 11, 17. Split it into [7] and [11 | 17]. Copy 11 up into [7], which becomes [7 | 11].</td><td>Root [5]<br>Level 2 [3] [7 | 11]<br>Leaves [2] → [3] → [5] → [7] → [11 | 17]</td></tr>
+                <tr><td>19</td><td>The leaf has 11, 17, 19. Split it into [11] and [17 | 19]. Copy 17 up. The node [7 | 11 | 17] is too full. Split it into [7] and [17], and move 11 up into the root.</td><td>Root [5 | 11]<br>Level 2 [3] [7] [17]<br>Leaves [2] → [3] → [5] → [7] → [11] → [17 | 19]</td></tr>
+                <tr><td>23</td><td>The leaf has 17, 19, 23. Split it into [17] and [19 | 23]. Copy 19 up into [17], which becomes [17 | 19].</td><td>Root [5 | 11]<br>Level 2 [3] [7] [17 | 19]<br>Leaves … → [17] → [19 | 23]</td></tr>
+                <tr><td>29</td><td>The leaf has 19, 23, 29. Split it into [19] and [23 | 29]. Copy 23 up. The node [17 | 19 | 23] is too full: split it into [17] and [23], and move 19 up. Now the root [5 | 11 | 19] is too full: split it into [5] and [19], and move 11 up into a new root.</td><td>Root [11]<br>Level 2 [5] [19]<br>Level 3 [3] [7] [17] [23]<br>Leaves … → [19] → [23 | 29]</td></tr>
+                <tr><td>31</td><td>The leaf has 23, 29, 31. Split it into [23] and [29 | 31]. Copy 29 up into [23], which becomes [23 | 29].</td><td>Final tree, shown below</td></tr>
+              </tbody>
+            </table>
+          </div>
+<figure class="figure">
+            <div data-bpt-static data-n="3" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31">
+              <noscript><p>Root: [11]. Level 2: [5] and [19]. Level 3: [3], [7], [17] and [23 | 29]. Leaves: [2] → [3] → [5] → [7] → [11] → [17] → [19] → [23] → [29 | 31].</p></noscript>
+            </div>
+            <figcaption>The final B+ tree for the question bank problem (n = 3). It has four levels. Every key is in a leaf, and the leaves are linked in order.</figcaption>
+          </figure>
+            <p class="gallery-source">From <a href="../units/unit-4/b-plus-tree-index-files.html#worked-example"><span class="rev-num">4.6</span> B+ Tree Index Files: Worked example (n = 3)</a></p>
+          </article>
+          <article class="gallery-item" id="bplus-delete" aria-labelledby="bplus-delete-title">
+            <h3 id="bplus-delete-title">Deleting from a B+ tree</h3>
+            <p class="gallery-note">Delete 23, then 19. Watch the merge, the borrow and the new guide key.</p>
+<figure class="figure">
+            <div data-bpt-static data-n="4" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31, 9, 10, 8">
+              <noscript><p>Root: [19]. Level 2: [5 | 9 | 11] and [29]. Leaves: [2 | 3] → [5 | 7 | 8] → [9 | 10] → [11 | 17] → [19 | 23] → [29 | 31].</p></noscript>
+            </div>
+            <figcaption>Before deleting. Each leaf needs at least 2 keys and each internal node needs at least 2 pointers.</figcaption>
+          </figure>
+<figure class="figure">
+            <div data-bpt-static data-n="4" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31, 9, 10, 8" data-delete="23">
+              <noscript><p>Root: [11]. Level 2: [5 | 9] and [19]. Leaves: [2 | 3] → [5 | 7 | 8] → [9 | 10] → [11 | 17] → [19 | 29 | 31].</p></noscript>
+            </div>
+            <figcaption>After deleting 23. The root is now 11.</figcaption>
+          </figure>
+<figure class="figure">
+            <div data-bpt-static data-n="4" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31, 9, 10, 8" data-delete="23, 19">
+              <noscript><p>Root: [11]. Level 2: [5 | 9] and [29]. Leaves: [2 | 3] → [5 | 7 | 8] → [9 | 10] → [11 | 17] → [29 | 31].</p></noscript>
+            </div>
+            <figcaption>After deleting 19. The guide key 19 is replaced by 29.</figcaption>
+          </figure>
+            <p class="gallery-source">From <a href="../units/unit-4/b-plus-tree-index-files.html#deletion"><span class="rev-num">4.6</span> B+ Tree Index Files: Deletion</a></p>
+          </article>
+          <article class="gallery-item" id="btree-build" aria-labelledby="btree-build-title">
+            <h3 id="btree-build-title">Build a B tree (order 3)</h3>
+            <p class="gallery-note">Insert 20, 10, 30, 15, 12, 40 and 50. A full node splits and its middle key moves up.</p>
+<div class="table-wrap">
+            <table class="worked">
+              <caption>Building the B tree one key at a time</caption>
+              <thead><tr><th scope="col">Insert</th><th scope="col">What happens</th><th scope="col">Tree after this step</th></tr></thead>
+              <tbody>
+                <tr><td>20, 10</td><td>The root has room for both keys. Keep them in order.</td><td>[10 | 20]</td></tr>
+                <tr><td>30</td><td>The node has 10, 20, 30: too many. Split it into [10] and [30], and move 20 up into a new root.</td><td>Root [20]<br>Leaves [10] [30]</td></tr>
+                <tr><td>15</td><td>15 &lt; 20, so go left. The leaf [10] has room.</td><td>Root [20]<br>Leaves [10 | 15] [30]</td></tr>
+                <tr><td>12</td><td>The leaf has 10, 12, 15. Split it into [10] and [15], and move 12 up into the root.</td><td>Root [12 | 20]<br>Leaves [10] [15] [30]</td></tr>
+                <tr><td>40</td><td>40 &gt; 20, so go to the last leaf. It has room.</td><td>Root [12 | 20]<br>Leaves [10] [15] [30 | 40]</td></tr>
+                <tr><td>50</td><td>The leaf has 30, 40, 50. Split it into [30] and [50], and move 40 up. The root now has 12, 20, 40: too many. Split it into [12] and [40], and move 20 up into a new root.</td><td>Root [20]<br>Level 2 [12] [40]<br>Leaves [10] [15] [30] [50]</td></tr>
+              </tbody>
+            </table>
+          </div>
+<figure class="figure">
+            <div data-bt-static data-n="3" data-keys="20, 10, 30, 15, 12, 40, 50">
+              <noscript><p>Root: [20]. Level 2: [12] and [40]. Leaves: [10], [15], [30] and [50].</p></noscript>
+            </div>
+            <figcaption>The final B tree of order 3. Each key appears once. The leaves are not linked.</figcaption>
+          </figure>
+            <p class="gallery-source">From <a href="../units/unit-4/b-tree-index-files.html#worked-example"><span class="rev-num">4.7</span> B Tree Index Files: Worked example (order 3)</a></p>
+          </article>
+          <article class="gallery-item" id="static-overflow" aria-labelledby="static-overflow-title">
+            <h3 id="static-overflow-title">Static hashing with overflow</h3>
+            <p class="gallery-note">h(K) = K mod 5, two records per bucket.</p>
+<div class="table-wrap">
+            <table>
+              <caption>h(K) = K mod 5, two records per bucket, after inserting 10, 22, 15, 37, 20, 41, 25 and 13</caption>
+              <thead><tr><th scope="col">Bucket</th><th scope="col">Records</th><th scope="col">Overflow chain</th></tr></thead>
+              <tbody>
+                <tr><td>0</td><td>10, 15</td><td>→ [20, 25]</td></tr>
+                <tr><td>1</td><td>41</td><td></td></tr>
+                <tr><td>2</td><td>22, 37</td><td></td></tr>
+                <tr><td>3</td><td>13</td><td></td></tr>
+                <tr><td>4</td><td><em>empty</em></td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-4/static-hashing.html#overflow"><span class="rev-num">4.8</span> Static Hashing: Bucket overflow</a></p>
+          </article>
+          <article class="gallery-item" id="extendible" aria-labelledby="extendible-title">
+            <h3 id="extendible-title">Extendible hashing</h3>
+            <p class="gallery-note">Keys 1, 3, 5, 8, 9, 12, 17 and 28 with h(x) = x mod 8 and three records per bucket. Then insert 2 and 24, and delete 5 and 12.</p>
+<div class="table-wrap">
+            <table class="worked">
+              <caption>Building and changing the extendible hash structure</caption>
+              <thead><tr><th scope="col">Step</th><th scope="col">What happens</th><th scope="col">Buckets (local depth): keys</th></tr></thead>
+              <tbody>
+                <tr><td>Insert 1 to 12</td><td>Using the last 2 bits: 1, 5 and 9 end in 01; 8 and 12 end in 00; 3 ends in 11. Bucket 01 is now full.</td><td>00 (2): 8, 12<br>01 (2): 1, 5, 9<br>10 (2): empty<br>11 (2): 3</td></tr>
+                <tr><td>Insert 17</td><td>17 ends in 01, but bucket 01 is full. Its local depth 2 equals the global depth 2, so the <strong>directory doubles</strong> to global depth 3. Then bucket 01 splits on the third bit: 1 and 9 (001) stay, 5 (101) moves to a new bucket. 17 (001) goes into bucket 001.</td><td>00 (2): 8, 12<br>001 (3): 1, 9, 17<br>101 (3): 5<br>10 (2): empty<br>11 (2): 3</td></tr>
+                <tr><td>Insert 28</td><td>28 ends in 100. Entries 000 and 100 both point to bucket 00, which has room.</td><td>00 (2): 8, 12, 28<br>001 (3): 1, 9, 17<br>101 (3): 5<br>10 (2): empty<br>11 (2): 3</td></tr>
+                <tr><td>Insert 2</td><td>2 ends in 010, so it goes to bucket 10, which is empty.</td><td>… 10 (2): 2 …</td></tr>
+                <tr><td>Insert 24</td><td>24 ends in 000. Bucket 00 is full, but its local depth 2 is less than the global depth 3. So the bucket <strong>splits without doubling</strong>: 8 (000) stays, and 12 and 28 (100) move to a new bucket. 24 goes into bucket 000.</td><td>000 (3): 8, 24<br>100 (3): 12, 28<br>001 (3): 1, 9, 17<br>101 (3): 5<br>10 (2): 2<br>11 (2): 3</td></tr>
+                <tr><td>Delete 5</td><td>Bucket 101 becomes empty, so it merges with its split image, bucket 001. Entries 001 and 101 both point to it, and its local depth drops to 2. The directory stays at depth 3, because buckets 000 and 100 still use 3 bits.</td><td>000 (3): 8, 24<br>100 (3): 12, 28<br>01 (2): 1, 9, 17<br>10 (2): 2<br>11 (2): 3</td></tr>
+                <tr><td>Delete 12</td><td>Remove 12 from bucket 100. The bucket is not empty, so nothing merges.</td><td>000 (3): 8, 24<br>100 (3): 28<br>01 (2): 1, 9, 17<br>10 (2): 2<br>11 (2): 3</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-4/dynamic-hashing.html#worked-example"><span class="rev-num">4.9</span> Dynamic Hashing: Worked example from the class notes</a></p>
+          </article>
+          <article class="gallery-item" id="merge-sort" aria-labelledby="merge-sort-title">
+            <h3 id="merge-sort-title">External two-way merge sort</h3>
+            <p class="gallery-note">Sort runs that fit in memory, then merge them pass by pass.</p>
+<div class="table-wrap">
+              <table class="worked">
+                <caption>External two-way merge sort</caption>
+                <thead><tr><th scope="col">Stage</th><th scope="col">What happens</th><th scope="col">Runs</th></tr></thead>
+                <tbody>
+                  <tr><td>Sort runs</td><td>Read 3 records at a time, sort them, write a run.</td><td>[15, 20, 47] [4, 8, 9] [12, 30, 40] [11, 17, 56] [28, 35]</td></tr>
+                  <tr><td>Merge pass 1</td><td>Merge runs in pairs.</td><td>[4, 8, 9, 15, 20, 47] [11, 12, 17, 30, 40, 56] [28, 35]</td></tr>
+                  <tr><td>Merge pass 2</td><td>Merge again.</td><td>[4, 8, 9, 11, 12, 15, 17, 20, 30, 40, 47, 56] [28, 35]</td></tr>
+                  <tr><td>Merge pass 3</td><td>Merge the last two runs.</td><td>[4, 8, 9, 11, 12, 15, 17, 20, 28, 30, 35, 40, 47, 56]</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="gallery-source">From <a href="../units/unit-4/query-processing-overview.html#sorting"><span class="rev-num">4.10</span> Query Processing Overview: External sorting</a></p>
+          </article>
+          <article class="gallery-item" id="heuristic" aria-labelledby="heuristic-title">
+            <h3 id="heuristic-title">Heuristic optimization</h3>
+            <p class="gallery-note">Do selections and projections early, and replace Cartesian products with joins.</p>
+<div class="code-block">
+              <span class="code-label">SQL</span>
+              <pre><code>SELECT name
+FROM student, enroll, course
+WHERE student.roll_no = enroll.roll_no
+  AND enroll.course_id = course.course_id
+  AND course.title = 'DBMS'
+  AND student.dept = 'CSE';</code></pre>
+            </div>
+<div class="table-wrap">
+              <table class="worked">
+                <caption>Applying the heuristic rules (sizes estimated by the widget below)</caption>
+                <thead><tr><th scope="col">Step</th><th scope="col">What changes</th><th scope="col">Intermediate results</th></tr></thead>
+                <tbody>
+                  <tr><td>Canonical tree</td><td>STUDENT × ENROLL × COURSE, then one σ, then π<sub>name</sub>. The first product alone has 5,000 × 40,000 = 200 million rows.</td><td>About 4.0 TB</td></tr>
+                  <tr><td>Selections early</td><td>dept = 'CSE' goes onto STUDENT. title = 'DBMS' goes onto COURSE.</td><td>About 1.3 GB</td></tr>
+                  <tr><td>Most restrictive first</td><td>title = 'DBMS' leaves 1 course, so COURSE is joined with ENROLL first.</td><td>About 15 MB</td></tr>
+                  <tr><td>× and σ become ⋈</td><td>The join algorithm never builds the full product.</td><td>About 38 KB</td></tr>
+                  <tr><td>Projections early</td><td>Keep only roll_no, course_id and name.</td><td>About 23 KB</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="gallery-source">From <a href="../units/unit-4/query-optimization.html#heuristics"><span class="rev-num">4.11</span> Query Optimization using Heuristics and Cost Estimation: Heuristic optimization</a></p>
+          </article>
+        </section>
+
+        <div class="btn-row gallery-more">
+          <a class="btn" href="../outlines/unit-4.html">Unit IV 16-mark outlines</a>
+          <a class="btn" href="../revision/unit-4.html">Unit IV revision sheet</a>
+          <a class="btn" href="../units/unit-4/index.html">Unit IV topics</a>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/widgets/player.js"></script>
+  <script src="../assets/js/widgets/bplus-tree.js"></script>
+  <script src="../assets/js/widgets/btree.js"></script>
+  <script src="../assets/js/widgets/query-tree.js"></script>
+</body>
+</html>

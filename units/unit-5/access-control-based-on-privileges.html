@@ -94,7 +94,7 @@
         <section id="matrix" class="topic-section" aria-labelledby="matrix-title">
           <h2 id="matrix-title">The access matrix</h2>
           <p>DAC can be pictured as an <strong>access matrix</strong> M. Each row is a <strong>subject</strong> (a user, account or program). Each column is an <strong>object</strong> (a table, view or column). The cell M(i, j) lists the privileges that subject i holds on object j.</p>
-          <div class="table-wrap">
+          <div id="tbl-access-matrix" class="table-wrap">
             <table>
               <caption>Access matrix for a college database</caption>
               <thead><tr><th scope="col">Subject</th><th scope="col">student</th><th scope="col">marks</th><th scope="col">fees</th></tr></thead>
@@ -165,7 +165,7 @@ GRANT SELECT ON college.cse_students TO 'hod_cse'@'localhost';</code></pre>
         <section id="chain" class="topic-section" aria-labelledby="chain-title">
           <h2 id="chain-title">Worked example: a chain of grants</h2>
           <p>The DBA owns the <code>marks</code> table. Follow the grants in standard SQL.</p>
-          <figure class="figure">
+          <figure id="fig-grant-chain" class="figure">
             <div class="widget-stage" tabindex="0">
               <svg viewBox="0 0 520 170" width="520" role="img" aria-labelledby="chain-svg-title" style="max-width:100%;height:auto">
                 <title id="chain-svg-title">Grant graph. DBA grants SELECT with grant option to A. A grants it to B with grant option. B grants it to C. DBA also grants it directly to C.</title>
@@ -235,7 +235,7 @@ GRANT SELECT ON college.cse_students TO 'hod_cse'@'localhost';</code></pre>
         <section id="blp" class="topic-section" aria-labelledby="blp-title">
           <h2 id="blp-title">Worked example: Bell-LaPadula decisions</h2>
           <p>An officer has <strong>Secret (S)</strong> clearance. Decide each request.</p>
-          <div class="table-wrap">
+          <div id="tbl-blp" class="table-wrap">
             <table>
               <caption>Requests by a user with Secret clearance</caption>
               <thead><tr><th scope="col">Request</th><th scope="col">Object class</th><th scope="col">Rule</th><th scope="col">Decision</th></tr></thead>

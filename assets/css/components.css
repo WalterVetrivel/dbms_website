@@ -1597,3 +1597,45 @@ a.chip:hover {
   max-width: 780px;
   height: auto;
 }
+
+/* Diagrams and Examples pages */
+.gallery-kind > h2 {
+  padding-bottom: var(--sp-2);
+  border-bottom: 2px solid var(--unit-color, var(--border));
+}
+.gallery-item {
+  padding: var(--sp-6) 0;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: 5rem;
+}
+.gallery-item:last-child {
+  border-bottom: 0;
+}
+.gallery-item > h3 {
+  margin-top: 0;
+}
+.gallery-note {
+  color: var(--text-muted);
+}
+.gallery-item .figure {
+  margin: var(--sp-4) 0;
+}
+.gallery-source {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+.gallery-source a::after {
+  content: " →";
+}
+.gallery-index + .gallery-index {
+  margin-top: var(--sp-6);
+}
+.gallery-index h3 a {
+  color: var(--unit-color, var(--text));
+}
+.gallery-index h4 {
+  margin: var(--sp-3) 0 var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}

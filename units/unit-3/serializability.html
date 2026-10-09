@@ -238,7 +238,7 @@
         <section id="worked" class="topic-section" aria-labelledby="worked-title">
           <h2 id="worked-title">Worked example</h2>
           <p><strong>Question:</strong> Is this schedule conflict serializable? If yes, give an equivalent serial schedule.</p>
-          <div class="table-wrap">
+          <div id="tbl-precedence-graph" class="table-wrap">
             <table>
               <caption>The schedule</caption>
               <thead><tr><th scope="col">#</th><th scope="col">T1</th><th scope="col">T2</th><th scope="col">T3</th></tr></thead>
@@ -255,7 +255,7 @@
             </table>
           </div>
           <p><strong>Solution.</strong> List the conflicting pairs (same item, different transactions, at least one write):</p>
-          <div class="table-wrap">
+          <div id="tbl-precedence-graph-2" class="table-wrap">
             <table>
               <caption>Conflicting pairs and edges</caption>
               <thead><tr><th scope="col">Item</th><th scope="col">Conflicting pair (earlier, later)</th><th scope="col">Edge</th></tr></thead>
@@ -269,7 +269,7 @@
               </tbody>
             </table>
           </div>
-          <figure class="figure">
+          <figure id="fig-precedence-graph-3" class="figure">
             <div class="widget-stage" tabindex="0">
               <svg viewBox="0 0 300 150" width="300" role="img" aria-labelledby="pg-svg-title" style="max-width:100%;height:auto">
                 <title id="pg-svg-title">Precedence graph with edges T1 to T3 labelled A, and T2 to T3 labelled B. There is no cycle.</title>

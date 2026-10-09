@@ -129,7 +129,7 @@
             <li><strong>Cardinality:</strong> Takes is M : N. Teaches is M : N. Advisor is 1 : N (one instructor advises many students). Sec_of is 1 : N.</li>
             <li><strong>Participation:</strong> every student has an advisor (total). Every section belongs to a course (total).</li>
           </ol>
-          <div class="widget" data-widget="er-notation" data-model="university">
+          <div id="wid-er-university" class="widget" data-widget="er-notation" data-model="university">
             <noscript><p class="widget-narration">The diagram needs JavaScript. Its content is listed in the steps above.</p></noscript>
           </div>
           <p>The next topic, <a href="er-to-relational-mapping.html">ER-to-Relational Mapping</a>, turns this diagram into tables, step by step.</p>
@@ -145,7 +145,7 @@
             <li><strong>Cardinality:</strong> Depositor and Borrower are M : N, because joint accounts and joint loans are allowed. Each account and each loan belongs to one branch (N : 1).</li>
             <li><strong>Participation:</strong> every account has a depositor, every loan has a borrower, and every account and loan has a branch. A customer may have no loan, so Customer is partial in Borrower.</li>
           </ol>
-          <div class="widget" data-widget="er-notation" data-model="bank">
+          <div id="wid-er-bank" class="widget" data-widget="er-notation" data-model="bank">
             <noscript><p class="widget-narration">The diagram needs JavaScript. Its content is listed in the steps above.</p></noscript>
           </div>
           <div class="callout callout-note">
@@ -169,7 +169,7 @@
             <li><strong>Cardinality:</strong> Owns is 1 : N. Participated is M : N, because one accident can involve two cars. Covers is 1 : N.</li>
             <li><strong>Participation:</strong> “one or more cars each” makes Customer total in Owns. “Zero or more accidents” makes Car partial in Participated. “Covers one or more cars” makes Policy total in Covers.</li>
           </ol>
-          <div class="widget" data-widget="er-notation" data-model="insurance">
+          <div id="wid-er-insurance" class="widget" data-widget="er-notation" data-model="insurance">
             <noscript><p class="widget-narration">The diagram needs JavaScript. Its content is listed in the steps above.</p></noscript>
           </div>
           <div class="callout callout-note">

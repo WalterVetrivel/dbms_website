@@ -124,7 +124,7 @@
           </ol>
           <h3>Example</h3>
           <p>This Student table stores two phone numbers for students 1 and 3 in one cell, so it is <strong>not</strong> in 1NF:</p>
-          <div class="table-wrap">
+          <div id="tbl-first-nf" class="table-wrap">
             <table>
               <caption>Student (not in 1NF)</caption>
               <thead><tr><th scope="col">sid</th><th scope="col">sname</th><th scope="col">phone</th></tr></thead>
@@ -136,7 +136,7 @@
             </table>
           </div>
           <p>To bring it to 1NF, give each phone number its own row. The key becomes {sid, phone}.</p>
-          <div class="table-wrap">
+          <div id="tbl-first-nf-2" class="table-wrap">
             <table>
               <caption>Student in 1NF</caption>
               <thead><tr><th scope="col">sid</th><th scope="col">sname</th><th scope="col">phone</th></tr></thead>
@@ -263,7 +263,7 @@ City(<u>cityname</u>, state)</code></pre>
           <p>Prime attributes: A and B. Every other attribute is non-prime.</p>
           <h3>Step 2: 2NF</h3>
           <p>A → DE and B → F are partial dependencies. Move each part of the key with everything it determines:</p>
-          <div class="code-block">
+          <div id="code-r-a-to-j" class="code-block">
             <span class="code-label">2NF</span>
             <pre><code>R1(<u>A</u>, <u>B</u>, C)
 R2(<u>A</u>, D, E, I, J)
@@ -271,7 +271,7 @@ R3(<u>B</u>, F, G, H)</code></pre>
           </div>
           <h3>Step 3: 3NF</h3>
           <p>R2 has D → IJ, and R3 has F → GH. D and F are not keys of their tables, so these are transitive dependencies. Split them out:</p>
-          <div class="code-block">
+          <div id="code-r-a-to-j-2" class="code-block">
             <span class="code-label">3NF</span>
             <pre><code>R1(<u>A</u>, <u>B</u>, C)
 R2(<u>A</u>, D, E)

@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Built by tools/build-gallery.mjs from data/gallery.js and the topic pages. Edit those, then run the script again. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit I Diagrams and Examples | DBMS Study Guide</title>
+  <meta name="description" content="The important diagrams, queries and worked examples of Unit I (Introduction to Relational Database) in one place, each linked to its topic page.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/widgets.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="diagrams" data-unit="1" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content u-1">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        <header class="gallery-head">
+          <span class="eyebrow">Unit I: Introduction to Relational Database</span>
+          <h1>Unit I Diagrams and Examples</h1>
+          <p class="lead">8 diagrams, 5 queries and 3 worked examples from the Unit I topics. Use them to practice drawing and writing before the exam. Each one links back to its topic page.</p>
+        </header>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#diagrams">Diagrams</a> <span class="muted">(8)</span></li>
+            <li><a href="#querys">Queries</a> <span class="muted">(5)</span></li>
+            <li><a href="#examples">Worked examples</a> <span class="muted">(3)</span></li>
+          </ol>
+        </nav>
+
+        <section id="diagrams" class="section gallery-kind" aria-labelledby="diagrams-title">
+          <h2 id="diagrams-title">Diagrams</h2>
+          <article class="gallery-item" id="three-levels" aria-labelledby="three-levels-title">
+            <h3 id="three-levels-title">Three levels of abstraction</h3>
+            <p class="gallery-note">Many views on one logical level, on one physical level.</p>
+<figure class="figure">
+            <svg viewBox="0 0 560 300" width="560" height="300" role="img" aria-labelledby="three-levels-levels-fig-title" style="max-width:100%;height:auto">
+              <title id="three-levels-levels-fig-title">Three levels of abstraction: many views at the top, one logical level in the middle and one physical level at the bottom.</title>
+              <g font-family="Inter, system-ui, sans-serif" font-size="14" text-anchor="middle">
+                <rect x="20" y="20" width="150" height="44" rx="8" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="95" y="47" style="fill:var(--text)">View 1</text>
+                <rect x="205" y="20" width="150" height="44" rx="8" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="280" y="47" style="fill:var(--text)">View 2</text>
+                <rect x="390" y="20" width="150" height="44" rx="8" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="465" y="47" style="fill:var(--text)">… View n</text>
+                <line x1="95" y1="64" x2="250" y2="130" stroke-width="2" style="stroke:var(--border-strong)"/>
+                <line x1="280" y1="64" x2="280" y2="130" stroke-width="2" style="stroke:var(--border-strong)"/>
+                <line x1="465" y1="64" x2="310" y2="130" stroke-width="2" style="stroke:var(--border-strong)"/>
+                <rect x="130" y="130" width="300" height="48" rx="8" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="280" y="159" font-weight="700" style="fill:var(--text)">Logical level</text>
+                <line x1="280" y1="178" x2="280" y2="236" stroke-width="2" style="stroke:var(--border-strong)"/>
+                <rect x="130" y="236" width="300" height="48" rx="8" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="280" y="265" font-weight="700" style="fill:var(--text)">Physical level</text>
+                <text x="280" y="110" font-size="12" style="fill:var(--text-muted)">View level</text>
+              </g>
+            </svg>
+            <figcaption>Many views sit on one logical level, which sits on one physical level.</figcaption>
+          </figure>
+            <p class="gallery-source">From <a href="../units/unit-1/views-of-data.html#levels"><span class="rev-num">1.2</span> Views of Data: The three levels of abstraction</a></p>
+          </article>
+          <article class="gallery-item" id="er-model-small" aria-labelledby="er-model-small-title">
+            <h3 id="er-model-small-title">A small E-R diagram</h3>
+            <p class="gallery-note">Two entity sets joined by a relationship set, in Chen notation.</p>
+<figure class="figure">
+            <svg viewBox="0 0 560 120" width="560" height="120" role="img" aria-labelledby="er-model-small-er-fig-title" style="max-width:100%;height:auto">
+              <title id="er-model-small-er-fig-title">E-R diagram: the entity set Employee is linked to the entity set Department by the relationship set works_for.</title>
+              <g font-family="Inter, system-ui, sans-serif" font-size="14" text-anchor="middle">
+                <line x1="160" y1="60" x2="220" y2="60" stroke-width="2" style="stroke:var(--text-muted)"/>
+                <line x1="340" y1="60" x2="400" y2="60" stroke-width="2" style="stroke:var(--text-muted)"/>
+                <rect x="20" y="36" width="140" height="48" stroke-width="2" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="90" y="65" style="fill:var(--text)">Employee</text>
+                <polygon points="280,22 340,60 280,98 220,60" stroke-width="2" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="280" y="65" style="fill:var(--text)">works_for</text>
+                <rect x="400" y="36" width="140" height="48" stroke-width="2" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="470" y="65" style="fill:var(--text)">Department</text>
+              </g>
+            </svg>
+            <figcaption>Rectangles are entity sets and the diamond is a relationship set (Chen notation).</figcaption>
+          </figure>
+            <p class="gallery-source">From <a href="../units/unit-1/data-models.html#er"><span class="rev-num">1.3</span> Data Models: Entity-relationship (E-R) model</a></p>
+          </article>
+          <article class="gallery-item" id="hierarchical" aria-labelledby="hierarchical-title">
+            <h3 id="hierarchical-title">Hierarchical model</h3>
+            <p class="gallery-note">Every record has one parent, so the data forms a tree.</p>
+<figure class="figure">
+            <svg viewBox="0 0 560 190" width="560" height="190" role="img" aria-labelledby="hierarchical-hier-fig-title" style="max-width:100%;height:auto">
+              <title id="hierarchical-hier-fig-title">Hierarchical model: College at the root, with departments CSE and IT as children, and students as children of each department.</title>
+              <g font-family="Inter, system-ui, sans-serif" font-size="14" text-anchor="middle">
+                <g stroke-width="2" style="stroke:var(--text-muted)">
+                  <line x1="280" y1="54" x2="150" y2="86"/><line x1="280" y1="54" x2="410" y2="86"/>
+                  <line x1="150" y1="122" x2="80" y2="146"/><line x1="150" y1="122" x2="220" y2="146"/>
+                  <line x1="410" y1="122" x2="410" y2="146"/>
+                </g>
+                <rect x="220" y="18" width="120" height="36" rx="6" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="280" y="41" style="fill:var(--text)">College</text>
+                <rect x="100" y="86" width="100" height="36" rx="6" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="150" y="109" style="fill:var(--text)">CSE</text>
+                <rect x="360" y="86" width="100" height="36" rx="6" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="410" y="109" style="fill:var(--text)">IT</text>
+                <rect x="30" y="146" width="100" height="36" rx="6" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="80" y="169" style="fill:var(--text)">Ram</text>
+                <rect x="170" y="146" width="100" height="36" rx="6" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="220" y="169" style="fill:var(--text)">Divya</text>
+                <rect x="360" y="146" width="100" height="36" rx="6" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="410" y="169" style="fill:var(--text)">Arun</text>
+              </g>
+            </svg>
+            <figcaption>Every record has exactly one parent, so the data forms a tree.</figcaption>
+          </figure>
+            <p class="gallery-source">From <a href="../units/unit-1/data-models.html#hierarchical"><span class="rev-num">1.3</span> Data Models: Hierarchical model</a></p>
+          </article>
+          <article class="gallery-item" id="network" aria-labelledby="network-title">
+            <h3 id="network-title">Network model</h3>
+            <p class="gallery-note">A record can have more than one parent, so the data forms a graph.</p>
+<figure class="figure">
+            <svg viewBox="0 0 560 150" width="560" height="150" role="img" aria-labelledby="network-net-fig-title" style="max-width:100%;height:auto">
+              <title id="network-net-fig-title">Network model: students Ram and Divya both link to course DBMS, and Divya also links to course Java. Divya has two parents.</title>
+              <g font-family="Inter, system-ui, sans-serif" font-size="14" text-anchor="middle">
+                <g stroke-width="2" style="stroke:var(--text-muted)">
+                  <line x1="140" y1="54" x2="190" y2="100"/><line x1="420" y1="54" x2="190" y2="100"/>
+                  <line x1="420" y1="54" x2="370" y2="100"/><line x1="140" y1="54" x2="370" y2="100"/>
+                </g>
+                <rect x="80" y="18" width="120" height="36" rx="6" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="140" y="41" style="fill:var(--text)">DBMS</text>
+                <rect x="360" y="18" width="120" height="36" rx="6" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="420" y="41" style="fill:var(--text)">Java</text>
+                <rect x="130" y="100" width="120" height="36" rx="6" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="190" y="123" style="fill:var(--text)">Ram</text>
+                <rect x="310" y="100" width="120" height="36" rx="6" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="370" y="123" style="fill:var(--text)">Divya</text>
+              </g>
+            </svg>
+            <figcaption>Divya takes both courses, so her record has two parents. A tree cannot show this, but a graph can.</figcaption>
+          </figure>
+            <p class="gallery-source">From <a href="../units/unit-1/data-models.html#network"><span class="rev-num">1.3</span> Data Models: Network model</a></p>
+          </article>
+          <article class="gallery-item" id="db-structure" aria-labelledby="db-structure-title">
+            <h3 id="db-structure-title">Structure of a database system</h3>
+            <p class="gallery-note">The query processor, the storage manager and disk storage, with the users on top. Draw this for the 16-mark question on architecture.</p>
+<figure class="figure">
+            <svg viewBox="0 0 640 400" width="640" height="400" role="img" aria-labelledby="db-structure-arch-fig-title" style="max-width:100%;height:auto">
+              <title id="db-structure-arch-fig-title">Structure of a database system. Users at the top use application interfaces, application programs, query tools and administration tools. These connect to the query processor, which has the DML compiler and organizer, the DDL interpreter and the query evaluation engine. Below it is the storage manager with the authorization and integrity manager, transaction manager, file manager and buffer manager. At the bottom is disk storage with data files, the data dictionary, indices and statistical data.</title>
+              <g font-family="Inter, system-ui, sans-serif" font-size="12" text-anchor="middle">
+                <rect x="10" y="10" width="620" height="56" rx="8" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="320" y="32" font-weight="700" style="fill:var(--text)">Users: naive users, application programmers, sophisticated users, DBA</text>
+                <text x="320" y="52" style="fill:var(--text-muted)">Tools: application interfaces, application programs, query tools, administration tools</text>
+                <line x1="320" y1="66" x2="320" y2="86" stroke-width="2" style="stroke:var(--text-muted)"/>
+                <rect x="10" y="86" width="620" height="110" rx="8" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="320" y="106" font-weight="700" style="fill:var(--text)">Query processor</text>
+                <rect x="30" y="118" width="280" height="30" rx="6" style="fill:var(--surface);stroke:var(--primary)"/>
+                <text x="170" y="138" style="fill:var(--text)">DML compiler and organizer</text>
+                <rect x="330" y="118" width="280" height="30" rx="6" style="fill:var(--surface);stroke:var(--primary)"/>
+                <text x="470" y="138" style="fill:var(--text)">DDL interpreter</text>
+                <rect x="30" y="156" width="580" height="30" rx="6" style="fill:var(--surface);stroke:var(--primary)"/>
+                <text x="320" y="176" style="fill:var(--text)">Query evaluation engine</text>
+                <line x1="320" y1="196" x2="320" y2="216" stroke-width="2" style="stroke:var(--text-muted)"/>
+                <rect x="10" y="216" width="620" height="100" rx="8" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="320" y="236" font-weight="700" style="fill:var(--text)">Storage manager</text>
+                <rect x="30" y="246" width="280" height="28" rx="6" style="fill:var(--surface);stroke:var(--accent)"/>
+                <text x="170" y="265" style="fill:var(--text)">Authorization and integrity manager</text>
+                <rect x="330" y="246" width="280" height="28" rx="6" style="fill:var(--surface);stroke:var(--accent)"/>
+                <text x="470" y="265" style="fill:var(--text)">Transaction manager</text>
+                <rect x="30" y="280" width="280" height="28" rx="6" style="fill:var(--surface);stroke:var(--accent)"/>
+                <text x="170" y="299" style="fill:var(--text)">File manager</text>
+                <rect x="330" y="280" width="280" height="28" rx="6" style="fill:var(--surface);stroke:var(--accent)"/>
+                <text x="470" y="299" style="fill:var(--text)">Buffer manager</text>
+                <line x1="320" y1="316" x2="320" y2="336" stroke-width="2" style="stroke:var(--text-muted)"/>
+                <rect x="10" y="336" width="620" height="54" rx="14" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="320" y="358" font-weight="700" style="fill:var(--text)">Disk storage</text>
+                <text x="320" y="378" style="fill:var(--text-muted)">Data files · Data dictionary · Indices · Statistical data</text>
+              </g>
+            </svg>
+            <figcaption>The structure of a database system. Draw this diagram in your answer.</figcaption>
+          </figure>
+            <p class="gallery-source">From <a href="../units/unit-1/database-system-architecture.html#overview"><span class="rev-num">1.4</span> Database System Architecture: The overall structure</a></p>
+          </article>
+          <article class="gallery-item" id="two-three-tier" aria-labelledby="two-three-tier-title">
+            <h3 id="two-three-tier-title">Two-tier and three-tier architecture</h3>
+            <p class="gallery-note">In three-tier, an application server sits between the client and the database.</p>
+<figure class="figure">
+            <svg viewBox="0 0 600 230" width="600" height="230" role="img" aria-labelledby="two-three-tier-tier-fig-title" style="max-width:100%;height:auto">
+              <title id="two-three-tier-tier-fig-title">Two-tier: the client machine runs the application and talks directly to the database system on the server. Three-tier: the client runs only an interface, which talks to an application server, which talks to the database system.</title>
+              <g font-family="Inter, system-ui, sans-serif" font-size="13" text-anchor="middle">
+                <text x="150" y="20" font-weight="700" style="fill:var(--text)">Two-tier</text>
+                <rect x="60" y="34" width="180" height="44" rx="8" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="150" y="61" style="fill:var(--text)">Client: application</text>
+                <line x1="150" y1="78" x2="150" y2="150" stroke-width="2" style="stroke:var(--text-muted)"/>
+                <text x="158" y="118" font-size="11" text-anchor="start" style="fill:var(--text-muted)">SQL over the network</text>
+                <rect x="60" y="150" width="180" height="44" rx="8" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="150" y="177" style="fill:var(--text)">Server: database system</text>
+                <text x="450" y="20" font-weight="700" style="fill:var(--text)">Three-tier</text>
+                <rect x="360" y="34" width="180" height="40" rx="8" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="450" y="59" style="fill:var(--text)">Client: browser or app</text>
+                <line x1="450" y1="74" x2="450" y2="94" stroke-width="2" style="stroke:var(--text-muted)"/>
+                <rect x="360" y="94" width="180" height="40" rx="8" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="450" y="119" style="fill:var(--text)">Application server</text>
+                <line x1="450" y1="134" x2="450" y2="154" stroke-width="2" style="stroke:var(--text-muted)"/>
+                <rect x="360" y="154" width="180" height="40" rx="8" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="450" y="179" style="fill:var(--text)">Database system</text>
+              </g>
+            </svg>
+            <figcaption>In three-tier, the client never talks to the database directly.</figcaption>
+          </figure>
+            <p class="gallery-source">From <a href="../units/unit-1/database-system-architecture.html#tiers"><span class="rev-num">1.4</span> Database System Architecture: Two-tier and three-tier architecture</a></p>
+          </article>
+          <article class="gallery-item" id="relation-parts" aria-labelledby="relation-parts-title">
+            <h3 id="relation-parts-title">Parts of a relation</h3>
+            <p class="gallery-note">Attributes, tuples, the schema and the instance of one table.</p>
+<figure class="figure">
+            <svg viewBox="0 0 620 250" width="620" height="250" role="img" aria-labelledby="relation-parts-rel-fig-title" style="max-width:100%;height:auto">
+              <title id="relation-parts-rel-fig-title">The Student relation with four attributes: RollNo, Name, Marks and Phone. The header row is the relation schema. Each row is a tuple. Each column is an attribute. The set of rows is the relation instance. There are four columns (degree 4) and three rows (cardinality 3).</title>
+              <g font-family="Inter, system-ui, sans-serif" font-size="13">
+                <text x="20" y="22" font-weight="700" style="fill:var(--text)">Student</text>
+                <rect x="20" y="34" width="440" height="34" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <g font-weight="700" style="fill:var(--text)">
+                  <text x="34" y="56">RollNo</text><text x="134" y="56">Name</text><text x="254" y="56">Marks</text><text x="354" y="56">Phone</text>
+                </g>
+                <rect x="20" y="68" width="440" height="102" style="fill:var(--surface);stroke:var(--border-strong)"/>
+                <rect x="20" y="102" width="440" height="34" stroke-width="2" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <rect x="240" y="34" width="100" height="136" fill="none" stroke-width="2.5" stroke-dasharray="6 4" style="stroke:var(--warning)"/>
+                <g style="fill:var(--text)">
+                  <text x="34" y="90">1</text><text x="134" y="90">Anitha</text><text x="254" y="90">88</text><text x="354" y="90">98400 12345</text>
+                  <text x="34" y="124">2</text><text x="134" y="124">Bharath</text><text x="254" y="124">83</text><text x="354" y="124">94430 67890</text>
+                  <text x="34" y="158">3</text><text x="134" y="158">Charan</text><text x="254" y="158">98</text><text x="354" y="158">90030 24680</text>
+                </g>
+                <g font-size="12" style="fill:var(--text-muted)">
+                  <text x="476" y="56">← relation schema</text>
+                  <text x="476" y="124">← a tuple (row)</text>
+                  <text x="476" y="160">rows 1–3: instance</text>
+                  <text x="240" y="194">↑ an attribute (column)</text>
+                  <text x="20" y="222">Degree = 4 attributes · Cardinality = 3 tuples</text>
+                </g>
+              </g>
+            </svg>
+            <figcaption>The header is the schema; the rows are the instance.</figcaption>
+          </figure>
+            <p class="gallery-source">From <a href="../units/unit-1/relational-model.html#terms"><span class="rev-num">1.6</span> Relational Model: The parts of a relation</a></p>
+          </article>
+          <article class="gallery-item" id="key-sets" aria-labelledby="key-sets-title">
+            <h3 id="key-sets-title">How the keys fit together</h3>
+            <p class="gallery-note">Every primary key is a candidate key, and every candidate key is a super key.</p>
+<figure class="figure">
+            <svg viewBox="0 0 520 230" width="520" height="230" role="img" aria-labelledby="key-sets-keys-fig-title" style="max-width:100%;height:auto">
+              <title id="key-sets-keys-fig-title">Nested sets: super keys contain candidate keys, which are split into one primary key and the alternate keys.</title>
+              <g font-family="Inter, system-ui, sans-serif" font-size="13">
+                <rect x="10" y="10" width="500" height="210" rx="16" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="26" y="34" font-weight="700" style="fill:var(--text)">Super keys</text>
+                <text x="26" y="54" font-size="12" style="fill:var(--text-muted)">for example {RegNo, Name}, {RegNo, Email, Dept}</text>
+                <rect x="40" y="70" width="440" height="136" rx="12" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="56" y="94" font-weight="700" style="fill:var(--text)">Candidate keys (minimal super keys)</text>
+                <rect x="60" y="110" width="150" height="80" rx="10" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+                <text x="72" y="136" font-weight="700" style="fill:var(--text)">Primary key</text>
+                <text x="72" y="160" style="fill:var(--text)">{RegNo}</text>
+                <rect x="230" y="110" width="230" height="80" rx="10" style="fill:var(--surface);stroke:var(--primary)"/>
+                <text x="242" y="136" font-weight="700" style="fill:var(--text)">Alternate keys</text>
+                <text x="242" y="160" style="fill:var(--text)">{Email}, {RollNo, Dept}</text>
+              </g>
+            </svg>
+            <figcaption>Primary key ⊂ candidate keys ⊂ super keys.</figcaption>
+          </figure>
+            <p class="gallery-source">From <a href="../units/unit-1/keys.html#relation"><span class="rev-num">1.7</span> Keys: How the keys fit together</a></p>
+          </article>
+        </section>
+
+        <section id="querys" class="section gallery-kind" aria-labelledby="querys-title">
+          <h2 id="querys-title">Queries</h2>
+          <article class="gallery-item" id="referential" aria-labelledby="referential-title">
+            <h3 id="referential-title">Referential integrity with a foreign key</h3>
+            <p class="gallery-note">A parent table, a child table and the FOREIGN KEY that links them.</p>
+<div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>CREATE TABLE customer (
+  cust_id CHAR(3) PRIMARY KEY,
+  name    VARCHAR(30)
+);
+
+CREATE TABLE orders (
+  order_id INT PRIMARY KEY,
+  cust_id  CHAR(3),
+  amount   DECIMAL(10,2),
+  FOREIGN KEY (cust_id) REFERENCES customer (cust_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-1/constraints.html#referential"><span class="rev-num">1.8</span> Constraints: Referential integrity rule</a></p>
+          </article>
+          <article class="gallery-item" id="ra-queries" aria-labelledby="ra-queries-title">
+            <h3 id="ra-queries-title">Relational algebra queries</h3>
+            <p class="gallery-note">Cartesian product with selection, and a query broken into steps with assignment.</p>
+<div class="code-block">
+            <span class="code-label">Relational algebra</span>
+            <pre><code>π sname (σ Student.sid = Reserve.sid ∧ Reserve.isbn = '005' (Student × Reserve))</code></pre>
+          </div>
+<div class="code-block">
+            <span class="code-label">Relational algebra</span>
+            <pre><code>temp1 ← σ city = 'Salem' (Student)
+temp2 ← temp1 ⋈ Reserve
+result ← π sname (temp2)</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-1/relational-algebra.html#product"><span class="rev-num">1.9</span> Relational Algebra: Cartesian product (×)</a></p>
+          </article>
+          <article class="gallery-item" id="select-structure" aria-labelledby="select-structure-title">
+            <h3 id="select-structure-title">The SELECT-FROM-WHERE structure</h3>
+            <p class="gallery-note">The basic form of an SQL query and the relational algebra it stands for.</p>
+<div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>SELECT [DISTINCT] A1, A2, ..., An     -- target list: the columns you want
+FROM   r1, r2, ..., rm               -- relation list: the tables to read
+WHERE  P;                            -- qualification: the condition rows must meet</code></pre>
+          </div>
+<div class="code-block">
+            <span class="code-label">Relational algebra</span>
+            <pre><code>π A1, A2, ..., An (σ P (r1 × r2 × ... × rm))</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-1/basic-structure-of-sql-queries.html#structure"><span class="rev-num">1.11</span> Basic Structure of SQL Queries: The SELECT-FROM-WHERE structure</a></p>
+          </article>
+          <article class="gallery-item" id="two-table-query" aria-labelledby="two-table-query-title">
+            <h3 id="two-table-query-title">A query on two tables</h3>
+            <p class="gallery-note">The same question written with a WHERE condition and with INNER JOIN.</p>
+<div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT student.name, department.hod
+FROM student, department
+WHERE student.dept = department.dept
+  AND student.city = 'Salem';</code></pre>
+          </div>
+<div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT s.name, d.hod
+FROM student AS s
+INNER JOIN department AS d ON s.dept = d.dept
+WHERE s.city = 'Salem';</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-1/basic-structure-of-sql-queries.html#multiple"><span class="rev-num">1.11</span> Basic Structure of SQL Queries: Queries on more than one table</a></p>
+          </article>
+          <article class="gallery-item" id="ddl-dml-worked" aria-labelledby="ddl-dml-worked-title">
+            <h3 id="ddl-dml-worked-title">DDL and DML together</h3>
+            <p class="gallery-note">Create a table, then insert, update, delete and select rows.</p>
+<div class="code-block">
+            <span class="code-label">MySQL</span>
+            <pre><code>-- DDL: define the structure
+CREATE TABLE student (
+  roll_no INT PRIMARY KEY,
+  name    VARCHAR(30) NOT NULL,
+  dept    CHAR(4)
+);
+ALTER TABLE student ADD marks INT CHECK (marks BETWEEN 0 AND 100);
+
+-- DML: work on the data
+INSERT INTO student VALUES
+  (1, 'Anitha', 'CSE', 88),
+  (2, 'Bala',   'ECE', 72),
+  (3, 'Charan', 'CSE', 65),
+  (4, 'Divya',  'MECH', 91);
+UPDATE student SET marks = 70 WHERE roll_no = 3;
+DELETE FROM student WHERE dept = 'MECH';
+SELECT name, marks FROM student WHERE dept = 'CSE' ORDER BY marks DESC;</code></pre>
+          </div>
+<div class="table-wrap">
+            <table>
+              <caption>Result of the final SELECT</caption>
+              <thead><tr><th scope="col">name</th><th scope="col">marks</th></tr></thead>
+              <tbody>
+                <tr><td>Anitha</td><td>88</td></tr>
+                <tr><td>Charan</td><td>70</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-1/dml.html#worked"><span class="rev-num">1.13</span> DML: Worked example: DDL and DML together</a></p>
+          </article>
+        </section>
+
+        <section id="examples" class="section gallery-kind" aria-labelledby="examples-title">
+          <h2 id="examples-title">Worked examples</h2>
+          <article class="gallery-item" id="staff-table" aria-labelledby="staff-table-title">
+            <h3 id="staff-table-title">Degree and cardinality of a table</h3>
+            <p class="gallery-note">Count the columns and rows of the Staff table, and name its parts.</p>
+<div class="table-wrap">
+            <table>
+              <caption>Staff</caption>
+              <thead><tr><th scope="col">StaffID</th><th scope="col">Name</th><th scope="col">Sex</th><th scope="col">Designation</th><th scope="col">Salary</th><th scope="col">DOJ</th></tr></thead>
+              <tbody>
+                <tr><td>S101</td><td>Raghu</td><td>M</td><td>Professor</td><td>95000</td><td>2012-06-01</td></tr>
+                <tr><td>S102</td><td>Janani</td><td>F</td><td>Assistant Professor</td><td>60000</td><td>2019-07-15</td></tr>
+                <tr><td>S103</td><td>Kannan</td><td>M</td><td>Lab Assistant</td><td>25000</td><td>2021-01-04</td></tr>
+              </tbody>
+            </table>
+          </div>
+<div class="callout callout-example">
+            <div class="callout-title">Solution</div>
+            <ol>
+              <li>Number of columns = 6.</li>
+              <li>Number of tuples = 3.</li>
+              <li>Attributes: StaffID, Name, Sex, Designation, Salary and DOJ (date of joining).</li>
+              <li>Degree = number of columns = <strong>6</strong>.</li>
+              <li>Cardinality = number of rows = <strong>3</strong>.</li>
+            </ol>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-1/relational-model.html#worked"><span class="rev-num">1.6</span> Relational Model: Worked example: the Staff table</a></p>
+          </article>
+          <article class="gallery-item" id="outer-joins" aria-labelledby="outer-joins-title">
+            <h3 id="outer-joins-title">Left, right and full outer join</h3>
+            <p class="gallery-note">Emp and Dept, and the result of each outer join.</p>
+<div class="table-wrap">
+            <table>
+              <caption>Emp</caption>
+              <thead><tr><th scope="col">ename</th><th scope="col">dno</th></tr></thead>
+              <tbody><tr><td>Ganesh</td><td>10</td></tr><tr><td>Hari</td><td>20</td></tr><tr><td>Indu</td><td>NULL</td></tr></tbody>
+            </table>
+          </div>
+<div class="table-wrap">
+            <table>
+              <caption>Dept</caption>
+              <thead><tr><th scope="col">dno</th><th scope="col">dname</th></tr></thead>
+              <tbody><tr><td>10</td><td>CSE</td></tr><tr><td>20</td><td>IT</td></tr><tr><td>30</td><td>ECE</td></tr></tbody>
+            </table>
+          </div>
+<div class="table-wrap">
+            <table>
+              <caption>The three outer joins of Emp and Dept</caption>
+              <thead><tr><th scope="col">Join</th><th scope="col">Symbol</th><th scope="col">Keeps</th><th scope="col">Extra tuple in the result</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Left outer join</th><td>Emp ⟕ Dept</td><td>All tuples of the left relation</td><td>(Indu, NULL, NULL)</td></tr>
+                <tr><th scope="row">Right outer join</th><td>Emp ⟖ Dept</td><td>All tuples of the right relation</td><td>(NULL, 30, ECE)</td></tr>
+                <tr><th scope="row">Full outer join</th><td>Emp ⟗ Dept</td><td>All tuples of both relations</td><td>Both of the above</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-1/relational-algebra.html#outer"><span class="rev-num">1.9</span> Relational Algebra: Outer joins</a></p>
+          </article>
+          <article class="gallery-item" id="set-ops-ra" aria-labelledby="set-ops-ra-title">
+            <h3 id="set-ops-ra-title">Union, intersection and set difference</h3>
+            <p class="gallery-note">Full-time and part-time employees, combined in each way.</p>
+<div class="table-wrap">
+            <table>
+              <caption>Full_Time and Part_Time employees</caption>
+              <thead><tr><th scope="col">Full_Time.ename</th><th scope="col">Part_Time.ename</th></tr></thead>
+              <tbody><tr><td>Ganesh</td><td>Hari</td></tr><tr><td>Hari</td><td>Janani</td></tr><tr><td>Indu</td><td></td></tr></tbody>
+            </table>
+          </div>
+<div class="table-wrap">
+            <table>
+              <caption>Set operations on Full_Time (F) and Part_Time (P)</caption>
+              <thead><tr><th scope="col">Operation</th><th scope="col">Meaning</th><th scope="col">Result</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">F ∪ P (union)</th><td>Tuples in F, or in P, or in both; duplicates removed</td><td>Ganesh, Hari, Indu, Janani</td></tr>
+                <tr><th scope="row">F ∩ P (intersection)</th><td>Tuples in both F and P</td><td>Hari</td></tr>
+                <tr><th scope="row">F − P (set difference)</th><td>Tuples in F but not in P</td><td>Ganesh, Indu</td></tr>
+                <tr><th scope="row">P − F</th><td>Tuples in P but not in F</td><td>Janani</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-1/relational-algebra.html#set-ops"><span class="rev-num">1.9</span> Relational Algebra: Union, intersection and set difference</a></p>
+          </article>
+        </section>
+
+        <div class="btn-row gallery-more">
+          <a class="btn" href="../outlines/unit-1.html">Unit I 16-mark outlines</a>
+          <a class="btn" href="../revision/unit-1.html">Unit I revision sheet</a>
+          <a class="btn" href="../units/unit-1/index.html">Unit I topics</a>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+</body>
+</html>

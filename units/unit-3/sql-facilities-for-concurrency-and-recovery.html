@@ -145,7 +145,7 @@ SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;  -- every later transact
           </div>
           <p>The locks are held until the transaction commits or rolls back. These are the <a href="locking-protocols.html#modes">shared and exclusive locks</a> of the locking protocols, under <a href="two-phase-locking.html#types">strict two phase locking</a>. Older MySQL versions write FOR SHARE as <code>LOCK IN SHARE MODE</code>.</p>
           <p><strong>Example: booking the last seat.</strong> Two users try to book seat 12A at the same time.</p>
-          <div class="code-block">
+          <div id="code-for-update" class="code-block">
             <span class="code-label">SQL</span>
             <pre><code>START TRANSACTION;
 SELECT status FROM seats WHERE seat_no = '12A' FOR UPDATE;   -- locks the row

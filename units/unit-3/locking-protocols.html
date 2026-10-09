@@ -95,7 +95,7 @@
         <section id="compat" class="topic-section" aria-labelledby="compat-title">
           <h2 id="compat-title">The compatibility matrix</h2>
           <p>Suppose T<sub>i</sub> asks for a lock of mode A on Q, while another transaction T<sub>j</sub> already holds a lock of mode B on Q. If T<sub>i</sub> can be granted the lock at once, <strong>mode A is compatible with mode B</strong>. This is shown in a matrix, comp(A, B).</p>
-          <div class="table-wrap">
+          <div id="tbl-lock-compat" class="table-wrap">
             <table>
               <caption>Lock compatibility matrix comp(A, B)</caption>
               <thead><tr><th scope="col">Requested (A) \ Held (B)</th><th scope="col">S</th><th scope="col">X</th></tr></thead>
@@ -184,7 +184,7 @@
           <h2 id="manager-title">The lock manager</h2>
           <p>The <strong>lock manager</strong> is the part of the DBMS that grants and releases locks. Transactions send it lock and unlock requests as messages, and it replies with grant messages (or asks the transaction to roll back, if there is a deadlock).</p>
           <p>It keeps a <strong>lock table</strong> in main memory. The lock table is usually a hash table on the name of the data item. For each item it stores a linked list of requests, in the order they arrived. Each request records the transaction, the lock mode and whether it has been granted.</p>
-          <figure class="figure">
+          <figure id="fig-lock-table" class="figure">
             <div class="widget-stage" tabindex="0">
               <svg viewBox="0 0 520 150" width="520" role="img" aria-labelledby="lt-svg-title" style="max-width:100%;height:auto">
                 <title id="lt-svg-title">Lock table. Item A has a list: T2 S granted, then T3 S granted, then T1 X waiting. Item B has a list: T1 X granted.</title>

@@ -97,7 +97,7 @@
         <section id="hierarchy" class="topic-section" aria-labelledby="hierarchy-title">
           <h2 id="hierarchy-title">Role hierarchies</h2>
           <p>Roles can be arranged in a <strong>hierarchy</strong>. A senior role <strong>inherits</strong> all the privileges of the roles below it, and adds its own.</p>
-          <figure class="figure">
+          <figure id="fig-role-hierarchy" class="figure">
             <div class="widget-stage" tabindex="0">
               <svg viewBox="0 0 440 250" width="440" role="img" aria-labelledby="rh-svg-title" style="max-width:100%;height:auto">
                 <title id="rh-svg-title">Role hierarchy. Principal inherits from HOD. HOD inherits from Teacher. Teacher inherits from Staff. Accountant also inherits from Staff.</title>
@@ -150,7 +150,7 @@
           <h2 id="mysql-title">Worked example: roles in MySQL 8.4</h2>
           <p>We build the Staff, Teacher and HOD roles for a <code>college</code> database.</p>
           <p><strong>Step 1.</strong> Create the roles and give them privileges.</p>
-          <div class="code-block">
+          <div id="code-rbac-sql" class="code-block">
             <span class="code-label">SQL (MySQL 8.4)</span>
             <pre><code>CREATE ROLE 'staff', 'teacher', 'hod';
 
@@ -162,7 +162,7 @@ GRANT SELECT, INSERT, UPDATE ON college.marks TO 'teacher';
 GRANT UPDATE (approved) ON college.marks TO 'hod';</code></pre>
           </div>
           <p><strong>Step 2.</strong> Build the hierarchy by granting roles to roles.</p>
-          <div class="code-block">
+          <div id="code-rbac-sql-2" class="code-block">
             <span class="code-label">SQL (MySQL 8.4)</span>
             <pre><code>GRANT 'staff'   TO 'teacher';   -- teacher inherits staff
 GRANT 'teacher' TO 'hod';       -- hod inherits teacher (and staff)</code></pre>

@@ -89,7 +89,7 @@
         <section id="example" class="topic-section" aria-labelledby="example-title">
           <h2 id="example-title">How a deadlock occurs</h2>
           <p>Take T3 and T4 from <a href="two-phase-locking.html#demerits">Two Phase Locking</a>. T3 moves ₹50 from account B to account A. T4 reads A and B to display their total. Both follow two phase locking, but they lock the items in opposite order.</p>
-          <div class="table-wrap">
+          <div id="tbl-deadlock-schedule" class="table-wrap">
             <table>
               <caption>T3 and T4 in deadlock</caption>
               <thead><tr><th scope="col">Step</th><th scope="col">T3</th><th scope="col">T4</th><th scope="col">What happens</th></tr></thead>
@@ -194,7 +194,7 @@
             <div class="callout-title">Rule</div>
             <p>The system is in a deadlock <strong>if and only if</strong> the wait-for graph contains a cycle. Every transaction on the cycle is deadlocked.</p>
           </div>
-          <figure class="figure">
+          <figure id="fig-wait-for" class="figure">
             <div class="widget-stage" tabindex="0">
               <svg viewBox="0 0 400 200" width="400" role="img" aria-labelledby="wfg-svg-title" style="max-width:100%;height:auto">
                 <title id="wfg-svg-title">Wait-for graph with edges T1 to T2, T1 to T3, T3 to T2 and T2 to T4. A new edge T4 to T3, drawn in red, creates the cycle T2, T4, T3, T2.</title>

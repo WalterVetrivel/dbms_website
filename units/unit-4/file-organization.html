@@ -114,7 +114,7 @@
             <p>In a <strong>sequential file organization</strong>, the records are stored in <strong>sorted order</strong> of a <strong>search key</strong>. A search key is the attribute (or set of attributes) used to look up records, for example RollNo.</p>
           </div>
           <p>Each record has a <strong>pointer</strong> to the next record in search-key order. Keeping the records in the same order on disk as well makes reading the whole file in order very fast.</p>
-          <div class="table-wrap">
+          <div id="tbl-sequential-file" class="table-wrap">
             <table>
               <caption>A sequential file sorted on RollNo. Each record points to the next one.</caption>
               <thead><tr><th scope="col">Block</th><th scope="col">Records in RollNo order</th></tr></thead>

@@ -288,7 +288,7 @@ WHERE SALARY &gt; ALL
             <p>A <strong>correlated subquery</strong> uses a column of the outer query. So its result is different for each outer row, and it runs again for every outer row. A subquery that does not use the outer query is <strong>non-correlated</strong>: it runs once.</p>
           </div>
           <p>Who earns more than the average of their <em>own</em> department?</p>
-          <div class="code-block">
+          <div id="code-correlated" class="code-block">
             <span class="code-label">SQL</span>
             <pre><code>SELECT NAME, DEPT, SALARY
 FROM EMPLOYEE e
@@ -296,7 +296,7 @@ WHERE SALARY &gt; (SELECT AVG(SALARY)
                 FROM EMPLOYEE
                 WHERE DEPT = e.DEPT);</code></pre>
           </div>
-          <div class="code-block">
+          <div id="code-correlated-2" class="code-block">
             <span class="code-label">Output</span>
             <pre><code>+---------+-------+----------+
 | NAME    | DEPT  | SALARY   |

@@ -72,7 +72,7 @@
         <section id="problem" class="topic-section" aria-labelledby="prob-title">
           <h2 id="prob-title">The problem BCNF misses</h2>
           <p>A college records the courses each student takes and the languages (skills) each student speaks. The two lists have nothing to do with each other.</p>
-          <div class="table-wrap">
+          <div id="tbl-fourth-nf" class="table-wrap">
             <table>
               <caption>Student(sid, course, skill)</caption>
               <thead><tr><th scope="col">sid</th><th scope="col">course</th><th scope="col">skill</th></tr></thead>
@@ -151,7 +151,7 @@
             <li>Repeat on R1 and R2 until every table is in 4NF.</li>
           </ol>
           <p>For Student, sid →→ course gives:</p>
-          <div class="code-block">
+          <div id="code-fourth-nf-2" class="code-block">
             <span class="code-label">4NF tables</span>
             <pre><code>Student_Course(<u>sid</u>, <u>course</u>)
 Student_Skill(<u>sid</u>, <u>skill</u>)</code></pre>

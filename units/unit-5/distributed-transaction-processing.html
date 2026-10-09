@@ -90,7 +90,7 @@
         <section id="system" class="topic-section" aria-labelledby="system-title">
           <h2 id="system-title">Transaction manager and coordinator</h2>
           <p>Each site has two parts that work on transactions.</p>
-          <figure class="figure">
+          <figure id="fig-tc-tm" class="figure">
             <div class="widget-stage" tabindex="0">
               <svg viewBox="0 0 560 230" width="560" role="img" aria-labelledby="tmtc-svg-title" style="max-width:100%;height:auto">
                 <title id="tmtc-svg-title">Two sites. Each has a transaction coordinator (TC) above a transaction manager (TM) above its local data. The two coordinators talk over the network.</title>
@@ -184,7 +184,7 @@
             <li>Each site writes the same record to its log, commits or aborts its part of T, and sends an <strong>acknowledgment</strong>.</li>
             <li>When all acknowledgments arrive, C<sub>i</sub> writes <code>&lt;complete T&gt;</code>.</li>
           </ol>
-          <div class="table-wrap">
+          <div id="tbl-two-pc" class="table-wrap">
             <table>
               <caption>Messages and log records in 2PC when T commits</caption>
               <thead><tr><th scope="col">Step</th><th scope="col">Coordinator C<sub>i</sub></th><th scope="col">Each participating site</th></tr></thead>

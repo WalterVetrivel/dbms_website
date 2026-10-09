@@ -139,7 +139,7 @@ Department(DeptID, DeptName, DeptLoc)</code></pre>
         <section id="spurious" class="topic-section" aria-labelledby="sp-title">
           <h2 id="sp-title">A lossy decomposition</h2>
           <p>Student(RollNo, Name, Dept) is split on Name, which is not a key:</p>
-          <div class="grid grid-sm">
+          <div id="tables-lossy" class="grid grid-sm">
             <div class="table-wrap">
               <table>
                 <caption>Student</caption>
@@ -163,7 +163,7 @@ Department(DeptID, DeptName, DeptLoc)</code></pre>
             </div>
           </div>
           <p>Now join R1 and R2 on Name:</p>
-          <div class="table-wrap">
+          <div id="tbl-lossy-2" class="table-wrap">
             <table>
               <caption>R1 ⋈ R2: two spurious tuples appear</caption>
               <thead><tr><th scope="col">RollNo</th><th scope="col">Name</th><th scope="col">Dept</th><th scope="col">True?</th></tr></thead>

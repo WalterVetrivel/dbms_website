@@ -5,6 +5,7 @@ import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import { buildRevision } from "./build-revision.mjs";
+import { buildGallery } from "./build-gallery.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SKIP_DIRS = new Set([".git", "node_modules", "tools", ".github"]);
@@ -251,6 +252,16 @@ try {
   }
 } catch (e) {
   err("tools/build-revision.mjs", e.message);
+}
+
+// 6b. The Diagrams and Examples pages must match data/gallery.js and the topic pages.
+try {
+  for (const [file, html] of Object.entries(buildGallery())) {
+    const full = path.join(ROOT, file);
+    if (!fs.existsSync(full) || fs.readFileSync(full, "utf8") !== html) err(file, "is out of date; run node tools/build-gallery.mjs");
+  }
+} catch (e) {
+  err("tools/build-gallery.mjs", e.message);
 }
 
 // 7. Readability (Flesch reading ease). A warning only.

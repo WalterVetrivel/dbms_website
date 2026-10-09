@@ -113,7 +113,7 @@
 
         <section id="example" class="topic-section" aria-labelledby="ex-title">
           <h2 id="ex-title">Example: Enrollment</h2>
-          <div class="table-wrap">
+          <div id="tbl-bcnf-enrollment" class="table-wrap">
             <table>
               <caption>Enrollment (in 3NF, not in BCNF)</caption>
               <thead><tr><th scope="col">sid</th><th scope="col">course</th><th scope="col">teacher</th></tr></thead>
@@ -142,7 +142,7 @@
             <p>Some notes say teacher is a non-prime attribute here. It is prime, because it is part of the candidate key {sid, teacher}. That is exactly why 3NF allows teacher → course and BCNF does not.</p>
           </div>
           <p>The BCNF split puts the violating FD in its own table:</p>
-          <div class="code-block">
+          <div id="code-bcnf-enrollment-2" class="code-block">
             <span class="code-label">BCNF tables</span>
             <pre><code>Teacher(<u>teacher</u>, course)
 Student(<u>sid</u>, <u>teacher</u>)</code></pre>

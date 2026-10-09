@@ -170,7 +170,7 @@
           <div class="callout callout-example">
             <div class="callout-title">Worked example: CSE students who take the DBMS course</div>
             <p>STUDENT has 5,000 rows, ENROLL has 40,000 rows and COURSE has 200 rows. The query is:</p>
-            <div class="code-block">
+            <div id="code-heuristic" class="code-block">
               <span class="code-label">SQL</span>
               <pre><code>SELECT name
 FROM student, enroll, course
@@ -179,7 +179,7 @@ WHERE student.roll_no = enroll.roll_no
   AND course.title = 'DBMS'
   AND student.dept = 'CSE';</code></pre>
             </div>
-            <div class="table-wrap">
+            <div id="tbl-heuristic-2" class="table-wrap">
               <table class="worked">
                 <caption>Applying the heuristic rules (sizes estimated by the widget below)</caption>
                 <thead><tr><th scope="col">Step</th><th scope="col">What changes</th><th scope="col">Intermediate results</th></tr></thead>
@@ -203,7 +203,7 @@ WHERE student.roll_no = enroll.roll_no
         <section id="try-it" class="topic-section" aria-labelledby="try-title">
           <h2 id="try-title">Try it yourself</h2>
           <p>Step through the heuristic rules on a query tree. Each step shows the new tree and the estimated size of all the intermediate results. Choose another query from the list to see the class notes example.</p>
-          <div class="widget" data-widget="query-tree" data-preset="college">
+          <div id="wid-query-tree" class="widget" data-widget="query-tree" data-preset="college">
             <noscript><p class="widget-narration">The query tree widget needs JavaScript. The worked example above lists the same steps and sizes.</p></noscript>
           </div>
         </section>

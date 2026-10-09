@@ -151,7 +151,7 @@
         <section id="k-anon" class="topic-section" aria-labelledby="k-anon-title">
           <h2 id="k-anon-title">Worked example: making data anonymous</h2>
           <p>A hospital shares this table for research. Names were removed.</p>
-          <div class="table-wrap">
+          <div id="tbl-k-anon" class="table-wrap">
             <table>
               <caption>Before: names removed, but people can still be found</caption>
               <thead><tr><th scope="col">Age</th><th scope="col">PIN code</th><th scope="col">Disease</th></tr></thead>
@@ -165,7 +165,7 @@
           </div>
           <p>Your 23-year-old neighbor lives in PIN code 638056. Only one row matches, so you now know the neighbor has diabetes. Age and PIN code together act like a name. Such columns are called <strong>quasi-identifiers</strong>.</p>
           <p>Fix it by <strong>generalizing</strong> them: ages become ranges, and the last digits of PIN codes are hidden.</p>
-          <div class="table-wrap">
+          <div id="tbl-k-anon-2" class="table-wrap">
             <table>
               <caption>After: every row matches at least 2 people (2-anonymous)</caption>
               <thead><tr><th scope="col">Age</th><th scope="col">PIN code</th><th scope="col">Disease</th></tr></thead>

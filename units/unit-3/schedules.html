@@ -107,7 +107,7 @@ read(B); B := B + temp; write(B).</code></pre>
             <div class="callout-title">Definition</div>
             <p>In a <strong>serial schedule</strong>, the instructions of each transaction run <strong>one after the other, with no break</strong>. One transaction finishes completely before the next one starts.</p>
           </div>
-          <div class="grid grid-sm">
+          <div id="tables-serial-schedules" class="grid grid-sm">
             <div class="table-wrap">
               <table>
                 <caption>Schedule 1: T1 then T2</caption>
@@ -140,7 +140,7 @@ read(B); B := B + temp; write(B).</code></pre>
             <p>In a <strong>concurrent</strong> (non-serial) schedule, the instructions of different transactions are <strong>interleaved</strong>. The CPU switches between transactions, so one starts before another has finished.</p>
           </div>
           <p>Some concurrent schedules are correct and some are not.</p>
-          <div class="grid grid-sm">
+          <div id="tables-concurrent-schedules" class="grid grid-sm">
             <div class="table-wrap">
               <table>
                 <caption>Schedule 3: a correct concurrent schedule</caption>
@@ -166,7 +166,7 @@ read(B); B := B + temp; write(B).</code></pre>
               </table>
             </div>
           </div>
-          <div class="table-wrap">
+          <div id="tbl-concurrent-schedules-2" class="table-wrap">
             <table class="worked">
               <caption>Final values of each schedule (start: A = 1000, B = 2000)</caption>
               <thead><tr><th scope="col">Schedule</th><th scope="col">A</th><th scope="col">B</th><th scope="col">A + B</th><th scope="col">Correct?</th></tr></thead>
@@ -200,7 +200,7 @@ read(B); B := B + temp; write(B).</code></pre>
             <p>A schedule is <strong>recoverable</strong> if, for every pair of transactions T<sub>i</sub> and T<sub>j</sub> where T<sub>j</sub> reads a data item written by T<sub>i</sub>, T<sub>i</sub> <strong>commits before</strong> T<sub>j</sub> commits.</p>
           </div>
           <div class="grid grid-sm">
-            <div class="table-wrap">
+            <div id="tbl-cascading-rollback" class="table-wrap">
               <table>
                 <caption>Schedule 9: not recoverable</caption>
                 <thead><tr><th scope="col">T8</th><th scope="col">T9</th></tr></thead>
@@ -222,7 +222,7 @@ read(B); B := B + temp; write(B).</code></pre>
           <h2 id="cascadeless-title">Cascadeless and strict schedules</h2>
           <h3>Cascading rollback</h3>
           <div class="grid grid-sm">
-            <div class="table-wrap">
+            <div id="tbl-cascading-rollback-2" class="table-wrap">
               <table>
                 <caption>Schedule 10: cascading rollback</caption>
                 <thead><tr><th scope="col">T10</th><th scope="col">T11</th><th scope="col">T12</th></tr></thead>
@@ -247,7 +247,7 @@ read(B); B := B + temp; write(B).</code></pre>
             </ul>
           </div>
           <p>Every cascadeless schedule is also recoverable, and every strict schedule is also cascadeless. Strict schedules make recovery easiest: to undo T<sub>i</sub>, the system just puts back the old values from the log. Most database systems produce strict schedules by using <a href="two-phase-locking.html">strict two phase locking</a>.</p>
-          <figure class="figure">
+          <figure id="fig-schedule-sets" class="figure">
             <div class="widget-stage" tabindex="0">
               <svg viewBox="0 0 420 210" width="420" role="img" aria-labelledby="nest-svg-title" style="max-width:100%;height:auto">
                 <title id="nest-svg-title">Nested sets. All schedules contain recoverable schedules, which contain cascadeless schedules, which contain strict schedules, which contain serial schedules.</title>

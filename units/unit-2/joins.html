@@ -132,14 +132,14 @@ INSERT INTO student VALUES (1, 'Anitha', 10), (2, 'Bharath', 20),
         <section id="inner" class="topic-section" aria-labelledby="inner-title">
           <h2 id="inner-title">Inner join</h2>
           <p>An <strong>inner join</strong> returns only the pairs of rows that satisfy the join condition. Rows with no partner are left out.</p>
-          <div class="code-block">
+          <div id="code-inner-join" class="code-block">
             <span class="code-label">SQL</span>
             <pre><code>SELECT s.name, d.dept_name
 FROM student s
 INNER JOIN department d ON s.dept_id = d.dept_id
 ORDER BY s.roll;</code></pre>
           </div>
-          <div class="code-block">
+          <div id="code-inner-join-2" class="code-block">
             <span class="code-label">Output</span>
             <pre><code>+---------+-----------+
 | name    | dept_name |
@@ -182,14 +182,14 @@ ORDER BY s.roll;</code></pre>
         <section id="left" class="topic-section" aria-labelledby="left-title">
           <h2 id="left-title">Left outer join</h2>
           <p>A <strong>left outer join</strong> returns every row of the <strong>left</strong> table. Where a row has no partner in the right table, the right-side columns are filled with <strong>NULL</strong>.</p>
-          <div class="code-block">
+          <div id="code-left-join" class="code-block">
             <span class="code-label">SQL</span>
             <pre><code>SELECT s.name, d.dept_name
 FROM student s
 LEFT JOIN department d ON s.dept_id = d.dept_id
 ORDER BY s.roll;</code></pre>
           </div>
-          <div class="code-block">
+          <div id="code-left-join-2" class="code-block">
             <span class="code-label">Output</span>
             <pre><code>+---------+-----------+
 | name    | dept_name |
@@ -287,7 +287,7 @@ ORDER BY d.dept_id;</code></pre>
         <section id="self" class="topic-section" aria-labelledby="self-title">
           <h2 id="self-title">Self join</h2>
           <p>A <strong>self join</strong> joins a table with itself. Give the table two different aliases, so each copy can be named.</p>
-          <div class="code-block">
+          <div id="code-self-join" class="code-block">
             <span class="code-label">SQL</span>
             <pre><code>CREATE TABLE employee (
   emp_id     INT PRIMARY KEY,
@@ -301,7 +301,7 @@ FROM employee e
 LEFT JOIN employee m ON e.manager_id = m.emp_id
 ORDER BY e.emp_id;</code></pre>
           </div>
-          <div class="code-block">
+          <div id="code-self-join-2" class="code-block">
             <span class="code-label">Output</span>
             <pre><code>+----------+---------+
 | employee | manager |
