@@ -31,12 +31,39 @@
           <p class="lead">8 diagrams, 6 queries and 4 worked examples from the Unit V topics. Use them to practice drawing and writing before the exam. Each one links back to its topic page.</p>
         </header>
 
-        <nav class="on-this-page" aria-labelledby="toc-title">
+        <nav class="on-this-page gallery-toc" aria-labelledby="toc-title">
           <strong id="toc-title">On this page</strong>
           <ol>
-            <li><a href="#diagrams">Diagrams</a> <span class="muted">(8)</span></li>
-            <li><a href="#querys">Queries</a> <span class="muted">(6)</span></li>
-            <li><a href="#examples">Worked examples</a> <span class="muted">(4)</span></li>
+            <li><a href="#diagrams">Diagrams</a> <span class="muted">(8)</span>
+              <ol>
+                <li><a href="#ddb-architecture">Distributed database architecture</a></li>
+                <li><a href="#ddb-types">Types of distributed databases</a></li>
+                <li><a href="#tc-tm">Transaction coordinator and manager</a></li>
+                <li><a href="#scaling">Scaling up and scaling out</a></li>
+                <li><a href="#cap">The CAP triangle</a></li>
+                <li><a href="#property-graph">A property graph</a></li>
+                <li><a href="#grant-chain">A chain of grants</a></li>
+                <li><a href="#role-hierarchy">Role hierarchy</a></li>
+              </ol>
+            </li>
+            <li><a href="#queries">Queries</a> <span class="muted">(6)</span>
+              <ol>
+                <li><a href="#student-doc">One student, two models</a></li>
+                <li><a href="#mongo-sql">MongoDB and SQL side by side</a></li>
+                <li><a href="#cypher">Cypher queries</a></li>
+                <li><a href="#rbac-sql">Roles in MySQL</a></li>
+                <li><a href="#injection">SQL injection: always true</a></li>
+                <li><a href="#prepared">The fix: a prepared statement</a></li>
+              </ol>
+            </li>
+            <li><a href="#examples">Worked examples</a> <span class="muted">(4)</span>
+              <ol>
+                <li><a href="#two-pc">Two-phase commit</a></li>
+                <li><a href="#access-matrix">Access matrix</a></li>
+                <li><a href="#blp">Bell-LaPadula decisions</a></li>
+                <li><a href="#k-anon">Making data anonymous</a></li>
+              </ol>
+            </li>
           </ol>
         </nav>
 
@@ -342,8 +369,8 @@
           </article>
         </section>
 
-        <section id="querys" class="section gallery-kind" aria-labelledby="querys-title">
-          <h2 id="querys-title">Queries</h2>
+        <section id="queries" class="section gallery-kind" aria-labelledby="queries-title">
+          <h2 id="queries-title">Queries</h2>
           <article class="gallery-item" id="student-doc" aria-labelledby="student-doc-title">
             <h3 id="student-doc-title">One student, two models</h3>
             <p class="gallery-note">The same student as a table row and as a JSON document.</p>
