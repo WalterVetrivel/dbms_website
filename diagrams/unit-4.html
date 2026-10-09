@@ -31,12 +31,34 @@
           <p class="lead">3 diagrams, 1 query and 9 worked examples from the Unit IV topics. Use them to practice drawing and writing before the exam. Each one links back to its topic page.</p>
         </header>
 
-        <nav class="on-this-page" aria-labelledby="toc-title">
+        <nav class="on-this-page gallery-toc" aria-labelledby="toc-title">
           <strong id="toc-title">On this page</strong>
           <ol>
-            <li><a href="#diagrams">Diagrams</a> <span class="muted">(3)</span></li>
-            <li><a href="#querys">Queries</a> <span class="muted">(1)</span></li>
-            <li><a href="#examples">Worked examples</a> <span class="muted">(9)</span></li>
+            <li><a href="#diagrams">Diagrams</a> <span class="muted">(3)</span>
+              <ol>
+                <li><a href="#raid-levels">RAID levels 0, 1, 4, 5 and 6</a></li>
+                <li><a href="#bplus-tree">B+ tree</a></li>
+                <li><a href="#query-tree">Query trees</a></li>
+              </ol>
+            </li>
+            <li><a href="#queries">Queries</a> <span class="muted">(1)</span>
+              <ol>
+                <li><a href="#explain">Seeing the plan with EXPLAIN</a></li>
+              </ol>
+            </li>
+            <li><a href="#examples">Worked examples</a> <span class="muted">(9)</span>
+              <ol>
+                <li><a href="#sequential-file">Sequential file</a></li>
+                <li><a href="#dense-sparse">Dense and sparse index</a></li>
+                <li><a href="#bplus-qb">Build a B+ tree (n = 3)</a></li>
+                <li><a href="#bplus-delete">Deleting from a B+ tree</a></li>
+                <li><a href="#btree-build">Build a B tree (order 3)</a></li>
+                <li><a href="#static-overflow">Static hashing with overflow</a></li>
+                <li><a href="#extendible">Extendible hashing</a></li>
+                <li><a href="#merge-sort">External two-way merge sort</a></li>
+                <li><a href="#heuristic">Heuristic optimization</a></li>
+              </ol>
+            </li>
           </ol>
         </nav>
 
@@ -88,8 +110,8 @@
           </article>
         </section>
 
-        <section id="querys" class="section gallery-kind" aria-labelledby="querys-title">
-          <h2 id="querys-title">Queries</h2>
+        <section id="queries" class="section gallery-kind" aria-labelledby="queries-title">
+          <h2 id="queries-title">Queries</h2>
           <article class="gallery-item" id="explain" aria-labelledby="explain-title">
             <h3 id="explain-title">Seeing the plan with EXPLAIN</h3>
             <p class="gallery-note">MySQL shows the plan it chose for a query.</p>

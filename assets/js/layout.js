@@ -898,21 +898,41 @@
     });
   }
 
-  /* ---------- Section menu (topic pages) ----------
+  /* ---------- Section menu (topic, lab and diagram pages) ----------
      Copies the "On this page" links into a sticky rail on the right on wide
      screens, and into a "Sections" button and panel on smaller screens. The
-     link for the section being read is highlighted. */
+     link for the section being read is highlighted. A link may have a nested
+     list of links under it, as on the Diagrams and Examples pages; then the
+     rail shows them indented and highlights the parent too. */
 
   function renderSectionMenu() {
     var toc = document.querySelector(".on-this-page");
     var page = document.querySelector(".page");
     if (!toc || !page) return;
-    var items = Array.prototype.map.call(toc.querySelectorAll("a[href^='#']"), function (a) {
-      return { id: a.getAttribute("href").slice(1), text: a.textContent };
-    }).filter(function (x) {
-      return document.getElementById(x.id);
+    var listItems = function (ol, parent) {
+      var out = [];
+      Array.prototype.forEach.call(ol ? ol.children : [], function (li) {
+        var a = li.querySelector(":scope > a[href^='#']");
+        if (!a || !document.getElementById(a.getAttribute("href").slice(1))) return;
+        var x = { id: a.getAttribute("href").slice(1), text: a.textContent, parent: parent };
+        x.children = listItems(li.querySelector(":scope > ol"), x);
+        out.push(x);
+      });
+      return out;
+    };
+    var tree = listItems(toc.querySelector("ol"), null);
+    var items = [];
+    tree.forEach(function (x) {
+      items.push(x);
+      items = items.concat(x.children);
     });
     if (!items.length) return;
+    var listHtml = function (list) {
+      return list.map(function (x) {
+        return '<li><a href="#' + esc(x.id) + '">' + esc(x.text) + "</a>" +
+          (x.children.length ? '<ol class="toc-sub">' + listHtml(x.children) + "</ol>" : "") + "</li>";
+      }).join("");
+    };
 
     var rail = document.createElement("aside");
     rail.className = "toc-rail";
@@ -921,9 +941,7 @@
     rail.innerHTML =
       '<div class="toc-rail-head"><strong>On this page</strong>' +
       '<button type="button" class="icon-btn toc-close" aria-label="Close sections menu">' + icon("x") + "</button></div>" +
-      "<ol>" + items.map(function (x) {
-        return '<li><a href="#' + esc(x.id) + '">' + esc(x.text) + "</a></li>";
-      }).join("") + "</ol>" +
+      "<ol>" + listHtml(tree) + "</ol>" +
       '<a class="toc-top" href="#main">' + icon("chevron-up") + "Back to top</a>";
     page.appendChild(rail);
 
@@ -967,6 +985,7 @@
     var sections = items.map(function (x) {
       return document.getElementById(x.id);
     });
+    var shown = -1;
     var ticking = false;
     var update = function () {
       ticking = false;
@@ -977,10 +996,19 @@
       }
       // At the very bottom of the page, the last section counts as read.
       if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) active = sections.length - 1;
+      var parent = active >= 0 ? items.indexOf(items[active].parent) : -1;
       for (var j = 0; j < links.length; j++) {
         if (j === active) links[j].setAttribute("aria-current", "true");
         else links[j].removeAttribute("aria-current");
+        links[j].classList.toggle("is-parent", j === parent);
       }
+      // In a long rail, keep the highlighted link in view without moving the page.
+      if (active !== shown && active >= 0 && rail.scrollHeight > rail.clientHeight) {
+        var link = links[active];
+        var top = link.offsetTop - rail.clientHeight / 3;
+        if (link.offsetTop < rail.scrollTop || link.offsetTop + link.offsetHeight > rail.scrollTop + rail.clientHeight) rail.scrollTop = Math.max(0, top);
+      }
+      shown = active;
       // The button appears once the reader has scrolled past the top list.
       fab.classList.toggle("is-shown", toc.getBoundingClientRect().bottom < 0);
     };
@@ -1005,6 +1033,7 @@
     renderTopic();
     renderSectionMenu();
   }
+  if (PAGE === "diagrams" && UNIT) renderSectionMenu();
   if (PAGE === "labs") renderLabs();
   if (PAGE === "lab") {
     renderLab();

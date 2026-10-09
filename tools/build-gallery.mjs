@@ -11,9 +11,9 @@ import { fileURLToPath } from "node:url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const KINDS = [
-  { id: "diagram", title: "Diagrams", one: "diagram", many: "diagrams" },
-  { id: "query", title: "Queries", one: "query", many: "queries" },
-  { id: "example", title: "Worked examples", one: "worked example", many: "worked examples" }
+  { id: "diagram", slug: "diagrams", title: "Diagrams", one: "diagram", many: "diagrams" },
+  { id: "query", slug: "queries", title: "Queries", one: "query", many: "queries" },
+  { id: "example", slug: "examples", title: "Worked examples", one: "worked example", many: "worked examples" }
 ];
 
 function loadRegistry() {
@@ -146,8 +146,8 @@ function unitPage(D, u, items) {
   const kinds = KINDS.map((k) => ({ ...k, items: items.filter((i) => i.kind === k.id) })).filter((k) => k.items.length);
   const body = kinds
     .map((k) => [
-      `        <section id="${k.id}s" class="section gallery-kind" aria-labelledby="${k.id}s-title">`,
-      `          <h2 id="${k.id}s-title">${k.title}</h2>`,
+      `        <section id="${k.slug}" class="section gallery-kind" aria-labelledby="${k.slug}-title">`,
+      `          <h2 id="${k.slug}-title">${k.title}</h2>`,
       ...k.items.map((i) => itemBlock(D, i)),
       "        </section>"
     ].join("\n"))
@@ -169,10 +169,18 @@ function unitPage(D, u, items) {
           <p class="lead">${summary} from the Unit ${u.roman} topics. Use them to practice drawing and writing before the exam. Each one links back to its topic page.</p>
         </header>
 
-        <nav class="on-this-page" aria-labelledby="toc-title">
+        <nav class="on-this-page gallery-toc" aria-labelledby="toc-title">
           <strong id="toc-title">On this page</strong>
           <ol>
-${kinds.map((k) => `            <li><a href="#${k.id}s">${k.title}</a> <span class="muted">(${k.items.length})</span></li>`).join("\n")}
+${kinds
+  .map((k) => [
+    `            <li><a href="#${k.slug}">${k.title}</a> <span class="muted">(${k.items.length})</span>`,
+    "              <ol>",
+    ...k.items.map((i) => `                <li><a href="#${i.id}">${escText(i.title)}</a></li>`),
+    "              </ol>",
+    "            </li>"
+  ].join("\n"))
+  .join("\n")}
           </ol>
         </nav>
 

@@ -1114,6 +1114,18 @@ a.chip:hover {
   font-weight: 600;
 }
 
+.toc-rail .toc-sub a {
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  padding-left: var(--sp-6);
+  font-size: var(--fs-xs);
+}
+
+.toc-rail ol a.is-parent {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .toc-top {
   display: inline-flex;
   align-items: center;
@@ -1606,7 +1618,6 @@ a.chip:hover {
 .gallery-item {
   padding: var(--sp-6) 0;
   border-bottom: 1px solid var(--border);
-  scroll-margin-top: 5rem;
 }
 .gallery-item:last-child {
   border-bottom: 0;
@@ -1627,6 +1638,15 @@ a.chip:hover {
 }
 .gallery-source a::after {
   content: " →";
+}
+.gallery-toc > ol {
+  columns: 1;
+}
+.gallery-toc ol ol {
+  columns: 2 14rem;
+  margin: var(--sp-1) 0 var(--sp-3);
+  padding-left: 1.2rem;
+  list-style: lower-alpha;
 }
 .gallery-index + .gallery-index {
   margin-top: var(--sp-6);
