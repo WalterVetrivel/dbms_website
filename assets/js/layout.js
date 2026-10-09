@@ -294,6 +294,19 @@
       })
       .join("");
 
+    // The study hubs (question banks, outlines and so on), for the fixed sidebar on
+    // wide screens, where the header links above are the only other way to reach them.
+    // Labs has its own group below.
+    var hubLinks = pages
+      .filter(function (p) {
+        return p.icon && p.id !== "labs" && isPublished(p);
+      })
+      .map(function (p) {
+        var current = p.id === PAGE && !UNIT ? ' aria-current="page"' : "";
+        return '<li><a href="' + url(p.href) + '"' + current + ">" + icon(p.icon, "side-icon") + "<span>" + esc(p.title) + "</span></a></li>";
+      })
+      .join("");
+
     var progress = D.progress.data();
     var unitGroups = units
       .map(function (u) {
@@ -344,6 +357,7 @@
       '<div class="sidebar-head"><span class="sidebar-title">Menu</span>' +
       '<button type="button" class="icon-btn close-btn" aria-label="Close menu">' + icon("x") + "</button></div>" +
       '<nav aria-label="Site pages" class="side-links"><ul>' + siteLinks + "</ul></nav>" +
+      (hubLinks ? '<nav aria-label="Study tools" class="side-hubs"><div class="sidebar-title">Study tools</div><ul>' + hubLinks + "</ul></nav>" : "") +
       '<nav aria-label="Units and topics"><div class="sidebar-title">Units</div>' + unitGroups + "</nav>" + labGroup;
 
     frame.insertBefore(sidebar, frame.firstChild);
