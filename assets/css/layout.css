@@ -278,6 +278,13 @@
   margin-bottom: var(--sp-3);
 }
 
+/* The study hubs are shown only in the fixed sidebar. The drawer lists them
+   with the other site pages in .side-links. */
+.side-hubs {
+  display: none;
+  margin-bottom: var(--sp-4);
+}
+
 .sidebar a {
   display: flex;
   gap: var(--sp-2);
@@ -399,6 +406,10 @@
   body[data-sidebar="static"] .sidebar-head .icon-btn,
   body[data-sidebar="static"] .side-links {
     display: none;
+  }
+
+  body[data-sidebar="static"] .side-hubs {
+    display: block;
   }
 
   body[data-sidebar="static"] .menu-btn {
