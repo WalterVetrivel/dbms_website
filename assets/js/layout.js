@@ -13,6 +13,8 @@
   var units = D.units || [];
   var topics = D.topics || [];
   var pages = D.pages || [];
+  var labs = D.labs || [];
+  var LAB = Number(body.getAttribute("data-lab")) || 0;
 
   /* ---------- Helpers ---------- */
 
@@ -37,6 +39,17 @@
   function topicHref(t) {
     var u = unitByNumber(t.unit);
     return "units/" + u.slug + "/" + t.slug + ".html";
+  }
+
+  function labHref(l) {
+    return "labs/" + l.slug + ".html";
+  }
+
+  function labByNumber(n) {
+    for (var i = 0; i < labs.length; i++) {
+      if (labs[i].n === n) return labs[i];
+    }
+    return null;
   }
 
   function unitByNumber(n) {
@@ -227,7 +240,7 @@
         return p.nav && isPublished(p);
       })
       .map(function (p) {
-        var current = p.id === PAGE ? ' aria-current="page"' : "";
+        var current = p.id === PAGE ? ' aria-current="page"' : p.id === "labs" && PAGE === "lab" ? ' aria-current="true"' : "";
         return '<a href="' + url(p.href) + '"' + current + ">" + esc(p.navTitle || p.title) + "</a>";
       })
       .join("");
@@ -310,11 +323,26 @@
       })
       .join("");
 
+    var labGroup = "";
+    var labsPage = pageById("labs");
+    if (labs.length && labsPage && isPublished(labsPage)) {
+      var labItems = '<li><a href="' + url(labsPage.href) + '"' + (PAGE === "labs" ? ' aria-current="page"' : "") + ">Labs overview</a></li>";
+      labs.forEach(function (l) {
+        var cur = PAGE === "lab" && l.n === LAB ? ' aria-current="page"' : "";
+        labItems += '<li><a href="' + url(labHref(l)) + '"' + cur + '><span class="side-num">' + l.n + "</span><span>" + esc(l.short) + "</span></a></li>";
+      });
+      labGroup =
+        '<nav aria-label="Lab exercises"><div class="sidebar-title">Labs</div>' +
+        '<details class="side-unit side-labs"' + (PAGE === "labs" || PAGE === "lab" ? " open" : "") + ">" +
+        '<summary><span class="unit-dot"></span><span>Lab exercises</span>' + icon("chevron-down", "chev") + "</summary>" +
+        "<ul>" + labItems + "</ul></details></nav>";
+    }
+
     sidebar.innerHTML =
       '<div class="sidebar-head"><span class="sidebar-title">Menu</span>' +
       '<button type="button" class="icon-btn close-btn" aria-label="Close menu">' + icon("x") + "</button></div>" +
       '<nav aria-label="Site pages" class="side-links"><ul>' + siteLinks + "</ul></nav>" +
-      '<nav aria-label="Units and topics"><div class="sidebar-title">Units</div>' + unitGroups + "</nav>";
+      '<nav aria-label="Units and topics"><div class="sidebar-title">Units</div>' + unitGroups + "</nav>" + labGroup;
 
     frame.insertBefore(sidebar, frame.firstChild);
     sidebar.querySelector(".close-btn").addEventListener("click", function () {
@@ -366,7 +394,13 @@
     var u = unitByNumber(UNIT);
     var t = topicById(TOPIC);
     var hub = pageById(PAGE);
-    if (u && hub && ["question-bank", "outlines", "quizzes", "revision"].indexOf(PAGE) !== -1) {
+    var lab = PAGE === "lab" ? labByNumber(LAB) : null;
+    if (lab) {
+      // A lab exercise: Home / Labs / Exercise 4
+      var labsHub = pageById("labs");
+      crumbs.push('<li><a href="' + url(labsHub.href) + '">' + esc(labsHub.title) + "</a></li>");
+      crumbs.push('<li aria-current="page">Exercise ' + lab.n + "</li>");
+    } else if (u && hub && ["question-bank", "outlines", "quizzes", "revision"].indexOf(PAGE) !== -1) {
       // A unit page of a hub, for example Home / Question Banks / Unit IV
       crumbs.push('<li><a href="' + url(hub.href) + '">' + esc(hub.title) + "</a></li>");
       crumbs.push('<li aria-current="page">Unit ' + u.roman + "</li>");
@@ -438,6 +472,12 @@
         if (x.live) items.push({ kind: "Page", title: "Unit " + u.roman + " " + x.title.toLowerCase(), sub: "Unit " + u.roman + ": " + u.title, href: x.href, text: u.title });
       });
     });
+    var labsPage = pageById("labs");
+    if (labsPage && isPublished(labsPage)) {
+      labs.forEach(function (l) {
+        items.push({ kind: "Lab", title: "Exercise " + l.n + ": " + l.short, sub: l.title, href: labHref(l), text: l.title + " " + l.summary });
+      });
+    }
     (D.searchExtras || []).forEach(function (x) {
       items.push(x);
     });
@@ -707,7 +747,57 @@
       var html = "";
       if (t.prereqs.length) html += "<h3>Read first</h3><ul class=\"chips\">" + t.prereqs.map(chip).join("") + "</ul>";
       if (t.related.length) html += "<h3>Related topics</h3><ul class=\"chips\">" + t.related.map(chip).join("") + "</ul>";
+      var labsPage = pageById("labs");
+      var practice = labs.filter(function (l) {
+        return l.topics.indexOf(t.id) !== -1;
+      });
+      if (practice.length && labsPage && isPublished(labsPage)) {
+        html += "<h3>Practice in the lab</h3><ul class=\"chips\">" + practice.map(function (l) {
+          return '<li><a class="chip" href="' + url(labHref(l)) + '">Exercise ' + l.n + ": " + esc(l.short) + "</a></li>";
+        }).join("") + "</ul>";
+      }
       links.innerHTML = html;
+    }
+  }
+
+  /* ---------- Labs hub and exercise pages ---------- */
+
+  function renderLabs() {
+    var list = document.getElementById("lab-list");
+    if (!list) return;
+    list.innerHTML = labs
+      .map(function (l) {
+        return (
+          '<li><span class="topic-num">' + l.n + "</span><div>" +
+          '<a class="topic-title" href="' + url(labHref(l)) + '">' + esc(l.title) + "</a></div>" +
+          '<div class="topic-meta"><span>' + esc(l.summary) + "</span></div></li>"
+        );
+      })
+      .join("");
+  }
+
+  function renderLab() {
+    var l = labByNumber(LAB);
+    if (!l) return;
+    D.progress.setLast(labHref(l), "Lab exercise " + l.n + ": " + l.short);
+
+    var pager = document.getElementById("pager");
+    if (pager) {
+      var prev = labByNumber(l.n - 1);
+      var next = labByNumber(l.n + 1);
+      pager.innerHTML =
+        (prev ? '<a class="prev" href="' + url(labHref(prev)) + '"><small>Previous exercise</small>' + esc(prev.short) + "</a>" : "<span></span>") +
+        (next ? '<a class="next" href="' + url(labHref(next)) + '"><small>Next exercise</small>' + esc(next.short) + "</a>" : "");
+    }
+
+    var box = document.getElementById("lab-topics");
+    if (box) {
+      box.innerHTML = '<ul class="chips">' + l.topics.map(function (id) {
+        var x = topicById(id);
+        if (!x) return "";
+        var label = x.id + " " + esc(x.title);
+        return isPublished(x) ? '<li><a class="chip" href="' + url(topicHref(x)) + '">' + label + "</a></li>" : '<li><span class="chip">' + label + "</span></li>";
+      }).join("") + "</ul>";
     }
   }
 
@@ -911,6 +1001,11 @@
   if (PAGE === "unit") renderUnit();
   if (PAGE === "topic") {
     renderTopic();
+    renderSectionMenu();
+  }
+  if (PAGE === "labs") renderLabs();
+  if (PAGE === "lab") {
+    renderLab();
     renderSectionMenu();
   }
   enhanceCodeBlocks();

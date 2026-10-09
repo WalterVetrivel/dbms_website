@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exercise 4: WHERE and Aggregate Functions | DBMS Study Guide</title>
+  <meta name="description" content="Lab exercise 4 explained: filter rows with WHERE, LIKE, AND, BETWEEN and IN, and summarize them with COUNT, MIN, MAX, AVG, GROUP BY and HAVING in MySQL, with the expected output.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/widgets.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lab" data-lab="4" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head lab-head">
+          <div class="badges">
+            <span class="badge badge-unit">Lab exercise 4</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+            <span class="badge badge-level">MySQL</span>
+          </div>
+          <h1>Query the database tables using different WHERE clauses and implement aggregate functions</h1>
+          <p class="lead">Pick out just the rows you need with WHERE, then summarize rows with aggregate functions such as COUNT and AVG. First, add enough sample data to make the answers interesting.</p>
+        </header>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#aim">Aim</a></li>
+            <li><a href="#steps">Steps</a></li>
+            <li><a href="#data">Add sample data</a></li>
+            <li><a href="#where">WHERE clauses</a></li>
+            <li><a href="#more-where">More WHERE operators</a></li>
+            <li><a href="#aggregates">Aggregate functions</a></li>
+            <li><a href="#group-by">GROUP BY and HAVING</a></li>
+            <li><a href="#changes">Changes from the record</a></li>
+            <li><a href="#errors">Common errors</a></li>
+            <li><a href="#viva">Viva questions</a></li>
+            <li><a href="#result">Result</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="aim" class="topic-section" aria-labelledby="aim-title">
+          <h2 id="aim-title">Aim</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Aim</div>
+            <ul>
+              <li>To query the database using different WHERE clauses.</li>
+              <li>To use aggregate functions.</li>
+            </ul>
+          </div>
+          <h3>Read these topics first</h3>
+          <div id="lab-topics"></div>
+          <p>You need the tables and keys from Exercises 1 to 3. If you missed them, run the <a href="index.html#starter">starter script</a> instead. It builds the database and loads all the data on this page.</p>
+        </section>
+
+        <section id="steps" class="topic-section" aria-labelledby="steps-title">
+          <h2 id="steps-title">Steps</h2>
+          <ol class="steps">
+            <li><strong>Use WHERE clauses</strong> to get:
+              <ul>
+                <li>the username and location of all users from Australia;</li>
+                <li>a list of action games;</li>
+                <li>games that cost more than Rs. 500;</li>
+                <li>games with “Resident Evil” in the title (use LIKE);</li>
+                <li>the title, rating and price of adventure games with a rating of at least 7 (use AND).</li>
+              </ul>
+            </li>
+            <li><strong>Use aggregate functions and GROUP BY</strong> to find:
+              <ul>
+                <li>the total number of games;</li>
+                <li>the number of games in each genre;</li>
+                <li>the lowest and highest rating;</li>
+                <li>the average price of action games.</li>
+              </ul>
+            </li>
+          </ol>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>SELECT Columns FROM TableName WHERE Condition;
+SELECT COUNT(*) FROM TableName WHERE Condition;
+SELECT MIN(Column), MAX(Column), AVG(Column) FROM TableName;
+SELECT Column, COUNT(*) FROM TableName GROUP BY Column;</code></pre>
+          </div>
+        </section>
+
+        <section id="data" class="topic-section" aria-labelledby="data-title">
+          <h2 id="data-title">Add sample data</h2>
+          <p>After Exercise 3 the store has one user and two games, which is too little to query. The record's step 1 says to insert more rows first. Run this block once. It adds users, developers, publishers and games, and also some past sales and cart rows that Exercises 5 to 8 use. The IDs continue from the earlier exercises, so nothing clashes.</p>
+<div class="code-block">
+  <span class="code-label">MySQL: sample data (run once)</span>
+  <pre><code>INSERT INTO Users VALUES
+  (2, 'arjun', 'arjun@example.com', 'arjun@123', '2004-03-14', 'India'),
+  (3, 'meera', 'meera@example.com', 'meera#456', '2005-07-21', 'India'),
+  (4, 'liam',  'liam@example.com',  'liam$789',  '2003-11-02', 'Australia'),
+  (5, 'yuki',  'yuki@example.com',  'yuki&amp;321',  '2004-01-30', 'Japan');
+
+INSERT INTO Developers VALUES
+  (502, 'Capcom', 'Japan'),
+  (503, 'Remedy Entertainment', 'Finland'),
+  (504, 'Rockstar North', 'United Kingdom'),
+  (505, 'Santa Monica Studio', 'USA'),
+  (506, 'CD Projekt Red', 'Poland');
+
+INSERT INTO Publishers VALUES
+  (701, 'Capcom', 'Japan'),
+  (702, 'Sony Interactive Entertainment', 'USA'),
+  (703, 'Rockstar Games', 'USA'),
+  (704, 'Epic Games', 'USA'),
+  (705, 'CD Projekt', 'Poland'),
+  (706, 'Ubisoft', 'France');
+
+INSERT INTO Games VALUES
+  (103, 'Resident Evil 2', '2019-01-25', 502, 701, 'Survival Horror',
+   'Leon and Claire try to escape Raccoon City', 1999.00, 9.20),
+  (104, 'Resident Evil 4', '2023-03-24', 502, 701, 'Survival Horror',
+   'Leon is sent to rescue the president''s daughter', 2999.00, 9.50),
+  (105, 'Resident Evil Village', '2021-05-07', 502, 701, 'Survival Horror',
+   'Ethan searches a strange village for his daughter', 1499.00, 8.40),
+  (106, 'Devil May Cry 5', '2019-03-08', 502, 701, 'Action',
+   'Three demon hunters fight to save the city', 999.00, 8.80),
+  (107, 'Alan Wake 2', '2023-10-27', 503, 704, 'Survival Horror',
+   'A writer and an FBI agent face a dark story', 2499.00, 8.90),
+  (108, 'God of War', '2018-04-20', 505, 702, 'Action Adventure',
+   'Kratos and his son journey across the Norse lands', 3299.00, 9.40),
+  (109, 'Grand Theft Auto V', '2013-09-17', 504, 703, 'Action Adventure',
+   'Three criminals plan heists in Los Santos', 1499.00, 9.60),
+  (110, 'The Witcher 3: Wild Hunt', '2015-05-19', 506, 705, 'RPG',
+   'Geralt hunts monsters while searching for Ciri', 999.00, 9.30),
+  (111, 'The Legend of Zelda: Breath of the Wild', '2017-03-03', 500, 700, 'Adventure',
+   'Link explores Hyrule to defeat Calamity Ganon', 4999.00, 9.70),
+  (112, 'Animal Crossing: New Horizons', '2020-03-20', 500, 700, 'Simulation',
+   'Build a quiet life on a desert island', 4499.00, 6.90);
+
+INSERT INTO Transactions VALUES
+  (1, '2026-07-01', 2),
+  (2, '2026-07-03', 3),
+  (3, '2026-07-10', 4),
+  (4, '2026-08-02', 2),
+  (5, '2026-08-15', 5),
+  (6, '2026-09-01', 3);
+
+INSERT INTO PurchaseHistory VALUES
+  (1, 104, 2999.00), (1, 109, 1499.00),
+  (2, 104, 2999.00), (2, 110,  999.00),
+  (3, 104, 2499.00), (3, 108, 3299.00),
+  (4, 109, 1499.00), (4, 111, 4999.00),
+  (5, 104, 2999.00), (5, 110,  999.00),
+  (6, 103, 1999.00);
+
+INSERT INTO Cart VALUES
+  (1, 105), (1, 107),
+  (2, 112);</code></pre>
+</div>
+          <dl class="explain">
+            <dt>INSERT INTO Users VALUES (...), (...), ...</dt>
+            <dd>One INSERT can add many rows: put each row in its own brackets and separate them with commas.</dd>
+            <dt>'Leon is sent to rescue the president''s daughter'</dt>
+            <dd>To put a single quote inside a text value, type it twice.</dd>
+            <dt>Order of the INSERTs</dt>
+            <dd>Parents come before children. Games need their developers and publishers, PurchaseHistory needs Transactions and Games, and Cart needs Users and Games. In the wrong order, the foreign keys from Exercise 3 reject the rows.</dd>
+          </dl>
+          <p>Prices are in rupees. Super Mario Bros (Rs. 40) and Pokemon Black (Rs. 50) keep the small prices from the earlier exercises. The store now has 5 users and 12 games.</p>
+        </section>
+
+        <section id="where" class="topic-section" aria-labelledby="where-title">
+          <h2 id="where-title">WHERE clauses</h2>
+          <p>WHERE keeps only the rows for which the condition is true. MySQL reads a SELECT in this order: FROM (which table), then WHERE (which rows), then SELECT (which columns).</p>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/select.html">SELECT</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/comparison-operators.html">Comparison operators</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/string-comparison-functions.html">LIKE</a></p>
+          <h3>1. Users from Australia</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Username, Location FROM Users WHERE Location = 'Australia';</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Users from Australia</caption>
+    <thead><tr><th scope="col">Username</th><th scope="col">Location</th></tr></thead>
+    <tbody>
+      <tr><td>test</td><td>Australia</td></tr>
+      <tr><td>liam</td><td>Australia</td></tr>
+    </tbody>
+  </table>
+</div>
+          <dl class="explain">
+            <dt>SELECT Username, Location</dt>
+            <dd>Show only these two columns.</dd>
+            <dt>WHERE Location = 'Australia'</dt>
+            <dd>Keep rows whose location equals the text 'Australia'. Text comparison in MySQL ignores case by default, so 'australia' also matches.</dd>
+          </dl>
+
+          <h3>2. Action games</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Title, Genre FROM Games WHERE Genre LIKE '%Action%';</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Games whose genre contains Action</caption>
+    <thead><tr><th scope="col">Title</th><th scope="col">Genre</th></tr></thead>
+    <tbody>
+      <tr><td>Devil May Cry 5</td><td>Action</td></tr>
+      <tr><td>God of War</td><td>Action Adventure</td></tr>
+      <tr><td>Grand Theft Auto V</td><td>Action Adventure</td></tr>
+    </tbody>
+  </table>
+</div>
+          <dl class="explain">
+            <dt>LIKE '%Action%'</dt>
+            <dd>A pattern match. <code>%</code> stands for any number of characters (even none), so the pattern matches any genre that <em>contains</em> “Action”. This finds “Action Adventure” games as well.</dd>
+          </dl>
+          <p>With <code>WHERE Genre = 'Action'</code> you get only Devil May Cry 5, because = needs an exact match.</p>
+
+          <h3>3. Games that cost more than Rs. 500</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Title, BasePrice FROM Games WHERE BasePrice &gt; 500;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Games with BasePrice greater than 500</caption>
+    <thead><tr><th scope="col">Title</th><th scope="col">BasePrice</th></tr></thead>
+    <tbody>
+      <tr><td>Resident Evil 2</td><td class="num">1999.00</td></tr>
+      <tr><td>Resident Evil 4</td><td class="num">2999.00</td></tr>
+      <tr><td>Resident Evil Village</td><td class="num">1499.00</td></tr>
+      <tr><td>Devil May Cry 5</td><td class="num">999.00</td></tr>
+      <tr><td>Alan Wake 2</td><td class="num">2499.00</td></tr>
+      <tr><td>God of War</td><td class="num">3299.00</td></tr>
+      <tr><td>Grand Theft Auto V</td><td class="num">1499.00</td></tr>
+      <tr><td>The Witcher 3: Wild Hunt</td><td class="num">999.00</td></tr>
+      <tr><td>The Legend of Zelda: Breath of the Wild</td><td class="num">4999.00</td></tr>
+      <tr><td>Animal Crossing: New Horizons</td><td class="num">4499.00</td></tr>
+    </tbody>
+  </table>
+</div>
+          <dl class="explain">
+            <dt>BasePrice &gt; 500</dt>
+            <dd>A comparison. The other comparison operators are <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>=</code> and <code>&lt;&gt;</code> (not equal). Numbers are written without quotes.</dd>
+          </dl>
+
+          <h3>4. Games with “Resident Evil” in the title</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Title FROM Games WHERE Title LIKE '%Resident Evil%';</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Resident Evil games</caption>
+    <thead><tr><th scope="col">Title</th></tr></thead>
+    <tbody>
+      <tr><td>Resident Evil 2</td></tr>
+      <tr><td>Resident Evil 4</td></tr>
+      <tr><td>Resident Evil Village</td></tr>
+    </tbody>
+  </table>
+</div>
+          <dl class="explain">
+            <dt>LIKE '%Resident Evil%'</dt>
+            <dd>Matches titles that contain the words anywhere. <code>'Resident Evil%'</code> would match only titles that <em>start</em> with them. An underscore <code>_</code> matches exactly one character.</dd>
+          </dl>
+
+          <h3>5. Adventure games rated 7 or more</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Title, Rating, BasePrice FROM Games
+WHERE Genre LIKE '%Adventure%' AND Rating &gt;= 7;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Adventure games with a rating of at least 7</caption>
+    <thead><tr><th scope="col">Title</th><th scope="col">Rating</th><th scope="col">BasePrice</th></tr></thead>
+    <tbody>
+      <tr><td>God of War</td><td class="num">9.40</td><td class="num">3299.00</td></tr>
+      <tr><td>Grand Theft Auto V</td><td class="num">9.60</td><td class="num">1499.00</td></tr>
+      <tr><td>The Legend of Zelda: Breath of the Wild</td><td class="num">9.70</td><td class="num">4999.00</td></tr>
+    </tbody>
+  </table>
+</div>
+          <dl class="explain">
+            <dt>condition1 AND condition2</dt>
+            <dd>A row is kept only when <strong>both</strong> conditions are true. With OR, a row is kept when <strong>either</strong> is true. Use brackets when you mix them: <code>WHERE (Genre = 'RPG' OR Genre = 'Action') AND Rating &gt;= 9</code>.</dd>
+          </dl>
+        </section>
+
+        <section id="more-where" class="topic-section" aria-labelledby="more-where-title">
+          <h2 id="more-where-title">More WHERE operators</h2>
+          <p>These are not in the record, but viva questions often ask about them.</p>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/comparison-operators.html">Comparison operators (BETWEEN, IN, IS NULL)</a></p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Title, BasePrice FROM Games WHERE BasePrice BETWEEN 1000 AND 2500;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Games priced from 1000 to 2500</caption>
+    <thead><tr><th scope="col">Title</th><th scope="col">BasePrice</th></tr></thead>
+    <tbody>
+      <tr><td>Resident Evil 2</td><td class="num">1999.00</td></tr>
+      <tr><td>Resident Evil Village</td><td class="num">1499.00</td></tr>
+      <tr><td>Alan Wake 2</td><td class="num">2499.00</td></tr>
+      <tr><td>Grand Theft Auto V</td><td class="num">1499.00</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p><code>BETWEEN a AND b</code> includes both ends, so 2499.00 is in and a game at exactly 2500 would be too.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Title, Genre FROM Games WHERE Genre IN ('RPG', 'Simulation');</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>RPG and simulation games</caption>
+    <thead><tr><th scope="col">Title</th><th scope="col">Genre</th></tr></thead>
+    <tbody>
+      <tr><td>Pokemon Black</td><td>RPG</td></tr>
+      <tr><td>The Witcher 3: Wild Hunt</td><td>RPG</td></tr>
+      <tr><td>Animal Crossing: New Horizons</td><td>Simulation</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p><code>IN (list)</code> is a short way to write <code>Genre = 'RPG' OR Genre = 'Simulation'</code>.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Title FROM Games WHERE DeveloperID IS NULL;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Games with no developer</caption>
+    <thead><tr><th scope="col">Title</th></tr></thead>
+    <tbody>
+      <tr><td>Pokemon Black</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>Exercise 3 set this game's developer to NULL. To test for NULL, use <code>IS NULL</code>. <code>= NULL</code> is never true, so it returns no rows.</p>
+        </section>
+
+        <section id="aggregates" class="topic-section" aria-labelledby="aggregates-title">
+          <h2 id="aggregates-title">Aggregate functions</h2>
+          <p>An aggregate function takes many rows and returns <strong>one</strong> value.</p>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/aggregate-functions.html">Aggregate functions</a></p>
+          <h3>Total number of games</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT COUNT(*) AS 'No. of Games' FROM Games;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Number of games</caption>
+    <thead><tr><th scope="col">No. of Games</th></tr></thead>
+    <tbody>
+      <tr><td class="num">12</td></tr>
+    </tbody>
+  </table>
+</div>
+          <dl class="explain">
+            <dt>COUNT(*)</dt>
+            <dd>Counts rows. <code>COUNT(DeveloperID)</code> would count only rows where DeveloperID is not NULL, which gives 11.</dd>
+            <dt>AS 'No. of Games'</dt>
+            <dd>An <strong>alias</strong>: the heading for the result column. Quotes are needed because the name has spaces and a dot.</dd>
+          </dl>
+
+          <h3>Lowest and highest rating</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT MIN(Rating) AS Lowest, MAX(Rating) AS Highest FROM Games;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Lowest and highest rating</caption>
+    <thead><tr><th scope="col">Lowest</th><th scope="col">Highest</th></tr></thead>
+    <tbody>
+      <tr><td class="num">6.90</td><td class="num">10.00</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>One SELECT can hold several aggregates. This gives the ratings but not the game titles. Exercise 5 finds the titles with a sub-query.</p>
+
+          <h3>Average price of action games</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT AVG(BasePrice) AS AveragePrice FROM Games WHERE Genre LIKE '%Action%';
+SELECT ROUND(AVG(BasePrice), 2) AS AveragePrice FROM Games WHERE Genre LIKE '%Action%';</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Average price of action games</caption>
+    <thead><tr><th scope="col">AveragePrice</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1932.333333</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>The same average, rounded to 2 decimal places</caption>
+    <thead><tr><th scope="col">AveragePrice</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1932.33</td></tr>
+    </tbody>
+  </table>
+</div>
+          <dl class="explain">
+            <dt>WHERE Genre LIKE '%Action%'</dt>
+            <dd>WHERE runs <strong>before</strong> the aggregate, so AVG sees only the three action games: (999 + 3299 + 1499) ÷ 3.</dd>
+            <dt>ROUND(value, 2)</dt>
+            <dd>Rounds to 2 decimal places, which suits a price.</dd>
+          </dl>
+          <p><code>SUM(Column)</code> adds the values. For example, <code>SELECT SUM(SalePrice) FROM PurchaseHistory;</code> gives the store's total sales, 26789.00.</p>
+        </section>
+
+        <section id="group-by" class="topic-section" aria-labelledby="group-by-title">
+          <h2 id="group-by-title">GROUP BY and HAVING</h2>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/select.html">SELECT (GROUP BY, HAVING and ORDER BY clauses)</a></p>
+          <h3>Number of games in each genre</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Genre, COUNT(*) AS Games FROM Games
+GROUP BY Genre
+ORDER BY Genre;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Games in each genre</caption>
+    <thead><tr><th scope="col">Genre</th><th scope="col">Games</th></tr></thead>
+    <tbody>
+      <tr><td>Action</td><td class="num">1</td></tr>
+      <tr><td>Action Adventure</td><td class="num">2</td></tr>
+      <tr><td>Adventure</td><td class="num">1</td></tr>
+      <tr><td>Platformer</td><td class="num">1</td></tr>
+      <tr><td>RPG</td><td class="num">2</td></tr>
+      <tr><td>Simulation</td><td class="num">1</td></tr>
+      <tr><td>Survival Horror</td><td class="num">4</td></tr>
+    </tbody>
+  </table>
+</div>
+          <dl class="explain">
+            <dt>GROUP BY Genre</dt>
+            <dd>Puts rows with the same genre into one group. COUNT(*) then counts each group, so the result has one row per genre.</dd>
+            <dt>SELECT Genre, COUNT(*)</dt>
+            <dd>With GROUP BY, the SELECT list may hold only the grouped column and aggregates. Adding Title would fail, because a group has many titles.</dd>
+            <dt>ORDER BY Genre</dt>
+            <dd>Sorts the result. Without it, MySQL 8 does not promise any order for groups.</dd>
+          </dl>
+          <h3>Only genres with more than one game</h3>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT Genre, COUNT(*) AS Games FROM Games
+GROUP BY Genre
+HAVING COUNT(*) &gt; 1
+ORDER BY Genre;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Genres with more than one game</caption>
+    <thead><tr><th scope="col">Genre</th><th scope="col">Games</th></tr></thead>
+    <tbody>
+      <tr><td>Action Adventure</td><td class="num">2</td></tr>
+      <tr><td>RPG</td><td class="num">2</td></tr>
+      <tr><td>Survival Horror</td><td class="num">4</td></tr>
+    </tbody>
+  </table>
+</div>
+          <dl class="explain">
+            <dt>HAVING COUNT(*) &gt; 1</dt>
+            <dd>HAVING filters <strong>groups</strong> after they are counted. WHERE filters <strong>rows</strong> before grouping, so <code>WHERE COUNT(*) &gt; 1</code> is an error.</dd>
+          </dl>
+          <div class="callout callout-tip">
+            <div class="callout-title">The order MySQL works in</div>
+            <p>FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY. This is why WHERE cannot use an aggregate, but HAVING can.</p>
+          </div>
+        </section>
+
+        <section id="changes" class="topic-section" aria-labelledby="changes-title">
+          <h2 id="changes-title">Changes from the record</h2>
+          <p>The record's queries do not match its own steps. This page follows the steps.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Record query compared with the step it should answer</caption>
+              <thead><tr><th scope="col">Step asks for</th><th scope="col">Record's query</th><th scope="col">This page</th></tr></thead>
+              <tbody>
+                <tr><td>Price greater than Rs. 500</td><td><code>WHERE BasePrice &lt; 50.00</code></td><td><code>WHERE BasePrice &gt; 500</code></td></tr>
+                <tr><td>Adventure games rated at least 7</td><td><code>WHERE Genre LIKE '%RPG%' AND Rating &gt;= 9.0</code></td><td><code>WHERE Genre LIKE '%Adventure%' AND Rating &gt;= 7</code></td></tr>
+                <tr><td>Title, rating and price</td><td><code>SELECT GameID, Title, BasePrice</code></td><td><code>SELECT Title, Rating, BasePrice</code></td></tr>
+                <tr><td>Games in each genre</td><td>Adds <code>HAVING COUNT(*) &gt; 1</code></td><td>Shown both without and with HAVING</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The record also has no rows to query. The sample data block above fills that gap.</p>
+        </section>
+
+        <section id="errors" class="topic-section" aria-labelledby="errors-title">
+          <h2 id="errors-title">Common errors</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Errors and surprises in this exercise</caption>
+              <thead><tr><th scope="col">Error or surprise</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead>
+              <tbody>
+                <tr><td><code>ERROR 1111 (HY000): Invalid use of group function</code></td><td>An aggregate inside WHERE, such as <code>WHERE COUNT(*) &gt; 1</code>.</td><td>Move the condition to HAVING.</td></tr>
+                <tr><td><code>ERROR 1055 (42000): Expression #1 of SELECT list is not in GROUP BY clause ...</code></td><td>A column in SELECT that is neither grouped nor inside an aggregate.</td><td>Add it to GROUP BY or remove it from SELECT.</td></tr>
+                <tr><td><code>ERROR 1062 (23000): Duplicate entry '2' for key 'users.PRIMARY'</code></td><td>The sample data block was run twice.</td><td>Nothing to fix: the rows are already there.</td></tr>
+                <tr><td>Empty set when you expected rows</td><td>Usually <code>= NULL</code> instead of <code>IS NULL</code>, or = where LIKE was needed.</td><td>Use IS NULL, or LIKE with %.</td></tr>
+                <tr><td><code>ERROR 1064 (42000)</code> near <code>‘Australia’</code></td><td>Curly quotes copied from a document.</td><td>Type straight quotes: <code>'Australia'</code>.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="viva" class="topic-section" aria-labelledby="viva-title">
+          <h2 id="viva-title">Viva questions</h2>
+          <details class="accordion">
+            <summary>What is the difference between WHERE and HAVING?</summary>
+            <div class="accordion-body"><p>WHERE filters rows before grouping and cannot use aggregates. HAVING filters groups after GROUP BY and can use aggregates such as COUNT(*). See <a href="../units/unit-2/group-by-and-having.html">GROUP BY and HAVING</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Name the five common aggregate functions.</summary>
+            <div class="accordion-body"><p>COUNT, SUM, AVG, MIN and MAX. Each returns one value from many rows. See <a href="../units/unit-2/aggregate-functions.html">Aggregate Functions</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is the difference between COUNT(*) and COUNT(column)?</summary>
+            <div class="accordion-body"><p>COUNT(*) counts every row. COUNT(column) counts only rows where that column is not NULL.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What do % and _ mean in LIKE?</summary>
+            <div class="accordion-body"><p><code>%</code> matches any number of characters, including none. <code>_</code> matches exactly one character. <code>'R%'</code> finds values starting with R.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Why does <code>WHERE DeveloperID = NULL</code> return nothing?</summary>
+            <div class="accordion-body"><p>NULL means “unknown”, and comparing anything with unknown gives unknown, not true. Use <code>IS NULL</code> or <code>IS NOT NULL</code>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is an alias?</summary>
+            <div class="accordion-body"><p>A new name given with AS, either to a result column (<code>COUNT(*) AS Games</code>) or to a table (<code>FROM Games g</code>).</p></div>
+          </details>
+        </section>
+
+        <section id="result" class="topic-section" aria-labelledby="result-title">
+          <h2 id="result-title">Result</h2>
+          <div class="callout callout-example">
+            <div class="callout-title">Result</div>
+            <p>The database was queried successfully using WHERE clauses and aggregate functions.</p>
+          </div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Topic pages: <a href="../units/unit-1/basic-structure-of-sql-queries.html">Basic Structure of SQL Queries</a>, <a href="../units/unit-2/aggregate-functions.html">Aggregate Functions</a> and <a href="../units/unit-2/group-by-and-having.html">GROUP BY and HAVING</a>.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/select.html">SELECT</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/comparison-operators.html">Comparison Operators</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/string-comparison-functions.html">LIKE</a> and <a href="https://dev.mysql.com/doc/refman/8.4/en/aggregate-functions.html">Aggregate Functions</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <nav id="pager" class="pager" aria-label="Previous and next exercises"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+</body>
+</html>

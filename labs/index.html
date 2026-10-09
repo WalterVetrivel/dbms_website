@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lab Exercises | DBMS Study Guide</title>
+  <meta name="description" content="All 10 DBMS lab exercises on an online game store database, with MySQL 8.4 set-up steps, the schema as diagrams and a starter script to download.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="labs" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        <h1>Lab Exercises</h1>
+        <p class="lead">Ten lab exercises build one database for an online game store, step by step. Each page explains the sample solution line by line and shows the result you should see.</p>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#list">The 10 exercises</a></li>
+            <li><a href="#pages">How each page works</a></li>
+            <li><a href="#setup">Set up MySQL</a></li>
+            <li><a href="#schema">The game store database</a></li>
+            <li><a href="#starter">Starter script</a></li>
+          </ol>
+        </nav>
+
+        <section id="list" class="section" aria-labelledby="list-title">
+          <h2 id="list-title">The 10 exercises</h2>
+          <p>Exercises 1 to 8 use MySQL. Each one builds on the tables and data of the one before, so do them in order. Exercise 9 is a C program and Exercise 10 uses MongoDB. Both stand alone.</p>
+          <ol id="lab-list" class="topic-list"></ol>
+          <noscript>
+            <ol>
+              <li><a href="ex-01-design-database.html">Design the database</a></li>
+              <li><a href="ex-02-ddl-dml-constraints.html">Constraints, insert, update and delete</a></li>
+              <li><a href="ex-03-foreign-keys.html">Foreign keys</a></li>
+              <li><a href="ex-04-where-and-aggregates.html">WHERE and aggregate functions</a></li>
+              <li><a href="ex-05-subqueries-and-joins.html">Sub-queries and joins</a></li>
+              <li><a href="ex-06-triggers.html">Triggers</a></li>
+              <li><a href="ex-07-views-and-indexes.html">Views and indexes</a></li>
+              <li><a href="ex-08-transactions-dcl-tcl.html">Transactions, DCL and TCL</a></li>
+              <li><a href="ex-09-bplus-tree.html">B+ tree in C</a></li>
+              <li><a href="ex-10-nosql-documents.html">Document database (MongoDB)</a></li>
+            </ol>
+          </noscript>
+        </section>
+
+        <section id="pages" class="section" aria-labelledby="pages-title">
+          <h2 id="pages-title">How each page works</h2>
+          <ul>
+            <li><strong>Aim</strong> and the topic pages to read first.</li>
+            <li><strong>Steps</strong>, in the same order as your lab record.</li>
+            <li><strong>Solution code</strong> with a Copy button. Each statement is explained part by part and links to the MySQL 8.4 manual.</li>
+            <li><strong>Output:</strong> the rows or messages you should see.</li>
+            <li><strong>Changes from the record:</strong> where the record's code has a mistake or does not run on MySQL 8.4, the page fixes it and says why.</li>
+            <li><strong>Common errors</strong> with their causes and fixes, <strong>viva questions</strong> with answers, and the <strong>Result</strong>.</li>
+          </ul>
+          <div class="callout callout-tip">
+            <div class="callout-title">Every query was run</div>
+            <p>All the SQL on these pages was run, and the outputs are copied from the real results. It was written to work on MySQL 8.4 LTS, the version used in the lab. The C programs were compiled and run, and the MongoDB commands were run in mongosh.</p>
+          </div>
+        </section>
+
+        <section id="setup" class="section" aria-labelledby="setup-title">
+          <h2 id="setup-title">Set up MySQL</h2>
+          <p>You need two programs: <strong>MySQL Community Server</strong>, which stores the data, and <strong>MySQL Workbench</strong>, a window where you type and run SQL. Both are free.</p>
+          <ol class="steps">
+            <li><strong>Download MySQL Server.</strong> Go to <a href="https://dev.mysql.com/downloads/mysql/">dev.mysql.com/downloads/mysql</a> and choose version 8.4 LTS. On Windows, download the MSI installer. You do not need an Oracle account: click “No thanks, just start my download”.</li>
+            <li><strong>Install it.</strong> Run the MSI and keep the default choices. At the end, it opens <strong>MySQL Configurator</strong>.</li>
+            <li><strong>Set the root password.</strong> The Configurator asks for a password for the <code>root</code> user. Pick one you will remember, because every exercise needs it.</li>
+            <li><strong>Run MySQL as a Windows service.</strong> Keep the default, so the server starts by itself when the computer starts. Then click Execute to finish.</li>
+            <li><strong>Install Workbench.</strong> Download it from <a href="https://dev.mysql.com/downloads/workbench/">dev.mysql.com/downloads/workbench</a> and install it.</li>
+            <li><strong>Open Workbench</strong> and click the <strong>Local instance</strong> box. Type the root password. A query tab opens.</li>
+            <li><strong>Run SQL.</strong> Type or paste a statement and press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to run the statement under the cursor. <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Enter</kbd> runs everything in the tab. The results appear in the grid below.</li>
+          </ol>
+          <h3>The command line client</h3>
+          <p>You can also use the MySQL command line client instead of Workbench. Open it from the Start menu, or type this in a command prompt:</p>
+          <div class="code-block">
+            <span class="code-label">Command prompt</span>
+            <pre><code>mysql -u root -p</code></pre>
+          </div>
+          <p><code>-u root</code> is the user name and <code>-p</code> makes it ask for the password. If Windows says that mysql is not recognized, add <code>C:\Program Files\MySQL\MySQL Server 8.4\bin</code> to your PATH, or use the MySQL 8.4 Command Line Client from the Start menu. Type <code>exit</code> to leave.</p>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/windows-installation.html">Installing MySQL on Windows</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/mysql.html">the mysql client</a>, <a href="https://dev.mysql.com/doc/workbench/en/">MySQL Workbench</a></p>
+          <div class="callout callout-note">
+            <div class="callout-title">Linux and macOS</div>
+            <p>On Ubuntu, <code>sudo apt install mysql-server</code> installs the server. On macOS, use the DMG installer from the same download page. Workbench has builds for both.</p>
+          </div>
+          <h3>For Exercises 9 and 10</h3>
+          <ul>
+            <li>Exercise 9 needs a C compiler, such as GCC (from MinGW on Windows) or an online compiler. See <a href="ex-09-bplus-tree.html">Exercise 9</a>.</li>
+            <li>Exercise 10 needs MongoDB and its shell, mongosh. The set-up steps are on <a href="ex-10-nosql-documents.html#setup">Exercise 10</a>.</li>
+          </ul>
+        </section>
+
+        <section id="schema" class="section" aria-labelledby="schema-title">
+          <h2 id="schema-title">The game store database</h2>
+          <p>The store sells games to users. A developer makes each game and a publisher sells it. Users put games in a cart and then buy them. Each purchase is a transaction that can hold several games.</p>
+          <h3>E-R diagram</h3>
+          <figure class="figure">
+            <div class="figure-scroll"><svg viewBox="0 0 780 300" width="780" height="300" role="img" aria-labelledby="er-title">
+              <title id="er-title">E-R diagram of the game store. A Developer develops many Games, and a Publisher publishes many Games. A User makes many Transactions. Users and Games are linked many-to-many by "in cart". Transactions and Games are linked many-to-many by "includes", which has the attribute SalePrice.</title>
+              <g font-family="Inter, system-ui, sans-serif" font-size="14" text-anchor="middle">
+                <g stroke-width="2" style="stroke:var(--text-muted)">
+                  <line x1="90" y1="52" x2="710" y2="52"/>
+                  <line x1="90" y1="248" x2="710" y2="248"/>
+                  <line x1="90" y1="248" x2="245" y2="150"/>
+                  <line x1="245" y1="150" x2="400" y2="52"/>
+                  <line x1="710" y1="248" x2="555" y2="150"/>
+                  <line x1="555" y1="150" x2="400" y2="52"/>
+                  <line x1="555" y1="150" x2="650" y2="150"/>
+                </g>
+                <rect x="20" y="30" width="140" height="44" stroke-width="2" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="90" y="57" style="fill:var(--text)">Developer</text>
+                <rect x="330" y="30" width="140" height="44" stroke-width="2" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="400" y="57" style="fill:var(--text)">Game</text>
+                <rect x="640" y="30" width="140" height="44" stroke-width="2" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="710" y="57" style="fill:var(--text)">Publisher</text>
+                <rect x="20" y="226" width="140" height="44" stroke-width="2" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="90" y="253" style="fill:var(--text)">User</text>
+                <rect x="640" y="226" width="140" height="44" stroke-width="2" style="fill:var(--primary-soft);stroke:var(--primary)"/>
+                <text x="710" y="253" style="fill:var(--text)">Transaction</text>
+                <g stroke-width="2" style="fill:var(--accent-soft);stroke:var(--accent)">
+                  <polygon points="245,24 305,52 245,80 185,52"/>
+                  <polygon points="555,24 615,52 555,80 495,52"/>
+                  <polygon points="400,220 460,248 400,276 340,248"/>
+                  <polygon points="245,122 305,150 245,178 185,150"/>
+                  <polygon points="555,122 615,150 555,178 495,150"/>
+                </g>
+                <ellipse cx="700" cy="150" rx="54" ry="20" stroke-width="2" style="fill:var(--surface-2);stroke:var(--border-strong)"/>
+                <text x="245" y="57" style="fill:var(--text)">develops</text>
+                <text x="555" y="57" style="fill:var(--text)">publishes</text>
+                <text x="400" y="253" style="fill:var(--text)">makes</text>
+                <text x="245" y="155" style="fill:var(--text)">in cart</text>
+                <text x="555" y="155" style="fill:var(--text)">includes</text>
+                <text x="700" y="155" style="fill:var(--text)">SalePrice</text>
+                <g font-weight="600" style="fill:var(--text-muted)">
+                  <text x="172" y="44">1</text>
+                  <text x="318" y="44">N</text>
+                  <text x="482" y="44">N</text>
+                  <text x="628" y="44">1</text>
+                  <text x="172" y="240">1</text>
+                  <text x="628" y="240">N</text>
+                  <text x="150" y="196">M</text>
+                  <text x="338" y="96">N</text>
+                  <text x="462" y="96">N</text>
+                  <text x="650" y="196">M</text>
+                </g>
+              </g>
+            </svg></div>
+            <figcaption>Rectangles are entity sets, diamonds are relationship sets and the oval is an attribute. 1, N and M show the cardinality.</figcaption>
+          </figure>
+          <h3>Tables</h3>
+          <p>The two many-to-many relationships become their own tables: <strong>in cart</strong> becomes Cart, and <strong>includes</strong> becomes PurchaseHistory. <span class="schema-key">Underlined</span> columns form the primary key. FK marks a foreign key.</p>
+          <div class="grid grid-sm schema">
+            <div class="card">
+              <h3>Users</h3>
+              <ul class="schema-cols">
+                <li><span class="schema-key">UserID</span></li>
+                <li>Username <small>unique</small></li>
+                <li>Email <small>unique</small></li>
+                <li>Password</li>
+                <li>DateOfBirth</li>
+                <li>Location</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Games</h3>
+              <ul class="schema-cols">
+                <li><span class="schema-key">GameID</span></li>
+                <li>Title</li>
+                <li>ReleaseDate</li>
+                <li>DeveloperID <small>FK to Developers</small></li>
+                <li>PublisherID <small>FK to Publishers</small></li>
+                <li>Genre</li>
+                <li>Description</li>
+                <li>BasePrice <small>check &gt; 0</small></li>
+                <li>Rating</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Developers</h3>
+              <ul class="schema-cols">
+                <li><span class="schema-key">DeveloperID</span></li>
+                <li>DeveloperName</li>
+                <li>DeveloperLocation</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Publishers</h3>
+              <ul class="schema-cols">
+                <li><span class="schema-key">PublisherID</span></li>
+                <li>PublisherName</li>
+                <li>PublisherLocation</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Cart</h3>
+              <ul class="schema-cols">
+                <li><span class="schema-key">UserID</span> <small>FK to Users</small></li>
+                <li><span class="schema-key">GameID</span> <small>FK to Games</small></li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Transactions</h3>
+              <ul class="schema-cols">
+                <li><span class="schema-key">TransactionID</span> <small>auto-increment</small></li>
+                <li>TransactionDate</li>
+                <li>UserID <small>FK to Users</small></li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>PurchaseHistory</h3>
+              <ul class="schema-cols">
+                <li><span class="schema-key">TransactionID</span> <small>FK to Transactions</small></li>
+                <li><span class="schema-key">GameID</span> <small>FK to Games</small></li>
+                <li>SalePrice</li>
+              </ul>
+            </div>
+          </div>
+          <p>Exercise 6 adds a CurrentPrice column to Games and an Offers table for price cuts. Exercise 7 adds views and indexes.</p>
+        </section>
+
+        <section id="starter" class="section" aria-labelledby="starter-title">
+          <h2 id="starter-title">Starter script</h2>
+          <p>Missed a lab, or broke your tables? The starter script builds the whole database as it is at the end of Exercise 3, with all the keys and foreign keys. It also loads the sample data from Exercise 4. Use it to start any of Exercises 4 to 8.</p>
+          <p><a class="btn btn-primary" href="files/games_store.sql" download>Download games_store.sql</a></p>
+          <ol class="steps">
+            <li><strong>In Workbench:</strong> choose File, then Open SQL Script, and pick the file. Press the lightning button to run it all.</li>
+            <li><strong>In the command line client:</strong> type <code>SOURCE C:/Users/you/Downloads/games_store.sql</code> with your own path. Use forward slashes, even on Windows.</li>
+          </ol>
+          <div class="callout callout-mistake">
+            <div class="callout-title">It starts from scratch</div>
+            <p>The script deletes any games_store database first, so your own changes are lost. For Exercise 8, run the <a href="ex-06-triggers.html#setup">Exercise 6 set-up</a> after the script, because Exercise 8 needs the CurrentPrice column.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+</body>
+</html>

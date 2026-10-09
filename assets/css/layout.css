@@ -65,7 +65,8 @@
 }
 
 .top-nav a:hover,
-.top-nav a[aria-current="page"] {
+.top-nav a[aria-current="page"],
+.top-nav a[aria-current="true"] {
   color: var(--text);
   background: var(--surface-2);
 }

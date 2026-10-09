@@ -592,6 +592,11 @@
       n: 5,
       ops: [["insert", [30, 31, 23, 32, 22, 28, 24, 29]]]
     },
+    "lab-9": {
+      label: "Lab Exercise 9: 10, 20, 5, 6, 12, 30, 7, 17 with n = 4",
+      n: 4,
+      ops: [["insert", [10, 20, 5, 6, 12, 30, 7, 17]]]
+    },
     "delete-demo": {
       label: "Deletion practice: build with n = 4, then delete 5, 7, 31, 2",
       n: 4,

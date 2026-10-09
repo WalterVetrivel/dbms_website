@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exercise 2: Constraints, Insert, Update and Delete | DBMS Study Guide</title>
+  <meta name="description" content="Lab exercise 2 explained: create tables with primary keys, add PRIMARY KEY, UNIQUE, NOT NULL and CHECK constraints with ALTER TABLE, then insert, update and delete rows in MySQL.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/widgets.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lab" data-lab="2" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head lab-head">
+          <div class="badges">
+            <span class="badge badge-unit">Lab exercise 2</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+            <span class="badge badge-level">MySQL</span>
+          </div>
+          <h1>Create database tables, add constraints and insert, update and delete rows using DDL and DML</h1>
+          <p class="lead">Add two new tables with primary keys and add rules (constraints) to the tables from Exercise 1. Then put data in with INSERT, change it with UPDATE and remove it with DELETE.</p>
+        </header>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#aim">Aim</a></li>
+            <li><a href="#steps">Steps</a></li>
+            <li><a href="#new-tables">Tables with a primary key</a></li>
+            <li><a href="#add-keys">Add primary keys with ALTER TABLE</a></li>
+            <li><a href="#other">UNIQUE, NOT NULL and CHECK</a></li>
+            <li><a href="#insert">Insert rows</a></li>
+            <li><a href="#update">Update rows</a></li>
+            <li><a href="#delete">Delete rows</a></li>
+            <li><a href="#test">Test the constraints</a></li>
+            <li><a href="#changes">Changes from the record</a></li>
+            <li><a href="#errors">Common errors</a></li>
+            <li><a href="#viva">Viva questions</a></li>
+            <li><a href="#result">Result</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="aim" class="topic-section" aria-labelledby="aim-title">
+          <h2 id="aim-title">Aim</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Aim</div>
+            <ul>
+              <li>To create additional tables with constraints for the online game store database.</li>
+              <li>To add constraints to the existing tables.</li>
+              <li>To use DML commands to insert, update and delete rows in the created tables.</li>
+            </ul>
+          </div>
+          <h3>Read these topics first</h3>
+          <div id="lab-topics"></div>
+          <p>Finish <a href="ex-01-design-database.html">Exercise 1</a> first. Start each session with <code>USE games_store;</code>.</p>
+        </section>
+
+        <section id="steps" class="topic-section" aria-labelledby="steps-title">
+          <h2 id="steps-title">Steps</h2>
+          <ol class="steps">
+            <li><strong>Create two new tables with primary keys.</strong> A <strong>Transactions</strong> table with a unique ID for each purchase, its date and the ID of the user who made it. A <strong>PurchaseHistory</strong> table with the transaction ID, game ID and the price paid. In PurchaseHistory the <em>pair</em> (transaction ID, game ID) must be unique, because one transaction can hold many games and one game can be sold in many transactions.</li>
+            <li><strong>Add primary keys to the tables from Exercise 1</strong> with ALTER TABLE.</li>
+            <li><strong>Add other constraints.</strong> Username and Email must be UNIQUE and NOT NULL. Password must be NOT NULL. The price of a game must be greater than 0 (CHECK).</li>
+            <li><strong>Insert rows</strong> into Users, Games, Developers and Publishers. Check them with SELECT.</li>
+            <li><strong>Update rows:</strong> change a user's location and a game's price.</li>
+            <li><strong>Delete a row</strong> from Developers, using its ID. Check with SELECT.</li>
+          </ol>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>CREATE TABLE TableName (
+  Attribute1 datatype PRIMARY KEY,           -- a one-column key
+  ...
+);
+CREATE TABLE TableName (
+  Attribute1 datatype,
+  Attribute2 datatype,
+  PRIMARY KEY (Attribute1, Attribute2)       -- a composite key
+);
+ALTER TABLE TableName ADD CONSTRAINT ConstraintName PRIMARY KEY (Column);
+ALTER TABLE TableName ADD CONSTRAINT ConstraintName UNIQUE (Column);
+ALTER TABLE TableName MODIFY COLUMN Column datatype NOT NULL;
+ALTER TABLE TableName ADD CONSTRAINT ConstraintName CHECK (Column &gt; Value);
+INSERT INTO TableName VALUES (Val1, Val2, ...);
+INSERT INTO TableName (Col1, Col2) VALUES (Val1, Val2);
+UPDATE TableName SET Column = Value WHERE Condition;
+DELETE FROM TableName WHERE Condition;</code></pre>
+          </div>
+        </section>
+
+        <section id="new-tables" class="topic-section" aria-labelledby="new-title">
+          <h2 id="new-title">Tables with a primary key</h2>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>CREATE TABLE Transactions (
+  TransactionID   int PRIMARY KEY AUTO_INCREMENT,
+  TransactionDate date,
+  UserID          int
+);
+
+CREATE TABLE PurchaseHistory (
+  TransactionID int,
+  GameID        int,
+  SalePrice     decimal(10, 2),
+  PRIMARY KEY (TransactionID, GameID)
+);</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-table.html">CREATE TABLE</a></p>
+          <dl class="explain">
+            <dt>TransactionID int PRIMARY KEY</dt>
+            <dd>A <strong>column-level</strong> primary key. Each transaction ID must be unique and cannot be NULL.</dd>
+            <dt>AUTO_INCREMENT</dt>
+            <dd>MySQL fills in the next number (1, 2, 3 ...) when an INSERT leaves the column out. Exercise 8 uses this to number each checkout.</dd>
+            <dt>PRIMARY KEY (TransactionID, GameID)</dt>
+            <dd>A <strong>table-level</strong>, <strong>composite</strong> primary key. Neither column is unique alone, but each pair is. A composite key must be written after the columns, like this.</dd>
+          </dl>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of DESC Transactions</caption>
+    <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Null</th><th scope="col">Key</th><th scope="col">Default</th><th scope="col">Extra</th></tr></thead>
+    <tbody>
+      <tr><td>TransactionID</td><td>int</td><td>NO</td><td>PRI</td><td><span class="null">NULL</span></td><td>auto_increment</td></tr>
+      <tr><td>TransactionDate</td><td>date</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>UserID</td><td>int</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of DESC PurchaseHistory</caption>
+    <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Null</th><th scope="col">Key</th><th scope="col">Default</th><th scope="col">Extra</th></tr></thead>
+    <tbody>
+      <tr><td>TransactionID</td><td>int</td><td>NO</td><td>PRI</td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>GameID</td><td>int</td><td>NO</td><td>PRI</td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>SalePrice</td><td>decimal(10,2)</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>Key shows PRI on both columns of PurchaseHistory, because both are part of the one composite key. A primary key column is always NOT NULL, so Null shows NO.</p>
+        </section>
+
+        <section id="add-keys" class="topic-section" aria-labelledby="add-title">
+          <h2 id="add-title">Add primary keys with ALTER TABLE</h2>
+          <p>The tables from Exercise 1 have no keys yet. ALTER TABLE changes a table that already exists.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>ALTER TABLE Users ADD CONSTRAINT Users_PK PRIMARY KEY (UserID);
+ALTER TABLE Games ADD CONSTRAINT Games_PK PRIMARY KEY (GameID);
+ALTER TABLE Developers ADD CONSTRAINT Devs_PK PRIMARY KEY (DeveloperID);
+ALTER TABLE Publishers ADD CONSTRAINT Pubs_PK PRIMARY KEY (PublisherID);
+ALTER TABLE Cart ADD CONSTRAINT Cart_PK PRIMARY KEY (UserID, GameID);</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/alter-table.html">ALTER TABLE</a></p>
+          <dl class="explain">
+            <dt>ALTER TABLE Users</dt>
+            <dd>Changes the Users table. Its rows stay as they are.</dd>
+            <dt>ADD CONSTRAINT Users_PK</dt>
+            <dd>Adds a rule and gives it a name. A name makes error messages clear and lets you drop the rule later. MySQL always calls a primary key <code>PRIMARY</code>, so it ignores the name you give it here.</dd>
+            <dt>PRIMARY KEY (UserID)</dt>
+            <dd>UserID must be unique and not NULL. MySQL also builds an index on it, so finding a user by ID is fast.</dd>
+            <dt>PRIMARY KEY (UserID, GameID)</dt>
+            <dd>The same game can be in many carts and a cart can hold many games, but the same user–game pair cannot appear twice.</dd>
+          </dl>
+          <div class="callout callout-note">
+            <div class="callout-title">Add keys before adding data</div>
+            <p>If a table already has duplicate IDs or NULLs, ADD PRIMARY KEY fails. Remove the bad rows first, or add keys while the tables are still empty, as we do here.</p>
+          </div>
+        </section>
+
+        <section id="other" class="topic-section" aria-labelledby="other-title">
+          <h2 id="other-title">UNIQUE, NOT NULL and CHECK</h2>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>ALTER TABLE Users ADD CONSTRAINT Users_UNQ_1 UNIQUE (Username);
+ALTER TABLE Users ADD CONSTRAINT Users_UNQ_2 UNIQUE (Email);
+ALTER TABLE Users MODIFY COLUMN Username varchar(191) NOT NULL;
+ALTER TABLE Users MODIFY COLUMN Email varchar(191) NOT NULL;
+ALTER TABLE Users MODIFY COLUMN Password varchar(255) NOT NULL;
+ALTER TABLE Games ADD CONSTRAINT Games_CHK CHECK (BasePrice &gt; 0);</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/alter-table.html">ALTER TABLE</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/create-table-check-constraints.html">CHECK constraints</a></p>
+          <dl class="explain">
+            <dt>UNIQUE (Username)</dt>
+            <dd>No two users may have the same username. Unlike a primary key, a UNIQUE column may hold NULL, and a table can have many UNIQUE columns.</dd>
+            <dt>MODIFY COLUMN Username varchar(191) NOT NULL</dt>
+            <dd>Redefines the column with the NOT NULL rule. MODIFY needs the <strong>full</strong> column definition, so the data type must be written again. If you leave it out, the statement fails.</dd>
+            <dt>CHECK (BasePrice &gt; 0)</dt>
+            <dd>Every row must have a price greater than 0. MySQL tests the rows already in the table now, and every new or changed row later. CHECK is enforced from MySQL 8.0.16 onwards; older versions read it and ignored it.</dd>
+          </dl>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of DESC Users after the constraints</caption>
+    <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Null</th><th scope="col">Key</th><th scope="col">Default</th><th scope="col">Extra</th></tr></thead>
+    <tbody>
+      <tr><td>UserID</td><td>int</td><td>NO</td><td>PRI</td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>Username</td><td>varchar(191)</td><td>NO</td><td>UNI</td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>Email</td><td>varchar(191)</td><td>NO</td><td>UNI</td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>Password</td><td>varchar(255)</td><td>NO</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>DateOfBirth</td><td>date</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>Location</td><td>varchar(191)</td><td>YES</td><td></td><td><span class="null">NULL</span></td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>Now UserID shows PRI, Username and Email show UNI, and the three columns with NOT NULL show NO under Null. DESC does not show CHECK constraints. To see them, run <code>SHOW CREATE TABLE Games;</code>.</p>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of DESC Cart</caption>
+    <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Null</th><th scope="col">Key</th><th scope="col">Default</th><th scope="col">Extra</th></tr></thead>
+    <tbody>
+      <tr><td>UserID</td><td>int</td><td>NO</td><td>PRI</td><td><span class="null">NULL</span></td><td></td></tr>
+      <tr><td>GameID</td><td>int</td><td>NO</td><td>PRI</td><td><span class="null">NULL</span></td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="output-note">DESC Games, Developers and Publishers now show PRI on their ID columns in the same way.</p>
+        </section>
+
+        <section id="insert" class="topic-section" aria-labelledby="insert-title">
+          <h2 id="insert-title">Insert rows</h2>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>INSERT INTO Users VALUES (1, 'test', 'test@test.com', '123456', '2000-01-01', 'India');
+INSERT INTO Developers VALUES (500, 'Nintendo', 'Japan');
+INSERT INTO Publishers VALUES (700, 'Nintendo', 'Japan');
+INSERT INTO Games VALUES (101, 'Super Mario Bros', '1985-09-13', 500, 700, 'Platformer',
+  'Play as Mario and rescue Princess Peach from Bowser', 50, 10);</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/insert.html">INSERT</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/select.html">SELECT</a></p>
+          <dl class="explain">
+            <dt>INSERT INTO Users VALUES (...)</dt>
+            <dd>Adds one row. With no column list, you must give a value for <strong>every</strong> column, in the order the columns were created (the order DESC shows).</dd>
+            <dt>'test', '2000-01-01'</dt>
+            <dd>Text and dates go inside <strong>straight single quotes</strong>. Numbers such as 1, 500 and 50 do not need quotes.</dd>
+            <dt>50, 10</dt>
+            <dd>The base price and rating. MySQL stores them as 50.00 and 10.00 because the columns are decimal(10, 2).</dd>
+          </dl>
+          <p>To fill only some columns, name them. The others get NULL (or their default value):</p>
+          <div class="code-block">
+            <span class="code-label">Syntax with a column list</span>
+            <pre><code>INSERT INTO Developers (DeveloperID, DeveloperName) VALUES (510, 'Valve');</code></pre>
+          </div>
+          <p>Check the rows with <code>SELECT * FROM TableName;</code>. The star means “every column”.</p>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of SELECT * FROM Users</caption>
+    <thead><tr><th scope="col">UserID</th><th scope="col">Username</th><th scope="col">Email</th><th scope="col">Password</th><th scope="col">DateOfBirth</th><th scope="col">Location</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>test</td><td>test@test.com</td><td class="num">123456</td><td>2000-01-01</td><td>India</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of SELECT * FROM Games</caption>
+    <thead><tr><th scope="col">GameID</th><th scope="col">Title</th><th scope="col">ReleaseDate</th><th scope="col">DeveloperID</th><th scope="col">PublisherID</th><th scope="col">Genre</th><th scope="col">Description</th><th scope="col">BasePrice</th><th scope="col">Rating</th></tr></thead>
+    <tbody>
+      <tr><td class="num">101</td><td>Super Mario Bros</td><td>1985-09-13</td><td class="num">500</td><td class="num">700</td><td>Platformer</td><td>Play as Mario and rescue Princess Peach from Bowser</td><td class="num">50.00</td><td class="num">10.00</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of SELECT * FROM Developers</caption>
+    <thead><tr><th scope="col">DeveloperID</th><th scope="col">DeveloperName</th><th scope="col">DeveloperLocation</th></tr></thead>
+    <tbody>
+      <tr><td class="num">500</td><td>Nintendo</td><td>Japan</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of SELECT * FROM Publishers</caption>
+    <thead><tr><th scope="col">PublisherID</th><th scope="col">PublisherName</th><th scope="col">PublisherLocation</th></tr></thead>
+    <tbody>
+      <tr><td class="num">700</td><td>Nintendo</td><td>Japan</td></tr>
+    </tbody>
+  </table>
+</div>
+        </section>
+
+        <section id="update" class="topic-section" aria-labelledby="update-title">
+          <h2 id="update-title">Update rows</h2>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>UPDATE Users SET Location = 'Australia' WHERE Username = 'test';
+UPDATE Games SET BasePrice = 40 WHERE GameID = 101;</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/update.html">UPDATE</a></p>
+          <dl class="explain">
+            <dt>UPDATE Users</dt>
+            <dd>The table to change.</dd>
+            <dt>SET Location = 'Australia'</dt>
+            <dd>The new value. To change several columns, separate them with commas: <code>SET Location = 'Australia', Email = 'new@test.com'</code>.</dd>
+            <dt>WHERE Username = 'test'</dt>
+            <dd>Only rows that match are changed. MySQL replies <code>Rows matched: 1  Changed: 1</code>. <strong>Without WHERE, every row in the table is changed.</strong></dd>
+          </dl>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Users after the first UPDATE</caption>
+    <thead><tr><th scope="col">UserID</th><th scope="col">Username</th><th scope="col">Email</th><th scope="col">Password</th><th scope="col">DateOfBirth</th><th scope="col">Location</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>test</td><td>test@test.com</td><td class="num">123456</td><td>2000-01-01</td><td>Australia</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Games after the second UPDATE</caption>
+    <thead><tr><th scope="col">GameID</th><th scope="col">Title</th><th scope="col">BasePrice</th></tr></thead>
+    <tbody>
+      <tr><td class="num">101</td><td>Super Mario Bros</td><td class="num">40.00</td></tr>
+    </tbody>
+  </table>
+</div>
+        </section>
+
+        <section id="delete" class="topic-section" aria-labelledby="delete-title">
+          <h2 id="delete-title">Delete rows</h2>
+          <p>Add an extra developer, then delete it by its ID.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>INSERT INTO Developers VALUES (501, 'Test', 'USA');
+SELECT * FROM Developers;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Developers before the DELETE</caption>
+    <thead><tr><th scope="col">DeveloperID</th><th scope="col">DeveloperName</th><th scope="col">DeveloperLocation</th></tr></thead>
+    <tbody>
+      <tr><td class="num">500</td><td>Nintendo</td><td>Japan</td></tr>
+      <tr><td class="num">501</td><td>Test</td><td>USA</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>DELETE FROM Developers WHERE DeveloperID = 501;
+SELECT * FROM Developers;</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/delete.html">DELETE</a></p>
+          <dl class="explain">
+            <dt>DELETE FROM Developers</dt>
+            <dd>Removes whole rows from the table. The table itself stays.</dd>
+            <dt>WHERE DeveloperID = 501</dt>
+            <dd>Only the row with ID 501 is removed. Using the primary key in WHERE is the safest way to pick exactly one row.</dd>
+          </dl>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Developers after the DELETE</caption>
+    <thead><tr><th scope="col">DeveloperID</th><th scope="col">DeveloperName</th><th scope="col">DeveloperLocation</th></tr></thead>
+    <tbody>
+      <tr><td class="num">500</td><td>Nintendo</td><td>Japan</td></tr>
+    </tbody>
+  </table>
+</div>
+          <div class="callout callout-mistake">
+            <div class="callout-title">Never forget WHERE</div>
+            <p><code>DELETE FROM Developers;</code> with no WHERE removes <strong>every</strong> row. MySQL Workbench blocks UPDATE and DELETE without a key in WHERE (its “safe updates” setting) to protect you from this.</p>
+          </div>
+        </section>
+
+        <section id="test" class="topic-section" aria-labelledby="test-title">
+          <h2 id="test-title">Test the constraints</h2>
+          <p>A constraint is only useful if it stops bad data. Try these statements. Each one should <strong>fail</strong>, and the table stays unchanged.</p>
+<div class="code-block">
+  <span class="code-label">MySQL: each of these gives an error</span>
+  <pre><code>INSERT INTO Users VALUES (1, 'arjun', 'arjun@example.com', 'pass', '2004-03-14', 'India');</code></pre>
+</div>
+          <p><code>ERROR 1062 (23000): Duplicate entry '1' for key 'users.PRIMARY'</code>: user ID 1 already exists.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>INSERT INTO Users VALUES (2, 'test', 'other@example.com', 'pass', '2004-03-14', 'India');</code></pre>
+</div>
+          <p><code>ERROR 1062 (23000): Duplicate entry 'test' for key 'users.Users_UNQ_1'</code>: the username is taken.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>INSERT INTO Users (UserID, Username, Password) VALUES (3, 'meera', 'pass');</code></pre>
+</div>
+          <p><code>ERROR 1364 (HY000): Field 'Email' doesn't have a default value</code>: Email is NOT NULL and was left out.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>UPDATE Games SET BasePrice = 0 WHERE GameID = 101;</code></pre>
+</div>
+          <p><code>ERROR 3819 (HY000): Check constraint 'Games_CHK' is violated.</code>: the price must be greater than 0.</p>
+        </section>
+
+        <section id="changes" class="topic-section" aria-labelledby="changes-title">
+          <h2 id="changes-title">Changes from the record</h2>
+          <ul>
+            <li>The record's step 3.2 asks for a check on <code>Price</code>, but the column is named <code>BasePrice</code>. The solution uses BasePrice.</li>
+            <li>The release date of Super Mario Bros is changed from 1980-01-01 to its real date, 1985-09-13.</li>
+            <li>The record writes <code>UNIQUE(UserName)</code>. Column names in MySQL are not case-sensitive, so it works, but this page uses the exact name <code>Username</code>.</li>
+          </ul>
+        </section>
+
+        <section id="errors" class="topic-section" aria-labelledby="errors-title">
+          <h2 id="errors-title">Common errors</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Errors you may see in this exercise and how to fix them</caption>
+              <thead><tr><th scope="col">Error</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead>
+              <tbody>
+                <tr><td><code>ERROR 1068 (42000): Multiple primary key defined</code></td><td>You ran ADD PRIMARY KEY twice on the same table.</td><td>Nothing to fix: the key is already there. Check with DESC.</td></tr>
+                <tr><td><code>ERROR 1062 (23000): Duplicate entry '1' for key ...</code></td><td>An INSERT repeats a primary key or UNIQUE value, or ADD PRIMARY KEY found duplicates.</td><td>Use a new ID, or delete the duplicate row first.</td></tr>
+                <tr><td><code>ERROR 1136 (21S01): Column count doesn't match value count at row 1</code></td><td>INSERT without a column list, but too few or too many values.</td><td>Give one value per column in DESC order, or name the columns.</td></tr>
+                <tr><td><code>ERROR 1054 (42S22): Unknown column 'Price' in 'Games'</code></td><td>The column is called BasePrice.</td><td>Use the name DESC shows.</td></tr>
+                <tr><td><code>ERROR 3819 (HY000): Check constraint 'Games_CHK' is violated.</code></td><td>A price of 0 or less, or a row already breaking the rule when you add the CHECK.</td><td>Use a price above 0, or fix the old rows first.</td></tr>
+                <tr><td><code>ERROR 1175 (HY000): You are using safe update mode ...</code></td><td>Workbench blocks UPDATE or DELETE whose WHERE does not use a key column.</td><td>Use the primary key in WHERE (for example <code>WHERE UserID = 1</code>).</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="viva" class="topic-section" aria-labelledby="viva-title">
+          <h2 id="viva-title">Viva questions</h2>
+          <details class="accordion">
+            <summary>What is the difference between a primary key and a unique key?</summary>
+            <div class="accordion-body"><p>Both stop duplicate values. A primary key cannot be NULL and a table has only one. A UNIQUE column can hold NULL and a table can have many. See <a href="../units/unit-1/keys.html">Keys</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is a composite key? Give an example from this exercise.</summary>
+            <div class="accordion-body"><p>A key made of two or more columns. PurchaseHistory uses (TransactionID, GameID) and Cart uses (UserID, GameID).</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Which commands in this exercise are DDL and which are DML?</summary>
+            <div class="accordion-body"><p>DDL: CREATE TABLE and ALTER TABLE, because they change the structure. DML: INSERT, UPDATE, DELETE and SELECT, because they work on the rows.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What happens if you run DELETE without a WHERE clause?</summary>
+            <div class="accordion-body"><p>Every row in the table is deleted. The empty table stays.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is the difference between DELETE, TRUNCATE and DROP?</summary>
+            <div class="accordion-body"><p>DELETE (DML) removes chosen rows and can be rolled back inside a transaction. TRUNCATE (DDL) removes all rows quickly and keeps the table. DROP (DDL) removes the table itself.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What does AUTO_INCREMENT do?</summary>
+            <div class="accordion-body"><p>It gives a new row the next number in sequence when the column is left out of the INSERT. It is used for ID columns.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Why must MODIFY COLUMN repeat the data type?</summary>
+            <div class="accordion-body"><p>MODIFY replaces the whole column definition. The type is part of that definition, so it must be given again along with NOT NULL.</p></div>
+          </details>
+        </section>
+
+        <section id="result" class="topic-section" aria-labelledby="result-title">
+          <h2 id="result-title">Result</h2>
+          <div class="callout callout-example">
+            <div class="callout-title">Result</div>
+            <p>The tables were successfully created, the constraints implemented and the insert, update and delete operations were performed successfully.</p>
+          </div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Topic pages: <a href="../units/unit-1/keys.html">Keys</a>, <a href="../units/unit-1/constraints.html">Constraints</a>, <a href="../units/unit-1/ddl.html">DDL</a> and <a href="../units/unit-1/dml.html">DML</a>.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/alter-table.html">ALTER TABLE</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/create-table-check-constraints.html">CHECK Constraints</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/insert.html">INSERT</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/update.html">UPDATE</a> and <a href="https://dev.mysql.com/doc/refman/8.4/en/delete.html">DELETE</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <nav id="pager" class="pager" aria-label="Previous and next exercises"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+</body>
+</html>

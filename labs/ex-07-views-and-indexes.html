@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exercise 7: Views and Indexes | DBMS Study Guide</title>
+  <meta name="description" content="Lab exercise 7 explained: save queries as views with CREATE VIEW, speed up searches with CREATE INDEX, and check indexes with SHOW INDEXES and EXPLAIN in MySQL.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/widgets.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lab" data-lab="7" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <article class="content">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+        <header class="topic-head lab-head">
+          <div class="badges">
+            <span class="badge badge-unit">Lab exercise 7</span>
+            <span class="badge badge-level" title="Course outcome">CO1</span>
+            <span class="badge badge-level">MySQL</span>
+          </div>
+          <h1>Create views and indexes for database tables</h1>
+          <p class="lead">Save a long query under a name with a view, so it can be used like a table. Then add indexes on the columns people search by, and use EXPLAIN to see MySQL use them.</p>
+        </header>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#aim">Aim</a></li>
+            <li><a href="#steps">Steps</a></li>
+            <li><a href="#views">Create the views</a></li>
+            <li><a href="#use-views">Use the views</a></li>
+            <li><a href="#indexes">Create the indexes</a></li>
+            <li><a href="#explain">Is the index used? EXPLAIN</a></li>
+            <li><a href="#changes">Changes from the record</a></li>
+            <li><a href="#errors">Common errors</a></li>
+            <li><a href="#viva">Viva questions</a></li>
+            <li><a href="#result">Result</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ol>
+        </nav>
+
+        <section id="aim" class="topic-section" aria-labelledby="aim-title">
+          <h2 id="aim-title">Aim</h2>
+          <div class="callout callout-definition">
+            <div class="callout-title">Aim</div>
+            <ul>
+              <li>To create a view to simplify data retrieval from the games store database.</li>
+              <li>To create indexes on frequently searched columns to improve query performance.</li>
+            </ul>
+          </div>
+          <h3>Read these topics first</h3>
+          <div id="lab-topics"></div>
+          <p>You need the sample data from <a href="ex-04-where-and-aggregates.html#data">Exercise 4</a>, or the <a href="index.html#starter">starter script</a>. The second view reuses the last query of <a href="ex-05-subqueries-and-joins.html#join-subquery">Exercise 5</a>.</p>
+        </section>
+
+        <section id="steps" class="topic-section" aria-labelledby="steps-title">
+          <h2 id="steps-title">Steps</h2>
+          <ol class="steps">
+            <li><strong>Create two views:</strong> developers with the games they made, and games with their sales. Test each with <code>SELECT * FROM ViewName;</code>.</li>
+            <li><strong>Create indexes</strong> on Games.Genre, Developers.DeveloperName and Publishers.PublisherName.</li>
+            <li><strong>List the indexes</strong> of each table with SHOW INDEXES.</li>
+            <li><strong>Run SELECT queries</strong> that use an indexed column in WHERE.</li>
+          </ol>
+          <div class="code-block">
+            <span class="code-label">Syntax</span>
+            <pre><code>CREATE VIEW ViewName AS
+SELECT ...;
+
+CREATE INDEX IndexName ON TableName (Column);
+SHOW INDEXES FROM TableName;</code></pre>
+          </div>
+        </section>
+
+        <section id="views" class="topic-section" aria-labelledby="views-title">
+          <h2 id="views-title">Create the views</h2>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>CREATE VIEW DeveloperGames AS
+SELECT DeveloperName, Title
+FROM Developers INNER JOIN Games
+ON Developers.DeveloperID = Games.DeveloperID;
+
+CREATE VIEW GameSales AS
+SELECT Title, Sales
+FROM Games INNER JOIN
+  (SELECT GameID, COUNT(*) AS Sales FROM PurchaseHistory GROUP BY GameID) AS GameSales
+ON Games.GameID = GameSales.GameID;</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-view.html">CREATE VIEW</a></p>
+          <dl class="explain">
+            <dt>CREATE VIEW DeveloperGames AS</dt>
+            <dd>Stores the query that follows under the name DeveloperGames. No rows are copied: MySQL saves only the query text.</dd>
+            <dt>SELECT DeveloperName, Title FROM Developers INNER JOIN Games ON ...</dt>
+            <dd>An ordinary join (Exercise 5). The view's columns are the columns of this SELECT.</dd>
+            <dt>CREATE VIEW GameSales AS ...</dt>
+            <dd>The “title and sales” join from Exercise 5. Long queries like this are the best use of a view: write once, use by name.</dd>
+          </dl>
+          <p>A view appears in the table list. <code>SHOW FULL TABLES;</code> marks it as a VIEW:</p>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Output of SHOW FULL TABLES</caption>
+    <thead><tr><th scope="col">Tables_in_games_store</th><th scope="col">Table_type</th></tr></thead>
+    <tbody>
+      <tr><td>Cart</td><td>BASE TABLE</td></tr>
+      <tr><td>DeveloperGames</td><td>VIEW</td></tr>
+      <tr><td>Developers</td><td>BASE TABLE</td></tr>
+      <tr><td>GameSales</td><td>VIEW</td></tr>
+      <tr><td>Games</td><td>BASE TABLE</td></tr>
+      <tr><td>Offers</td><td>BASE TABLE</td></tr>
+      <tr><td>Publishers</td><td>BASE TABLE</td></tr>
+      <tr><td>PurchaseHistory</td><td>BASE TABLE</td></tr>
+      <tr><td>Transactions</td><td>BASE TABLE</td></tr>
+      <tr><td>Users</td><td>BASE TABLE</td></tr>
+    </tbody>
+  </table>
+</div>
+        </section>
+
+        <section id="use-views" class="topic-section" aria-labelledby="use-views-title">
+          <h2 id="use-views-title">Use the views</h2>
+          <p>A view is a <strong>virtual table</strong>. Query it like a table. Each time, MySQL runs the saved query on the current data, so the view is always up to date.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT * FROM DeveloperGames;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>SELECT * FROM DeveloperGames</caption>
+    <thead><tr><th scope="col">DeveloperName</th><th scope="col">Title</th></tr></thead>
+    <tbody>
+      <tr><td>Nintendo</td><td>Super Mario Bros</td></tr>
+      <tr><td>Nintendo</td><td>The Legend of Zelda: Breath of the Wild</td></tr>
+      <tr><td>Nintendo</td><td>Animal Crossing: New Horizons</td></tr>
+      <tr><td>Capcom</td><td>Resident Evil 2</td></tr>
+      <tr><td>Capcom</td><td>Resident Evil 4</td></tr>
+      <tr><td>Capcom</td><td>Resident Evil Village</td></tr>
+      <tr><td>Capcom</td><td>Devil May Cry 5</td></tr>
+      <tr><td>Remedy Entertainment</td><td>Alan Wake 2</td></tr>
+      <tr><td>Rockstar North</td><td>Grand Theft Auto V</td></tr>
+      <tr><td>Santa Monica Studio</td><td>God of War</td></tr>
+      <tr><td>CD Projekt Red</td><td>The Witcher 3: Wild Hunt</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="output-note">A view has no fixed row order. Add ORDER BY when you query it if the order matters.</p>
+          <p>Pokemon Black is missing. Its DeveloperID became NULL in Exercise 3, and INNER JOIN drops rows with no match.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT * FROM GameSales ORDER BY Sales DESC, Title;
+SELECT * FROM DeveloperGames WHERE DeveloperName = 'Capcom';</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>SELECT * FROM GameSales ORDER BY Sales DESC, Title</caption>
+    <thead><tr><th scope="col">Title</th><th scope="col">Sales</th></tr></thead>
+    <tbody>
+      <tr><td>Resident Evil 4</td><td class="num">4</td></tr>
+      <tr><td>Grand Theft Auto V</td><td class="num">2</td></tr>
+      <tr><td>The Witcher 3: Wild Hunt</td><td class="num">2</td></tr>
+      <tr><td>God of War</td><td class="num">1</td></tr>
+      <tr><td>Resident Evil 2</td><td class="num">1</td></tr>
+      <tr><td>The Legend of Zelda: Breath of the Wild</td><td class="num">1</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>SELECT * FROM DeveloperGames WHERE DeveloperName = 'Capcom'</caption>
+    <thead><tr><th scope="col">DeveloperName</th><th scope="col">Title</th></tr></thead>
+    <tbody>
+      <tr><td>Capcom</td><td>Resident Evil 2</td></tr>
+      <tr><td>Capcom</td><td>Resident Evil 4</td></tr>
+      <tr><td>Capcom</td><td>Resident Evil Village</td></tr>
+      <tr><td>Capcom</td><td>Devil May Cry 5</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>WHERE and ORDER BY work on a view just as on a table.</p>
+          <div class="callout callout-note">
+            <div class="callout-title">Not every view can be updated</div>
+            <p>GameSales uses GROUP BY and COUNT, so a value like Sales cannot be changed through it. <code>UPDATE GameSales SET Sales = 10;</code> fails with “The target table GameSales of the UPDATE is not updatable”. A view on one table with plain columns (no GROUP BY, DISTINCT or aggregates) can be updated, and the change goes to the base table.</p>
+          </div>
+        </section>
+
+        <section id="indexes" class="topic-section" aria-labelledby="indexes-title">
+          <h2 id="indexes-title">Create the indexes</h2>
+          <p>An index is like the index at the back of a book. MySQL can jump straight to the rows with a given value instead of reading every row. MySQL's indexes are B+ trees (see <a href="../units/unit-4/b-plus-tree-index-files.html">B+ Tree Index Files</a>).</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>CREATE INDEX Games_IDX_1 ON Games (Genre);
+CREATE INDEX Developers_IDX_1 ON Developers (DeveloperName);
+CREATE INDEX Publishers_IDX_1 ON Publishers (PublisherName);</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-index.html">CREATE INDEX</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/show-index.html">SHOW INDEX</a></p>
+          <dl class="explain">
+            <dt>CREATE INDEX Games_IDX_1</dt>
+            <dd>The index's name, unique within the table.</dd>
+            <dt>ON Games (Genre)</dt>
+            <dd>The table and column to index. Users often browse by genre, so searches on Genre become faster.</dd>
+          </dl>
+          <p>List the indexes of a table with SHOW INDEXES. The full output has 15 columns; the main ones are shown below.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SHOW INDEXES FROM Games;
+SHOW INDEXES FROM Developers;
+SHOW INDEXES FROM Publishers;</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Main columns of SHOW INDEXES FROM Games</caption>
+    <thead><tr><th scope="col">Table</th><th scope="col">Non_unique</th><th scope="col">Key_name</th><th scope="col">Seq_in_index</th><th scope="col">Column_name</th><th scope="col">Index_type</th></tr></thead>
+    <tbody>
+      <tr><td>Games</td><td class="num">0</td><td>PRIMARY</td><td class="num">1</td><td>GameID</td><td>BTREE</td></tr>
+      <tr><td>Games</td><td class="num">1</td><td>Games_FK_1</td><td class="num">1</td><td>DeveloperID</td><td>BTREE</td></tr>
+      <tr><td>Games</td><td class="num">1</td><td>Games_FK_2</td><td class="num">1</td><td>PublisherID</td><td>BTREE</td></tr>
+      <tr><td>Games</td><td class="num">1</td><td>Games_IDX_1</td><td class="num">1</td><td>Genre</td><td>BTREE</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Main columns of SHOW INDEXES FROM Developers</caption>
+    <thead><tr><th scope="col">Table</th><th scope="col">Non_unique</th><th scope="col">Key_name</th><th scope="col">Seq_in_index</th><th scope="col">Column_name</th><th scope="col">Index_type</th></tr></thead>
+    <tbody>
+      <tr><td>Developers</td><td class="num">0</td><td>PRIMARY</td><td class="num">1</td><td>DeveloperID</td><td>BTREE</td></tr>
+      <tr><td>Developers</td><td class="num">1</td><td>Developers_IDX_1</td><td class="num">1</td><td>DeveloperName</td><td>BTREE</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Main columns of SHOW INDEXES FROM Publishers</caption>
+    <thead><tr><th scope="col">Table</th><th scope="col">Non_unique</th><th scope="col">Key_name</th><th scope="col">Seq_in_index</th><th scope="col">Column_name</th><th scope="col">Index_type</th></tr></thead>
+    <tbody>
+      <tr><td>Publishers</td><td class="num">0</td><td>PRIMARY</td><td class="num">1</td><td>PublisherID</td><td>BTREE</td></tr>
+      <tr><td>Publishers</td><td class="num">1</td><td>Publishers_IDX_1</td><td class="num">1</td><td>PublisherName</td><td>BTREE</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="output-note">MySQL shows the table names in lower case on Windows.</p>
+          <dl class="explain">
+            <dt>PRIMARY</dt>
+            <dd>MySQL builds an index for every primary key on its own (Exercise 2).</dd>
+            <dt>Games_FK_1, Games_FK_2</dt>
+            <dd>MySQL also builds an index for each foreign key column (Exercise 3), so joins and the ON DELETE checks are fast.</dd>
+            <dt>Non_unique</dt>
+            <dd>0 for a unique index (no repeats allowed), 1 for an ordinary index. Many games share a genre, so Games_IDX_1 is non-unique.</dd>
+            <dt>Index_type BTREE</dt>
+            <dd>The index is a B+ tree.</dd>
+          </dl>
+          <p>Now search on the indexed columns:</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>SELECT GameID, Title, Genre FROM Games WHERE Genre = 'RPG';
+SELECT * FROM Developers WHERE DeveloperName = 'Capcom';
+SELECT * FROM Publishers WHERE PublisherName = 'Nintendo';</code></pre>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Games in the RPG genre</caption>
+    <thead><tr><th scope="col">GameID</th><th scope="col">Title</th><th scope="col">Genre</th></tr></thead>
+    <tbody>
+      <tr><td class="num">102</td><td>Pokemon Black</td><td>RPG</td></tr>
+      <tr><td class="num">110</td><td>The Witcher 3: Wild Hunt</td><td>RPG</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Developer named Capcom</caption>
+    <thead><tr><th scope="col">DeveloperID</th><th scope="col">DeveloperName</th><th scope="col">DeveloperLocation</th></tr></thead>
+    <tbody>
+      <tr><td class="num">502</td><td>Capcom</td><td>Japan</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="table-wrap">
+  <table class="output">
+    <caption>Publisher named Nintendo</caption>
+    <thead><tr><th scope="col">PublisherID</th><th scope="col">PublisherName</th><th scope="col">PublisherLocation</th></tr></thead>
+    <tbody>
+      <tr><td class="num">700</td><td>Nintendo</td><td>Japan</td></tr>
+    </tbody>
+  </table>
+</div>
+          <p>The results are the same as without an index. An index never changes <em>what</em> a query returns, only <em>how fast</em>. With 12 rows you cannot feel the difference; with a million rows you can.</p>
+        </section>
+
+        <section id="explain" class="topic-section" aria-labelledby="explain-title">
+          <h2 id="explain-title">Is the index used? EXPLAIN</h2>
+          <p>Put EXPLAIN in front of a SELECT to see the plan MySQL will follow, without running the query.</p>
+<div class="code-block">
+  <span class="code-label">MySQL</span>
+  <pre><code>EXPLAIN SELECT GameID, Title, Genre FROM Games WHERE Genre = 'RPG';
+EXPLAIN SELECT GameID, Title FROM Games WHERE Title = 'God of War';</code></pre>
+</div>
+          <p class="manual-link">MySQL manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/explain.html">EXPLAIN</a></p>
+          <div class="table-wrap">
+            <table class="output">
+              <caption>Main columns of the two EXPLAIN outputs</caption>
+              <thead><tr><th scope="col">Query</th><th scope="col">type</th><th scope="col">possible_keys</th><th scope="col">key</th><th scope="col">rows</th></tr></thead>
+              <tbody>
+                <tr><td>WHERE Genre = 'RPG'</td><td>ref</td><td>Games_IDX_1</td><td>Games_IDX_1</td><td class="num">2</td></tr>
+                <tr><td>WHERE Title = 'God of War'</td><td>ALL</td><td><span class="null">NULL</span></td><td><span class="null">NULL</span></td><td class="num">12</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <dl class="explain">
+            <dt>type = ref, key = Games_IDX_1, rows = 2</dt>
+            <dd>MySQL looks up 'RPG' in the index and reads only the 2 matching rows.</dd>
+            <dt>type = ALL, key = NULL, rows = 12</dt>
+            <dd>Title has no index, so MySQL reads all 12 rows: a <strong>full table scan</strong>.</dd>
+          </dl>
+          <p>The rows column is an estimate, so your numbers may differ a little.</p>
+        </section>
+
+        <section id="changes" class="topic-section" aria-labelledby="changes-title">
+          <h2 id="changes-title">Changes from the record</h2>
+          <ul>
+            <li>The record says text columns need a size in CREATE INDEX. That is true only for TEXT and BLOB columns, not VARCHAR. For example, <code>CREATE INDEX Games_IDX_2 ON Games (Description(50));</code> indexes the first 50 characters of the description.</li>
+            <li>EXPLAIN is added to show that the index is really used.</li>
+          </ul>
+        </section>
+
+        <section id="errors" class="topic-section" aria-labelledby="errors-title">
+          <h2 id="errors-title">Common errors</h2>
+          <div class="table-wrap">
+            <table>
+              <caption>Errors you may see in this exercise and how to fix them</caption>
+              <thead><tr><th scope="col">Error</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead>
+              <tbody>
+                <tr><td><code>ERROR 1050 (42S01): Table 'DeveloperGames' already exists</code></td><td>The CREATE VIEW ran twice (a view counts as a table name).</td><td>Use <code>CREATE OR REPLACE VIEW</code>, or <code>DROP VIEW DeveloperGames;</code> first.</td></tr>
+                <tr><td><code>ERROR 1061 (42000): Duplicate key name 'Games_IDX_1'</code></td><td>The CREATE INDEX ran twice.</td><td>The index is already there. To remove it: <code>DROP INDEX Games_IDX_1 ON Games;</code>.</td></tr>
+                <tr><td><code>ERROR 1170 (42000): BLOB/TEXT column 'Description' used in key specification without a key length</code></td><td>An index on a TEXT column with no length.</td><td>Give a prefix length: <code>(Description(50))</code>.</td></tr>
+                <tr><td><code>ERROR 1288 (HY000): The target table GameSales of the UPDATE is not updatable</code></td><td>UPDATE on a view with GROUP BY or a join of a derived table.</td><td>Update the base table instead.</td></tr>
+                <tr><td>View shows fewer rows than expected</td><td>The view uses INNER JOIN, which drops rows with no match.</td><td>Use LEFT JOIN in the view if every row must appear.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="viva" class="topic-section" aria-labelledby="viva-title">
+          <h2 id="viva-title">Viva questions</h2>
+          <details class="accordion">
+            <summary>What is a view? Does it store data?</summary>
+            <div class="accordion-body"><p>A view is a virtual table defined by a stored SELECT query. It does not store rows; the query runs each time the view is used. See <a href="../units/unit-2/views.html">Views</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Give two uses of views.</summary>
+            <div class="accordion-body"><p>They make long queries simple to reuse, and they improve security: a user can be given access to a view showing some columns, without access to the whole table.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is an index? Why not index every column?</summary>
+            <div class="accordion-body"><p>An index is a separate sorted structure (a B+ tree in MySQL) that finds rows by a column's value quickly. Every index takes space and must be updated on each INSERT, UPDATE and DELETE, so too many indexes slow down writes.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>Which indexes does MySQL create on its own?</summary>
+            <div class="accordion-body"><p>One for the primary key, one for each UNIQUE constraint and one for each foreign key column (if no suitable index exists).</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What is the difference between a clustered and a non-clustered index?</summary>
+            <div class="accordion-body"><p>In a clustered index the table's rows are stored in the index order. In MySQL's InnoDB the primary key is the clustered index. A secondary index such as Games_IDX_1 is non-clustered: it stores the key and the primary key, and MySQL then fetches the row. See <a href="../units/unit-4/indexing-and-hashing.html">Indexing and Hashing</a>.</p></div>
+          </details>
+          <details class="accordion">
+            <summary>What does EXPLAIN show?</summary>
+            <div class="accordion-body"><p>The plan MySQL will use for a query: the access type (for example ref or ALL), which index it uses and about how many rows it will read.</p></div>
+          </details>
+        </section>
+
+        <section id="result" class="topic-section" aria-labelledby="result-title">
+          <h2 id="result-title">Result</h2>
+          <div class="callout callout-example">
+            <div class="callout-title">Result</div>
+            <p>Ease of data retrieval and query performance were successfully improved by using views and indexes.</p>
+          </div>
+        </section>
+
+        <section id="reading" class="topic-section" aria-labelledby="reading-title">
+          <h2 id="reading-title">Further reading</h2>
+          <ul>
+            <li>Topic pages: <a href="../units/unit-2/views.html">Views</a>, <a href="../units/unit-4/indexing-and-hashing.html">Indexing and Hashing</a> and <a href="../units/unit-4/b-plus-tree-index-files.html">B+ Tree Index Files</a>.</li>
+            <li>MySQL 8.4 Reference Manual: <a href="https://dev.mysql.com/doc/refman/8.4/en/create-view.html">CREATE VIEW</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/create-index.html">CREATE INDEX</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/mysql-indexes.html">How MySQL Uses Indexes</a> and <a href="https://dev.mysql.com/doc/refman/8.4/en/explain.html">EXPLAIN</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="topic-footer">
+          <nav id="pager" class="pager" aria-label="Previous and next exercises"></nav>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+</body>
+</html>
