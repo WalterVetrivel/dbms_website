@@ -119,7 +119,7 @@
 
           <h3>RAID 0: block striping, no redundancy</h3>
           <p>Data blocks are striped across all the disks. Nothing extra is stored.</p>
-          <figure class="figure">
+          <figure id="fig-raid-levels" class="figure">
             <div class="widget-stage raid-stage" tabindex="0"><table class="raid-table"><caption class="visually-hidden">Blocks on each disk in RAID 0</caption><thead><tr><th scope="col">Stripe</th><th scope="col"><span class="raid-disk">Disk 1</span></th><th scope="col"><span class="raid-disk">Disk 2</span></th><th scope="col"><span class="raid-disk">Disk 3</span></th><th scope="col"><span class="raid-disk">Disk 4</span></th></tr></thead><tbody><tr><th scope="row">1</th><td class="raid-cell kind-data"><span class="raid-name">A1</span></td><td class="raid-cell kind-data"><span class="raid-name">A2</span></td><td class="raid-cell kind-data"><span class="raid-name">A3</span></td><td class="raid-cell kind-data"><span class="raid-name">A4</span></td></tr><tr><th scope="row">2</th><td class="raid-cell kind-data"><span class="raid-name">A5</span></td><td class="raid-cell kind-data"><span class="raid-name">A6</span></td><td class="raid-cell kind-data"><span class="raid-name">A7</span></td><td class="raid-cell kind-data"><span class="raid-name">A8</span></td></tr><tr><th scope="row">3</th><td class="raid-cell kind-data"><span class="raid-name">A9</span></td><td class="raid-cell kind-data"><span class="raid-name">A10</span></td><td class="raid-cell kind-data"><span class="raid-name">A11</span></td><td class="raid-cell kind-data"><span class="raid-name">A12</span></td></tr></tbody></table></div>
             <figcaption>RAID 0 with 4 disks. Blocks A1 to A12 are spread over all the disks.</figcaption>
           </figure>
@@ -130,7 +130,7 @@
 
           <h3>RAID 1: mirroring</h3>
           <p>Every block is written to two disks. Some books call striping plus mirroring <strong>RAID 1 + 0</strong> or <strong>RAID 10</strong>.</p>
-          <figure class="figure">
+          <figure id="fig-raid-levels-2" class="figure">
             <div class="widget-stage raid-stage" tabindex="0"><table class="raid-table"><caption class="visually-hidden">Blocks on each disk in RAID 1</caption><thead><tr><th scope="col">Stripe</th><th scope="col"><span class="raid-disk">Disk 1</span></th><th scope="col"><span class="raid-disk">Disk 2</span></th></tr></thead><tbody><tr><th scope="row">1</th><td class="raid-cell kind-data"><span class="raid-name">A1</span></td><td class="raid-cell kind-mirror"><span class="raid-name">A1 copy</span></td></tr><tr><th scope="row">2</th><td class="raid-cell kind-data"><span class="raid-name">A2</span></td><td class="raid-cell kind-mirror"><span class="raid-name">A2 copy</span></td></tr><tr><th scope="row">3</th><td class="raid-cell kind-data"><span class="raid-name">A3</span></td><td class="raid-cell kind-mirror"><span class="raid-name">A3 copy</span></td></tr></tbody></table></div>
             <figcaption>RAID 1 with 2 disks. Disk 2 is an exact copy of disk 1.</figcaption>
           </figure>
@@ -155,7 +155,7 @@
 
           <h3>RAID 4: block-interleaved parity</h3>
           <p>Like RAID 3, but the data is striped in <strong>blocks</strong>. One disk holds the parity blocks.</p>
-          <figure class="figure">
+          <figure id="fig-raid-levels-3" class="figure">
             <div class="widget-stage raid-stage" tabindex="0"><table class="raid-table"><caption class="visually-hidden">Blocks on each disk in RAID 4</caption><thead><tr><th scope="col">Stripe</th><th scope="col"><span class="raid-disk">Disk 1</span></th><th scope="col"><span class="raid-disk">Disk 2</span></th><th scope="col"><span class="raid-disk">Disk 3</span></th><th scope="col"><span class="raid-disk">Disk 4</span></th></tr></thead><tbody><tr><th scope="row">1</th><td class="raid-cell kind-data"><span class="raid-name">A1</span></td><td class="raid-cell kind-data"><span class="raid-name">A2</span></td><td class="raid-cell kind-data"><span class="raid-name">A3</span></td><td class="raid-cell kind-p"><span class="raid-name">P1</span></td></tr><tr><th scope="row">2</th><td class="raid-cell kind-data"><span class="raid-name">A4</span></td><td class="raid-cell kind-data"><span class="raid-name">A5</span></td><td class="raid-cell kind-data"><span class="raid-name">A6</span></td><td class="raid-cell kind-p"><span class="raid-name">P2</span></td></tr><tr><th scope="row">3</th><td class="raid-cell kind-data"><span class="raid-name">A7</span></td><td class="raid-cell kind-data"><span class="raid-name">A8</span></td><td class="raid-cell kind-data"><span class="raid-name">A9</span></td><td class="raid-cell kind-p"><span class="raid-name">P3</span></td></tr></tbody></table></div>
             <figcaption>RAID 4 with 4 disks. Disk 4 holds every parity block.</figcaption>
           </figure>
@@ -166,7 +166,7 @@
 
           <h3>RAID 5: block-interleaved distributed parity</h3>
           <p>Like RAID 4, but the parity blocks are <strong>spread over all the disks</strong>. In each stripe, a different disk holds the parity.</p>
-          <figure class="figure">
+          <figure id="fig-raid-levels-4" class="figure">
             <div class="widget-stage raid-stage" tabindex="0"><table class="raid-table"><caption class="visually-hidden">Blocks on each disk in RAID 5</caption><thead><tr><th scope="col">Stripe</th><th scope="col"><span class="raid-disk">Disk 1</span></th><th scope="col"><span class="raid-disk">Disk 2</span></th><th scope="col"><span class="raid-disk">Disk 3</span></th><th scope="col"><span class="raid-disk">Disk 4</span></th></tr></thead><tbody><tr><th scope="row">1</th><td class="raid-cell kind-data"><span class="raid-name">A1</span></td><td class="raid-cell kind-data"><span class="raid-name">A2</span></td><td class="raid-cell kind-data"><span class="raid-name">A3</span></td><td class="raid-cell kind-p"><span class="raid-name">P1</span></td></tr><tr><th scope="row">2</th><td class="raid-cell kind-data"><span class="raid-name">A4</span></td><td class="raid-cell kind-data"><span class="raid-name">A5</span></td><td class="raid-cell kind-p"><span class="raid-name">P2</span></td><td class="raid-cell kind-data"><span class="raid-name">A6</span></td></tr><tr><th scope="row">3</th><td class="raid-cell kind-data"><span class="raid-name">A7</span></td><td class="raid-cell kind-p"><span class="raid-name">P3</span></td><td class="raid-cell kind-data"><span class="raid-name">A8</span></td><td class="raid-cell kind-data"><span class="raid-name">A9</span></td></tr></tbody></table></div>
             <figcaption>RAID 5 with 4 disks. The parity block moves to a different disk in each stripe.</figcaption>
           </figure>
@@ -177,7 +177,7 @@
 
           <h3>RAID 6: P + Q redundancy</h3>
           <p>Like RAID 5, but each stripe has <strong>two</strong> check blocks. P is the parity. Q uses a different code (such as a Reed-Solomon code). It needs at least 4 disks.</p>
-          <figure class="figure">
+          <figure id="fig-raid-levels-5" class="figure">
             <div class="widget-stage raid-stage" tabindex="0"><table class="raid-table"><caption class="visually-hidden">Blocks on each disk in RAID 6</caption><thead><tr><th scope="col">Stripe</th><th scope="col"><span class="raid-disk">Disk 1</span></th><th scope="col"><span class="raid-disk">Disk 2</span></th><th scope="col"><span class="raid-disk">Disk 3</span></th><th scope="col"><span class="raid-disk">Disk 4</span></th><th scope="col"><span class="raid-disk">Disk 5</span></th></tr></thead><tbody><tr><th scope="row">1</th><td class="raid-cell kind-q"><span class="raid-name">Q1</span></td><td class="raid-cell kind-data"><span class="raid-name">A1</span></td><td class="raid-cell kind-data"><span class="raid-name">A2</span></td><td class="raid-cell kind-data"><span class="raid-name">A3</span></td><td class="raid-cell kind-p"><span class="raid-name">P1</span></td></tr><tr><th scope="row">2</th><td class="raid-cell kind-data"><span class="raid-name">A4</span></td><td class="raid-cell kind-data"><span class="raid-name">A5</span></td><td class="raid-cell kind-data"><span class="raid-name">A6</span></td><td class="raid-cell kind-p"><span class="raid-name">P2</span></td><td class="raid-cell kind-q"><span class="raid-name">Q2</span></td></tr><tr><th scope="row">3</th><td class="raid-cell kind-data"><span class="raid-name">A7</span></td><td class="raid-cell kind-data"><span class="raid-name">A8</span></td><td class="raid-cell kind-p"><span class="raid-name">P3</span></td><td class="raid-cell kind-q"><span class="raid-name">Q3</span></td><td class="raid-cell kind-data"><span class="raid-name">A9</span></td></tr></tbody></table></div>
             <figcaption>RAID 6 with 5 disks. Each stripe has a P block and a Q block, on different disks.</figcaption>
           </figure>

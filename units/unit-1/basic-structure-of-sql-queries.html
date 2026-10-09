@@ -69,7 +69,7 @@
 
         <section id="structure" class="topic-section" aria-labelledby="structure-title">
           <h2 id="structure-title">The SELECT-FROM-WHERE structure</h2>
-          <div class="code-block">
+          <div id="code-select-structure" class="code-block">
             <span class="code-label">Syntax</span>
             <pre><code>SELECT [DISTINCT] A1, A2, ..., An     -- target list: the columns you want
 FROM   r1, r2, ..., rm               -- relation list: the tables to read
@@ -87,7 +87,7 @@ WHERE  P;                            -- qualification: the condition rows must m
             </table>
           </div>
           <p>So a basic query is the same as this relational algebra expression:</p>
-          <div class="code-block">
+          <div id="code-select-structure-2" class="code-block">
             <span class="code-label">Relational algebra</span>
             <pre><code>π A1, A2, ..., An (σ P (r1 × r2 × ... × rm))</code></pre>
           </div>
@@ -197,7 +197,7 @@ INSERT INTO department VALUES
   ('ECE', 'Electronics and Communication',    'Dr. Kannan');</code></pre>
           </div>
           <p><strong>Query:</strong> list each student from Salem with the name of their HOD.</p>
-          <div class="code-block">
+          <div id="code-two-table-query" class="code-block">
             <span class="code-label">SQL</span>
             <pre><code>SELECT student.name, department.hod
 FROM student, department
@@ -223,7 +223,7 @@ WHERE student.dept = department.dept
           </ul>
           <h3>Tuple variables (table aliases)</h3>
           <p>Short names make long queries easier to read. The same query, written with aliases and the <code>JOIN ... ON</code> form:</p>
-          <div class="code-block">
+          <div id="code-two-table-query-2" class="code-block">
             <span class="code-label">SQL</span>
             <pre><code>SELECT s.name, d.hod
 FROM student AS s

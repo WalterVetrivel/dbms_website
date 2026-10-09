@@ -67,7 +67,7 @@
         <section id="terms" class="topic-section" aria-labelledby="terms-title">
           <h2 id="terms-title">The parts of a relation</h2>
           <p>In the relational model, a table is called a <strong>relation</strong>. The figure names every part of the Student relation.</p>
-          <figure class="figure">
+          <figure id="fig-relation-parts" class="figure">
             <svg viewBox="0 0 620 250" width="620" height="250" role="img" aria-labelledby="rel-fig-title" style="max-width:100%;height:auto">
               <title id="rel-fig-title">The Student relation with four attributes: RollNo, Name, Marks and Phone. The header row is the relation schema. Each row is a tuple. Each column is an attribute. The set of rows is the relation instance. There are four columns (degree 4) and three rows (cardinality 3).</title>
               <g font-family="Inter, system-ui, sans-serif" font-size="13">
@@ -164,7 +164,7 @@
         <section id="worked" class="topic-section" aria-labelledby="worked-title">
           <h2 id="worked-title">Worked example: the Staff table</h2>
           <p>Find the number of columns, the number of tuples, the attributes, the degree and the cardinality of this relation.</p>
-          <div class="table-wrap">
+          <div id="tbl-staff-table" class="table-wrap">
             <table>
               <caption>Staff</caption>
               <thead><tr><th scope="col">StaffID</th><th scope="col">Name</th><th scope="col">Sex</th><th scope="col">Designation</th><th scope="col">Salary</th><th scope="col">DOJ</th></tr></thead>
@@ -175,7 +175,7 @@
               </tbody>
             </table>
           </div>
-          <div class="callout callout-example">
+          <div id="ex-staff-table-2" class="callout callout-example">
             <div class="callout-title">Solution</div>
             <ol>
               <li>Number of columns = 6.</li>

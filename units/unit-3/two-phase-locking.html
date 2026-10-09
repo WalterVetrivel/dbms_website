@@ -80,7 +80,7 @@
           </div>
           <p>A transaction starts in the growing phase and gets locks as it needs them. As soon as it releases its <strong>first</strong> lock, it enters the shrinking phase and can never ask for another lock.</p>
           <p>The point in the schedule where a transaction obtains its <strong>final lock</strong> (the end of its growing phase) is called its <strong>lock point</strong>.</p>
-          <figure class="figure">
+          <figure id="fig-two-phases" class="figure">
             <div class="widget-stage" tabindex="0">
               <svg viewBox="0 0 520 200" width="520" role="img" aria-labelledby="phases-svg-title" style="max-width:100%;height:auto">
                 <title id="phases-svg-title">Graph of the number of locks held over time. It rises step by step in the growing phase to a peak at the lock point, then falls step by step in the shrinking phase.</title>

@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Built by tools/build-gallery.mjs from data/gallery.js and the topic pages. Edit those, then run the script again. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit II Diagrams and Examples | DBMS Study Guide</title>
+  <meta name="description" content="The important diagrams, queries and worked examples of Unit II (Database Design) in one place, each linked to its topic page.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/widgets.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="diagrams" data-unit="2" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        <header class="gallery-head">
+          <span class="eyebrow">Unit II: Database Design</span>
+          <h1>Unit II Diagrams and Examples</h1>
+          <p class="lead">4 diagrams, 8 queries and 8 worked examples from the Unit II topics. Use them to practice drawing and writing before the exam. Each one links back to its topic page.</p>
+        </header>
+
+        <nav class="on-this-page" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#diagrams">Diagrams</a> <span class="muted">(4)</span></li>
+            <li><a href="#querys">Queries</a> <span class="muted">(8)</span></li>
+            <li><a href="#examples">Worked examples</a> <span class="muted">(8)</span></li>
+          </ol>
+        </nav>
+
+        <section id="diagrams" class="section gallery-kind" aria-labelledby="diagrams-title">
+          <h2 id="diagrams-title">Diagrams</h2>
+          <article class="gallery-item" id="cardinality" aria-labelledby="cardinality-title">
+            <h3 id="cardinality-title">Mapping cardinalities</h3>
+            <p class="gallery-note">One-to-one, one-to-many, many-to-one and many-to-many, drawn as lines between entities.</p>
+<figure class="figure">
+            <svg viewBox="0 0 640 190" width="640" height="190" role="img" aria-labelledby="cardinality-card-fig-title" style="max-width:100%;height:auto">
+<title id="cardinality-card-fig-title">Four mapping cardinalities shown as lines between entities of set A and set B.</title>
+<g font-family="Inter, system-ui, sans-serif" font-size="12">
+<rect x="10" y="28" width="140" height="150" rx="10" style="fill:var(--surface-2);stroke:var(--border)"/>
+<text x="80" y="18" text-anchor="middle" font-weight="700" style="fill:var(--text)">One to one (1 : 1)</text>
+<text x="40" y="48" text-anchor="middle" style="fill:var(--text-muted)">A</text><text x="120" y="48" text-anchor="middle" style="fill:var(--text-muted)">B</text>
+<line x1="40" y1="75" x2="120" y2="75" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="40" y1="115" x2="120" y2="115" style="stroke:var(--primary);stroke-width:2"/>
+<circle cx="40" cy="75" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="120" cy="75" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="40" cy="115" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="120" cy="115" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="40" cy="155" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="120" cy="155" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<rect x="170" y="28" width="140" height="150" rx="10" style="fill:var(--surface-2);stroke:var(--border)"/>
+<text x="240" y="18" text-anchor="middle" font-weight="700" style="fill:var(--text)">One to many (1 : N)</text>
+<text x="200" y="48" text-anchor="middle" style="fill:var(--text-muted)">A</text><text x="280" y="48" text-anchor="middle" style="fill:var(--text-muted)">B</text>
+<line x1="200" y1="75" x2="280" y2="75" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="200" y1="75" x2="280" y2="115" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="200" y1="115" x2="280" y2="155" style="stroke:var(--primary);stroke-width:2"/>
+<circle cx="200" cy="75" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="280" cy="75" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="200" cy="115" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="280" cy="115" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="200" cy="155" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="280" cy="155" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<rect x="330" y="28" width="140" height="150" rx="10" style="fill:var(--surface-2);stroke:var(--border)"/>
+<text x="400" y="18" text-anchor="middle" font-weight="700" style="fill:var(--text)">Many to one (N : 1)</text>
+<text x="360" y="48" text-anchor="middle" style="fill:var(--text-muted)">A</text><text x="440" y="48" text-anchor="middle" style="fill:var(--text-muted)">B</text>
+<line x1="360" y1="75" x2="440" y2="75" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="360" y1="115" x2="440" y2="75" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="360" y1="155" x2="440" y2="115" style="stroke:var(--primary);stroke-width:2"/>
+<circle cx="360" cy="75" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="440" cy="75" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="360" cy="115" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="440" cy="115" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="360" cy="155" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="440" cy="155" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<rect x="490" y="28" width="140" height="150" rx="10" style="fill:var(--surface-2);stroke:var(--border)"/>
+<text x="560" y="18" text-anchor="middle" font-weight="700" style="fill:var(--text)">Many to many (M : N)</text>
+<text x="520" y="48" text-anchor="middle" style="fill:var(--text-muted)">A</text><text x="600" y="48" text-anchor="middle" style="fill:var(--text-muted)">B</text>
+<line x1="520" y1="75" x2="600" y2="75" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="520" y1="75" x2="600" y2="115" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="520" y1="115" x2="600" y2="75" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="520" y1="115" x2="600" y2="155" style="stroke:var(--primary);stroke-width:2"/>
+<line x1="520" y1="155" x2="600" y2="155" style="stroke:var(--primary);stroke-width:2"/>
+<circle cx="520" cy="75" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="600" cy="75" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="520" cy="115" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="600" cy="115" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<circle cx="520" cy="155" r="7" style="fill:var(--primary-soft);stroke:var(--primary)"/><circle cx="600" cy="155" r="7" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+</g></svg>
+            <figcaption>Each line is one relationship between an entity of A and an entity of B.</figcaption>
+          </figure>
+            <p class="gallery-source">From <a href="../units/unit-2/entity-relationship-model.html#cardinality"><span class="rev-num">2.1</span> Entity-Relationship Model: Mapping cardinality</a></p>
+          </article>
+          <article class="gallery-item" id="er-university" aria-labelledby="er-university-title">
+            <h3 id="er-university-title">E-R diagram: university</h3>
+            <p class="gallery-note">Students, courses, instructors and the weak entity set Section. Tap a symbol to read what it means.</p>
+<div class="widget" data-widget="er-notation" data-model="university">
+            <noscript><p class="widget-narration">The diagram needs JavaScript. Its content is listed in the steps above.</p></noscript>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/er-diagrams.html#university"><span class="rev-num">2.2</span> E-R Diagrams: Worked example 1: university</a></p>
+          </article>
+          <article class="gallery-item" id="er-bank" aria-labelledby="er-bank-title">
+            <h3 id="er-bank-title">E-R diagram: bank</h3>
+            <p class="gallery-note">Customers, accounts, loans, branches and the weak entity set Payment.</p>
+<div class="widget" data-widget="er-notation" data-model="bank">
+            <noscript><p class="widget-narration">The diagram needs JavaScript. Its content is listed in the steps above.</p></noscript>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/er-diagrams.html#bank"><span class="rev-num">2.2</span> E-R Diagrams: Worked example 2: bank</a></p>
+          </article>
+          <article class="gallery-item" id="er-insurance" aria-labelledby="er-insurance-title">
+            <h3 id="er-insurance-title">E-R diagram: car insurance</h3>
+            <p class="gallery-note">Customers, cars, accidents and policies.</p>
+<div class="widget" data-widget="er-notation" data-model="insurance">
+            <noscript><p class="widget-narration">The diagram needs JavaScript. Its content is listed in the steps above.</p></noscript>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/er-diagrams.html#insurance"><span class="rev-num">2.2</span> E-R Diagrams: Worked example 3: car insurance</a></p>
+          </article>
+        </section>
+
+        <section id="querys" class="section gallery-kind" aria-labelledby="querys-title">
+          <h2 id="querys-title">Queries</h2>
+          <article class="gallery-item" id="union" aria-labelledby="union-title">
+            <h3 id="union-title">UNION</h3>
+            <p class="gallery-note">Rows from both tables, with duplicates removed.</p>
+<div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT * FROM First
+UNION
+SELECT * FROM Second
+ORDER BY ID;</code></pre>
+          </div>
+<div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+------+---------+
+| ID   | NAME    |
++------+---------+
+|    1 | Jack    |
+|    2 | Harry   |
+|    3 | Jackson |
+|    4 | Stephan |
+|    5 | David   |
++------+---------+</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/sql-set-operations.html#union"><span class="rev-num">2.11</span> SQL Set Operations: UNION</a></p>
+          </article>
+          <article class="gallery-item" id="group-having" aria-labelledby="group-having-title">
+            <h3 id="group-having-title">GROUP BY with HAVING</h3>
+            <p class="gallery-note">WHERE filters rows, GROUP BY makes groups and HAVING filters the groups.</p>
+<div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT COMPANY, COUNT(*) AS items, SUM(COST) AS total
+FROM PRODUCT_MAST
+WHERE RATE >= 20
+GROUP BY COMPANY
+HAVING SUM(COST) > 150
+ORDER BY total DESC;</code></pre>
+          </div>
+<div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+-------+-------+
+| COMPANY | items | total |
++---------+-------+-------+
+| Com1    |     3 |   285 |
+| Com2    |     3 |   165 |
++---------+-------+-------+</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/group-by-and-having.html#full"><span class="rev-num">2.13</span> GROUP BY and HAVING: A full example</a></p>
+          </article>
+          <article class="gallery-item" id="inner-join" aria-labelledby="inner-join-title">
+            <h3 id="inner-join-title">Inner join</h3>
+            <p class="gallery-note">Only the students whose department matches a row in department.</p>
+<div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT s.name, d.dept_name
+FROM student s
+INNER JOIN department d ON s.dept_id = d.dept_id
+ORDER BY s.roll;</code></pre>
+          </div>
+<div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+-----------+
+| name    | dept_name |
++---------+-----------+
+| Anitha  | CSE       |
+| Bharath | IT        |
+| Charan  | CSE       |
++---------+-----------+</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/joins.html#inner"><span class="rev-num">2.14</span> Joins: Inner join</a></p>
+          </article>
+          <article class="gallery-item" id="left-join" aria-labelledby="left-join-title">
+            <h3 id="left-join-title">Left outer join</h3>
+            <p class="gallery-note">Every student is kept. A student with no department gets NULL.</p>
+<div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT s.name, d.dept_name
+FROM student s
+LEFT JOIN department d ON s.dept_id = d.dept_id
+ORDER BY s.roll;</code></pre>
+          </div>
+<div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+-----------+
+| name    | dept_name |
++---------+-----------+
+| Anitha  | CSE       |
+| Bharath | IT        |
+| Charan  | CSE       |
+| Divya   | NULL      |
++---------+-----------+</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/joins.html#left"><span class="rev-num">2.14</span> Joins: Left outer join</a></p>
+          </article>
+          <article class="gallery-item" id="self-join" aria-labelledby="self-join-title">
+            <h3 id="self-join-title">Self join</h3>
+            <p class="gallery-note">Each employee next to their manager, from one table.</p>
+<div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE employee (
+  emp_id     INT PRIMARY KEY,
+  name       VARCHAR(20),
+  manager_id INT
+);
+INSERT INTO employee VALUES (1, 'Ravi', NULL), (2, 'Meena', 1), (3, 'Kumar', 1), (4, 'Asha', 2);
+
+SELECT e.name AS employee, m.name AS manager
+FROM employee e
+LEFT JOIN employee m ON e.manager_id = m.emp_id
+ORDER BY e.emp_id;</code></pre>
+          </div>
+<div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+----------+---------+
+| employee | manager |
++----------+---------+
+| Ravi     | NULL    |
+| Meena    | Ravi    |
+| Kumar    | Ravi    |
+| Asha     | Meena   |
++----------+---------+</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/joins.html#self"><span class="rev-num">2.14</span> Joins: Self join</a></p>
+          </article>
+          <article class="gallery-item" id="correlated" aria-labelledby="correlated-title">
+            <h3 id="correlated-title">Correlated subquery</h3>
+            <p class="gallery-note">Employees who earn more than the average of their own department.</p>
+<div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>SELECT NAME, DEPT, SALARY
+FROM EMPLOYEE e
+WHERE SALARY &gt; (SELECT AVG(SALARY)
+                FROM EMPLOYEE
+                WHERE DEPT = e.DEPT);</code></pre>
+          </div>
+<div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+-------+----------+
+| NAME    | DEPT  | SALARY   |
++---------+-------+----------+
+| John    | Sales |  2000.00 |
+| Alina   | IT    |  6500.00 |
+| Kathrin | HR    |  8500.00 |
+| Jackson | IT    | 10000.00 |
++---------+-------+----------+</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/sub-queries.html#correlated"><span class="rev-num">2.15</span> Sub Queries: Correlated subqueries</a></p>
+          </article>
+          <article class="gallery-item" id="create-view" aria-labelledby="create-view-title">
+            <h3 id="create-view-title">Creating a view</h3>
+            <p class="gallery-note">A view is a stored query that you use like a table.</p>
+<div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE VIEW DetailsView AS
+SELECT NAME, ADDRESS
+FROM Student_Detail
+WHERE STU_ID &lt; 4;
+
+SELECT * FROM DetailsView;</code></pre>
+          </div>
+<div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+---------+-----------+
+| NAME    | ADDRESS   |
++---------+-----------+
+| Stephan | Delhi     |
+| Kathrin | Noida     |
+| David   | Ghaziabad |
++---------+-----------+</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/views.html#create"><span class="rev-num">2.16</span> Views: Creating a view</a></p>
+          </article>
+          <article class="gallery-item" id="audit-trigger" aria-labelledby="audit-trigger-title">
+            <h3 id="audit-trigger-title">Trigger: an audit log</h3>
+            <p class="gallery-note">AFTER INSERT, UPDATE and DELETE triggers that log every change to an account, with the old and new balance.</p>
+<div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>CREATE TABLE balance_log (
+  log_id      INT AUTO_INCREMENT PRIMARY KEY,
+  acc_no      INT,
+  action      VARCHAR(10),
+  old_balance DECIMAL(10,2),
+  new_balance DECIMAL(10,2),
+  logged_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TRIGGER account_ai AFTER INSERT ON account
+FOR EACH ROW
+INSERT INTO balance_log (acc_no, action, old_balance, new_balance)
+VALUES (NEW.acc_no, 'INSERT', NULL, NEW.balance);
+
+CREATE TRIGGER account_au AFTER UPDATE ON account
+FOR EACH ROW
+INSERT INTO balance_log (acc_no, action, old_balance, new_balance)
+VALUES (NEW.acc_no, 'UPDATE', OLD.balance, NEW.balance);
+
+CREATE TRIGGER account_ad AFTER DELETE ON account
+FOR EACH ROW
+INSERT INTO balance_log (acc_no, action, old_balance, new_balance)
+VALUES (OLD.acc_no, 'DELETE', OLD.balance, NULL);</code></pre>
+          </div>
+<div class="code-block">
+            <span class="code-label">SQL</span>
+            <pre><code>INSERT INTO account VALUES (104, 'Divya', 500);
+UPDATE account SET balance = balance - 200 WHERE acc_no = 101;
+DELETE FROM account WHERE acc_no = 102;
+
+SELECT log_id, acc_no, action, old_balance, new_balance FROM balance_log;</code></pre>
+          </div>
+<div class="code-block">
+            <span class="code-label">Output</span>
+            <pre><code>+--------+--------+--------+-------------+-------------+
+| log_id | acc_no | action | old_balance | new_balance |
++--------+--------+--------+-------------+-------------+
+|      1 |    104 | INSERT |        NULL |      500.00 |
+|      2 |    101 | UPDATE |     1000.00 |      800.00 |
+|      3 |    102 | DELETE |      300.00 |        NULL |
++--------+--------+--------+-------------+-------------+</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/triggers.html#audit"><span class="rev-num">2.17</span> Triggers: Example: an audit log</a></p>
+          </article>
+        </section>
+
+        <section id="examples" class="section gallery-kind" aria-labelledby="examples-title">
+          <h2 id="examples-title">Worked examples</h2>
+          <article class="gallery-item" id="er-mapping-summary" aria-labelledby="er-mapping-summary-title">
+            <h3 id="er-mapping-summary-title">E-R constructs to tables</h3>
+            <p class="gallery-note">How each part of an E-R diagram becomes a table or a column.</p>
+<div class="table-wrap">
+            <table>
+              <caption>How each E-R construct maps to the relational model</caption>
+              <thead><tr><th scope="col">E-R construct</th><th scope="col">Relational construct</th></tr></thead>
+              <tbody>
+                <tr><td>Strong entity set</td><td>Table; key becomes the primary key</td></tr>
+                <tr><td>Weak entity set</td><td>Table; primary key = owner's key + partial key; foreign key to the owner</td></tr>
+                <tr><td>1 : 1 relationship set</td><td>Foreign key (UNIQUE) in one table, preferably the total side</td></tr>
+                <tr><td>1 : N relationship set</td><td>Foreign key in the table of the many side</td></tr>
+                <tr><td>M : N relationship set</td><td>New table; primary key = both foreign keys</td></tr>
+                <tr><td>n-ary relationship set</td><td>New table with all the foreign keys</td></tr>
+                <tr><td>Simple attribute</td><td>Column</td></tr>
+                <tr><td>Composite attribute</td><td>One column for each part</td></tr>
+                <tr><td>Multivalued attribute</td><td>New table (owner key, value)</td></tr>
+                <tr><td>Derived attribute</td><td>Not stored; computed in queries or views</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/er-to-relational-mapping.html#summary"><span class="rev-num">2.3</span> ER-to-Relational Mapping: Summary: E-R construct to table</a></p>
+          </article>
+          <article class="gallery-item" id="attr-closure" aria-labelledby="attr-closure-title">
+            <h3 id="attr-closure-title">Attribute closure</h3>
+            <p class="gallery-note">The closure algorithm, and A+ worked out one FD at a time.</p>
+<div class="code-block">
+            <span class="code-label">Algorithm</span>
+            <pre><code>result := X
+repeat
+  for each FD  Y → Z  in F do
+    if Y ⊆ result then result := result ∪ Z
+until result does not change
+return result</code></pre>
+          </div>
+<div class="table-wrap">
+            <table class="worked">
+              <caption>Computing A<sup>+</sup></caption>
+              <thead><tr><th scope="col">Step</th><th scope="col">FD used</th><th scope="col">Result</th></tr></thead>
+              <tbody>
+                <tr><td>Start</td><td>Reflexivity</td><td>{A}</td></tr>
+                <tr><td>1</td><td>A → BC</td><td>{A, B, C}</td></tr>
+                <tr><td>2</td><td>B → D</td><td>{A, B, C, D}</td></tr>
+                <tr><td>3</td><td>CD → E</td><td>{A, B, C, D, E}</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/functional-dependencies.html#attr-closure"><span class="rev-num">2.4</span> Functional Dependencies: Attribute closure</a></p>
+          </article>
+          <article class="gallery-item" id="canonical-cover" aria-labelledby="canonical-cover-title">
+            <h3 id="canonical-cover-title">Canonical cover</h3>
+            <p class="gallery-note">Remove extra attributes and repeated FDs, step by step.</p>
+<div class="table-wrap">
+            <table class="worked">
+              <caption>Finding the canonical cover</caption>
+              <thead><tr><th scope="col">Step</th><th scope="col">Work</th><th scope="col">FDs</th></tr></thead>
+              <tbody>
+                <tr><td>1. Split</td><td>B → ADE becomes three FDs</td><td>A → C, AC → D, B → A, B → D, B → E</td></tr>
+                <tr><td>2. Left sides</td><td>In AC → D: A<sup>+</sup> = {A, C, D} contains D, so C is extraneous</td><td>A → C, A → D, B → A, B → D, B → E</td></tr>
+                <tr><td>3. Redundant</td><td>Without B → D: B<sup>+</sup> = {A, B, C, D, E} still has D, so remove it. The others are needed.</td><td>A → C, A → D, B → A, B → E</td></tr>
+                <tr><td>4. Combine</td><td>Union rule</td><td>A → CD, B → AE</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/functional-dependencies.html#cover"><span class="rev-num">2.4</span> Functional Dependencies: Canonical cover</a></p>
+          </article>
+          <article class="gallery-item" id="lossy" aria-labelledby="lossy-title">
+            <h3 id="lossy-title">A lossy decomposition</h3>
+            <p class="gallery-note">Joining the two parts back gives spurious tuples.</p>
+<div class="grid grid-sm">
+            <div class="table-wrap">
+              <table>
+                <caption>Student</caption>
+                <thead><tr><th scope="col">RollNo</th><th scope="col">Name</th><th scope="col">Dept</th></tr></thead>
+                <tbody><tr><td>1</td><td>Anitha</td><td>CSE</td></tr><tr><td>2</td><td>Bharath</td><td>IT</td></tr><tr><td>3</td><td>Anitha</td><td>ECE</td></tr></tbody>
+              </table>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <caption>R1(RollNo, Name)</caption>
+                <thead><tr><th scope="col">RollNo</th><th scope="col">Name</th></tr></thead>
+                <tbody><tr><td>1</td><td>Anitha</td></tr><tr><td>2</td><td>Bharath</td></tr><tr><td>3</td><td>Anitha</td></tr></tbody>
+              </table>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <caption>R2(Name, Dept)</caption>
+                <thead><tr><th scope="col">Name</th><th scope="col">Dept</th></tr></thead>
+                <tbody><tr><td>Anitha</td><td>CSE</td></tr><tr><td>Bharath</td><td>IT</td></tr><tr><td>Anitha</td><td>ECE</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+<div class="table-wrap">
+            <table>
+              <caption>R1 ⋈ R2: two spurious tuples appear</caption>
+              <thead><tr><th scope="col">RollNo</th><th scope="col">Name</th><th scope="col">Dept</th><th scope="col">True?</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Anitha</td><td>CSE</td><td>Yes</td></tr>
+                <tr><td>1</td><td>Anitha</td><td>ECE</td><td><strong>No, spurious</strong></td></tr>
+                <tr><td>2</td><td>Bharath</td><td>IT</td><td>Yes</td></tr>
+                <tr><td>3</td><td>Anitha</td><td>CSE</td><td><strong>No, spurious</strong></td></tr>
+                <tr><td>3</td><td>Anitha</td><td>ECE</td><td>Yes</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/non-loss-decomposition.html#spurious"><span class="rev-num">2.5</span> Non-loss Decomposition: A lossy decomposition</a></p>
+          </article>
+          <article class="gallery-item" id="first-nf" aria-labelledby="first-nf-title">
+            <h3 id="first-nf-title">Putting a table in 1NF</h3>
+            <p class="gallery-note">A column with many values in one cell, split into atomic values.</p>
+<div class="table-wrap">
+            <table>
+              <caption>Student (not in 1NF)</caption>
+              <thead><tr><th scope="col">sid</th><th scope="col">sname</th><th scope="col">phone</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Ajay</td><td>98400 11111, 97100 22222</td></tr>
+                <tr><td>2</td><td>Bindu</td><td>99620 33333</td></tr>
+                <tr><td>3</td><td>Chitra</td><td>94440 44444, 90030 55555</td></tr>
+              </tbody>
+            </table>
+          </div>
+<div class="table-wrap">
+            <table>
+              <caption>Student in 1NF</caption>
+              <thead><tr><th scope="col">sid</th><th scope="col">sname</th><th scope="col">phone</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Ajay</td><td>98400 11111</td></tr>
+                <tr><td>1</td><td>Ajay</td><td>97100 22222</td></tr>
+                <tr><td>2</td><td>Bindu</td><td>99620 33333</td></tr>
+                <tr><td>3</td><td>Chitra</td><td>94440 44444</td></tr>
+                <tr><td>3</td><td>Chitra</td><td>90030 55555</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/first-second-and-third-normal-forms.html#first"><span class="rev-num">2.6</span> First, Second and Third Normal Forms: First normal form (1NF)</a></p>
+          </article>
+          <article class="gallery-item" id="r-a-to-j" aria-labelledby="r-a-to-j-title">
+            <h3 id="r-a-to-j-title">2NF and 3NF: R(A to J)</h3>
+            <p class="gallery-note">R(A, B, C, D, E, F, G, H, I, J) with F = {AB → C, A → DE, B → F, F → GH, D → IJ}. The key is AB.</p>
+<div class="code-block">
+            <span class="code-label">2NF</span>
+            <pre><code>R1(<u>A</u>, <u>B</u>, C)
+R2(<u>A</u>, D, E, I, J)
+R3(<u>B</u>, F, G, H)</code></pre>
+          </div>
+<div class="code-block">
+            <span class="code-label">3NF</span>
+            <pre><code>R1(<u>A</u>, <u>B</u>, C)
+R2(<u>A</u>, D, E)
+R4(<u>D</u>, I, J)
+R3(<u>B</u>, F)
+R5(<u>F</u>, G, H)</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/first-second-and-third-normal-forms.html#worked"><span class="rev-num">2.6</span> First, Second and Third Normal Forms: Worked example: R(A to J)</a></p>
+          </article>
+          <article class="gallery-item" id="bcnf-enrollment" aria-labelledby="bcnf-enrollment-title">
+            <h3 id="bcnf-enrollment-title">BCNF: the Enrollment table</h3>
+            <p class="gallery-note">A table in 3NF but not in BCNF, and the BCNF tables.</p>
+<div class="table-wrap">
+            <table>
+              <caption>Enrollment (in 3NF, not in BCNF)</caption>
+              <thead><tr><th scope="col">sid</th><th scope="col">course</th><th scope="col">teacher</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>C</td><td>Ankita</td></tr>
+                <tr><td>1</td><td>Java</td><td>Pooja</td></tr>
+                <tr><td>2</td><td>C</td><td>Archana</td></tr>
+                <tr><td>3</td><td>C</td><td>Ankita</td></tr>
+                <tr><td>4</td><td>Java</td><td>Pooja</td></tr>
+              </tbody>
+            </table>
+          </div>
+<div class="code-block">
+            <span class="code-label">BCNF tables</span>
+            <pre><code>Teacher(<u>teacher</u>, course)
+Student(<u>sid</u>, <u>teacher</u>)</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/boyce-codd-normal-form.html#example"><span class="rev-num">2.8</span> Boyce-Codd Normal Form: Example: Enrollment</a></p>
+          </article>
+          <article class="gallery-item" id="fourth-nf" aria-labelledby="fourth-nf-title">
+            <h3 id="fourth-nf-title">4NF: a multivalued dependency</h3>
+            <p class="gallery-note">Courses and skills are independent, so the table repeats them.</p>
+<div class="table-wrap">
+            <table>
+              <caption>Student(sid, course, skill)</caption>
+              <thead><tr><th scope="col">sid</th><th scope="col">course</th><th scope="col">skill</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>C</td><td>English</td></tr>
+                <tr><td>1</td><td>C</td><td>German</td></tr>
+                <tr><td>1</td><td>Java</td><td>English</td></tr>
+                <tr><td>1</td><td>Java</td><td>German</td></tr>
+                <tr><td>2</td><td>C</td><td>Tamil</td></tr>
+              </tbody>
+            </table>
+          </div>
+<div class="code-block">
+            <span class="code-label">4NF tables</span>
+            <pre><code>Student_Course(<u>sid</u>, <u>course</u>)
+Student_Skill(<u>sid</u>, <u>skill</u>)</code></pre>
+          </div>
+            <p class="gallery-source">From <a href="../units/unit-2/multivalued-dependencies-and-fourth-normal-form.html#problem"><span class="rev-num">2.9</span> Multivalued Dependencies and Fourth Normal Form: The problem BCNF misses</a></p>
+          </article>
+        </section>
+
+        <div class="btn-row gallery-more">
+          <a class="btn" href="../outlines/unit-2.html">Unit II 16-mark outlines</a>
+          <a class="btn" href="../revision/unit-2.html">Unit II revision sheet</a>
+          <a class="btn" href="../units/unit-2/index.html">Unit II topics</a>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/widgets/player.js"></script>
+  <script src="../assets/js/widgets/er-diagram.js"></script>
+</body>
+</html>

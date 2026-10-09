@@ -80,7 +80,7 @@
 
         <section id="model" class="topic-section" aria-labelledby="model-title">
           <h2 id="model-title">The property graph model</h2>
-          <figure class="figure">
+          <figure id="fig-property-graph" class="figure">
             <div class="widget-stage" tabindex="0">
               <svg viewBox="0 0 520 250" width="520" role="img" aria-labelledby="g-svg-title" style="max-width:100%;height:auto">
                 <title id="g-svg-title">A small social graph. Arun knows Priya since 2023. Priya knows Kavin. Arun and Priya both live in Salem. Kavin lives in Erode.</title>
@@ -150,7 +150,7 @@
           <h2 id="cypher-title">Worked example: Cypher in Neo4j</h2>
           <p>Neo4j uses the <strong>Cypher</strong> query language. Its patterns look like drawings: <code>()</code> is a node and <code>-[]-&gt;</code> is a relationship.</p>
           <p><strong>Step 1.</strong> Create the graph in the picture above.</p>
-          <div class="code-block">
+          <div id="code-cypher" class="code-block">
             <span class="code-label">Cypher (Neo4j)</span>
             <pre><code>CREATE (a:Person {name: 'Arun'}),
        (p:Person {name: 'Priya'}),
@@ -164,13 +164,13 @@
        (k)-[:LIVES_IN]-&gt;(e);</code></pre>
           </div>
           <p><strong>Step 2.</strong> Find the people Arun knows.</p>
-          <div class="code-block">
+          <div id="code-cypher-2" class="code-block">
             <span class="code-label">Cypher (Neo4j)</span>
             <pre><code>MATCH (a:Person {name: 'Arun'})-[:KNOWS]-&gt;(f:Person)
 RETURN f.name;            -- Priya</code></pre>
           </div>
           <p><strong>Step 3.</strong> Suggest new friends: people known by Arun's friends, whom Arun does not know yet.</p>
-          <div class="code-block">
+          <div id="code-cypher-3" class="code-block">
             <span class="code-label">Cypher (Neo4j)</span>
             <pre><code>MATCH (a:Person {name: 'Arun'})-[:KNOWS]-&gt;(:Person)-[:KNOWS]-&gt;(fof:Person)
 WHERE NOT (a)-[:KNOWS]-&gt;(fof) AND fof &lt;&gt; a

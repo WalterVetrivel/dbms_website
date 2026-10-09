@@ -128,7 +128,7 @@
 
           <h3>Overflow chaining (closed hashing)</h3>
           <p>When a bucket is full, the new record goes into an <strong>overflow bucket</strong>. All the overflow buckets of one bucket are linked in a list called an <strong>overflow chain</strong>.</p>
-          <div class="table-wrap">
+          <div id="tbl-static-overflow" class="table-wrap">
             <table>
               <caption>h(K) = K mod 5, two records per bucket, after inserting 10, 22, 15, 37, 20, 41, 25 and 13</caption>
               <thead><tr><th scope="col">Bucket</th><th scope="col">Records</th><th scope="col">Overflow chain</th></tr></thead>

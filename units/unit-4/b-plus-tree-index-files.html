@@ -121,7 +121,7 @@
             <p>Some books and question papers say “a tree of <strong>order 3</strong>”. This means each node has at most 3 pointers (children), so n = 3 and each node holds at most 2 keys.</p>
           </div>
 
-          <figure class="figure">
+          <figure id="fig-bplus-tree" class="figure">
             <div data-bpt-static data-n="4" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31">
               <noscript><p>Root: [19]. Level 2: [5 | 11] and [29]. Leaves: [2 | 3] → [5 | 7] → [11 | 17] → [19 | 23] → [29 | 31].</p></noscript>
             </div>
@@ -195,7 +195,7 @@
             <p>Construct a B+ tree for the following set of key values: (2, 3, 5, 7, 11, 17, 19, 23, 29, 31). Assume that the tree is initially empty and the values are inserted in ascending order. Each node can contain a maximum of three pointers.</p>
           </div>
           <p><strong>Given:</strong> n = 3 pointers, so each node holds at most <strong>2 keys</strong>. A leaf needs at least 1 key, and an internal node needs at least 2 pointers.</p>
-          <div class="table-wrap">
+          <div id="tbl-bplus-qb" class="table-wrap">
             <table class="worked">
               <caption>Building the tree one key at a time</caption>
               <thead>
@@ -214,7 +214,7 @@
               </tbody>
             </table>
           </div>
-          <figure class="figure">
+          <figure id="fig-bplus-qb-2" class="figure">
             <div data-bpt-static data-n="3" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31">
               <noscript><p>Root: [11]. Level 2: [5] and [19]. Level 3: [3], [7], [17] and [23 | 29]. Leaves: [2] → [3] → [5] → [7] → [11] → [17] → [19] → [23] → [29 | 31].</p></noscript>
             </div>
@@ -242,21 +242,21 @@
             <div class="callout-title">Example: delete 23, then 19 (n = 4)</div>
             <p>Start with the tree from the class notes: insert 2, 3, 5, 7, 11, 17, 19, 23, 29, 31, then 9, 10 and 8.</p>
           </div>
-          <figure class="figure">
+          <figure id="fig-bplus-delete" class="figure">
             <div data-bpt-static data-n="4" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31, 9, 10, 8">
               <noscript><p>Root: [19]. Level 2: [5 | 9 | 11] and [29]. Leaves: [2 | 3] → [5 | 7 | 8] → [9 | 10] → [11 | 17] → [19 | 23] → [29 | 31].</p></noscript>
             </div>
             <figcaption>Before deleting. Each leaf needs at least 2 keys and each internal node needs at least 2 pointers.</figcaption>
           </figure>
           <p><strong>Delete 23.</strong> The leaf [19 | 23] becomes [19], with only 1 key. Its only sibling, [29 | 31], has no key to spare. So merge them into [19 | 29 | 31], and remove 29 from the parent. Now the parent has only 1 pointer. Its left sibling [5 | 9 | 11] has 4 pointers, so it can lend one. The key 19 comes down from the root, the leaf [11 | 17] moves across, and 11 goes up into the root.</p>
-          <figure class="figure">
+          <figure id="fig-bplus-delete-2" class="figure">
             <div data-bpt-static data-n="4" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31, 9, 10, 8" data-delete="23">
               <noscript><p>Root: [11]. Level 2: [5 | 9] and [19]. Leaves: [2 | 3] → [5 | 7 | 8] → [9 | 10] → [11 | 17] → [19 | 29 | 31].</p></noscript>
             </div>
             <figcaption>After deleting 23. The root is now 11.</figcaption>
           </figure>
           <p><strong>Delete 19.</strong> The leaf [19 | 29 | 31] becomes [29 | 31]. It still has 2 keys, so no node changes shape. But 19 is still a guide key in the internal node [19]. Replace it with its in-order successor, 29.</p>
-          <figure class="figure">
+          <figure id="fig-bplus-delete-3" class="figure">
             <div data-bpt-static data-n="4" data-keys="2, 3, 5, 7, 11, 17, 19, 23, 29, 31, 9, 10, 8" data-delete="23, 19">
               <noscript><p>Root: [11]. Level 2: [5 | 9] and [29]. Leaves: [2 | 3] → [5 | 7 | 8] → [9 | 10] → [11 | 17] → [29 | 31].</p></noscript>
             </div>

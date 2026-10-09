@@ -163,7 +163,7 @@
             <div class="callout-title">Definition</div>
             <p>The <strong>closure of an attribute set</strong> X under F, written <strong>X<sup>+</sup></strong>, is the set of all attributes that X determines.</p>
           </div>
-          <div class="code-block">
+          <div id="code-attr-closure" class="code-block">
             <span class="code-label">Algorithm</span>
             <pre><code>result := X
 repeat
@@ -174,7 +174,7 @@ return result</code></pre>
           </div>
           <h3>Worked example</h3>
           <p>R(A, B, C, D, E) with F = {A → BC, CD → E, B → D, E → A}. Find A<sup>+</sup>.</p>
-          <div class="table-wrap">
+          <div id="tbl-attr-closure-2" class="table-wrap">
             <table class="worked">
               <caption>Computing A<sup>+</sup></caption>
               <thead><tr><th scope="col">Step</th><th scope="col">FD used</th><th scope="col">Result</th></tr></thead>
@@ -234,7 +234,7 @@ return result</code></pre>
           </ol>
           <h3>Worked example</h3>
           <p>F = {A → C, AC → D, B → ADE}.</p>
-          <div class="table-wrap">
+          <div id="tbl-canonical-cover" class="table-wrap">
             <table class="worked">
               <caption>Finding the canonical cover</caption>
               <thead><tr><th scope="col">Step</th><th scope="col">Work</th><th scope="col">FDs</th></tr></thead>

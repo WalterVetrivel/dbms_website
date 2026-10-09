@@ -13,6 +13,7 @@ Live site: https://waltervetrivel.github.io/dbms_website/
 - Question bank items and their 2-mark answers live in `data/questions/unit-1.js` to `unit-5.js`. `assets/js/questions.js` shows them on topic pages and question bank pages, so each answer is written once.
 - Quiz items live in `data/quizzes/unit-1.js` to `unit-5.js`. `assets/js/quiz.js` shows them as the quiz on each topic page and as the 20-question unit quizzes in `quizzes/`.
 - The unit revision sheets in `revision/` are built from the Key points section of each topic page. After you change key points, run `node tools/build-revision.mjs`. The checks fail if a sheet is out of date.
+- The Diagrams and Examples pages in `diagrams/` copy their diagrams, queries and tables from the topic pages. `data/gallery.js` lists each item and the ids of the elements it copies. After you change that list or one of those elements, run `node tools/build-gallery.mjs`. The checks fail if a page is out of date.
 - `styleguide.html` shows every building block. Use it when you write a new page.
 
 ## Folders
@@ -27,6 +28,7 @@ Live site: https://waltervetrivel.github.io/dbms_website/
 | `question-bank` | The question bank hub and one page per unit |
 | `quizzes` | The quizzes hub and one 20-question quiz per unit |
 | `revision` | The revision hub and one revision sheet per unit |
+| `diagrams` | The Diagrams and Examples hub and one page per unit, built from the topic pages |
 | `labs` | The lab exercises hub, one page per exercise, and the starter SQL script in `labs/files` |
 | `tools` | Check scripts. These are not part of the website. |
 

@@ -177,7 +177,7 @@ WHERE balance &lt; 1000;</code></pre>
           <div class="callout callout-example">
             <div class="callout-title">Example from the class notes: two-way merge sort with M = 3</div>
             <p>Sort 20, 47, 15, 8, 9, 4, 40, 30, 12, 17, 11, 56, 28, 35, with memory for 3 records.</p>
-            <div class="table-wrap">
+            <div id="tbl-merge-sort" class="table-wrap">
               <table class="worked">
                 <caption>External two-way merge sort</caption>
                 <thead><tr><th scope="col">Stage</th><th scope="col">What happens</th><th scope="col">Runs</th></tr></thead>
@@ -234,7 +234,7 @@ WHERE balance &lt; 1000;</code></pre>
         <section id="mysql" class="topic-section" aria-labelledby="mysql-title">
           <h2 id="mysql-title">Seeing the plan in MySQL</h2>
           <p>MySQL shows the plan it chose with <code>EXPLAIN</code>. <code>EXPLAIN ANALYZE</code> also runs the query and shows the real time of each step.</p>
-          <div class="code-block">
+          <div id="code-explain" class="code-block">
             <span class="code-label">SQL (MySQL 8.4)</span>
             <pre><code>EXPLAIN FORMAT=TREE
 SELECT name

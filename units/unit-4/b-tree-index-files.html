@@ -152,7 +152,7 @@
             <p>Create a B tree of order 3 for the following data: 20, 10, 30, 15, 12, 40, 50.</p>
           </div>
           <p><strong>Given:</strong> order 3, so each node holds at most <strong>2 keys</strong>, and every node except the root holds at least 1 key.</p>
-          <div class="table-wrap">
+          <div id="tbl-btree-build" class="table-wrap">
             <table class="worked">
               <caption>Building the B tree one key at a time</caption>
               <thead><tr><th scope="col">Insert</th><th scope="col">What happens</th><th scope="col">Tree after this step</th></tr></thead>
@@ -166,7 +166,7 @@
               </tbody>
             </table>
           </div>
-          <figure class="figure">
+          <figure id="fig-btree-build-2" class="figure">
             <div data-bt-static data-n="3" data-keys="20, 10, 30, 15, 12, 40, 50">
               <noscript><p>Root: [20]. Level 2: [12] and [40]. Leaves: [10], [15], [30] and [50].</p></noscript>
             </div>

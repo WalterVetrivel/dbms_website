@@ -133,7 +133,7 @@
         <section id="er" class="topic-section" aria-labelledby="er-title">
           <h2 id="er-title">Entity-relationship (E-R) model</h2>
           <p>The E-R model describes the real world as a collection of <strong>entities</strong> and the <strong>relationships</strong> among them. An entity is a thing or object in the real world that is different from other objects, such as one employee or one department.</p>
-          <figure class="figure">
+          <figure id="fig-er-model-small" class="figure">
             <svg viewBox="0 0 560 120" width="560" height="120" role="img" aria-labelledby="er-fig-title" style="max-width:100%;height:auto">
               <title id="er-fig-title">E-R diagram: the entity set Employee is linked to the entity set Department by the relationship set works_for.</title>
               <g font-family="Inter, system-ui, sans-serif" font-size="14" text-anchor="middle">
@@ -210,7 +210,7 @@ method Student.percentage() returns cgpa * 9.5</code></pre>
         <section id="hierarchical" class="topic-section" aria-labelledby="hier-title">
           <h2 id="hier-title">Hierarchical model</h2>
           <p>The hierarchical model arranges records in a <strong>tree</strong>. Each record has one parent, and a parent can have many children. It is like folders on a computer. It was used in the 1960s, for example in IBM's IMS.</p>
-          <figure class="figure">
+          <figure id="fig-hierarchical" class="figure">
             <svg viewBox="0 0 560 190" width="560" height="190" role="img" aria-labelledby="hier-fig-title" style="max-width:100%;height:auto">
               <title id="hier-fig-title">Hierarchical model: College at the root, with departments CSE and IT as children, and students as children of each department.</title>
               <g font-family="Inter, system-ui, sans-serif" font-size="14" text-anchor="middle">
@@ -244,7 +244,7 @@ method Student.percentage() returns cgpa * 9.5</code></pre>
         <section id="network" class="topic-section" aria-labelledby="network-title">
           <h2 id="network-title">Network model</h2>
           <p>The network model arranges records in a <strong>graph</strong>. A record can have <strong>many parents</strong>, and records are linked by pointers. This fixes the main limit of the hierarchical model. The CODASYL group defined it in 1971.</p>
-          <figure class="figure">
+          <figure id="fig-network" class="figure">
             <svg viewBox="0 0 560 150" width="560" height="150" role="img" aria-labelledby="net-fig-title" style="max-width:100%;height:auto">
               <title id="net-fig-title">Network model: students Ram and Divya both link to course DBMS, and Divya also links to course Java. Divya has two parents.</title>
               <g font-family="Inter, system-ui, sans-serif" font-size="14" text-anchor="middle">

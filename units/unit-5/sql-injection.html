@@ -112,7 +112,7 @@ if (rs.next()) {
             <div class="callout-title">Example 1: always true (tautology)</div>
             <p>The attacker types <code>anitha</code> as the username and <code>' OR '1'='1</code> as the password.</p>
           </div>
-          <div class="code-block">
+          <div id="code-injection" class="code-block">
             <span class="code-label">SQL (MySQL 8.4)</span>
             <pre><code>SELECT * FROM users
 WHERE username = 'anitha' AND password = '' OR '1'='1'</code></pre>
@@ -201,7 +201,7 @@ UNION SELECT username, password FROM users -- %'</code></pre>
         <section id="prepared" class="topic-section" aria-labelledby="prepared-title">
           <h2 id="prepared-title">Worked example: the prepared statement fix</h2>
           <p>The same login check, written safely with JDBC's <code>PreparedStatement</code>.</p>
-          <div class="code-block">
+          <div id="code-prepared" class="code-block">
             <span class="code-label">Java (safe)</span>
             <pre><code>String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
 
@@ -213,7 +213,7 @@ ResultSet rs = ps.executeQuery();</code></pre>
           </div>
           <p>Now the attacker types <code>' OR '1'='1</code> as the password. The database looks for a user whose password is exactly the 11 characters <code>' OR '1'='1</code>. No such row exists, so the login fails. The query's shape was fixed before the value arrived.</p>
           <p>MySQL 8.4 also supports prepared statements directly in SQL.</p>
-          <div class="code-block">
+          <div id="code-prepared-2" class="code-block">
             <span class="code-label">SQL (MySQL 8.4)</span>
             <pre><code>PREPARE login FROM
   'SELECT * FROM users WHERE username = ? AND password = ?';

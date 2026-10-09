@@ -146,7 +146,7 @@ SELECT ...
 [WITH CHECK OPTION];</code></pre>
           </div>
           <p>This view shows the name and address of the students with STU_ID below 4:</p>
-          <div class="code-block">
+          <div id="code-create-view" class="code-block">
             <span class="code-label">SQL</span>
             <pre><code>CREATE VIEW DetailsView AS
 SELECT NAME, ADDRESS
@@ -155,7 +155,7 @@ WHERE STU_ID &lt; 4;
 
 SELECT * FROM DetailsView;</code></pre>
           </div>
-          <div class="code-block">
+          <div id="code-create-view-2" class="code-block">
             <span class="code-label">Output</span>
             <pre><code>+---------+-----------+
 | NAME    | ADDRESS   |

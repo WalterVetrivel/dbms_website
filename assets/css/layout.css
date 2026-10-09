@@ -159,12 +159,23 @@
 }
 
 /* Laptop widths: tighter header links, and no keyboard hint, so the menu fits on one line. */
-@media (min-width: 1024px) and (max-width: 1199px) {
+@media (min-width: 1024px) and (max-width: 1279px) {
   .top-nav a {
     padding: var(--sp-2);
   }
 
   .search-btn kbd {
+    display: none;
+  }
+}
+
+/* Small laptops: even tighter links, and the search button shows only its icon. */
+@media (min-width: 1024px) and (max-width: 1099px) {
+  .top-nav a {
+    padding: var(--sp-2) 6px;
+  }
+
+  .search-btn .search-label {
     display: none;
   }
 }

@@ -95,7 +95,7 @@
         <section id="lost-update" class="topic-section" aria-labelledby="lost-update-title">
           <h2 id="lost-update-title">Lost update problem</h2>
           <p>Two transactions read the same item and both update it. The second write overwrites the first, so one update is <strong>lost</strong>.</p>
-          <div class="grid grid-sm">
+          <div id="tables-lost-update" class="grid grid-sm">
             <div class="table-wrap">
               <table>
                 <caption>Lost update: T1 withdraws ₹50, T2 deposits ₹100</caption>
@@ -116,7 +116,7 @@
           <h2 id="dirty-read-title">Dirty read problem</h2>
           <p>A transaction reads a value written by another transaction that has <strong>not committed</strong>. If that transaction then aborts, the value read was never valid. Elmasri calls this the <strong>temporary update</strong> problem.</p>
           <div class="grid grid-sm">
-            <div class="table-wrap">
+            <div id="tbl-dirty-read" class="table-wrap">
               <table>
                 <caption>Dirty read: T1 aborts after T2 reads its value</caption>
                 <thead><tr><th scope="col">T1</th><th scope="col">T2</th><th scope="col">A in database</th></tr></thead>

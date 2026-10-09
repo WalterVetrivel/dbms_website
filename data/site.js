@@ -22,6 +22,7 @@ DBMS.pages = [
   { id: "home", title: "Home", href: "index.html", status: "published", nav: true },
   { id: "question-bank", title: "Question Banks", href: "question-bank/index.html", status: "published", nav: true, icon: "file-question", summary: "Important questions from every unit, with model answers for 2-mark questions." },
   { id: "outlines", title: "16-Mark Outlines", navTitle: "Outlines", href: "outlines/index.html", status: "published", nav: true, icon: "file-text", summary: "A plan for every 16-mark question: the headings, diagrams, tables and examples to include." },
+  { id: "diagrams", title: "Diagrams and Examples", navTitle: "Diagrams", href: "diagrams/index.html", status: "published", nav: true, icon: "shapes", summary: "The important diagrams, queries and worked examples of each unit, linked to their topics." },
   { id: "labs", title: "Labs", href: "labs/index.html", status: "published", nav: true, icon: "flask", summary: "All 10 lab exercises, with each sample solution explained step by step." },
   { id: "quizzes", title: "Quizzes", href: "quizzes/index.html", status: "published", nav: true, icon: "list-checks", summary: "A quiz for every topic and a 20-question quiz for every unit." },
   { id: "revision", title: "Revision", href: "revision/index.html", status: "published", nav: true, icon: "layers", summary: "A revision sheet for each unit with the key points of every topic." },

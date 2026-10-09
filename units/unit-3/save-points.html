@@ -111,7 +111,7 @@
               </tbody>
             </table>
           </div>
-          <div class="code-block">
+          <div id="code-savepoint-sql" class="code-block">
             <span class="code-label">SQL</span>
             <pre><code>SQL&gt; SAVEPOINT SP1;
 Savepoint created.
@@ -127,7 +127,7 @@ SQL&gt; DELETE FROM CUSTOMERS WHERE ID = 3;
 1 row deleted.</code></pre>
           </div>
           <p>Now you change your mind and roll back to SP2. SP2 was created after the first deletion, so the last two deletions are undone:</p>
-          <div class="code-block">
+          <div id="code-savepoint-sql-2" class="code-block">
             <span class="code-label">SQL</span>
             <pre><code>SQL&gt; ROLLBACK TO SP2;
 Rollback complete.

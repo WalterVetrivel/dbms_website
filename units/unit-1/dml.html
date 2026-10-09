@@ -259,7 +259,7 @@ SELECT COUNT(*) FROM person;     -- 4: every row is back</code></pre>
         <section id="worked" class="topic-section" aria-labelledby="worked-title">
           <h2 id="worked-title">Worked example: DDL and DML together</h2>
           <p>This script builds a <code>student</code> table and uses all six commands a long answer asks for: CREATE, ALTER, INSERT, UPDATE, DELETE and SELECT.</p>
-          <div class="code-block">
+          <div id="code-ddl-dml-worked" class="code-block">
             <span class="code-label">MySQL</span>
             <pre><code>-- DDL: define the structure
 CREATE TABLE student (
@@ -279,7 +279,7 @@ UPDATE student SET marks = 70 WHERE roll_no = 3;
 DELETE FROM student WHERE dept = 'MECH';
 SELECT name, marks FROM student WHERE dept = 'CSE' ORDER BY marks DESC;</code></pre>
           </div>
-          <div class="table-wrap">
+          <div id="tbl-ddl-dml-worked-2" class="table-wrap">
             <table>
               <caption>Result of the final SELECT</caption>
               <thead><tr><th scope="col">name</th><th scope="col">marks</th></tr></thead>

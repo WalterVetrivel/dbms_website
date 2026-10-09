@@ -273,7 +273,7 @@ INSERT INTO account VALUES (105, 'Esha', -50);</code></pre>
         <section id="audit" class="topic-section" aria-labelledby="audit-title">
           <h2 id="audit-title">Example: an audit log</h2>
           <p>AFTER triggers can record every change in a log table. The log keeps the old and the new balance.</p>
-          <div class="code-block">
+          <div id="code-audit-trigger" class="code-block">
             <span class="code-label">SQL</span>
             <pre><code>CREATE TABLE balance_log (
   log_id      INT AUTO_INCREMENT PRIMARY KEY,
@@ -300,7 +300,7 @@ INSERT INTO balance_log (acc_no, action, old_balance, new_balance)
 VALUES (OLD.acc_no, 'DELETE', OLD.balance, NULL);</code></pre>
           </div>
           <p>Now run three ordinary statements:</p>
-          <div class="code-block">
+          <div id="code-audit-trigger-2" class="code-block">
             <span class="code-label">SQL</span>
             <pre><code>INSERT INTO account VALUES (104, 'Divya', 500);
 UPDATE account SET balance = balance - 200 WHERE acc_no = 101;
@@ -308,7 +308,7 @@ DELETE FROM account WHERE acc_no = 102;
 
 SELECT log_id, acc_no, action, old_balance, new_balance FROM balance_log;</code></pre>
           </div>
-          <div class="code-block">
+          <div id="code-audit-trigger-3" class="code-block">
             <span class="code-label">Output</span>
             <pre><code>+--------+--------+--------+-------------+-------------+
 | log_id | acc_no | action | old_balance | new_balance |

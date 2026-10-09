@@ -103,7 +103,7 @@ TO {user_name | PUBLIC | role_name}
             <li><strong>role_name:</strong> a named set of privileges.</li>
             <li><strong>WITH GRANT OPTION:</strong> lets the user pass the same privilege on to other users.</li>
           </ul>
-          <div class="code-block">
+          <div id="code-grant-revoke" class="code-block">
             <span class="code-label">SQL</span>
             <pre><code>-- read-only access to one table
 GRANT SELECT ON Employee_Info TO user1;
@@ -129,7 +129,7 @@ GRANT ALL PRIVILEGES ON college.* TO 'admin'@'localhost';</code></pre>
 ON object_name
 FROM {user_name | PUBLIC | role_name};</code></pre>
           </div>
-          <div class="code-block">
+          <div id="code-grant-revoke-2" class="code-block">
             <span class="code-label">SQL</span>
             <pre><code>REVOKE SELECT ON Employee_Info FROM user1;
 REVOKE GRANT OPTION ON college.marks FROM 'hod'@'localhost';   -- keeps the privileges, removes the right to pass them on

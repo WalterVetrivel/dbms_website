@@ -187,14 +187,14 @@
             <li>They have the <strong>same number of attributes</strong>.</li>
             <li>The domains of matching attributes are <strong>the same</strong>.</li>
           </ol>
-          <div class="table-wrap">
+          <div id="tbl-set-ops-ra" class="table-wrap">
             <table>
               <caption>Full_Time and Part_Time employees</caption>
               <thead><tr><th scope="col">Full_Time.ename</th><th scope="col">Part_Time.ename</th></tr></thead>
               <tbody><tr><td>Ganesh</td><td>Hari</td></tr><tr><td>Hari</td><td>Janani</td></tr><tr><td>Indu</td><td></td></tr></tbody>
             </table>
           </div>
-          <div class="table-wrap">
+          <div id="tbl-set-ops-ra-2" class="table-wrap">
             <table>
               <caption>Set operations on Full_Time (F) and Part_Time (P)</caption>
               <thead><tr><th scope="col">Operation</th><th scope="col">Meaning</th><th scope="col">Result</th></tr></thead>
@@ -215,7 +215,7 @@
           <p>The Cartesian product <code>r × s</code> pairs <strong>every</strong> tuple of r with <strong>every</strong> tuple of s. If r has n<sub>1</sub> tuples and s has n<sub>2</sub>, the result has n<sub>1</sub> × n<sub>2</sub> tuples. Student × Reserve has 4 × 3 = 12 tuples.</p>
           <p>Most of those pairs are meaningless, because they join a student to another student's reservation. So a product is nearly always followed by a select.</p>
           <p><strong>Query:</strong> find the names of students who reserved the book with isbn 005.</p>
-          <div class="code-block">
+          <div id="code-ra-queries" class="code-block">
             <span class="code-label">Relational algebra</span>
             <pre><code>π sname (σ Student.sid = Reserve.sid ∧ Reserve.isbn = '005' (Student × Reserve))</code></pre>
           </div>
@@ -271,21 +271,21 @@
         <section id="outer" class="topic-section" aria-labelledby="outer-title">
           <h2 id="outer-title">Outer joins</h2>
           <p>An outer join keeps the tuples that have <strong>no match</strong>, and fills the missing attributes with <strong>NULL</strong>. Take these two relations:</p>
-          <div class="table-wrap">
+          <div id="tbl-outer-joins" class="table-wrap">
             <table>
               <caption>Emp</caption>
               <thead><tr><th scope="col">ename</th><th scope="col">dno</th></tr></thead>
               <tbody><tr><td>Ganesh</td><td>10</td></tr><tr><td>Hari</td><td>20</td></tr><tr><td>Indu</td><td>NULL</td></tr></tbody>
             </table>
           </div>
-          <div class="table-wrap">
+          <div id="tbl-outer-joins-2" class="table-wrap">
             <table>
               <caption>Dept</caption>
               <thead><tr><th scope="col">dno</th><th scope="col">dname</th></tr></thead>
               <tbody><tr><td>10</td><td>CSE</td></tr><tr><td>20</td><td>IT</td></tr><tr><td>30</td><td>ECE</td></tr></tbody>
             </table>
           </div>
-          <div class="table-wrap">
+          <div id="tbl-outer-joins-3" class="table-wrap">
             <table>
               <caption>The three outer joins of Emp and Dept</caption>
               <thead><tr><th scope="col">Join</th><th scope="col">Symbol</th><th scope="col">Keeps</th><th scope="col">Extra tuple in the result</th></tr></thead>
@@ -324,7 +324,7 @@
         <section id="assignment" class="topic-section" aria-labelledby="assign-title">
           <h2 id="assign-title">Assignment (←)</h2>
           <p>Assignment stores the result of an expression in a temporary relation variable, so a long query can be written in steps:</p>
-          <div class="code-block">
+          <div id="code-ra-queries-2" class="code-block">
             <span class="code-label">Relational algebra</span>
             <pre><code>temp1 ← σ city = 'Salem' (Student)
 temp2 ← temp1 ⋈ Reserve

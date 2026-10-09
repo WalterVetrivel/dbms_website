@@ -70,7 +70,7 @@
         <section id="overview" class="topic-section" aria-labelledby="overview-title">
           <h2 id="overview-title">The overall structure</h2>
           <p>A database system is divided into parts, and each part has one job. The two main parts are the <strong>query processor</strong> and the <strong>storage manager</strong>. At the top are the users and the tools they use. At the bottom is the <strong>disk storage</strong>.</p>
-          <figure class="figure">
+          <figure id="fig-db-structure" class="figure">
             <svg viewBox="0 0 640 400" width="640" height="400" role="img" aria-labelledby="arch-fig-title" style="max-width:100%;height:auto">
               <title id="arch-fig-title">Structure of a database system. Users at the top use application interfaces, application programs, query tools and administration tools. These connect to the query processor, which has the DML compiler and organizer, the DDL interpreter and the query evaluation engine. Below it is the storage manager with the authorization and integrity manager, transaction manager, file manager and buffer manager. At the bottom is disk storage with data files, the data dictionary, indices and statistical data.</title>
               <g font-family="Inter, system-ui, sans-serif" font-size="12" text-anchor="middle">
@@ -185,7 +185,7 @@
         <section id="tiers" class="topic-section" aria-labelledby="tiers-title">
           <h2 id="tiers-title">Two-tier and three-tier architecture</h2>
           <p>The database usually runs on a server, and users work on their own machines. There are two common ways to connect them.</p>
-          <figure class="figure">
+          <figure id="fig-two-three-tier" class="figure">
             <svg viewBox="0 0 600 230" width="600" height="230" role="img" aria-labelledby="tier-fig-title" style="max-width:100%;height:auto">
               <title id="tier-fig-title">Two-tier: the client machine runs the application and talks directly to the database system on the server. Three-tier: the client runs only an interface, which talks to an application server, which talks to the database system.</title>
               <g font-family="Inter, system-ui, sans-serif" font-size="13" text-anchor="middle">
