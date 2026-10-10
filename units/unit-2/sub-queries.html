@@ -85,7 +85,7 @@
             <li>A subquery that returns more than one row needs IN, ANY, ALL or EXISTS. A plain = or &gt; needs a single value.</li>
           </ul>
           <p>We name subqueries by what they return:</p>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-subquery-kinds">
             <table>
               <caption>Kinds of subquery</caption>
               <thead><tr><th scope="col">Kind</th><th scope="col">Returns</th><th scope="col">Used with</th></tr></thead>
@@ -504,7 +504,7 @@ JOIN (SELECT DEPT, MAX(SALARY) AS top
       GROUP BY DEPT) AS m
   ON e.DEPT = m.DEPT AND e.SALARY = m.top;</code></pre>
           </div>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-subquery-vs-join">
             <table>
               <caption>When to use which</caption>
               <thead><tr><th scope="col">Use a subquery when</th><th scope="col">Use a join when</th></tr></thead>

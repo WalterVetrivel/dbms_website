@@ -149,7 +149,7 @@ function itemBlock(D, c) {
           '            <div class="cmp-syntax">',
           `              <h4>${escText(c.syntaxTitle || "Syntax side by side")}</h4>`,
           `              <div class="cmp-syntax-grid${syntax.length > 2 ? " cmp-syntax-many" : ""}">`,
-          ...syntax.map((s) => `              <div>\n${s.replace(/^/gm, "  ")}\n              </div>`),
+          ...syntax.map((s) => `              <div>\n${s}\n              </div>`),
           "              </div>",
           "            </div>"
         ]

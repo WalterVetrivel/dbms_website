@@ -1,0 +1,1091 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Built by tools/build-comparisons.mjs from data/comparisons and the topic pages. Edit those, then run the script again. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit II Comparisons | DBMS Study Guide</title>
+  <meta name="description" content="Tables that compare the related concepts of Unit II (Database Design), with the syntax side by side for SQL. Each one links to its topic page. Prints well.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="comparisons" data-unit="2" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content u-2">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        <header class="cmp-head">
+          <span class="eyebrow">Unit II: Database Design</span>
+          <h1>Unit II Comparisons</h1>
+          <p class="lead">20 comparisons of the related ideas in Unit II, as tables you can learn and write in the exam. Each one links to its topic page.</p>
+        </header>
+
+        <div class="btn-row no-print">
+          <button type="button" class="btn btn-primary" data-print>Print the comparisons</button>
+          <a class="btn" href="../revision/unit-2.html">Unit II revision sheet</a>
+          <a class="btn" href="../question-bank/unit-2.html">Unit II question bank</a>
+        </div>
+
+        <nav class="on-this-page cmp-toc" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#t2-1">2.1 Entity-Relationship Model</a>
+              <ol>
+                <li><a href="#strong-vs-weak-entity">Strong and weak entity sets</a></li>
+                <li><a href="#attribute-types">Simple and composite, single-valued and multivalued, stored and derived attributes</a></li>
+              </ol>
+            </li>
+            <li><a href="#t2-3">2.3 ER-to-Relational Mapping</a>
+              <ol>
+                <li><a href="#specialization-vs-generalization">Specialization and generalization</a></li>
+              </ol>
+            </li>
+            <li><a href="#t2-4">2.4 Functional Dependencies</a>
+              <ol>
+                <li><a href="#fd-types">Trivial, non-trivial, full, partial and transitive dependencies</a></li>
+                <li><a href="#fd-vs-mvd">Functional dependency and multivalued dependency</a></li>
+              </ol>
+            </li>
+            <li><a href="#t2-5">2.5 Non-loss Decomposition</a>
+              <ol>
+                <li><a href="#lossless-vs-lossy">Lossless and lossy decomposition</a></li>
+              </ol>
+            </li>
+            <li><a href="#t2-6">2.6 First, Second and Third Normal Forms</a>
+              <ol>
+                <li><a href="#1nf-2nf-3nf">1NF, 2NF and 3NF</a></li>
+              </ol>
+            </li>
+            <li><a href="#t2-7">2.7 Dependency Preservation</a>
+              <ol>
+                <li><a href="#lossless-vs-dependency-preservation">Lossless join and dependency preservation</a></li>
+              </ol>
+            </li>
+            <li><a href="#t2-8">2.8 Boyce-Codd Normal Form</a>
+              <ol>
+                <li><a href="#3nf-vs-bcnf">3NF and BCNF</a></li>
+              </ol>
+            </li>
+            <li><a href="#t2-10">2.10 Join Dependencies and Fifth Normal Form</a>
+              <ol>
+                <li><a href="#normal-forms">The normal forms from 1NF to 5NF</a></li>
+              </ol>
+            </li>
+            <li><a href="#t2-11">2.11 SQL Set Operations</a>
+              <ol>
+                <li><a href="#set-operations">UNION, UNION ALL, INTERSECT and EXCEPT</a></li>
+              </ol>
+            </li>
+            <li><a href="#t2-12">2.12 Aggregate Functions</a>
+              <ol>
+                <li><a href="#count-forms">COUNT(*), COUNT(column) and COUNT(DISTINCT column)</a></li>
+              </ol>
+            </li>
+            <li><a href="#t2-13">2.13 GROUP BY and HAVING</a>
+              <ol>
+                <li><a href="#where-vs-having">WHERE and HAVING</a></li>
+                <li><a href="#group-by-vs-order-by">GROUP BY and ORDER BY</a></li>
+              </ol>
+            </li>
+            <li><a href="#t2-14">2.14 Joins</a>
+              <ol>
+                <li><a href="#join-types">Inner, outer, cross, natural and self joins</a></li>
+                <li><a href="#join-vs-subquery">Join and subquery</a></li>
+              </ol>
+            </li>
+            <li><a href="#t2-15">2.15 Sub Queries</a>
+              <ol>
+                <li><a href="#correlated-vs-non-correlated">Correlated and non-correlated subqueries</a></li>
+                <li><a href="#in-vs-exists-any-vs-all">IN and EXISTS, ANY and ALL</a></li>
+              </ol>
+            </li>
+            <li><a href="#t2-16">2.16 Views</a>
+              <ol>
+                <li><a href="#table-vs-view">Table, view and materialized view</a></li>
+              </ol>
+            </li>
+            <li><a href="#t2-17">2.17 Triggers</a>
+              <ol>
+                <li><a href="#trigger-types">BEFORE and AFTER triggers, row-level and statement-level triggers, NEW and OLD</a></li>
+              </ol>
+            </li>
+          </ol>
+        </nav>
+
+        <section id="t2-1" class="section cmp-topic" aria-labelledby="t2-1-title">
+          <h2 id="t2-1-title"><a href="../units/unit-2/entity-relationship-model.html"><span class="rev-num">2.1</span> Entity-Relationship Model</a></h2>
+          <article class="cmp-item" id="strong-vs-weak-entity" aria-labelledby="strong-vs-weak-entity-title">
+            <div class="cmp-lead">
+            <h3 id="strong-vs-weak-entity-title">Strong and weak entity sets</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> A strong entity set has a primary key of its own; a weak entity set has only a partial key and depends on an owner entity set.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Strong and weak entity sets</caption>
+              <thead><tr><th scope="col">Strong entity set</th><th scope="col">Weak entity set</th></tr></thead>
+              <tbody>
+                <tr><td>Has a primary key of its own</td><td>Has only a partial key (discriminator)</td></tr>
+                <tr><td>Drawn as a single rectangle</td><td>Drawn as a double rectangle</td></tr>
+                <tr><td>Its key is underlined</td><td>Its discriminator has a dashed underline</td></tr>
+                <tr><td>Takes part in ordinary relationships (single diamond)</td><td>Joined to its owner by an identifying relationship (double diamond)</td></tr>
+                <tr><td>Participation may be total or partial</td><td>Always total participation in the identifying relationship</td></tr>
+                <tr><td>Example: Course</td><td>Example: Section of a course; Payment of a loan</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Draw one small example: Loan (strong, single rectangle) and Payment (weak, double rectangle), joined by a double diamond.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/entity-relationship-model.html#weak"><span class="rev-num">2.1</span> Entity-Relationship Model: Weak entity sets</a></div>
+          </article>
+          <article class="cmp-item" id="attribute-types" aria-labelledby="attribute-types-title">
+            <div class="cmp-lead">
+            <h3 id="attribute-types-title">Simple and composite, single-valued and multivalued, stored and derived attributes</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Attributes come in pairs: simple or composite (can it be split?), single-valued or multivalued (how many values?) and stored or derived (kept or calculated?).</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Types of attributes</caption>
+              <thead><tr><th scope="col">Type</th><th scope="col">Meaning</th><th scope="col">Example</th><th scope="col">Symbol</th></tr></thead>
+              <tbody>
+                <tr><td>Simple</td><td>Cannot be divided into smaller parts</td><td>RollNo, Age</td><td>Ellipse</td></tr>
+                <tr><td>Composite</td><td>Made of smaller sub-attributes</td><td>Name = First + Last; Address = Street + City + PIN</td><td>Ellipse with sub-attribute ellipses</td></tr>
+                <tr><td>Single-valued</td><td>One value for each entity</td><td>DOB of a student</td><td>Ellipse</td></tr>
+                <tr><td>Multivalued</td><td>A set of values for one entity</td><td>Phone numbers; degrees (BSc, MTech, PhD)</td><td>Double ellipse</td></tr>
+                <tr><td>Stored</td><td>The value is kept in the database</td><td>DOB</td><td>Ellipse</td></tr>
+                <tr><td>Derived</td><td>The value is calculated from other attributes</td><td>Age, from DOB</td><td>Dashed ellipse</td></tr>
+                <tr><td>Key</td><td>Different for every entity in the set</td><td>RegNo</td><td>Ellipse, name underlined</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>One attribute belongs to one type from each pair. For example, Phone is simple, multivalued and stored.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/entity-relationship-model.html#attributes"><span class="rev-num">2.1</span> Entity-Relationship Model: Attributes and their types</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-a1">Unit II QB, 2 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t2-3" class="section cmp-topic" aria-labelledby="t2-3-title">
+          <h2 id="t2-3-title"><a href="../units/unit-2/er-to-relational-mapping.html"><span class="rev-num">2.3</span> ER-to-Relational Mapping</a></h2>
+          <article class="cmp-item" id="specialization-vs-generalization" aria-labelledby="specialization-vs-generalization-title">
+            <div class="cmp-lead">
+            <h3 id="specialization-vs-generalization-title">Specialization and generalization</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Specialization splits one entity set into subclasses (top-down); generalization joins several entity sets into one superclass (bottom-up). Both give the same ISA picture.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Specialization and generalization</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Specialization</th><th scope="col">Generalization</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Direction</th><td>Top-down</td><td>Bottom-up</td></tr>
+                  <tr><th scope="row">Starts from</th><td>One higher-level entity set</td><td>Several lower-level entity sets</td></tr>
+                  <tr><th scope="row">Result</th><td>New subclasses (lower-level entity sets)</td><td>A new superclass (higher-level entity set)</td></tr>
+                  <tr><th scope="row">Why it is done</th><td>Some entities have attributes or relationships that others do not</td><td>Several entity sets share common attributes</td></tr>
+                  <tr><th scope="row">Attributes</th><td>Subclasses add their own attributes and inherit the rest</td><td>The common attributes move up to the superclass</td></tr>
+                  <tr><th scope="row">Symbol</th><td>ISA triangle under the superclass</td><td>The same ISA triangle</td></tr>
+                  <tr><th scope="row">Constraints</th><td>Disjoint or overlapping; total or partial</td><td>Usually total: every lower-level entity belongs to the superclass</td></tr>
+                  <tr><th scope="row">Example</th><td>Person is specialized into Student and Employee</td><td>Car and Truck are generalized into Vehicle</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>Three ways to map InventoryItem, Book and DVD</caption>
+              <thead><tr><th scope="col">Method</th><th scope="col">Tables</th><th scope="col">Drawback</th></tr></thead>
+              <tbody>
+                <tr><td>1. A table for the superclass and each subclass</td><td>InventoryItem(<u>ID</u>, Name), Book(<u>ID</u>, Publisher), DVD(<u>ID</u>, Manufacturer)</td><td>Needs a join to see all the data of a book</td></tr>
+                <tr><td>2. Tables for the subclasses only</td><td>Book(<u>ID</u>, Name, Publisher), DVD(<u>ID</u>, Name, Manufacturer)</td><td>An item that is neither a book nor a DVD has no table</td></tr>
+                <tr><td>3. One table for the superclass only</td><td>InventoryItem(<u>ID</u>, Name, Publisher, Manufacturer)</td><td>Many NULLs: a book has no Manufacturer, a DVD has no Publisher</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>The two are opposite design steps that give the same diagram. Say which way you worked: from one entity down, or from many entities up.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/er-to-relational-mapping.html#special"><span class="rev-num">2.3</span> ER-to-Relational Mapping: Mapping specialization and generalization</a></div>
+          </article>
+        </section>
+
+        <section id="t2-4" class="section cmp-topic" aria-labelledby="t2-4-title">
+          <h2 id="t2-4-title"><a href="../units/unit-2/functional-dependencies.html"><span class="rev-num">2.4</span> Functional Dependencies</a></h2>
+          <article class="cmp-item" id="fd-types" aria-labelledby="fd-types-title">
+            <div class="cmp-lead">
+            <h3 id="fd-types-title">Trivial, non-trivial, full, partial and transitive dependencies</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> A trivial FD says nothing new. A partial FD depends on part of a key. A transitive FD goes through a non-key attribute.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Types of FDs, with examples from Marks</caption>
+              <thead><tr><th scope="col">Type</th><th scope="col">Meaning</th><th scope="col">Example</th></tr></thead>
+              <tbody>
+                <tr><td>Trivial</td><td>Y is a subset of X. It always holds.</td><td>{RegNo, CourseID} → RegNo</td></tr>
+                <tr><td>Non-trivial</td><td>Y is not a subset of X.</td><td>RegNo → StudentName</td></tr>
+                <tr><td>Completely non-trivial</td><td>X and Y have no attribute in common.</td><td>CourseID → CourseName</td></tr>
+                <tr><td>Full</td><td>Y depends on the whole of X; remove any attribute from X and the FD fails.</td><td>{RegNo, CourseID} → Marks</td></tr>
+                <tr><td>Partial</td><td>A non-prime attribute depends on <strong>part</strong> of a candidate key.</td><td>RegNo → StudentName (RegNo is part of the key {RegNo, CourseID})</td></tr>
+                <tr><td>Transitive</td><td>X → Y and Y → Z give X → Z, where Y is not a key and Z is non-prime.</td><td>RegNo → Dept and Dept → HOD give RegNo → HOD</td></tr>
+                <tr><td>Multivalued</td><td>X determines a <strong>set</strong> of Y values (X →→ Y).</td><td>Covered in <a href="../units/unit-2/multivalued-dependencies-and-fourth-normal-form.html">Multivalued Dependencies and Fourth Normal Form</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Partial dependencies break 2NF, and transitive dependencies break 3NF. Say this when you list the types.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/functional-dependencies.html#types"><span class="rev-num">2.4</span> Functional Dependencies: Types of functional dependencies</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-a4">Unit II QB, 2 marks</a>, <a href="../question-bank/unit-2.html#q-u2-b3">Unit II QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="fd-vs-mvd" aria-labelledby="fd-vs-mvd-title">
+            <div class="cmp-lead">
+            <h3 id="fd-vs-mvd-title">Functional dependency and multivalued dependency</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> In an FD X → Y, each X value fixes one Y value. In an MVD X →→ Y, each X value fixes a set of Y values, whatever the other attributes are.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Functional dependency and multivalued dependency</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Functional dependency (FD)</th><th scope="col">Multivalued dependency (MVD)</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Notation</th><td>X → Y</td><td>X →→ Y</td></tr>
+                  <tr><th scope="row">Meaning</th><td>Each X value has exactly one Y value</td><td>Each X value has a set of Y values, independent of the rest of the attributes</td></tr>
+                  <tr><th scope="row">Tuple rule</th><td>Two tuples that agree on X also agree on Y</td><td>If two tuples agree on X, the tuples with their Y values swapped must also exist</td></tr>
+                  <tr><th scope="row">Attributes needed</th><td>At least two</td><td>At least three (X, Y and the rest)</td></tr>
+                  <tr><th scope="row">Trivial when</th><td>Y ⊆ X</td><td>Y ⊆ X, or X ∪ Y is all the attributes</td></tr>
+                  <tr><th scope="row">Relationship</th><td>Every FD is also an MVD</td><td>An MVD is not always an FD</td></tr>
+                  <tr><th scope="row">Extra rule</th><td>Armstrong's axioms</td><td>Complementation: X →→ Y gives X →→ R − X − Y</td></tr>
+                  <tr><th scope="row">Normal form it drives</th><td>2NF, 3NF and BCNF</td><td>4NF</td></tr>
+                  <tr><th scope="row">Example</th><td>RegNo → Name</td><td>sid →→ course and sid →→ skill in Student(sid, course, skill)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/functional-dependencies.html#what"><span class="rev-num">2.4</span> Functional Dependencies: What is a functional dependency?</a>; <a href="../units/unit-2/multivalued-dependencies-and-fourth-normal-form.html#mvd"><span class="rev-num">2.9</span> Multivalued Dependencies and Fourth Normal Form: Multivalued dependency</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-a8">Unit II QB, 2 marks</a>, <a href="../question-bank/unit-2.html#q-u2-b6">Unit II QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t2-5" class="section cmp-topic" aria-labelledby="t2-5-title">
+          <h2 id="t2-5-title"><a href="../units/unit-2/non-loss-decomposition.html"><span class="rev-num">2.5</span> Non-loss Decomposition</a></h2>
+          <article class="cmp-item" id="lossless-vs-lossy" aria-labelledby="lossless-vs-lossy-title">
+            <div class="cmp-lead">
+            <h3 id="lossless-vs-lossy-title">Lossless and lossy decomposition</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> A lossless decomposition joins back to exactly the original table; a lossy one gives extra (spurious) rows, so information is lost.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Lossless and lossy decomposition</caption>
+              <thead><tr><th scope="col">Lossless (non-loss) decomposition</th><th scope="col">Lossy decomposition</th></tr></thead>
+              <tbody>
+                <tr><td>The natural join gives back exactly R</td><td>The natural join gives R plus spurious tuples</td></tr>
+                <tr><td>No information is lost</td><td>Information is lost: we cannot tell true rows from false ones</td></tr>
+                <tr><td>The common attributes are a superkey of at least one part</td><td>The common attributes are a superkey of neither part</td></tr>
+                <tr><td>Required for every normalization step</td><td>Never acceptable</td></tr>
+                <tr><td>Example: Employee and Department joined on DeptID</td><td>Example: Student split on Name</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>The test for two parts: R1 ∩ R2 → R1 or R1 ∩ R2 → R2 must hold. Write it as a formula, then check it on the example.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/non-loss-decomposition.html#compare"><span class="rev-num">2.5</span> Non-loss Decomposition: Lossless and lossy decomposition compared</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-a5">Unit II QB, 2 marks</a>, <a href="../question-bank/unit-2.html#q-u2-b4">Unit II QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t2-6" class="section cmp-topic" aria-labelledby="t2-6-title">
+          <h2 id="t2-6-title"><a href="../units/unit-2/first-second-and-third-normal-forms.html"><span class="rev-num">2.6</span> First, Second and Third Normal Forms</a></h2>
+          <article class="cmp-item" id="1nf-2nf-3nf" aria-labelledby="1nf-2nf-3nf-title">
+            <div class="cmp-lead">
+            <h3 id="1nf-2nf-3nf-title">1NF, 2NF and 3NF</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> 1NF needs atomic values, 2NF also removes partial dependencies, and 3NF also removes transitive dependencies.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Comparing the first three normal forms</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">1NF</th><th scope="col">2NF</th><th scope="col">3NF</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Rule</th><td>Atomic values only</td><td>1NF + no partial dependency</td><td>2NF + no transitive dependency</td></tr>
+                <tr><th scope="row">Depends on</th><td>The values in the cells</td><td>The FDs and the candidate keys</td><td>The FDs and the candidate keys</td></tr>
+                <tr><th scope="row">Non-prime attributes depend on</th><td>Anything</td><td>The whole key</td><td>The key, and nothing but the key</td></tr>
+                <tr><th scope="row">When a key has one attribute</th><td>Still needs atomic values</td><td>Automatic once in 1NF</td><td>Still needs checking</td></tr>
+                <tr><th scope="row">Redundancy left</th><td>High</td><td>Less</td><td>Little (only from prime attributes)</td></tr>
+                <tr><th scope="row">Lossless and dependency preserving?</th><td>No split needed</td><td>Always possible</td><td>Always possible</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>For the 2-mark question on 1NF and 2NF, write two rows: the rule, and what each depends on (cell values or the keys).</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/first-second-and-third-normal-forms.html#compare"><span class="rev-num">2.6</span> First, Second and Third Normal Forms: 1NF, 2NF and 3NF compared</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-a6">Unit II QB, 2 marks</a>, <a href="../question-bank/unit-2.html#q-u2-b13">Unit II QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t2-7" class="section cmp-topic" aria-labelledby="t2-7-title">
+          <h2 id="t2-7-title"><a href="../units/unit-2/dependency-preservation.html"><span class="rev-num">2.7</span> Dependency Preservation</a></h2>
+          <article class="cmp-item" id="lossless-vs-dependency-preservation" aria-labelledby="lossless-vs-dependency-preservation-title">
+            <div class="cmp-lead">
+            <h3 id="lossless-vs-dependency-preservation-title">Lossless join and dependency preservation</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Lossless join is about the data (can we get the table back?); dependency preservation is about the rules (can every FD still be checked in one table?).</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Lossless join compared with dependency preservation</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Lossless (non-loss) join</th><th scope="col">Dependency preservation</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Question it answers</th><td>Does joining the parts give back exactly R?</td><td>Can every FD be checked inside one part?</td></tr>
+                <tr><th scope="row">Condition</th><td>R1 ⋈ ... ⋈ Rn = R for every legal instance</td><td>(F1 ∪ ... ∪ Fn)+ = F+</td></tr>
+                <tr><th scope="row">Test</th><td>R1 ∩ R2 is a superkey of R1 or R2; tableau test for more parts</td><td>Closure of each FD under F1 ∪ ... ∪ Fn</td></tr>
+                <tr><th scope="row">If it fails</th><td>Spurious rows appear and information is lost</td><td>Checking a rule needs a join</td></tr>
+                <tr><th scope="row">Importance</th><td><strong>Required</strong></td><td>Desirable</td></tr>
+                <tr><th scope="row">Always possible with 3NF</th><td>Yes</td><td>Yes</td></tr>
+                <tr><th scope="row">Always possible with BCNF</th><td>Yes</td><td>No</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/dependency-preservation.html#both"><span class="rev-num">2.7</span> Dependency Preservation: Lossless join and dependency preservation</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-b4">Unit II QB, 16 marks</a>, <a href="../question-bank/unit-2.html#q-u2-b15">Unit II QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t2-8" class="section cmp-topic" aria-labelledby="t2-8-title">
+          <h2 id="t2-8-title"><a href="../units/unit-2/boyce-codd-normal-form.html"><span class="rev-num">2.8</span> Boyce-Codd Normal Form</a></h2>
+          <article class="cmp-item" id="3nf-vs-bcnf" aria-labelledby="3nf-vs-bcnf-title">
+            <div class="cmp-lead">
+            <h3 id="3nf-vs-bcnf-title">3NF and BCNF</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> 3NF allows X → A when A is a prime attribute; BCNF does not, so every determinant must be a superkey.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Comparing 3NF and BCNF</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">3NF</th><th scope="col">BCNF</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Rule for X → A</th><td>X is a superkey, or A is prime</td><td>X is a superkey</td></tr>
+                <tr><th scope="row">Strength</th><td>Weaker</td><td>Stronger: every BCNF table is in 3NF</td></tr>
+                <tr><th scope="row">Redundancy</th><td>A little can remain, from prime attributes</td><td>None caused by FDs</td></tr>
+                <tr><th scope="row">Lossless decomposition</th><td>Always possible</td><td>Always possible</td></tr>
+                <tr><th scope="row">Dependency preserving</th><td>Always possible</td><td>Not always possible</td></tr>
+                <tr><th scope="row">When they differ</th><td colspan="2">Only when candidate keys overlap</td></tr>
+                <tr><th scope="row">Usual choice</th><td>When keeping every FD checkable matters more</td><td>When removing all redundancy matters more</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Give the Enrollment(student, course, teacher) example: it is in 3NF but not BCNF, because teacher → course and teacher is not a superkey.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/boyce-codd-normal-form.html#compare"><span class="rev-num">2.8</span> Boyce-Codd Normal Form: BCNF and 3NF compared</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-a7">Unit II QB, 2 marks</a>, <a href="../question-bank/unit-2.html#q-u2-b13">Unit II QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t2-10" class="section cmp-topic" aria-labelledby="t2-10-title">
+          <h2 id="t2-10-title"><a href="../units/unit-2/join-dependencies-and-fifth-normal-form.html"><span class="rev-num">2.10</span> Join Dependencies and Fifth Normal Form</a></h2>
+          <article class="cmp-item" id="normal-forms" aria-labelledby="normal-forms-title">
+            <div class="cmp-lead">
+            <h3 id="normal-forms-title">The normal forms from 1NF to 5NF</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Each normal form adds one more condition to the one before it, so each removes one more kind of redundancy.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Normal forms from 1NF to 5NF</caption>
+              <thead><tr><th scope="col">Normal form</th><th scope="col">Condition</th><th scope="col">Removes</th></tr></thead>
+              <tbody>
+                <tr><td>1NF</td><td>Atomic values only</td><td>Repeating groups</td></tr>
+                <tr><td>2NF</td><td>1NF, and no non-prime attribute depends on part of a key</td><td>Partial dependencies</td></tr>
+                <tr><td>3NF</td><td>For every FD X → A: X is a superkey or A is prime</td><td>Transitive dependencies</td></tr>
+                <tr><td>BCNF</td><td>For every FD X → Y: X is a superkey</td><td>All FD redundancy</td></tr>
+                <tr><td>4NF</td><td>For every MVD X →→ Y: X is a superkey</td><td>Independent multi-valued facts</td></tr>
+                <tr><td>5NF</td><td>Every JD is implied by the candidate keys</td><td>Redundancy from join dependencies</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>Comparing BCNF and 4NF</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">BCNF</th><th scope="col">4NF</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Based on</th><td>Functional dependencies</td><td>Multivalued dependencies (which include FDs)</td></tr>
+                <tr><th scope="row">Rule</th><td>Every non-trivial FD X → Y has X a superkey</td><td>Every non-trivial MVD X →→ Y has X a superkey</td></tr>
+                <tr><th scope="row">Removes</th><td>Redundancy from FDs</td><td>Also redundancy from independent multi-valued facts</td></tr>
+                <tr><th scope="row">Strength</th><td>Weaker</td><td>Stronger: every 4NF table is in BCNF</td></tr>
+                <tr><th scope="row">Typical example</th><td>Enrollment(sid, course, teacher)</td><td>Student(sid, course, skill)</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Draw the forms as a ladder or as nested boxes: 5NF inside 4NF inside BCNF inside 3NF inside 2NF inside 1NF.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/join-dependencies-and-fifth-normal-form.html#summary"><span class="rev-num">2.10</span> Join Dependencies and Fifth Normal Form: All the normal forms</a>; <a href="../units/unit-2/multivalued-dependencies-and-fourth-normal-form.html#compare"><span class="rev-num">2.9</span> Multivalued Dependencies and Fourth Normal Form: BCNF and 4NF compared</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-b13">Unit II QB, 16 marks</a>, <a href="../question-bank/unit-2.html#q-u2-b5">Unit II QB, 16 marks</a>, <a href="../question-bank/unit-2.html#q-u2-b6">Unit II QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t2-11" class="section cmp-topic" aria-labelledby="t2-11-title">
+          <h2 id="t2-11-title"><a href="../units/unit-2/sql-set-operations.html"><span class="rev-num">2.11</span> SQL Set Operations</a></h2>
+          <article class="cmp-item" id="set-operations" aria-labelledby="set-operations-title">
+            <div class="cmp-lead">
+            <h3 id="set-operations-title">UNION, UNION ALL, INTERSECT and EXCEPT</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> All four combine the results of two queries with the same columns. UNION ALL keeps duplicates; the others remove them.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>UNION, UNION ALL, INTERSECT and EXCEPT</caption>
+              <thead><tr><th scope="col">Operation</th><th scope="col">Returns rows that are</th><th scope="col">Duplicates</th><th scope="col">Rows with the sample tables</th><th scope="col">Algebra</th></tr></thead>
+              <tbody>
+                <tr><td>UNION</td><td>In either result</td><td>Removed</td><td>5</td><td>A ∪ B</td></tr>
+                <tr><td>UNION ALL</td><td>In either result</td><td>Kept</td><td>6</td><td>(bag union)</td></tr>
+                <tr><td>INTERSECT</td><td>In both results</td><td>Removed</td><td>1</td><td>A ∩ B</td></tr>
+                <tr><td>EXCEPT</td><td>In the first but not the second</td><td>Removed</td><td>2</td><td>A − B</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid cmp-syntax-many">
+              <div>
+              <div class="code-block">
+                <span class="code-label">UNION and UNION ALL</span>
+                <pre><code>SELECT id FROM First
+UNION
+SELECT id FROM Second;
+
+SELECT id FROM First
+UNION ALL
+SELECT id FROM Second;</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">INTERSECT</span>
+                <pre><code>SELECT id FROM First
+INTERSECT
+SELECT id FROM Second;
+-- MySQL 8.0.31 and later</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">EXCEPT (MINUS)</span>
+                <pre><code>SELECT id FROM First
+EXCEPT
+SELECT id FROM Second;
+-- Oracle writes MINUS</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Both queries must return the same number of columns, with compatible types. The column names come from the first query.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/sql-set-operations.html#compare"><span class="rev-num">2.11</span> SQL Set Operations: The four operations compared</a>; <a href="../units/unit-2/sql-set-operations.html#rules"><span class="rev-num">2.11</span> SQL Set Operations: Rules for set operations</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-a10">Unit II QB, 2 marks</a>, <a href="../question-bank/unit-2.html#q-u2-b7">Unit II QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t2-12" class="section cmp-topic" aria-labelledby="t2-12-title">
+          <h2 id="t2-12-title"><a href="../units/unit-2/aggregate-functions.html"><span class="rev-num">2.12</span> Aggregate Functions</a></h2>
+          <article class="cmp-item" id="count-forms" aria-labelledby="count-forms-title">
+            <div class="cmp-lead">
+            <h3 id="count-forms-title">COUNT(*), COUNT(column) and COUNT(DISTINCT column)</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> COUNT(*) counts rows; COUNT(column) counts the non-NULL values in a column; COUNT(DISTINCT column) counts the different non-NULL values.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>The three forms of COUNT, on student(roll, name, dept_id) with dept_id = 10, 20, 10 and NULL</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">COUNT(*)</th><th scope="col">COUNT(dept_id)</th><th scope="col">COUNT(DISTINCT dept_id)</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Counts</th><td>Rows</td><td>Non-NULL values</td><td>Different non-NULL values</td></tr>
+                  <tr><th scope="row">NULL values</th><td>Counted (the row is counted)</td><td>Skipped</td><td>Skipped</td></tr>
+                  <tr><th scope="row">Duplicates</th><td>Counted</td><td>Counted</td><td>Counted once</td></tr>
+                  <tr><th scope="row">Result on the sample</th><td>4</td><td>3</td><td>2</td></tr>
+                  <tr><th scope="row">On an empty table</th><td>0</td><td>0</td><td>0</td></tr>
+                  <tr><th scope="row">Typical use</th><td>How many students?</td><td>How many students have a department?</td><td>How many departments have students?</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+              <div class="code-block">
+                <span class="code-label">SQL</span>
+                <pre><code>SELECT COUNT(*),
+       COUNT(dept_id),
+       COUNT(DISTINCT dept_id)
+FROM student;</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Result</span>
+                <pre><code>COUNT(*)  COUNT(dept_id)  COUNT(DISTINCT dept_id)
+       4               3                        2</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>The other aggregates (SUM, AVG, MIN and MAX) also skip NULL. So AVG(marks) divides by the number of non-NULL marks, not by the number of rows.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/aggregate-functions.html#count"><span class="rev-num">2.12</span> Aggregate Functions: COUNT</a>; <a href="../units/unit-2/aggregate-functions.html#nulls"><span class="rev-num">2.12</span> Aggregate Functions: Aggregates and NULL</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-b8">Unit II QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t2-13" class="section cmp-topic" aria-labelledby="t2-13-title">
+          <h2 id="t2-13-title"><a href="../units/unit-2/group-by-and-having.html"><span class="rev-num">2.13</span> GROUP BY and HAVING</a></h2>
+          <article class="cmp-item" id="where-vs-having" aria-labelledby="where-vs-having-title">
+            <div class="cmp-lead">
+            <h3 id="where-vs-having-title">WHERE and HAVING</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> WHERE filters single rows before they are grouped; HAVING filters whole groups after GROUP BY, so it can use aggregates.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>WHERE compared with HAVING</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">WHERE</th><th scope="col">HAVING</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Filters</th><td>Individual rows</td><td>Groups</td></tr>
+                <tr><th scope="row">Runs</th><td>Before GROUP BY</td><td>After GROUP BY</td></tr>
+                <tr><th scope="row">Aggregate functions</th><td>Not allowed</td><td>Allowed</td></tr>
+                <tr><th scope="row">Needs GROUP BY</th><td>No</td><td>Usually used with it (without it, the whole table is one group)</td></tr>
+                <tr><th scope="row">Used in</th><td>SELECT, UPDATE and DELETE</td><td>SELECT only</td></tr>
+                <tr><th scope="row">Can use a column alias from SELECT</th><td>No</td><td>Yes, in MySQL</td></tr>
+                <tr><th scope="row">Example</th><td><code>WHERE RATE &gt;= 20</code></td><td><code>HAVING SUM(COST) &gt; 150</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid cmp-syntax-many">
+              <div>
+              <div class="code-block">
+                <span class="code-label">WHERE: filter rows</span>
+                <pre><code>SELECT COMPANY, COST
+FROM PRODUCT_MAST
+WHERE RATE &gt;= 20;</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">HAVING: filter groups</span>
+                <pre><code>SELECT COMPANY, SUM(COST) AS total
+FROM PRODUCT_MAST
+GROUP BY COMPANY
+HAVING SUM(COST) &gt; 150;
+-- Com1 335, Com3 170</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Wrong</span>
+                <pre><code>SELECT COMPANY
+FROM PRODUCT_MAST
+WHERE SUM(COST) &gt; 150
+GROUP BY COMPANY;
+-- Error: aggregates are not
+-- allowed in WHERE</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>The question bank asks for “GROUP BY and HAVING”. Answer with GROUP BY (makes groups) and HAVING (keeps some groups), then add the WHERE row to show the difference.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/group-by-and-having.html#where-having"><span class="rev-num">2.13</span> GROUP BY and HAVING: WHERE and HAVING compared</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-a11">Unit II QB, 2 marks</a>, <a href="../question-bank/unit-2.html#q-u2-b9">Unit II QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="group-by-vs-order-by" aria-labelledby="group-by-vs-order-by-title">
+            <div class="cmp-lead">
+            <h3 id="group-by-vs-order-by-title">GROUP BY and ORDER BY</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> GROUP BY puts rows with the same value into one group and gives one result row per group; ORDER BY only sorts the result rows.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>GROUP BY and ORDER BY</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">GROUP BY</th><th scope="col">ORDER BY</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Purpose</th><td>Makes groups of rows with equal values</td><td>Sorts the result rows</td></tr>
+                  <tr><th scope="row">Number of result rows</th><td>One row per group (fewer rows)</td><td>Same number of rows</td></tr>
+                  <tr><th scope="row">Used with aggregates</th><td>Yes; COUNT, SUM, AVG, MIN, MAX work on each group</td><td>Not needed; can sort by an aggregate after grouping</td></tr>
+                  <tr><th scope="row">Columns in SELECT</th><td>Only grouping columns and aggregates</td><td>Any columns</td></tr>
+                  <tr><th scope="row">Place in the query</th><td>After WHERE, before HAVING</td><td>Last clause (before LIMIT)</td></tr>
+                  <tr><th scope="row">Logical order</th><td>Runs before SELECT</td><td>Runs after SELECT, so it can use column aliases</td></tr>
+                  <tr><th scope="row">Options</th><td>WITH ROLLUP adds a total row</td><td>ASC (default) or DESC for each column</td></tr>
+                  <tr><th scope="row">Example</th><td><code>GROUP BY COMPANY</code></td><td><code>ORDER BY total DESC</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid cmp-syntax-many">
+              <div>
+              <div class="code-block">
+                <span class="code-label">GROUP BY</span>
+                <pre><code>SELECT COMPANY, COUNT(*) AS items
+FROM PRODUCT_MAST
+GROUP BY COMPANY;
+-- Com1 5, Com2 3, Com3 2</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">ORDER BY</span>
+                <pre><code>SELECT PRODUCT, COST
+FROM PRODUCT_MAST
+ORDER BY COST DESC;
+-- all 10 rows, Item7 first</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Both together</span>
+                <pre><code>SELECT COMPANY, SUM(COST) AS total
+FROM PRODUCT_MAST
+GROUP BY COMPANY
+ORDER BY total DESC;
+-- Com1 335, Com3 170, Com2 165</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/group-by-and-having.html#group-by"><span class="rev-num">2.13</span> GROUP BY and HAVING: GROUP BY</a>; <a href="../units/unit-2/group-by-and-having.html#order"><span class="rev-num">2.13</span> GROUP BY and HAVING: The order SQL runs the clauses</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-b9">Unit II QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t2-14" class="section cmp-topic" aria-labelledby="t2-14-title">
+          <h2 id="t2-14-title"><a href="../units/unit-2/joins.html"><span class="rev-num">2.14</span> Joins</a></h2>
+          <article class="cmp-item" id="join-types" aria-labelledby="join-types-title">
+            <div class="cmp-lead">
+            <h3 id="join-types-title">Inner, outer, cross, natural and self joins</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Joins differ in the rows they keep. Inner keeps only matches, outer also keeps unmatched rows of one or both sides, and cross keeps every pair.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Rows returned by each join of student and department</caption>
+              <thead><tr><th scope="col">Join</th><th scope="col">Keeps</th><th scope="col">Rows here</th><th scope="col">In MySQL</th></tr></thead>
+              <tbody>
+                <tr><td>INNER JOIN</td><td>Matching pairs only</td><td>3</td><td>Yes</td></tr>
+                <tr><td>NATURAL JOIN</td><td>Matching pairs, on all same-named columns</td><td>3</td><td>Yes</td></tr>
+                <tr><td>LEFT OUTER JOIN</td><td>Matches + unmatched left rows</td><td>4</td><td>Yes</td></tr>
+                <tr><td>RIGHT OUTER JOIN</td><td>Matches + unmatched right rows</td><td>4</td><td>Yes</td></tr>
+                <tr><td>FULL OUTER JOIN</td><td>Matches + unmatched rows of both</td><td>5</td><td>No: use LEFT JOIN UNION RIGHT JOIN</td></tr>
+                <tr><td>CROSS JOIN</td><td>Every pair</td><td>12</td><td>Yes</td></tr>
+                <tr><td>Self join</td><td>Pairs of rows from one table</td><td>Depends on the join type</td><td>Yes, with two aliases</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid cmp-syntax-many">
+              <div>
+              <div class="code-block">
+                <span class="code-label">INNER JOIN (3 rows)</span>
+                <pre><code>SELECT s.name, d.dept_name
+FROM student s
+JOIN department d
+  ON s.dept_id = d.dept_id;</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">LEFT JOIN (4 rows)</span>
+                <pre><code>SELECT s.name, d.dept_name
+FROM student s
+LEFT JOIN department d
+  ON s.dept_id = d.dept_id;
+-- Divya, NULL</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">RIGHT JOIN (4 rows)</span>
+                <pre><code>SELECT s.name, d.dept_name
+FROM student s
+RIGHT JOIN department d
+  ON s.dept_id = d.dept_id;
+-- NULL, ECE</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">FULL OUTER JOIN in MySQL (5 rows)</span>
+                <pre><code>SELECT s.name, d.dept_name
+FROM student s LEFT JOIN department d
+  ON s.dept_id = d.dept_id
+UNION
+SELECT s.name, d.dept_name
+FROM student s RIGHT JOIN department d
+  ON s.dept_id = d.dept_id;</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">CROSS and NATURAL JOIN</span>
+                <pre><code>SELECT * FROM student
+CROSS JOIN department;  -- 12 rows
+
+SELECT * FROM student
+NATURAL JOIN department;
+-- joins on dept_id</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Self join</span>
+                <pre><code>SELECT e.name, m.name AS manager
+FROM employee e
+JOIN employee m
+  ON e.manager_id = m.emp_id;</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Draw a Venn diagram for inner, left, right and full joins. It earns marks quickly in a 16-mark answer.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/joins.html#compare"><span class="rev-num">2.14</span> Joins: Join types compared</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-a12">Unit II QB, 2 marks</a>, <a href="../question-bank/unit-2.html#q-u2-b9">Unit II QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="join-vs-subquery" aria-labelledby="join-vs-subquery-title">
+            <div class="cmp-lead">
+            <h3 id="join-vs-subquery-title">Join and subquery</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> A join puts columns of two tables side by side. A subquery is a query inside another query that passes its result outward.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Join and subquery</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Join</th><th scope="col">Subquery</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">How it works</th><td>Combines rows of two or more tables on a condition</td><td>An inner query gives a value, a list or a table to the outer query</td></tr>
+                  <tr><th scope="row">Columns in the result</th><td>From all the joined tables</td><td>Only from the outer query's tables</td></tr>
+                  <tr><th scope="row">Written in</th><td>The FROM clause (JOIN ... ON)</td><td>WHERE, HAVING, FROM or SELECT, inside parentheses</td></tr>
+                  <tr><th scope="row">Duplicates</th><td>Can repeat a row once for each match</td><td>IN and EXISTS do not repeat outer rows</td></tr>
+                  <tr><th scope="row">Readability</th><td>Clear when you need data from both tables</td><td>Clear for “a question inside a question”, such as “more than the average”</td></tr>
+                  <tr><th scope="row">Speed</th><td>Usually well optimized</td><td>Often rewritten into a join by MySQL; a correlated subquery may run once per row</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>When to use which</caption>
+              <thead><tr><th scope="col">Use a subquery when</th><th scope="col">Use a join when</th></tr></thead>
+              <tbody>
+                <tr><td>You compare with a single value, such as an average</td><td>You need columns from both tables in the result</td></tr>
+                <tr><td>You test whether a match exists (EXISTS, NOT EXISTS)</td><td>You combine many rows from both sides</td></tr>
+                <tr><td>The question reads naturally as “a question inside a question”</td><td>A correlated subquery would run once per row on a big table</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+              <div class="code-block">
+                <span class="code-label">Join</span>
+                <pre><code>SELECT DISTINCT d.dept_name
+FROM department d
+JOIN student s
+  ON s.dept_id = d.dept_id;</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Subquery (same result)</span>
+                <pre><code>SELECT dept_name
+FROM department
+WHERE dept_id IN
+  (SELECT dept_id FROM student);</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/sub-queries.html#vs-join"><span class="rev-num">2.15</span> Sub Queries: Subquery or join</a>; <a href="../units/unit-2/joins.html"><span class="rev-num">2.14</span> Joins</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-b10">Unit II QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t2-15" class="section cmp-topic" aria-labelledby="t2-15-title">
+          <h2 id="t2-15-title"><a href="../units/unit-2/sub-queries.html"><span class="rev-num">2.15</span> Sub Queries</a></h2>
+          <article class="cmp-item" id="correlated-vs-non-correlated" aria-labelledby="correlated-vs-non-correlated-title">
+            <div class="cmp-lead">
+            <h3 id="correlated-vs-non-correlated-title">Correlated and non-correlated subqueries</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> A non-correlated subquery runs once on its own. A correlated subquery uses a column of the outer query, so it runs again for each outer row.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Correlated and non-correlated subqueries</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Non-correlated (simple) subquery</th><th scope="col">Correlated subquery</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Uses the outer query's columns</th><td>No</td><td>Yes</td></tr>
+                  <tr><th scope="row">Runs</th><td>Once, before the outer query</td><td>Once for each row of the outer query</td></tr>
+                  <tr><th scope="row">Can run on its own</th><td>Yes</td><td>No; it needs the outer row's value</td></tr>
+                  <tr><th scope="row">Order of work</th><td>Inner query first, then the outer query</td><td>Outer row first, then the inner query for that row</td></tr>
+                  <tr><th scope="row">Speed</th><td>Usually faster</td><td>Can be slow on big tables (MySQL may rewrite it as a join)</td></tr>
+                  <tr><th scope="row">Common operators</th><td>=, &lt;, &gt;, IN, ANY, ALL</td><td>EXISTS, NOT EXISTS, or a comparison with the outer row</td></tr>
+                  <tr><th scope="row">Example question</th><td>Employees who earn more than the company average</td><td>Employees who earn more than the average of their own department</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>Kinds of subquery</caption>
+              <thead><tr><th scope="col">Kind</th><th scope="col">Returns</th><th scope="col">Used with</th></tr></thead>
+              <tbody>
+                <tr><td>Single-row (scalar)</td><td>One value</td><td>=, &lt;, &gt;, &lt;=, &gt;=, &lt;&gt;</td></tr>
+                <tr><td>Multiple-row</td><td>One column, many rows</td><td>IN, NOT IN, ANY, ALL</td></tr>
+                <tr><td>Table (derived table)</td><td>Many rows and columns</td><td>FROM clause</td></tr>
+                <tr><td>Correlated</td><td>Any of the above, once per outer row</td><td>Uses a column of the outer query</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+              <div class="code-block">
+                <span class="code-label">Non-correlated</span>
+                <pre><code>SELECT NAME, SALARY
+FROM EMPLOYEE
+WHERE SALARY &gt;
+  (SELECT AVG(SALARY)
+   FROM EMPLOYEE);</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Correlated</span>
+                <pre><code>SELECT e.NAME, e.DEPT, e.SALARY
+FROM EMPLOYEE e
+WHERE e.SALARY &gt;
+  (SELECT AVG(x.SALARY)
+   FROM EMPLOYEE x
+   WHERE x.DEPT = e.DEPT);</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Look for the outer table's alias inside the inner query. If it is there, the subquery is correlated.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/sub-queries.html#what"><span class="rev-num">2.15</span> Sub Queries: What is a subquery</a>; <a href="../units/unit-2/sub-queries.html#correlated"><span class="rev-num">2.15</span> Sub Queries: Correlated subqueries</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-a13">Unit II QB, 2 marks</a>, <a href="../question-bank/unit-2.html#q-u2-b10">Unit II QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="in-vs-exists-any-vs-all" aria-labelledby="in-vs-exists-any-vs-all-title">
+            <div class="cmp-lead">
+            <h3 id="in-vs-exists-any-vs-all-title">IN and EXISTS, ANY and ALL</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> IN checks whether a value is in the list a subquery returns, while EXISTS only checks whether the subquery returns any row. ANY needs one value to pass the comparison, while ALL needs every value to pass.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>IN and EXISTS</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">IN</th><th scope="col">EXISTS</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Checks</th><td>Is the value in the list the subquery returns?</td><td>Does the subquery return at least one row?</td></tr>
+                  <tr><th scope="row">Subquery returns</th><td>One column of values</td><td>Any rows; the columns do not matter (SELECT 1 or SELECT *)</td></tr>
+                  <tr><th scope="row">Usually</th><td>Non-correlated</td><td>Correlated</td></tr>
+                  <tr><th scope="row">Stops early</th><td>No; the list is built first</td><td>Yes; it stops at the first row found</td></tr>
+                  <tr><th scope="row">NULL in the subquery</th><td>NOT IN returns no rows if the list holds a NULL</td><td>NOT EXISTS is not affected by NULL</td></tr>
+                  <tr><th scope="row">Best when</th><td>The subquery's list is small</td><td>The subquery's table is large and indexed</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>ANY and ALL (x is the value being compared)</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">ANY (same as SOME)</th><th scope="col">ALL</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">True when</th><td>The comparison holds for at least one value</td><td>The comparison holds for every value</td></tr>
+                  <tr><th scope="row">x &gt; ANY (list) / x &gt; ALL (list)</th><td>x is more than the smallest value</td><td>x is more than the largest value</td></tr>
+                  <tr><th scope="row">x = ANY (list)</th><td>Same as IN</td><td>Only true if every value equals x</td></tr>
+                  <tr><th scope="row">x &lt;&gt; ALL (list)</th><td>Not the same as NOT IN</td><td>Same as NOT IN</td></tr>
+                  <tr><th scope="row">Empty subquery</th><td>False</td><td>True</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid cmp-syntax-many">
+              <div>
+              <div class="code-block">
+                <span class="code-label">IN</span>
+                <pre><code>SELECT name FROM student
+WHERE dept_id IN
+  (SELECT dept_id FROM department
+   WHERE dept_name &lt;&gt; 'ECE');</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">EXISTS</span>
+                <pre><code>SELECT d.dept_name
+FROM department d
+WHERE EXISTS
+  (SELECT 1 FROM student s
+   WHERE s.dept_id = d.dept_id);
+-- CSE, IT</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">ANY and ALL</span>
+                <pre><code>SELECT NAME FROM EMPLOYEE
+WHERE SALARY &gt; ANY
+  (SELECT SALARY FROM EMPLOYEE
+   WHERE DEPT = 'Sales');
+
+SELECT NAME FROM EMPLOYEE
+WHERE SALARY &gt; ALL
+  (SELECT SALARY FROM EMPLOYEE
+   WHERE DEPT = 'Sales');</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>NOT IN with a NULL in the list is a classic trap: x NOT IN (10, NULL) is never true, so the query returns no rows. Use NOT EXISTS instead.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/sub-queries.html#multi"><span class="rev-num">2.15</span> Sub Queries: Multiple-row subqueries</a>; <a href="../units/unit-2/sub-queries.html#exists"><span class="rev-num">2.15</span> Sub Queries: EXISTS and NOT EXISTS</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-b10">Unit II QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t2-16" class="section cmp-topic" aria-labelledby="t2-16-title">
+          <h2 id="t2-16-title"><a href="../units/unit-2/views.html"><span class="rev-num">2.16</span> Views</a></h2>
+          <article class="cmp-item" id="table-vs-view" aria-labelledby="table-vs-view-title">
+            <div class="cmp-lead">
+            <h3 id="table-vs-view-title">Table, view and materialized view</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> A table stores rows; a view stores only a query and shows its result when used; a materialized view stores the query's result and must be refreshed.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Table, view and materialized view</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Table (base table)</th><th scope="col">View</th><th scope="col">Materialized view</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Stores</th><td>The rows</td><td>Only the SELECT query</td><td>The query and a copy of its result</td></tr>
+                  <tr><th scope="row">Also called</th><td>Base relation</td><td>Virtual table</td><td>Snapshot</td></tr>
+                  <tr><th scope="row">Disk space</th><td>Needed for all rows</td><td>Almost none</td><td>Needed for the copied result</td></tr>
+                  <tr><th scope="row">Data is current?</th><td>Yes</td><td>Yes, it is computed each time it is used</td><td>Only as fresh as the last refresh</td></tr>
+                  <tr><th scope="row">Speed of reading</th><td>Fast</td><td>Same as running the query</td><td>Fast, like a table</td></tr>
+                  <tr><th scope="row">INSERT, UPDATE, DELETE</th><td>Yes</td><td>Only on an updatable view (one table, no aggregates, GROUP BY or DISTINCT)</td><td>No; it is refreshed from the base tables</td></tr>
+                  <tr><th scope="row">Main use</th><td>Store data</td><td>Hide columns, simplify complex queries, give each user their own view</td><td>Speed up slow reports</td></tr>
+                  <tr><th scope="row">In MySQL</th><td><code>CREATE TABLE</code></td><td><code>CREATE VIEW</code></td><td>Not available (Oracle and PostgreSQL have it)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>Common names for kinds of views</caption>
+              <thead><tr><th scope="col">Name</th><th scope="col">Meaning</th></tr></thead>
+              <tbody>
+                <tr><td>Simple view</td><td>Built on one table, with no aggregates, GROUP BY or DISTINCT. Usually updatable. DetailsView is one.</td></tr>
+                <tr><td>Complex view</td><td>Uses aggregates, GROUP BY, DISTINCT or set operations. Read-only. AgeStats is one.</td></tr>
+                <tr><td>Join view</td><td>Has more than one table in its FROM clause. MarksView is one.</td></tr>
+                <tr><td>Inline view</td><td>Oracle's name for a subquery in the FROM clause. MySQL calls it a derived table (see <a href="../units/unit-2/sub-queries.html">Sub Queries</a>). It is not saved.</td></tr>
+                <tr><td>Materialized view</td><td>A view whose result is stored and refreshed. Oracle and PostgreSQL have them; MySQL does not.</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid cmp-syntax-many">
+              <div>
+              <div class="code-block">
+                <span class="code-label">Table</span>
+                <pre><code>CREATE TABLE Student_Detail (
+  S_ID    INT PRIMARY KEY,
+  NAME    VARCHAR(20),
+  ADDRESS VARCHAR(20)
+);</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">View</span>
+                <pre><code>CREATE VIEW DetailsView AS
+SELECT NAME, ADDRESS
+FROM Student_Detail
+WHERE S_ID &lt; 5;
+
+SELECT * FROM DetailsView;
+DROP VIEW DetailsView;</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Materialized view (PostgreSQL)</span>
+                <pre><code>CREATE MATERIALIZED VIEW city_count AS
+SELECT ADDRESS, COUNT(*) AS n
+FROM Student_Detail
+GROUP BY ADDRESS;
+
+REFRESH MATERIALIZED VIEW city_count;</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/views.html#kinds"><span class="rev-num">2.16</span> Views: Kinds of views</a>; <a href="../units/unit-2/views.html#what"><span class="rev-num">2.16</span> Views: What is a view</a>; <a href="../units/unit-2/views.html#updatable"><span class="rev-num">2.16</span> Views: Which views are updatable</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-a14">Unit II QB, 2 marks</a>, <a href="../question-bank/unit-2.html#q-u2-b11">Unit II QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t2-17" class="section cmp-topic" aria-labelledby="t2-17-title">
+          <h2 id="t2-17-title"><a href="../units/unit-2/triggers.html"><span class="rev-num">2.17</span> Triggers</a></h2>
+          <article class="cmp-item" id="trigger-types" aria-labelledby="trigger-types-title">
+            <div class="cmp-lead">
+            <h3 id="trigger-types-title">BEFORE and AFTER triggers, row-level and statement-level triggers, NEW and OLD</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> BEFORE triggers run before the change and can fix or reject it; AFTER triggers run once the change is made and suit logging. MySQL triggers are row-level and see the row as NEW and OLD.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>BEFORE and AFTER triggers</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">BEFORE trigger</th><th scope="col">AFTER trigger</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Runs</th><td>Before the row is inserted, updated or deleted</td><td>After the row is inserted, updated or deleted</td></tr>
+                  <tr><th scope="row">Can change the new values</th><td>Yes, with <code>SET NEW.col = ...</code></td><td>No; NEW is read-only</td></tr>
+                  <tr><th scope="row">Can stop the change</th><td>Yes, with <code>SIGNAL SQLSTATE '45000'</code></td><td>Yes, but the work is undone only by the error</td></tr>
+                  <tr><th scope="row">Typical use</th><td>Check or fill in values</td><td>Write an audit log, update a summary table</td></tr>
+                  <tr><th scope="row">Example</th><td>Save a negative balance as 0</td><td>Copy a deleted row to an archive table</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Row-level and statement-level triggers, and NEW and OLD</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Row-level trigger</th><th scope="col">Statement-level trigger</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Runs</th><td>Once for each row the statement changes</td><td>Once for the whole statement</td></tr>
+                  <tr><th scope="row">Sees the row values</th><td>Yes, through NEW and OLD</td><td>No</td></tr>
+                  <tr><th scope="row">In SQL</th><td><code>FOR EACH ROW</code></td><td><code>FOR EACH STATEMENT</code> (Oracle, PostgreSQL)</td></tr>
+                  <tr><th scope="row">In MySQL</th><td>The only kind</td><td>Not available</td></tr>
+                  <tr><th scope="row">NEW</th><td>INSERT and UPDATE: the row after the change</td><td>Not available</td></tr>
+                  <tr><th scope="row">OLD</th><td>UPDATE and DELETE: the row before the change</td><td>Not available</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>Trigger timing and event</caption>
+              <thead><tr><th scope="col">Trigger</th><th scope="col">Runs</th><th scope="col">Typical use</th></tr></thead>
+              <tbody>
+                <tr><td>BEFORE INSERT</td><td>Before a new row is saved</td><td>Fill in or check values</td></tr>
+                <tr><td>AFTER INSERT</td><td>After a new row is saved</td><td>Log the new row, update a summary</td></tr>
+                <tr><td>BEFORE UPDATE</td><td>Before a row is changed</td><td>Check or adjust the new values</td></tr>
+                <tr><td>AFTER UPDATE</td><td>After a row is changed</td><td>Log the old and new values</td></tr>
+                <tr><td>BEFORE DELETE</td><td>Before a row is removed</td><td>Stop the delete if a rule says so</td></tr>
+                <tr><td>AFTER DELETE</td><td>After a row is removed</td><td>Copy the row to an archive table</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+              <div class="code-block">
+                <span class="code-label">BEFORE: fix the new value</span>
+                <pre><code>CREATE TRIGGER account_fix
+BEFORE INSERT ON account
+FOR EACH ROW
+  SET NEW.balance =
+      GREATEST(NEW.balance, 0);
+-- a negative balance is saved as 0</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">AFTER: log the change</span>
+                <pre><code>CREATE TRIGGER account_au
+AFTER UPDATE ON account
+FOR EACH ROW
+  INSERT INTO balance_log
+    (acc_no, action,
+     old_balance, new_balance)
+  VALUES (NEW.acc_no, 'UPDATE',
+          OLD.balance, NEW.balance);</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Write the event, condition and action (ECA) of your trigger in words before the code. It shows that you understand it.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-2/triggers.html#types"><span class="rev-num">2.17</span> Triggers: The six kinds of trigger</a>; <a href="../units/unit-2/triggers.html#new-old"><span class="rev-num">2.17</span> Triggers: NEW and OLD</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-a15">Unit II QB, 2 marks</a>, <a href="../question-bank/unit-2.html#q-u2-b12">Unit II QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <div class="btn-row cmp-more no-print">
+          <a class="btn" href="../diagrams/unit-2.html">Unit II diagrams and examples</a>
+          <a class="btn" href="../outlines/unit-2.html">Unit II 16-mark outlines</a>
+          <a class="btn" href="../units/unit-2/index.html">Unit II topics</a>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/revision.js"></script>
+</body>
+</html>

@@ -150,23 +150,23 @@
               <h4>Syntax side by side</h4>
               <div class="cmp-syntax-grid">
               <div>
-                <div class="code-block">
-                  <span class="code-label">Schema (DDL)</span>
-                  <pre><code>CREATE TABLE student (
-    roll_no INT PRIMARY KEY,
-    name    VARCHAR(30),
-    city    VARCHAR(20)
-  );</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">Schema (DDL)</span>
+                <pre><code>CREATE TABLE student (
+  roll_no INT PRIMARY KEY,
+  name    VARCHAR(30),
+  city    VARCHAR(20)
+);</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">Instance changes (DML)</span>
-                  <pre><code>INSERT INTO student
-  VALUES (3, 'Charan', 'Salem');
-  -- The schema is the same;
-  -- the instance now has one more row.</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">Instance changes (DML)</span>
+                <pre><code>INSERT INTO student
+VALUES (3, 'Charan', 'Salem');
+-- The schema is the same;
+-- the instance now has one more row.</code></pre>
+              </div>
               </div>
               </div>
             </div>
@@ -287,34 +287,34 @@
               <h4>Syntax side by side</h4>
               <div class="cmp-syntax-grid">
               <div>
-                <div class="code-block">
-                  <span class="code-label">Primary, alternate and composite keys</span>
-                  <pre><code>CREATE TABLE student (
-    reg_no  CHAR(10) PRIMARY KEY,
-    roll_no INT NOT NULL,
-    dept    VARCHAR(5) NOT NULL,
-    name    VARCHAR(30) NOT NULL,
-    -- alternate key:
-    email   VARCHAR(40) NOT NULL UNIQUE,
-    -- composite alternate key:
-    UNIQUE (roll_no, dept)
-  );</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">Primary, alternate and composite keys</span>
+                <pre><code>CREATE TABLE student (
+  reg_no  CHAR(10) PRIMARY KEY,
+  roll_no INT NOT NULL,
+  dept    VARCHAR(5) NOT NULL,
+  name    VARCHAR(30) NOT NULL,
+  -- alternate key:
+  email   VARCHAR(40) NOT NULL UNIQUE,
+  -- composite alternate key:
+  UNIQUE (roll_no, dept)
+);</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">Composite primary key and foreign keys</span>
-                  <pre><code>CREATE TABLE marks (
-    reg_no    CHAR(10),
-    course_id CHAR(5),
-    marks     INT,
-    PRIMARY KEY (reg_no, course_id),
-    FOREIGN KEY (reg_no)
-      REFERENCES student (reg_no),
-    FOREIGN KEY (course_id)
-      REFERENCES course (course_id)
-  );</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">Composite primary key and foreign keys</span>
+                <pre><code>CREATE TABLE marks (
+  reg_no    CHAR(10),
+  course_id CHAR(5),
+  marks     INT,
+  PRIMARY KEY (reg_no, course_id),
+  FOREIGN KEY (reg_no)
+    REFERENCES student (reg_no),
+  FOREIGN KEY (course_id)
+    REFERENCES course (course_id)
+);</code></pre>
+              </div>
               </div>
               </div>
             </div>
@@ -348,26 +348,26 @@
               <h4>Syntax side by side</h4>
               <div class="cmp-syntax-grid">
               <div>
-                <div class="code-block">
-                  <span class="code-label">Primary key (parent)</span>
-                  <pre><code>CREATE TABLE course (
-    course_id CHAR(5) PRIMARY KEY,
-    title     VARCHAR(40)
-  );</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">Primary key (parent)</span>
+                <pre><code>CREATE TABLE course (
+  course_id CHAR(5) PRIMARY KEY,
+  title     VARCHAR(40)
+);</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">Foreign key (child)</span>
-                  <pre><code>CREATE TABLE marks (
-    reg_no    CHAR(10),
-    course_id CHAR(5),
-    marks     INT,
-    FOREIGN KEY (course_id)
-      REFERENCES course (course_id)
-      ON DELETE CASCADE
-  );</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">Foreign key (child)</span>
+                <pre><code>CREATE TABLE marks (
+  reg_no    CHAR(10),
+  course_id CHAR(5),
+  marks     INT,
+  FOREIGN KEY (course_id)
+    REFERENCES course (course_id)
+    ON DELETE CASCADE
+);</code></pre>
+              </div>
               </div>
               </div>
             </div>
@@ -401,39 +401,39 @@
               <h4>Syntax side by side</h4>
               <div class="cmp-syntax-grid cmp-syntax-many">
               <div>
-                <div class="code-block">
-                  <span class="code-label">Column level</span>
-                  <pre><code>CREATE TABLE student (
-    reg_no CHAR(10)    PRIMARY KEY,
-    email  VARCHAR(40) UNIQUE,
-    phone  CHAR(10)    UNIQUE
-  );</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">Column level</span>
+                <pre><code>CREATE TABLE student (
+  reg_no CHAR(10)    PRIMARY KEY,
+  email  VARCHAR(40) UNIQUE,
+  phone  CHAR(10)    UNIQUE
+);</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">Table level, with names</span>
-                  <pre><code>CREATE TABLE student (
-    reg_no CHAR(10),
-    email  VARCHAR(40),
-    CONSTRAINT pk_student
-      PRIMARY KEY (reg_no),
-    CONSTRAINT uq_email
-      UNIQUE (email)
-  );</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">Table level, with names</span>
+                <pre><code>CREATE TABLE student (
+  reg_no CHAR(10),
+  email  VARCHAR(40),
+  CONSTRAINT pk_student
+    PRIMARY KEY (reg_no),
+  CONSTRAINT uq_email
+    UNIQUE (email)
+);</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">What happens</span>
-                  <pre><code>INSERT INTO student (reg_no, email)
-    VALUES (NULL, 'a@kiot.in');
-  -- Error: reg_no cannot be NULL
-  
-  INSERT INTO student (reg_no, email)
-    VALUES ('7110231001', NULL);
-  -- OK: UNIQUE allows NULL</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">What happens</span>
+                <pre><code>INSERT INTO student (reg_no, email)
+  VALUES (NULL, 'a@kiot.in');
+-- Error: reg_no cannot be NULL
+
+INSERT INTO student (reg_no, email)
+  VALUES ('7110231001', NULL);
+-- OK: UNIQUE allows NULL</code></pre>
+              </div>
               </div>
               </div>
             </div>
@@ -463,31 +463,31 @@
               <h4>Syntax side by side</h4>
               <div class="cmp-syntax-grid">
               <div>
-                <div class="code-block">
-                  <span class="code-label">Entity integrity</span>
-                  <pre><code>CREATE TABLE customer (
-    cust_id INT PRIMARY KEY,
-    name    VARCHAR(30)
-  );
-  INSERT INTO customer
-    VALUES (NULL, 'Ravi');
-  -- Error: cust_id cannot be NULL</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">Entity integrity</span>
+                <pre><code>CREATE TABLE customer (
+  cust_id INT PRIMARY KEY,
+  name    VARCHAR(30)
+);
+INSERT INTO customer
+  VALUES (NULL, 'Ravi');
+-- Error: cust_id cannot be NULL</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">Referential integrity</span>
-                  <pre><code>CREATE TABLE orders (
-    order_id INT PRIMARY KEY,
-    cust_id  INT,
-    FOREIGN KEY (cust_id)
-      REFERENCES customer (cust_id)
-      ON DELETE SET NULL
-  );
-  INSERT INTO orders VALUES (1, 99);
-  -- Error if there is no
-  -- customer 99</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">Referential integrity</span>
+                <pre><code>CREATE TABLE orders (
+  order_id INT PRIMARY KEY,
+  cust_id  INT,
+  FOREIGN KEY (cust_id)
+    REFERENCES customer (cust_id)
+    ON DELETE SET NULL
+);
+INSERT INTO orders VALUES (1, 99);
+-- Error if there is no
+-- customer 99</code></pre>
+              </div>
               </div>
               </div>
             </div>
@@ -523,25 +523,25 @@
               <h4>Syntax side by side</h4>
               <div class="cmp-syntax-grid">
               <div>
-                <div class="code-block">
-                  <span class="code-label">Relational algebra</span>
-                  <pre><code>σ age &gt; 18 (Student)
-  
-  π city (Student)
-  
-  π sname (σ city = 'Salem' (Student))</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">Relational algebra</span>
+                <pre><code>σ age &gt; 18 (Student)
+
+π city (Student)
+
+π sname (σ city = 'Salem' (Student))</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">SQL</span>
-                  <pre><code>SELECT * FROM Student WHERE age &gt; 18;
-  
-  SELECT DISTINCT city FROM Student;
-  
-  SELECT sname FROM Student
-  WHERE city = 'Salem';</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">SQL</span>
+                <pre><code>SELECT * FROM Student WHERE age &gt; 18;
+
+SELECT DISTINCT city FROM Student;
+
+SELECT sname FROM Student
+WHERE city = 'Salem';</code></pre>
+              </div>
               </div>
               </div>
             </div>
@@ -571,29 +571,29 @@
               <h4>Syntax side by side</h4>
               <div class="cmp-syntax-grid">
               <div>
-                <div class="code-block">
-                  <span class="code-label">Relational algebra</span>
-                  <pre><code>Student ⋈ Student.sid = Reserve.sid
-    Reserve
-  
-  Reserve ⋈ Book
-  
-  Emp ⟕ Dept</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">Relational algebra</span>
+                <pre><code>Student ⋈ Student.sid = Reserve.sid
+  Reserve
+
+Reserve ⋈ Book
+
+Emp ⟕ Dept</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">SQL (MySQL)</span>
-                  <pre><code>SELECT * FROM Student
-  JOIN Reserve
-    ON Student.sid = Reserve.sid;
-  
-  SELECT * FROM Reserve
-  NATURAL JOIN Book;
-  
-  SELECT * FROM Emp
-  LEFT JOIN Dept ON Emp.dno = Dept.dno;</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">SQL (MySQL)</span>
+                <pre><code>SELECT * FROM Student
+JOIN Reserve
+  ON Student.sid = Reserve.sid;
+
+SELECT * FROM Reserve
+NATURAL JOIN Book;
+
+SELECT * FROM Emp
+LEFT JOIN Dept ON Emp.dno = Dept.dno;</code></pre>
+              </div>
               </div>
               </div>
             </div>
@@ -639,21 +639,21 @@
               <h4>Syntax side by side</h4>
               <div class="cmp-syntax-grid">
               <div>
-                <div class="code-block">
-                  <span class="code-label">Relational algebra</span>
-                  <pre><code>π sname (σ bname = 'DBMS'
-    (Student ⋈ Reserve ⋈ Book))</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">Relational algebra</span>
+                <pre><code>π sname (σ bname = 'DBMS'
+  (Student ⋈ Reserve ⋈ Book))</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">SQL</span>
-                  <pre><code>SELECT DISTINCT s.sname
-  FROM Student s
-  NATURAL JOIN Reserve
-  NATURAL JOIN Book
-  WHERE bname = 'DBMS';</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">SQL</span>
+                <pre><code>SELECT DISTINCT s.sname
+FROM Student s
+NATURAL JOIN Reserve
+NATURAL JOIN Book
+WHERE bname = 'DBMS';</code></pre>
+              </div>
               </div>
               </div>
             </div>
@@ -684,48 +684,48 @@
               <h4>Syntax side by side</h4>
               <div class="cmp-syntax-grid cmp-syntax-many">
               <div>
-                <div class="code-block">
-                  <span class="code-label">DDL</span>
-                  <pre><code>CREATE TABLE student (
-    roll_no INT PRIMARY KEY,
-    name    VARCHAR(30)
-  );
-  ALTER TABLE student
-    ADD city VARCHAR(20);</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">DDL</span>
+                <pre><code>CREATE TABLE student (
+  roll_no INT PRIMARY KEY,
+  name    VARCHAR(30)
+);
+ALTER TABLE student
+  ADD city VARCHAR(20);</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">DML</span>
-                  <pre><code>INSERT INTO student
-    VALUES (1, 'Anitha', 'Salem');
-  UPDATE student SET city = 'Erode'
-    WHERE roll_no = 1;
-  SELECT * FROM student;</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">DML</span>
+                <pre><code>INSERT INTO student
+  VALUES (1, 'Anitha', 'Salem');
+UPDATE student SET city = 'Erode'
+  WHERE roll_no = 1;
+SELECT * FROM student;</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">DCL</span>
-                  <pre><code>GRANT SELECT, INSERT
-    ON college.student
-    TO 'clerk'@'localhost';
-  REVOKE INSERT
-    ON college.student
-    FROM 'clerk'@'localhost';</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">DCL</span>
+                <pre><code>GRANT SELECT, INSERT
+  ON college.student
+  TO 'clerk'@'localhost';
+REVOKE INSERT
+  ON college.student
+  FROM 'clerk'@'localhost';</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">TCL</span>
-                  <pre><code>START TRANSACTION;
-  UPDATE student SET city = 'Salem'
-    WHERE roll_no = 1;
-  SAVEPOINT sp1;
-  DELETE FROM student;
-  ROLLBACK TO sp1;
-  COMMIT;</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">TCL</span>
+                <pre><code>START TRANSACTION;
+UPDATE student SET city = 'Salem'
+  WHERE roll_no = 1;
+SAVEPOINT sp1;
+DELETE FROM student;
+ROLLBACK TO sp1;
+COMMIT;</code></pre>
+              </div>
               </div>
               </div>
             </div>
@@ -757,23 +757,23 @@
               <h4>Syntax side by side</h4>
               <div class="cmp-syntax-grid">
               <div>
-                <div class="code-block">
-                  <span class="code-label">CHAR</span>
-                  <pre><code>CREATE TABLE t (code CHAR(5));
-  INSERT INTO t VALUES ('ab');
-  SELECT LENGTH(code) FROM t;
-  -- 2 (the padding spaces are removed
-  --    when the value is read)</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">CHAR</span>
+                <pre><code>CREATE TABLE t (code CHAR(5));
+INSERT INTO t VALUES ('ab');
+SELECT LENGTH(code) FROM t;
+-- 2 (the padding spaces are removed
+--    when the value is read)</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">VARCHAR</span>
-                  <pre><code>CREATE TABLE u (code VARCHAR(5));
-  INSERT INTO u VALUES ('ab ');
-  SELECT LENGTH(code) FROM u;
-  -- 3 (the space is kept)</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">VARCHAR</span>
+                <pre><code>CREATE TABLE u (code VARCHAR(5));
+INSERT INTO u VALUES ('ab ');
+SELECT LENGTH(code) FROM u;
+-- 3 (the space is kept)</code></pre>
+              </div>
               </div>
               </div>
             </div>
@@ -807,27 +807,27 @@
               <h4>Syntax side by side</h4>
               <div class="cmp-syntax-grid">
               <div>
-                <div class="code-block">
-                  <span class="code-label">DDL: works on the structure</span>
-                  <pre><code>CREATE TABLE person (
-    id   INT PRIMARY KEY,
-    name VARCHAR(30)
-  );
-  ALTER TABLE person ADD age INT;
-  TRUNCATE TABLE person;
-  DROP TABLE person;</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">DDL: works on the structure</span>
+                <pre><code>CREATE TABLE person (
+  id   INT PRIMARY KEY,
+  name VARCHAR(30)
+);
+ALTER TABLE person ADD age INT;
+TRUNCATE TABLE person;
+DROP TABLE person;</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">DML: works on the rows</span>
-                  <pre><code>INSERT INTO person
-    VALUES (1, 'Arun', 20);
-  UPDATE person SET age = 21
-    WHERE id = 1;
-  DELETE FROM person WHERE id = 1;
-  SELECT * FROM person;</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">DML: works on the rows</span>
+                <pre><code>INSERT INTO person
+  VALUES (1, 'Arun', 20);
+UPDATE person SET age = 21
+  WHERE id = 1;
+DELETE FROM person WHERE id = 1;
+SELECT * FROM person;</code></pre>
+              </div>
               </div>
               </div>
             </div>
@@ -858,29 +858,29 @@
               <h4>Syntax side by side</h4>
               <div class="cmp-syntax-grid cmp-syntax-many">
               <div>
-                <div class="code-block">
-                  <span class="code-label">DELETE (DML)</span>
-                  <pre><code>DELETE FROM person
-  WHERE age &lt; 18;
-  -- or every row:
-  DELETE FROM person;</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">DELETE (DML)</span>
+                <pre><code>DELETE FROM person
+WHERE age &lt; 18;
+-- or every row:
+DELETE FROM person;</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">TRUNCATE (DDL)</span>
-                  <pre><code>TRUNCATE TABLE person;
-  -- all rows gone,
-  -- the table is still there</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">TRUNCATE (DDL)</span>
+                <pre><code>TRUNCATE TABLE person;
+-- all rows gone,
+-- the table is still there</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">DROP (DDL)</span>
-                  <pre><code>DROP TABLE person;
-  -- rows and table gone;
-  -- DESC person now fails</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">DROP (DDL)</span>
+                <pre><code>DROP TABLE person;
+-- rows and table gone;
+-- DESC person now fails</code></pre>
+              </div>
               </div>
               </div>
             </div>
@@ -910,26 +910,26 @@
               <h4>Syntax side by side</h4>
               <div class="cmp-syntax-grid">
               <div>
-                <div class="code-block">
-                  <span class="code-label">ALTER TABLE (structure)</span>
-                  <pre><code>ALTER TABLE person ADD age INT;
-  ALTER TABLE person
-    MODIFY name VARCHAR(50);
-  ALTER TABLE person
-    RENAME COLUMN age TO years;
-  ALTER TABLE person DROP COLUMN years;</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">ALTER TABLE (structure)</span>
+                <pre><code>ALTER TABLE person ADD age INT;
+ALTER TABLE person
+  MODIFY name VARCHAR(50);
+ALTER TABLE person
+  RENAME COLUMN age TO years;
+ALTER TABLE person DROP COLUMN years;</code></pre>
+              </div>
               </div>
               <div>
-                <div class="code-block">
-                  <span class="code-label">UPDATE (data)</span>
-                  <pre><code>UPDATE person
-  SET age = 21
-  WHERE name = 'Arun';
-  
-  UPDATE person
-  SET age = age + 1;  -- every row</code></pre>
-                </div>
+              <div class="code-block">
+                <span class="code-label">UPDATE (data)</span>
+                <pre><code>UPDATE person
+SET age = 21
+WHERE name = 'Arun';
+
+UPDATE person
+SET age = age + 1;  -- every row</code></pre>
+              </div>
               </div>
               </div>
             </div>
