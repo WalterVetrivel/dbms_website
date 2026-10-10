@@ -133,7 +133,7 @@ SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;  -- every later transact
         <section id="locking-reads" class="topic-section" aria-labelledby="locking-reads-title">
           <h2 id="locking-reads-title">Locking reads: FOR UPDATE and FOR SHARE</h2>
           <p>At the default level, a plain SELECT in InnoDB reads a snapshot and takes no locks. That is a problem when you read a value and then write based on it: another transaction may change the value in between, causing a lost update. A <strong>locking read</strong> solves this.</p>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-locking-reads">
             <table>
               <caption>Locking reads</caption>
               <thead><tr><th scope="col">Statement</th><th scope="col">Lock taken on each row read</th><th scope="col">Others can</th></tr></thead>

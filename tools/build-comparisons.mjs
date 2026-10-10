@@ -256,9 +256,15 @@ function hubPage(D, byUnit) {
     .map((u) => [
       `          <div class="gallery-index u-${u.n}">`,
       `            <h3><a href="${u.slug}.html">Unit ${u.roman}: ${escText(u.title)}</a></h3>`,
-      '            <ul class="chips">',
-      ...groups(D, byUnit[u.n]).flatMap((g) => g.items).map((c) => `              <li><a class="chip" href="${u.slug}.html#${c.id}">${escText(c.title)}</a></li>`),
-      "            </ul>",
+      '            <div class="table-wrap">',
+      '              <table class="cmp-index">',
+      `                <caption>Unit ${u.roman} comparisons by topic</caption>`,
+      '                <thead><tr><th scope="col">Topic</th><th scope="col">Comparisons</th></tr></thead>',
+      "                <tbody>",
+      ...groups(D, byUnit[u.n]).map((g) => `                  <tr><th scope="row"><span class="rev-num">${g.t.id}</span> ${escText(g.t.title)}</th><td><ul class="chips">${g.items.map((c) => `<li><a class="chip" href="${u.slug}.html#${c.id}">${escText(c.title)}</a></li>`).join("")}</ul></td></tr>`),
+      "                </tbody>",
+      "              </table>",
+      "            </div>",
       "          </div>"
     ].join("\n"))
     .join("\n");

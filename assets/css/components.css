@@ -1725,3 +1725,10 @@ a.chip:hover {
   padding-left: 1.2rem;
   list-style: lower-alpha;
 }
+.cmp-index th[scope="row"] {
+  width: 14rem;
+  font-weight: 600;
+}
+.cmp-index .chips {
+  margin: 0;
+}

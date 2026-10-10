@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Built by tools/build-comparisons.mjs from data/comparisons and the topic pages. Edit those, then run the script again. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit III Comparisons | DBMS Study Guide</title>
+  <meta name="description" content="Tables that compare the related concepts of Unit III (Transaction Management), with the syntax side by side for SQL. Each one links to its topic page. Prints well.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="comparisons" data-unit="3" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content u-3">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        <header class="cmp-head">
+          <span class="eyebrow">Unit III: Transaction Management</span>
+          <h1>Unit III Comparisons</h1>
+          <p class="lead">17 comparisons of the related ideas in Unit III, as tables you can learn and write in the exam. Each one links to its topic page.</p>
+        </header>
+
+        <div class="btn-row no-print">
+          <button type="button" class="btn btn-primary" data-print>Print the comparisons</button>
+          <a class="btn" href="../revision/unit-3.html">Unit III revision sheet</a>
+          <a class="btn" href="../question-bank/unit-3.html">Unit III question bank</a>
+        </div>
+
+        <nav class="on-this-page cmp-toc" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#t3-3">3.3 Schedules</a>
+              <ol>
+                <li><a href="#serial-vs-concurrent-schedule">Serial and concurrent schedules</a></li>
+                <li><a href="#recoverable-cascadeless-strict">Recoverable, cascadeless and strict schedules</a></li>
+              </ol>
+            </li>
+            <li><a href="#t3-4">3.4 Serializability</a>
+              <ol>
+                <li><a href="#conflict-vs-view-serializability">Conflict and view serializability</a></li>
+              </ol>
+            </li>
+            <li><a href="#t3-5">3.5 Concurrency Control and Need for Concurrency</a>
+              <ol>
+                <li><a href="#concurrency-problems">Lost update, dirty read, unrepeatable read and phantom</a></li>
+              </ol>
+            </li>
+            <li><a href="#t3-6">3.6 Locking Protocols</a>
+              <ol>
+                <li><a href="#shared-vs-exclusive-lock">Shared and exclusive locks</a></li>
+              </ol>
+            </li>
+            <li><a href="#t3-7">3.7 Two Phase Locking</a>
+              <ol>
+                <li><a href="#two-phase-locking-types">Basic, strict, rigorous and conservative two phase locking</a></li>
+              </ol>
+            </li>
+            <li><a href="#t3-8">3.8 Deadlock</a>
+              <ol>
+                <li><a href="#deadlock-livelock-starvation">Deadlock, livelock and starvation</a></li>
+                <li><a href="#wait-die-vs-wound-wait">Wait-die and wound-wait</a></li>
+                <li><a href="#deadlock-handling">Deadlock prevention, detection and timeout</a></li>
+              </ol>
+            </li>
+            <li><a href="#t3-9">3.9 Transaction Recovery</a>
+              <ol>
+                <li><a href="#storage-types">Volatile, non-volatile and stable storage</a></li>
+                <li><a href="#recovery-methods">Deferred update, immediate update and shadow paging</a></li>
+              </ol>
+            </li>
+            <li><a href="#t3-10">3.10 Save Points</a>
+              <ol>
+                <li><a href="#commit-rollback-savepoint">COMMIT, ROLLBACK and ROLLBACK TO SAVEPOINT</a></li>
+              </ol>
+            </li>
+            <li><a href="#t3-11">3.11 Isolation Levels</a>
+              <ol>
+                <li><a href="#isolation-levels">READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ and SERIALIZABLE</a></li>
+              </ol>
+            </li>
+            <li><a href="#t3-12">3.12 SQL Facilities for Concurrency and Recovery</a>
+              <ol>
+                <li><a href="#locking-reads-and-lock-tables">SELECT ... FOR SHARE, SELECT ... FOR UPDATE and LOCK TABLES</a></li>
+              </ol>
+            </li>
+            <li><a href="#t3-13">3.13 Backup and Recovery System</a>
+              <ol>
+                <li><a href="#backup-types">Full, incremental and differential backups</a></li>
+              </ol>
+            </li>
+            <li><a href="#t3-14">3.14 SQL DCL and TCL Commands</a>
+              <ol>
+                <li><a href="#dcl-vs-tcl">DCL and TCL</a></li>
+                <li><a href="#grant-vs-revoke">GRANT and REVOKE</a></li>
+              </ol>
+            </li>
+          </ol>
+        </nav>
+
+        <section id="t3-3" class="section cmp-topic" aria-labelledby="t3-3-title">
+          <h2 id="t3-3-title"><a href="../units/unit-3/schedules.html"><span class="rev-num">3.3</span> Schedules</a></h2>
+          <article class="cmp-item" id="serial-vs-concurrent-schedule" aria-labelledby="serial-vs-concurrent-schedule-title">
+            <div class="cmp-lead">
+            <h3 id="serial-vs-concurrent-schedule-title">Serial and concurrent schedules</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> A serial schedule runs transactions one after another. A concurrent schedule interleaves them. It is faster, but correct only if it is serializable.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Serial and concurrent schedules</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Serial schedule</th><th scope="col">Concurrent (non-serial) schedule</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Meaning</th><td>All instructions of one transaction run before the next transaction starts</td><td>Instructions of several transactions are interleaved</td></tr>
+                  <tr><th scope="row">Number possible for n transactions</th><td>n! (each order is one schedule)</td><td>Many more than n!</td></tr>
+                  <tr><th scope="row">Consistency</th><td>Always keeps the database consistent</td><td>Consistent only if it is serializable</td></tr>
+                  <tr><th scope="row">Throughput</th><td>Low; the CPU waits during each disk read</td><td>High; one transaction uses the CPU while another waits for the disk</td></tr>
+                  <tr><th scope="row">Waiting time</th><td>Short transactions wait behind long ones</td><td>Short transactions can finish early</td></tr>
+                  <tr><th scope="row">Needs concurrency control</th><td>No</td><td>Yes</td></tr>
+                  <tr><th scope="row">Example (funds transfer)</th><td>T1 then T2: A + B stays 3000</td><td>Schedule 3 keeps A + B = 3000; Schedule 4 does not</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/schedules.html#serial"><span class="rev-num">3.3</span> Schedules: Serial schedules</a>; <a href="../units/unit-3/schedules.html#concurrent"><span class="rev-num">3.3</span> Schedules: Concurrent schedules</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-a3">Unit III QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b14">Unit III QB, 16 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b16">Unit III QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="recoverable-cascadeless-strict" aria-labelledby="recoverable-cascadeless-strict-title">
+            <div class="cmp-lead">
+            <h3 id="recoverable-cascadeless-strict-title">Recoverable, cascadeless and strict schedules</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Each kind is stricter than the one before. Every strict schedule is cascadeless, and every cascadeless schedule is recoverable.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Recoverable, cascadeless and strict schedules</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Recoverable</th><th scope="col">Cascadeless</th><th scope="col">Strict</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Rule</th><td>If Tj reads an item written by Ti, Ti commits before Tj commits</td><td>Tj reads an item only after the transaction that wrote it has committed</td><td>Tj neither reads nor writes an item until the transaction that last wrote it has ended</td></tr>
+                  <tr><th scope="row">Dirty reads</th><td>Allowed</td><td>Not allowed</td><td>Not allowed</td></tr>
+                  <tr><th scope="row">Cascading rollback</th><td>Possible</td><td>Not possible</td><td>Not possible</td></tr>
+                  <tr><th scope="row">Overwriting uncommitted data</th><td>Allowed</td><td>Allowed</td><td>Not allowed</td></tr>
+                  <tr><th scope="row">Recovery</th><td>Possible, but may need many rollbacks</td><td>Roll back only the failed transaction</td><td>Simplest: restore the before-image of each item</td></tr>
+                  <tr><th scope="row">Produced by</th><td>Any correct protocol</td><td>Strict 2PL</td><td>Strict 2PL</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>Types of schedules and their role in transaction processing</caption>
+              <thead><tr><th scope="col">Type</th><th scope="col">Rule</th><th scope="col">Role</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Serial</th><td>Transactions run one after another</td><td>Always consistent, but slow</td></tr>
+                <tr><th scope="row">Concurrent (non-serial)</th><td>Instructions are interleaved</td><td>Fast, but may be wrong</td></tr>
+                <tr><th scope="row">Serializable</th><td>Same effect as some serial schedule</td><td>Fast and consistent; the goal of concurrency control</td></tr>
+                <tr><th scope="row">Recoverable</th><td>A reader commits only after the writer it read from commits</td><td>Makes recovery after an abort possible</td></tr>
+                <tr><th scope="row">Cascadeless</th><td>Read only committed data</td><td>Avoids cascading rollbacks</td></tr>
+                <tr><th scope="row">Strict</th><td>No read or write of an item until its writer ends</td><td>Simplest recovery: restore old values</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Draw three nested circles: strict inside cascadeless inside recoverable.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/schedules.html#types"><span class="rev-num">3.3</span> Schedules: Types of schedules at a glance</a>; <a href="../units/unit-3/schedules.html#recoverable"><span class="rev-num">3.3</span> Schedules: Recoverable schedules</a>; <a href="../units/unit-3/schedules.html#cascadeless"><span class="rev-num">3.3</span> Schedules: Cascadeless and strict schedules</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-b14">Unit III QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t3-4" class="section cmp-topic" aria-labelledby="t3-4-title">
+          <h2 id="t3-4-title"><a href="../units/unit-3/serializability.html"><span class="rev-num">3.4</span> Serializability</a></h2>
+          <article class="cmp-item" id="conflict-vs-view-serializability" aria-labelledby="conflict-vs-view-serializability-title">
+            <div class="cmp-lead">
+            <h3 id="conflict-vs-view-serializability-title">Conflict and view serializability</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Conflict serializability looks at the order of conflicting instructions and is easy to test. View serializability looks at reads and final writes. It is wider but hard to test.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Conflict serializability and view serializability</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Conflict serializability</th><th scope="col">View serializability</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Based on</th><td>Order of conflicting instructions</td><td>Initial reads, reads-from and final writes</td></tr>
+                <tr><th scope="row">Test</th><td>Precedence graph has no cycle (easy)</td><td>Compare with every serial schedule (hard, NP-complete)</td></tr>
+                <tr><th scope="row">Which is wider?</th><td>Smaller set of schedules</td><td>Larger set: includes every conflict serializable schedule</td></tr>
+                <tr><th scope="row">Blind writes</th><td>Not needed</td><td>The extra schedules it accepts always have blind writes</td></tr>
+                <tr><th scope="row">Used in practice</th><td>Yes, through locking protocols</td><td>Rarely</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Every conflict serializable schedule is view serializable, but not the other way round. The extra view serializable schedules always contain blind writes.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/serializability.html#compare"><span class="rev-num">3.4</span> Serializability: Conflict and view serializability compared</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-a4">Unit III QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b2">Unit III QB, 16 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b16">Unit III QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t3-5" class="section cmp-topic" aria-labelledby="t3-5-title">
+          <h2 id="t3-5-title"><a href="../units/unit-3/concurrency-control.html"><span class="rev-num">3.5</span> Concurrency Control and Need for Concurrency</a></h2>
+          <article class="cmp-item" id="concurrency-problems" aria-labelledby="concurrency-problems-title">
+            <div class="cmp-lead">
+            <h3 id="concurrency-problems-title">Lost update, dirty read, unrepeatable read and phantom</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Each problem comes from a different conflict. Write-write gives a lost update, write-read a dirty read and read-write an unrepeatable read. Inserts give phantoms.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Problems and how they are prevented</caption>
+              <thead><tr><th scope="col">Problem</th><th scope="col">Conflict</th><th scope="col">Prevented by</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Lost update</th><td>Write-write</td><td>Exclusive locks held until commit</td></tr>
+                <tr><th scope="row">Dirty read</th><td>Write-read</td><td>Reading only committed data (strict 2PL)</td></tr>
+                <tr><th scope="row">Unrepeatable read</th><td>Read-write</td><td>Shared locks held until commit</td></tr>
+                <tr><th scope="row">Incorrect summary</th><td>Read-write</td><td>Shared locks on every item summed</td></tr>
+                <tr><th scope="row">Phantom</th><td>Insert or delete in a range</td><td>Index (range) locks, or the SERIALIZABLE isolation level</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>For each problem, draw a two-column table of T1 and T2 steps with the values of the item. The steps earn more marks than the definition.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/concurrency-control.html#protocols"><span class="rev-num">3.5</span> Concurrency Control and Need for Concurrency: Concurrency control protocols</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-a5">Unit III QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b3">Unit III QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t3-6" class="section cmp-topic" aria-labelledby="t3-6-title">
+          <h2 id="t3-6-title"><a href="../units/unit-3/locking-protocols.html"><span class="rev-num">3.6</span> Locking Protocols</a></h2>
+          <article class="cmp-item" id="shared-vs-exclusive-lock" aria-labelledby="shared-vs-exclusive-lock-title">
+            <div class="cmp-lead">
+            <h3 id="shared-vs-exclusive-lock-title">Shared and exclusive locks</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> A shared (S) lock lets many transactions read an item. An exclusive (X) lock lets one transaction read and write it, and keeps everyone else out.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Shared and exclusive locks</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Shared lock (S)</th><th scope="col">Exclusive lock (X)</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Instruction</th><td>lock-S(Q)</td><td>lock-X(Q)</td></tr>
+                  <tr><th scope="row">Allows the holder to</th><td>Read Q</td><td>Read and write Q</td></tr>
+                  <tr><th scope="row">Other transactions can</th><td>Also take S locks and read Q</td><td>Take no lock on Q; they wait</td></tr>
+                  <tr><th scope="row">Holders at one time</th><td>Many</td><td>One</td></tr>
+                  <tr><th scope="row">Compatible with</th><td>S</td><td>Nothing</td></tr>
+                  <tr><th scope="row">Also called</th><td>Read lock</td><td>Write lock</td></tr>
+                  <tr><th scope="row">Conversion</th><td>Upgrade to X in the growing phase</td><td>Downgrade to S in the shrinking phase</td></tr>
+                  <tr><th scope="row">MySQL (InnoDB)</th><td><code>SELECT ... FOR SHARE</code></td><td><code>SELECT ... FOR UPDATE</code>, and every UPDATE or DELETE</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>Lock compatibility matrix comp(A, B)</caption>
+              <thead><tr><th scope="col">Requested (A) \ Held (B)</th><th scope="col">S</th><th scope="col">X</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">S</th><td>true</td><td>false</td></tr>
+                <tr><th scope="row">X</th><td>false</td><td>false</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+              <div class="code-block">
+                <span class="code-label">Protocol notation</span>
+                <pre><code>T1: lock-S(A);
+    read(A);
+    unlock(A);
+
+T2: lock-X(B);
+    read(B);
+    B := B - 50;
+    write(B);
+    unlock(B);</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">MySQL row locks</span>
+                <pre><code>START TRANSACTION;
+SELECT balance FROM account
+WHERE acc_no = 101
+FOR SHARE;   -- S lock
+
+SELECT balance FROM account
+WHERE acc_no = 102
+FOR UPDATE;  -- X lock
+COMMIT;      -- both released</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/locking-protocols.html#compat"><span class="rev-num">3.6</span> Locking Protocols: The compatibility matrix</a>; <a href="../units/unit-3/locking-protocols.html#modes"><span class="rev-num">3.6</span> Locking Protocols: Shared and exclusive locks</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-a6">Unit III QB, 2 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t3-7" class="section cmp-topic" aria-labelledby="t3-7-title">
+          <h2 id="t3-7-title"><a href="../units/unit-3/two-phase-locking.html"><span class="rev-num">3.7</span> Two Phase Locking</a></h2>
+          <article class="cmp-item" id="two-phase-locking-types" aria-labelledby="two-phase-locking-types-title">
+            <div class="cmp-lead">
+            <h3 id="two-phase-locking-types-title">Basic, strict, rigorous and conservative two phase locking</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> All four keep a growing and a shrinking phase, so all are serializable. They differ in when locks are taken and released, which decides cascading rollbacks and deadlocks.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Basic, strict, rigorous and conservative two phase locking</caption>
+              <thead><tr><th scope="col">Type</th><th scope="col">When locks are released</th><th scope="col">Serializable</th><th scope="col">Cascadeless</th><th scope="col">Deadlock-free</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Basic 2PL</th><td>Any time after the lock point</td><td>Yes</td><td>No</td><td>No</td></tr>
+                <tr><th scope="row">Strict 2PL</th><td>X locks at commit or abort; S locks after the lock point</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+                <tr><th scope="row">Rigorous 2PL</th><td>All locks at commit or abort</td><td>Yes (in commit order)</td><td>Yes</td><td>No</td></tr>
+                <tr><th scope="row">Conservative 2PL</th><td>All locks taken before it starts</td><td>Yes</td><td>Only if also strict</td><td>Yes</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Draw the number of locks held against time for each type. Basic 2PL is a peak; strict and rigorous drop at commit; conservative starts at the top.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/two-phase-locking.html#compare"><span class="rev-num">3.7</span> Two Phase Locking: Types of 2PL compared</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-a7">Unit III QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b4">Unit III QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t3-8" class="section cmp-topic" aria-labelledby="t3-8-title">
+          <h2 id="t3-8-title"><a href="../units/unit-3/deadlock.html"><span class="rev-num">3.8</span> Deadlock</a></h2>
+          <article class="cmp-item" id="deadlock-livelock-starvation" aria-labelledby="deadlock-livelock-starvation-title">
+            <div class="cmp-lead">
+            <h3 id="deadlock-livelock-starvation-title">Deadlock, livelock and starvation</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> In a deadlock, transactions are blocked waiting for each other. In a livelock, they keep running and restarting but never finish. In starvation, one transaction is passed over again and again.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Deadlock, livelock and starvation</caption>
+              <thead><tr><th scope="col"></th><th scope="col">Deadlock</th><th scope="col">Livelock</th><th scope="col">Starvation</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Meaning</th><td>Each transaction in a cycle waits for a lock held by the next, so none can go on</td><td>Transactions keep changing state (rolling back and restarting) in response to each other, but none finishes</td><td>A transaction waits a very long time, or forever, while others are served</td></tr>
+                <tr><th scope="row">State of the transactions</th><td>Blocked, waiting</td><td>Running, but no progress</td><td>One waits or restarts while others progress</td></tr>
+                <tr><th scope="row">Who is affected</th><td>All transactions in the cycle</td><td>The transactions that keep colliding</td><td>Usually one transaction</td></tr>
+                <tr><th scope="row">Uses the CPU</th><td>No; the transactions are idle</td><td>Yes; work is done and thrown away again and again</td><td>Others use it; the starved one gets little or none</td></tr>
+                <tr><th scope="row">Detected by</th><td>A cycle in the wait-for graph, or a timeout</td><td>Hard to detect; no cycle in the wait-for graph</td><td>Counting how often or how long a transaction has waited</td></tr>
+                <tr><th scope="row">Ends on its own?</th><td>No; the DBMS must roll back a victim</td><td>Possibly, by chance</td><td>Possibly, once the others finish</td></tr>
+                <tr><th scope="row">Example</th><td>T3 holds B and waits for A; T4 holds A and waits for B</td><td>T1 and T2 both restart after a clash, then clash again at the same point each time</td><td>The same young transaction is chosen as the victim every time</td></tr>
+                <tr><th scope="row">Cure</th><td>Prevention, or detection and rollback</td><td>Random delay before restart; fair victim choice</td><td>Fair lock queue; count rollbacks in victim cost; keep old timestamps</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Livelock is a special case of starvation. Say this, then give one example of each.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/deadlock.html#livelock"><span class="rev-num">3.8</span> Deadlock: Starvation and livelock</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-a8">Unit III QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b5">Unit III QB, 16 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b17">Unit III QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="wait-die-vs-wound-wait" aria-labelledby="wait-die-vs-wound-wait-title">
+            <div class="cmp-lead">
+            <h3 id="wait-die-vs-wound-wait-title">Wait-die and wound-wait</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> In both schemes the younger transaction is rolled back. In wait-die an older requester waits; in wound-wait an older requester rolls back the younger holder.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Wait-die and wound-wait (Ti asks for an item held by Tj)</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Wait-die</th><th scope="col">Wound-wait</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Kind</th><td>Non-preemptive</td><td>Preemptive</td></tr>
+                  <tr><th scope="row">Older Ti asks</th><td>Ti waits</td><td>Ti wounds Tj: Tj is rolled back</td></tr>
+                  <tr><th scope="row">Younger Ti asks</th><td>Ti dies: Ti is rolled back</td><td>Ti waits</td></tr>
+                  <tr><th scope="row">Who may wait for whom</th><td>Older waits for younger</td><td>Younger waits for older</td></tr>
+                  <tr><th scope="row">Who is rolled back</th><td>Always the younger one (the requester)</td><td>Always the younger one (the holder)</td></tr>
+                  <tr><th scope="row">Rollbacks</th><td>More; a young transaction may die many times</td><td>Fewer</td></tr>
+                  <tr><th scope="row">After restart</th><td>Keeps its old timestamp, so it cannot starve</td><td>Keeps its old timestamp, so it cannot starve</td></tr>
+                  <tr><th scope="row">Memory aid</th><td>The old one waits, the young one dies</td><td>The old one wounds, the young one waits</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>What happens when T<sub>i</sub> asks for a lock held by T<sub>j</sub></caption>
+              <thead><tr><th scope="col">Requester T<sub>i</sub> is</th><th scope="col">Wait-die</th><th scope="col">Wound-wait</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Older than T<sub>j</sub></th><td>T<sub>i</sub> waits</td><td>T<sub>j</sub> is rolled back (wounded)</td></tr>
+                <tr><th scope="row">Younger than T<sub>j</sub></th><td>T<sub>i</sub> is rolled back (dies)</td><td>T<sub>i</sub> waits</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="cmp-syntax">
+              <h4>The rules side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+              <div class="code-block">
+                <span class="code-label">Wait-die rule</span>
+                <pre><code>if TS(Ti) &lt; TS(Tj)   -- Ti older
+    Ti waits
+else                 -- Ti younger
+    roll back Ti (dies)</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Wound-wait rule</span>
+                <pre><code>if TS(Ti) &lt; TS(Tj)   -- Ti older
+    roll back Tj (wounded)
+else                 -- Ti younger
+    Ti waits</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/deadlock.html#timestamps"><span class="rev-num">3.8</span> Deadlock: Wait-die and wound-wait</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-b5">Unit III QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="deadlock-handling" aria-labelledby="deadlock-handling-title">
+            <div class="cmp-lead">
+            <h3 id="deadlock-handling-title">Deadlock prevention, detection and timeout</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Prevention makes a deadlock impossible, detection lets it happen and then breaks it, and timeout simply rolls back any transaction that waits too long.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Ways to handle deadlocks</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Prevention</th><th scope="col">Detection and recovery</th><th scope="col">Timeout</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Idea</th><td>Never let a cycle of waits form</td><td>Let deadlocks happen, find them, then break them</td><td>Roll back a transaction that waits longer than a set time</td></tr>
+                  <tr><th scope="row">Methods</th><td>Lock everything at the start, lock in a fixed order, wait-die, wound-wait</td><td>Wait-for graph checked for a cycle; choose a victim and roll it back</td><td>A lock wait limit</td></tr>
+                  <tr><th scope="row">Can a deadlock happen?</th><td>No</td><td>Yes, for a short time</td><td>Yes, until the time runs out</td></tr>
+                  <tr><th scope="row">Unneeded rollbacks</th><td>Some (a rollback may happen with no deadlock)</td><td>None; only real deadlocks</td><td>Some (slow transactions that were not deadlocked)</td></tr>
+                  <tr><th scope="row">Overhead</th><td>Rollbacks and lower concurrency</td><td>Keeping the graph and running the check</td><td>Very low</td></tr>
+                  <tr><th scope="row">Best when</th><td>Deadlocks are frequent</td><td>Deadlocks are rare</td><td>Transactions are short</td></tr>
+                  <tr><th scope="row">MySQL (InnoDB)</th><td>Not used</td><td>Yes; rolls back the smaller transaction</td><td><code>innodb_lock_wait_timeout</code> (50 seconds by default)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/deadlock.html#prevention"><span class="rev-num">3.8</span> Deadlock: Deadlock prevention</a>; <a href="../units/unit-3/deadlock.html#detection"><span class="rev-num">3.8</span> Deadlock: Detection with a wait-for graph</a>; <a href="../units/unit-3/deadlock.html#timeout"><span class="rev-num">3.8</span> Deadlock: Timeout</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-b5">Unit III QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t3-9" class="section cmp-topic" aria-labelledby="t3-9-title">
+          <h2 id="t3-9-title"><a href="../units/unit-3/transaction-recovery.html"><span class="rev-num">3.9</span> Transaction Recovery</a></h2>
+          <article class="cmp-item" id="storage-types" aria-labelledby="storage-types-title">
+            <div class="cmp-lead">
+            <h3 id="storage-types-title">Volatile, non-volatile and stable storage</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Volatile storage loses its data in a crash, non-volatile storage survives a crash but not every disk failure, and stable storage is built to lose nothing.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Storage types and what survives</caption>
+              <thead><tr><th scope="col">Type</th><th scope="col">Examples</th><th scope="col">Survives a crash?</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Volatile storage</th><td>Main memory, cache</td><td>No. Contents are lost when power goes off.</td></tr>
+                <tr><th scope="row">Non-volatile storage</th><td>Hard disk, SSD, magnetic tape</td><td>Survives a system crash, but can still be lost in a disk failure.</td></tr>
+                <tr><th scope="row">Stable storage</th><td>Copies on several disks, often at different sites</td><td>In theory, never lost. Built by keeping several copies of each block on independent non-volatile media.</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>The log must be written to stable storage. Say why: recovery depends on it surviving every failure.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/transaction-recovery.html#storage"><span class="rev-num">3.9</span> Transaction Recovery: Storage types</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-b6">Unit III QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="recovery-methods" aria-labelledby="recovery-methods-title">
+            <div class="cmp-lead">
+            <h3 id="recovery-methods-title">Deferred update, immediate update and shadow paging</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Deferred update writes to the database only after commit. Immediate update writes at any time. Shadow paging keeps an old copy of the page table and needs no log.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Deferred update, immediate update and shadow paging</caption>
+              <thead><tr><th scope="col"></th><th scope="col">Deferred update</th><th scope="col">Immediate update</th><th scope="col">Shadow paging</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Database changed</th><td>Only after commit</td><td>Any time, after the log record</td><td>On copies of pages</td></tr>
+                <tr><th scope="row">Log record holds</th><td>New value</td><td>Old and new value</td><td>No log needed</td></tr>
+                <tr><th scope="row">Undo needed?</th><td>No</td><td>Yes</td><td>No (keep the shadow table)</td></tr>
+                <tr><th scope="row">Redo needed?</th><td>Yes</td><td>Yes</td><td>No</td></tr>
+                <tr><th scope="row">Main cost</th><td>Holds all writes until commit</td><td>Two passes over the log</td><td>Copying pages and page tables; fragmentation</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Remember the pairs: deferred update needs only redo, immediate update needs undo and redo, and shadow paging needs neither.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/transaction-recovery.html#compare"><span class="rev-num">3.9</span> Transaction Recovery: Recovery techniques compared</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-b6">Unit III QB, 16 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b15">Unit III QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t3-10" class="section cmp-topic" aria-labelledby="t3-10-title">
+          <h2 id="t3-10-title"><a href="../units/unit-3/save-points.html"><span class="rev-num">3.10</span> Save Points</a></h2>
+          <article class="cmp-item" id="commit-rollback-savepoint" aria-labelledby="commit-rollback-savepoint-title">
+            <div class="cmp-lead">
+            <h3 id="commit-rollback-savepoint-title">COMMIT, ROLLBACK and ROLLBACK TO SAVEPOINT</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> COMMIT makes all changes of a transaction permanent; ROLLBACK undoes all of them; ROLLBACK TO SAVEPOINT undoes only the changes made after that savepoint.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>COMMIT, ROLLBACK and ROLLBACK TO SAVEPOINT</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">COMMIT</th><th scope="col">ROLLBACK</th><th scope="col">ROLLBACK TO SAVEPOINT</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Effect</th><td>Makes all changes permanent</td><td>Undoes all changes</td><td>Undoes only the changes after the savepoint</td></tr>
+                  <tr><th scope="row">Transaction afterwards</th><td>Ends</td><td>Ends</td><td>Stays open</td></tr>
+                  <tr><th scope="row">Locks</th><td>All released</td><td>All released</td><td>Locks taken after the savepoint may be released (InnoDB keeps them)</td></tr>
+                  <tr><th scope="row">Savepoints afterwards</th><td>All removed</td><td>All removed</td><td>That savepoint is kept; later ones are removed</td></tr>
+                  <tr><th scope="row">ACID property</th><td>Durability</td><td>Atomicity</td><td>Atomicity, for part of a transaction</td></tr>
+                  <tr><th scope="row">Can be undone?</th><td>No</td><td>No</td><td>Yes, by a later ROLLBACK of the whole transaction</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+              <div class="code-block">
+                <span class="code-label">SQL</span>
+                <pre><code>START TRANSACTION;
+SAVEPOINT SP1;
+DELETE FROM CUSTOMERS WHERE ID = 1;
+SAVEPOINT SP2;
+DELETE FROM CUSTOMERS WHERE ID = 2;
+DELETE FROM CUSTOMERS WHERE ID = 3;
+
+ROLLBACK TO SP2;
+-- IDs 2 and 3 are back; ID 1 is
+-- still deleted
+COMMIT;
+-- now ID 1 is gone for good</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Other forms</span>
+                <pre><code>ROLLBACK;
+-- undo everything since
+-- START TRANSACTION
+
+RELEASE SAVEPOINT SP1;
+-- forget the savepoint;
+-- no change is undone</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/save-points.html#example"><span class="rev-num">3.10</span> Save Points: Example: the CUSTOMERS table</a>; <a href="../units/unit-3/sql-dcl-and-tcl-commands.html#tcl"><span class="rev-num">3.14</span> SQL DCL and TCL Commands: TCL: COMMIT, ROLLBACK and SAVEPOINT</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-a9">Unit III QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-a14">Unit III QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b7">Unit III QB, 16 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b11">Unit III QB, 16 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b13">Unit III QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t3-11" class="section cmp-topic" aria-labelledby="t3-11-title">
+          <h2 id="t3-11-title"><a href="../units/unit-3/isolation-levels.html"><span class="rev-num">3.11</span> Isolation Levels</a></h2>
+          <article class="cmp-item" id="isolation-levels" aria-labelledby="isolation-levels-title">
+            <div class="cmp-lead">
+            <h3 id="isolation-levels-title">READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ and SERIALIZABLE</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Each higher isolation level blocks one more problem: dirty reads, then non-repeatable reads, then phantoms. More isolation means less concurrency.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Phenomena each SQL isolation level allows</caption>
+              <thead><tr><th scope="col">Isolation level</th><th scope="col">Dirty read</th><th scope="col">Non-repeatable read</th><th scope="col">Phantom</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">READ UNCOMMITTED</th><td>Possible</td><td>Possible</td><td>Possible</td></tr>
+                <tr><th scope="row">READ COMMITTED</th><td>Not possible</td><td>Possible</td><td>Possible</td></tr>
+                <tr><th scope="row">REPEATABLE READ</th><td>Not possible</td><td>Not possible</td><td>Possible</td></tr>
+                <tr><th scope="row">SERIALIZABLE</th><td>Not possible</td><td>Not possible</td><td>Not possible</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>Isolation levels compared</caption>
+              <thead><tr><th scope="col">Level</th><th scope="col">Consistency</th><th scope="col">Concurrency</th><th scope="col">Suits</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">READ UNCOMMITTED</th><td>Lowest</td><td>Highest</td><td>Approximate counts and reports where small errors do not matter</td></tr>
+                <tr><th scope="row">READ COMMITTED</th><td>Low</td><td>High</td><td>Most web pages and short updates; the default in many systems</td></tr>
+                <tr><th scope="row">REPEATABLE READ</th><td>High</td><td>Medium</td><td>Reports that read the same rows more than once</td></tr>
+                <tr><th scope="row">SERIALIZABLE</th><td>Highest</td><td>Lowest</td><td>Money transfers, seat booking, anything that must never be wrong</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+              <div class="code-block">
+                <span class="code-label">Set the level</span>
+                <pre><code>SET TRANSACTION ISOLATION LEVEL
+  READ COMMITTED;
+START TRANSACTION;
+-- ...
+COMMIT;</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">For the whole session</span>
+                <pre><code>SET SESSION TRANSACTION
+  ISOLATION LEVEL SERIALIZABLE;
+
+SELECT @@transaction_isolation;
+-- MySQL's default is
+-- REPEATABLE-READ</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>MySQL's default level is REPEATABLE READ, while Oracle and SQL Server use READ COMMITTED. Name both if the question asks for examples.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/isolation-levels.html#matrix"><span class="rev-num">3.11</span> Isolation Levels: The four levels</a>; <a href="../units/unit-3/isolation-levels.html#choose"><span class="rev-num">3.11</span> Isolation Levels: Choosing a level</a>; <a href="../units/unit-3/isolation-levels.html#set"><span class="rev-num">3.11</span> Isolation Levels: Setting the level in SQL</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-a10">Unit III QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b7">Unit III QB, 16 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b12">Unit III QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t3-12" class="section cmp-topic" aria-labelledby="t3-12-title">
+          <h2 id="t3-12-title"><a href="../units/unit-3/sql-facilities-for-concurrency-and-recovery.html"><span class="rev-num">3.12</span> SQL Facilities for Concurrency and Recovery</a></h2>
+          <article class="cmp-item" id="locking-reads-and-lock-tables" aria-labelledby="locking-reads-and-lock-tables-title">
+            <div class="cmp-lead">
+            <h3 id="locking-reads-and-lock-tables-title">SELECT ... FOR SHARE, SELECT ... FOR UPDATE and LOCK TABLES</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> FOR SHARE takes shared row locks, FOR UPDATE takes exclusive row locks, and LOCK TABLES locks whole tables for a session.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Locking statements in MySQL</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">SELECT ... FOR SHARE</th><th scope="col">SELECT ... FOR UPDATE</th><th scope="col">LOCK TABLES</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Locks</th><td>The rows read, in shared (S) mode</td><td>The rows read, in exclusive (X) mode</td><td>Whole tables, in READ or WRITE mode</td></tr>
+                  <tr><th scope="row">Others can</th><td>Read and also lock FOR SHARE, but not change</td><td>Read old snapshots only; must wait to lock or change</td><td>READ: read only. WRITE: nothing</td></tr>
+                  <tr><th scope="row">Needs a transaction</th><td>Yes; locks are held until COMMIT or ROLLBACK</td><td>Yes; locks are held until COMMIT or ROLLBACK</td><td>No; it commits any open transaction first</td></tr>
+                  <tr><th scope="row">Released by</th><td>COMMIT or ROLLBACK</td><td>COMMIT or ROLLBACK</td><td>UNLOCK TABLES</td></tr>
+                  <tr><th scope="row">Concurrency</th><td>High</td><td>Medium</td><td>Low</td></tr>
+                  <tr><th scope="row">Typical use</th><td>Check that a parent row exists before inserting a child</td><td>Read a seat or a balance, then change it</td><td>Maintenance, or tables without transactions (MyISAM)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>Locking reads</caption>
+              <thead><tr><th scope="col">Statement</th><th scope="col">Lock taken on each row read</th><th scope="col">Others can</th></tr></thead>
+              <tbody>
+                <tr><td><code>SELECT ... FOR SHARE</code></td><td>Shared (S) lock</td><td>Read the rows, and also lock them FOR SHARE, but not change them</td></tr>
+                <tr><td><code>SELECT ... FOR UPDATE</code></td><td>Exclusive (X) lock</td><td>Only read snapshots; any locking read or change must wait</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid cmp-syntax-many">
+              <div>
+              <div class="code-block">
+                <span class="code-label">FOR SHARE</span>
+                <pre><code>START TRANSACTION;
+SELECT * FROM Games
+WHERE GameID = 5
+FOR SHARE;
+-- insert into Cart ...
+COMMIT;</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">FOR UPDATE</span>
+                <pre><code>START TRANSACTION;
+SELECT status FROM seats
+WHERE seat_no = '12A'
+FOR UPDATE;
+UPDATE seats SET status = 'booked'
+WHERE seat_no = '12A';
+COMMIT;</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">LOCK TABLES</span>
+                <pre><code>LOCK TABLES Games READ,
+            Cart WRITE;
+-- read Games;
+-- read and write Cart
+UNLOCK TABLES;</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/sql-facilities-for-concurrency-and-recovery.html#locking-reads"><span class="rev-num">3.12</span> SQL Facilities for Concurrency and Recovery: Locking reads: FOR UPDATE and FOR SHARE</a>; <a href="../units/unit-3/sql-facilities-for-concurrency-and-recovery.html#lock-tables"><span class="rev-num">3.12</span> SQL Facilities for Concurrency and Recovery: LOCK TABLES</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-a11">Unit III QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b8">Unit III QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t3-13" class="section cmp-topic" aria-labelledby="t3-13-title">
+          <h2 id="t3-13-title"><a href="../units/unit-3/backup-and-recovery-system.html"><span class="rev-num">3.13</span> Backup and Recovery System</a></h2>
+          <article class="cmp-item" id="backup-types" aria-labelledby="backup-types-title">
+            <div class="cmp-lead">
+            <h3 id="backup-types-title">Full, incremental and differential backups</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> A full backup copies everything; an incremental backup copies changes since the last backup of any kind; a differential backup copies changes since the last full backup.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Backup types compared</caption>
+              <thead><tr><th scope="col"></th><th scope="col">Full</th><th scope="col">Incremental</th><th scope="col">Differential</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Copies</th><td>All data</td><td>Changes since the last backup</td><td>Changes since the last full backup</td></tr>
+                <tr><th scope="row">Backup time and space</th><td>Most</td><td>Least</td><td>Grows each day until the next full backup</td></tr>
+                <tr><th scope="row">To restore, you need</th><td>That one backup</td><td>The last full backup and every incremental after it, in order</td><td>The last full backup and the latest differential</td></tr>
+                <tr><th scope="row">Restore speed</th><td>Fastest</td><td>Slowest</td><td>Medium</td></tr>
+                <tr><th scope="row">Risk</th><td>Low</td><td>If one incremental is lost, later ones are useless</td><td>Low</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Use a weekly example: full on Sunday, then incremental or differential each day. Ask which backups are needed to restore on Thursday.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/backup-and-recovery-system.html#types"><span class="rev-num">3.13</span> Backup and Recovery System: Full, incremental and differential backups</a>; <a href="../units/unit-3/backup-and-recovery-system.html#example"><span class="rev-num">3.13</span> Backup and Recovery System: Worked example: a weekly plan</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-a15">Unit III QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b9">Unit III QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t3-14" class="section cmp-topic" aria-labelledby="t3-14-title">
+          <h2 id="t3-14-title"><a href="../units/unit-3/sql-dcl-and-tcl-commands.html"><span class="rev-num">3.14</span> SQL DCL and TCL Commands</a></h2>
+          <article class="cmp-item" id="dcl-vs-tcl" aria-labelledby="dcl-vs-tcl-title">
+            <div class="cmp-lead">
+            <h3 id="dcl-vs-tcl-title">DCL and TCL</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> DCL decides who may use which data (GRANT, REVOKE); TCL decides when changes become permanent or are undone (COMMIT, ROLLBACK, SAVEPOINT).</p>
+            <div class="table-wrap">
+            <table>
+              <caption>DCL compared with TCL</caption>
+              <thead><tr><th scope="col"></th><th scope="col">DCL</th><th scope="col">TCL</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Stands for</th><td>Data control language</td><td>Transaction control language</td></tr>
+                <tr><th scope="row">Controls</th><td>Who can access which data (security)</td><td>When changes become permanent or are undone (transactions)</td></tr>
+                <tr><th scope="row">Commands</th><td>GRANT, REVOKE</td><td>COMMIT, ROLLBACK, SAVEPOINT</td></tr>
+                <tr><th scope="row">Works on</th><td>Users, roles and privileges on objects</td><td>The changes made by DML statements</td></tr>
+                <tr><th scope="row">Usually run by</th><td>The database administrator or object owner</td><td>Any user or program that changes data</td></tr>
+                <tr><th scope="row">ACID link</th><td>Not part of ACID; part of security</td><td>Atomicity and durability</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+              <div class="code-block">
+                <span class="code-label">DCL</span>
+                <pre><code>GRANT SELECT, INSERT
+  ON shop.Games
+  TO 'clerk'@'localhost';
+
+REVOKE INSERT
+  ON shop.Games
+  FROM 'clerk'@'localhost';</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">TCL</span>
+                <pre><code>START TRANSACTION;
+UPDATE Games SET BasePrice = 499
+  WHERE GameID = 5;
+SAVEPOINT price_set;
+DELETE FROM Cart;
+ROLLBACK TO price_set;
+COMMIT;</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/sql-dcl-and-tcl-commands.html#compare"><span class="rev-num">3.14</span> SQL DCL and TCL Commands: DCL and TCL compared</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-a12">Unit III QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-a13">Unit III QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-a14">Unit III QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b18">Unit III QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="grant-vs-revoke" aria-labelledby="grant-vs-revoke-title">
+            <div class="cmp-lead">
+            <h3 id="grant-vs-revoke-title">GRANT and REVOKE</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> GRANT gives a user privileges on database objects; REVOKE takes them back.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>GRANT and REVOKE</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">GRANT</th><th scope="col">REVOKE</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Purpose</th><td>Gives privileges</td><td>Takes privileges away</td></tr>
+                  <tr><th scope="row">Keyword before the user</th><td>TO</td><td>FROM</td></tr>
+                  <tr><th scope="row">Passing rights on</th><td><code>WITH GRANT OPTION</code> lets the user grant the same privileges to others</td><td>Removing <code>GRANT OPTION</code> stops the user from granting it</td></tr>
+                  <tr><th scope="row">Run by</th><td>The DBA, the owner, or a user who has the privilege WITH GRANT OPTION</td><td>The DBA, or the user who granted it</td></tr>
+                  <tr><th scope="row">Effect of a mistake</th><td>The user can see or change too much</td><td>MySQL gives an error if that privilege was never granted</td></tr>
+                  <tr><th scope="row">Transaction</th><td>Takes effect at once; cannot be rolled back</td><td>Takes effect at once; cannot be rolled back</td></tr>
+                  <tr><th scope="row">See the result</th><td><code>SHOW GRANTS FOR user;</code></td><td><code>SHOW GRANTS FOR user;</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+              <div class="code-block">
+                <span class="code-label">GRANT</span>
+                <pre><code>CREATE USER 'clerk'@'localhost'
+  IDENTIFIED BY 'Str0ng#Pass';
+
+GRANT SELECT, UPDATE (BasePrice)
+  ON shop.Games
+  TO 'clerk'@'localhost'
+  WITH GRANT OPTION;</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">REVOKE</span>
+                <pre><code>REVOKE UPDATE (BasePrice)
+  ON shop.Games
+  FROM 'clerk'@'localhost';
+
+REVOKE GRANT OPTION
+  ON shop.Games
+  FROM 'clerk'@'localhost';</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-3/sql-dcl-and-tcl-commands.html#grant"><span class="rev-num">3.14</span> SQL DCL and TCL Commands: DCL: GRANT</a>; <a href="../units/unit-3/sql-dcl-and-tcl-commands.html#revoke"><span class="rev-num">3.14</span> SQL DCL and TCL Commands: DCL: REVOKE</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-a13">Unit III QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b10">Unit III QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <div class="btn-row cmp-more no-print">
+          <a class="btn" href="../diagrams/unit-3.html">Unit III diagrams and examples</a>
+          <a class="btn" href="../outlines/unit-3.html">Unit III 16-mark outlines</a>
+          <a class="btn" href="../units/unit-3/index.html">Unit III topics</a>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/revision.js"></script>
+</body>
+</html>
