@@ -196,7 +196,7 @@ WHERE balance &lt; 1000;</code></pre>
         <section id="joins" class="topic-section" aria-labelledby="joins-title">
           <h2 id="joins-title">Algorithms for joins</h2>
           <p>The join is the most costly common operation. In the formulas, r is the <strong>outer</strong> relation and s is the <strong>inner</strong> relation. n<sub>r</sub> is the number of tuples of r, and b<sub>r</sub> and b<sub>s</sub> are their numbers of blocks.</p>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-join-algorithms">
             <table>
               <caption>Join algorithms and their costs (worst case, with little memory)</caption>
               <thead><tr><th scope="col">Algorithm</th><th scope="col">How it works</th><th scope="col">Block transfers</th><th scope="col">Seeks</th></tr></thead>

@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Built by tools/build-comparisons.mjs from data/comparisons and the topic pages. Edit those, then run the script again. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit V Comparisons | DBMS Study Guide</title>
+  <meta name="description" content="Tables that compare the related concepts of Unit V (Advanced Topics), with the syntax side by side for SQL. Each one links to its topic page. Prints well.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="comparisons" data-unit="5" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content u-5">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        <header class="cmp-head">
+          <span class="eyebrow">Unit V: Advanced Topics</span>
+          <h1>Unit V Comparisons</h1>
+          <p class="lead">14 comparisons of the related ideas in Unit V, as tables you can learn and write in the exam. Each one links to its topic page.</p>
+        </header>
+
+        <div class="btn-row no-print">
+          <button type="button" class="btn btn-primary" data-print>Print the comparisons</button>
+          <a class="btn" href="../revision/unit-5.html">Unit V revision sheet</a>
+          <a class="btn" href="../question-bank/unit-5.html">Unit V question bank</a>
+        </div>
+
+        <nav class="on-this-page cmp-toc" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#t5-1">5.1 Distributed Databases: Architecture</a>
+              <ol>
+                <li><a href="#centralized-vs-distributed">Centralized and distributed databases</a></li>
+                <li><a href="#replication-vs-fragmentation">Replication and fragmentation</a></li>
+                <li><a href="#fragmentation-types">Horizontal, vertical and mixed fragmentation</a></li>
+              </ol>
+            </li>
+            <li><a href="#t5-2">5.2 Types of Distributed Databases</a>
+              <ol>
+                <li><a href="#homogeneous-vs-heterogeneous">Homogeneous, heterogeneous and federated distributed databases</a></li>
+              </ol>
+            </li>
+            <li><a href="#t5-3">5.3 Transaction Processing</a>
+              <ol>
+                <li><a href="#commit-protocols">Single-phase, two-phase and three-phase commit</a></li>
+              </ol>
+            </li>
+            <li><a href="#t5-4">5.4 NoSQL Databases: Introduction</a>
+              <ol>
+                <li><a href="#rdbms-vs-nosql">Relational (SQL) and NoSQL databases</a></li>
+                <li><a href="#acid-vs-base">ACID and BASE</a></li>
+              </ol>
+            </li>
+            <li><a href="#t5-5">5.5 CAP Theorem</a>
+              <ol>
+                <li><a href="#cp-vs-ap">CP and AP systems</a></li>
+              </ol>
+            </li>
+            <li><a href="#t5-6">5.6 Document Based Systems</a>
+              <ol>
+                <li><a href="#sql-vs-mongodb">SQL (MySQL) and MongoDB commands</a></li>
+              </ol>
+            </li>
+            <li><a href="#t5-8">5.8 Column Based Systems</a>
+              <ol>
+                <li><a href="#wide-column-vs-columnar">Wide-column stores and columnar databases</a></li>
+              </ol>
+            </li>
+            <li><a href="#t5-9">5.9 Graph Databases</a>
+              <ol>
+                <li><a href="#nosql-types">Document, key-value, column-based and graph databases</a></li>
+              </ol>
+            </li>
+            <li><a href="#t5-11">5.11 Access Control Based on Privileges</a>
+              <ol>
+                <li><a href="#dac-mac-rbac">Discretionary, mandatory and role-based access control</a></li>
+              </ol>
+            </li>
+            <li><a href="#t5-13">5.13 SQL Injection</a>
+              <ol>
+                <li><a href="#dynamic-sql-vs-prepared">Dynamic SQL and prepared statements</a></li>
+              </ol>
+            </li>
+            <li><a href="#t5-14">5.14 Encryption and Public Key Infrastructures</a>
+              <ol>
+                <li><a href="#symmetric-vs-asymmetric">Symmetric and asymmetric encryption</a></li>
+              </ol>
+            </li>
+          </ol>
+        </nav>
+
+        <section id="t5-1" class="section cmp-topic" aria-labelledby="t5-1-title">
+          <h2 id="t5-1-title"><a href="../units/unit-5/distributed-database-architecture.html"><span class="rev-num">5.1</span> Distributed Databases: Architecture</a></h2>
+          <article class="cmp-item" id="centralized-vs-distributed" aria-labelledby="centralized-vs-distributed-title">
+            <div class="cmp-lead">
+            <h3 id="centralized-vs-distributed-title">Centralized and distributed databases</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> A centralized database keeps all data at one site. A distributed database spreads it over several sites linked by a network, so it keeps working when one site fails.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Centralized database compared with distributed database</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Centralized database</th><th scope="col">Distributed database</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Where data is stored</th><td>At one site</td><td>At many sites</td></tr>
+                <tr><th scope="row">If the site fails</th><td>The whole system stops</td><td>Other sites keep working</td></tr>
+                <tr><th scope="row">Speed for local users</th><td>Remote users must use the network</td><td>Data can be kept near its users</td></tr>
+                <tr><th scope="row">Growth</th><td>Buy a bigger computer</td><td>Add more sites</td></tr>
+                <tr><th scope="row">Control and design</th><td>Simple</td><td>Complex</td></tr>
+                <tr><th scope="row">Security</th><td>One place to protect</td><td>Many sites and a network to protect</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Draw both: one database with many users around it, and three sites joined by a network, each with its own database.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-5/distributed-database-architecture.html#compare"><span class="rev-num">5.1</span> Distributed Databases: Architecture: Centralized and distributed databases</a><br>Asked in: <a href="../question-bank/unit-5.html#q-u5-a1">Unit V QB, 2 marks</a>, <a href="../question-bank/unit-5.html#q-u5-a2">Unit V QB, 2 marks</a>, <a href="../question-bank/unit-5.html#q-u5-b1">Unit V QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="replication-vs-fragmentation" aria-labelledby="replication-vs-fragmentation-title">
+            <div class="cmp-lead">
+            <h3 id="replication-vs-fragmentation-title">Replication and fragmentation</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Replication stores copies of the same data at several sites. Fragmentation splits the data into parts and stores each part at a different site.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Replication and fragmentation</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Replication</th><th scope="col">Fragmentation</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Meaning</th><td>A copy (replica) of a relation or fragment is kept at two or more sites</td><td>A relation is split into fragments, and each fragment is kept at one site</td></tr>
+                  <tr><th scope="row">Kinds</th><td>Full, partial or no replication</td><td>Horizontal, vertical or mixed</td></tr>
+                  <tr><th scope="row">Same data at many sites?</th><td>Yes</td><td>No (only the key repeats in vertical fragments)</td></tr>
+                  <tr><th scope="row">Reads</th><td>Fast: a copy is often local; sites can answer in parallel</td><td>Fast when a site needs only its own fragment</td></tr>
+                  <tr><th scope="row">Updates</th><td>Costly: every copy must change</td><td>Cheap: one site holds each row</td></tr>
+                  <tr><th scope="row">If a site fails</th><td>Another copy is used</td><td>That fragment cannot be reached</td></tr>
+                  <tr><th scope="row">Disk space</th><td>More</td><td>No extra</td></tr>
+                  <tr><th scope="row">Rebuilding the relation</th><td>Not needed: each copy is whole</td><td>Union (horizontal) or natural join (vertical)</td></tr>
+                  <tr><th scope="row">Used together?</th><td>Yes: fragments can also be replicated</td><td>Yes</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Replication answers “how many copies?”, fragmentation answers “which part goes where?”, and allocation is the choice of sites.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-5/distributed-database-architecture.html#storage"><span class="rev-num">5.1</span> Distributed Databases: Architecture: Data storage: replication and fragmentation</a><br>Asked in: <a href="../question-bank/unit-5.html#q-u5-b1">Unit V QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="fragmentation-types" aria-labelledby="fragmentation-types-title">
+            <div class="cmp-lead">
+            <h3 id="fragmentation-types-title">Horizontal, vertical and mixed fragmentation</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Horizontal fragmentation splits a relation by rows with a selection (σ). Vertical fragmentation splits it by columns with a projection (π), and mixed fragmentation does both.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Fragmenting Student(RollNo, Name, Dept, City, Marks)</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Horizontal</th><th scope="col">Vertical</th><th scope="col">Mixed (hybrid)</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Splits by</th><td>Rows (tuples)</td><td>Columns (attributes)</td><td>Columns, then rows (or rows, then columns)</td></tr>
+                  <tr><th scope="row">Defined with</th><td>Selection σ</td><td>Projection π</td><td>σ and π together</td></tr>
+                  <tr><th scope="row">Rebuilt with</th><td>Union ∪</td><td>Natural join ⋈ on the key</td><td>Join and union, in reverse order</td></tr>
+                  <tr><th scope="row">Must keep</th><td>Every row in exactly one fragment</td><td>The primary key in every fragment</td><td>Both rules</td></tr>
+                  <tr><th scope="row">Each fragment has</th><td>All the columns, some rows</td><td>All the rows, some columns</td><td>Some rows and some columns</td></tr>
+                  <tr><th scope="row">Suits</th><td>Each site uses its own rows (for example, its own city)</td><td>Each site uses different columns (office, exam cell)</td><td>Both needs at once</td></tr>
+                  <tr><th scope="row">Example</th><td>F1 = σ<sub>City = 'Salem'</sub>(Student)</td><td>F1 = π<sub>RollNo, Name, Dept</sub>(Student)</td><td>F2 = σ<sub>City = 'Chennai'</sub>(π<sub>RollNo, City, Marks</sub>(Student))</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid cmp-syntax-many">
+              <div>
+              <div class="code-block">
+                <span class="code-label">Horizontal fragment</span>
+                <pre><code>-- F1 at the Salem site
+SELECT *
+FROM Student
+WHERE City = 'Salem';
+
+-- rebuild:
+-- F1 UNION F2 UNION F3</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Vertical fragment</span>
+                <pre><code>-- F1 at the college office
+SELECT RollNo, Name, Dept
+FROM Student;
+
+-- rebuild:
+-- F1 JOIN F2 USING (RollNo)</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Mixed fragment</span>
+                <pre><code>-- F2 at the Chennai site
+SELECT RollNo, City, Marks
+FROM Student
+WHERE City = 'Chennai';
+
+-- rebuild:
+-- F1 JOIN (F2 UNION F3)
+--   USING (RollNo)</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Draw one small table, then each fragment with its σ or π expression, then the rebuild formula: ∪ for horizontal and ⋈ for vertical.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-5/distributed-database-architecture.html#storage"><span class="rev-num">5.1</span> Distributed Databases: Architecture: Data storage: replication and fragmentation</a><br>Asked in: <a href="../question-bank/unit-5.html#q-u5-b1">Unit V QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t5-2" class="section cmp-topic" aria-labelledby="t5-2-title">
+          <h2 id="t5-2-title"><a href="../units/unit-5/types-of-distributed-databases.html"><span class="rev-num">5.2</span> Types of Distributed Databases</a></h2>
+          <article class="cmp-item" id="homogeneous-vs-heterogeneous" aria-labelledby="homogeneous-vs-heterogeneous-title">
+            <div class="cmp-lead">
+            <h3 id="homogeneous-vs-heterogeneous-title">Homogeneous, heterogeneous and federated distributed databases</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> In a homogeneous system every site runs the same DBMS and schema. In a heterogeneous system the sites may differ, and a federated system joins independent databases that share only some data.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Homogeneous, heterogeneous and federated distributed databases</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Homogeneous</th><th scope="col">Heterogeneous</th><th scope="col">Federated</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">DBMS at each site</th><td>Same</td><td>May differ</td><td>May differ</td></tr>
+                <tr><th scope="row">Schema</th><td>Same global schema</td><td>May differ</td><td>Each site has its own; only shared parts form the global view</td></tr>
+                <tr><th scope="row">Do sites know each other?</th><td>Yes</td><td>Not always</td><td>Only through the federation layer</td></tr>
+                <tr><th scope="row">Cooperation</th><td>Full</td><td>Limited</td><td>Voluntary</td></tr>
+                <tr><th scope="row">Local autonomy</th><td>Low</td><td>Medium to high</td><td>High</td></tr>
+                <tr><th scope="row">Translation needed</th><td>No</td><td>Yes (middleware)</td><td>Yes (federation layer)</td></tr>
+                <tr><th scope="row">How it is built</th><td>Designed as one system (top-down)</td><td>Joined from existing systems (bottom-up)</td><td>Joined from existing systems (bottom-up)</td></tr>
+                <tr><th scope="row">Example</th><td>One bank on MySQL at all branches</td><td>Merged banks on Oracle and MySQL</td><td>Hospitals sharing data with a health department</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>For 2 marks, write the DBMS, schema and cooperation rows for homogeneous and heterogeneous only. Add federated in a 16-mark answer.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-5/types-of-distributed-databases.html#compare"><span class="rev-num">5.2</span> Types of Distributed Databases: The types compared</a><br>Asked in: <a href="../question-bank/unit-5.html#q-u5-a3">Unit V QB, 2 marks</a>, <a href="../question-bank/unit-5.html#q-u5-b2">Unit V QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t5-3" class="section cmp-topic" aria-labelledby="t5-3-title">
+          <h2 id="t5-3-title"><a href="../units/unit-5/distributed-transaction-processing.html"><span class="rev-num">5.3</span> Transaction Processing</a></h2>
+          <article class="cmp-item" id="commit-protocols" aria-labelledby="commit-protocols-title">
+            <div class="cmp-lead">
+            <h3 id="commit-protocols-title">Single-phase, two-phase and three-phase commit</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Single-phase commit just tells sites to commit. 2PC first asks every site to vote, and 3PC adds a pre-commit phase so that sites need not block when the coordinator fails.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Single-phase, two-phase and three-phase commit</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Single-phase</th><th scope="col">Two-phase (2PC)</th><th scope="col">Three-phase (3PC)</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Rounds of messages</th><td>One</td><td>Two</td><td>Three</td></tr>
+                <tr><th scope="row">Phases</th><td>Commit</td><td>Prepare (voting), then commit or abort (decision)</td><td>Prepare (voting), pre-commit, then commit</td></tr>
+                <tr><th scope="row">Extra log record</th><td>None</td><td>&lt;ready T&gt; at each site; &lt;commit T&gt; or &lt;abort T&gt; at the coordinator</td><td>Also &lt;precommit T&gt;</td></tr>
+                <tr><th scope="row">Can a site vote no?</th><td>No</td><td>Yes</td><td>Yes</td></tr>
+                <tr><th scope="row">Atomicity</th><td>Not guaranteed</td><td>Guaranteed</td><td>Guaranteed</td></tr>
+                <tr><th scope="row">Blocking when the coordinator fails</th><td>Not applicable</td><td>Possible</td><td>Avoided (if no partition)</td></tr>
+                <tr><th scope="row">Network partition</th><td>Not handled</td><td>Safe, but sites may block</td><td>Not handled: assumes no partition</td></tr>
+                <tr><th scope="row">Cost</th><td>Lowest</td><td>Medium</td><td>Highest</td></tr>
+                <tr><th scope="row">Used in practice</th><td>Rarely</td><td>Widely</td><td>Rarely</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>The messages side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+              <div class="code-block">
+                <span class="code-label">2PC messages</span>
+                <pre><code>Coordinator         Site
+  &lt;prepare T&gt;  ---&gt;
+               &lt;---  &lt;ready T&gt;
+  &lt;commit T&gt;   ---&gt;
+               &lt;---  ack</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">3PC messages</span>
+                <pre><code>Coordinator         Site
+  &lt;prepare T&gt;  ---&gt;
+               &lt;---  &lt;ready T&gt;
+  &lt;precommit T&gt; --&gt;
+               &lt;---  ack
+  &lt;commit T&gt;   ---&gt;
+               &lt;---  ack</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Draw the message diagram for each protocol. Then explain what happens when the coordinator fails after sending <code>&lt;prepare T&gt;</code>.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-5/distributed-transaction-processing.html#compare"><span class="rev-num">5.3</span> Transaction Processing: Commit protocols compared</a>; <a href="../units/unit-5/distributed-transaction-processing.html#two-phase"><span class="rev-num">5.3</span> Transaction Processing: Two-phase commit (2PC)</a>; <a href="../units/unit-5/distributed-transaction-processing.html#three-phase"><span class="rev-num">5.3</span> Transaction Processing: Three-phase commit (3PC)</a><br>Asked in: <a href="../question-bank/unit-5.html#q-u5-a5">Unit V QB, 2 marks</a>, <a href="../question-bank/unit-5.html#q-u5-b3">Unit V QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t5-4" class="section cmp-topic" aria-labelledby="t5-4-title">
+          <h2 id="t5-4-title"><a href="../units/unit-5/nosql-introduction.html"><span class="rev-num">5.4</span> NoSQL Databases: Introduction</a></h2>
+          <article class="cmp-item" id="rdbms-vs-nosql" aria-labelledby="rdbms-vs-nosql-title">
+            <div class="cmp-lead">
+            <h3 id="rdbms-vs-nosql-title">Relational (SQL) and NoSQL databases</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> A relational database stores tables with a fixed schema and uses SQL and ACID transactions. A NoSQL database uses flexible models and scales out over many servers.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Relational databases and NoSQL databases</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">RDBMS</th><th scope="col">NoSQL</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Data model</th><td>Tables of rows and columns</td><td>Documents, key-value pairs, wide columns or graphs</td></tr>
+                <tr><th scope="row">Schema</th><td>Fixed; defined before inserting data</td><td>Flexible or schema-free</td></tr>
+                <tr><th scope="row">Query language</th><td>SQL, a standard language</td><td>Different for each product (APIs or SQL-like languages)</td></tr>
+                <tr><th scope="row">Relationships</th><td>Foreign keys and joins</td><td>Data kept together (embedded) or linked in the app; graph databases use edges</td></tr>
+                <tr><th scope="row">Scaling</th><td>Mostly vertical (bigger server)</td><td>Horizontal (more servers)</td></tr>
+                <tr><th scope="row">Transactions</th><td>ACID</td><td>Mostly BASE; some offer ACID for one item or more</td></tr>
+                <tr><th scope="row">Kind of data</th><td>Structured</td><td>Structured, semi-structured and unstructured</td></tr>
+                <tr><th scope="row">Normalization</th><td>Normalized to remove redundancy</td><td>Often denormalized for fast reads</td></tr>
+                <tr><th scope="row">Best for</th><td>Complex queries and strict correctness</td><td>Very large data, high traffic and fast-changing data</td></tr>
+                <tr><th scope="row">Examples</th><td>MySQL, Oracle, PostgreSQL, SQL Server</td><td>MongoDB, Redis, Cassandra, Neo4j</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-5/nosql-introduction.html#compare"><span class="rev-num">5.4</span> NoSQL Databases: Introduction: RDBMS and NoSQL compared</a><br>Asked in: <a href="../question-bank/unit-5.html#q-u5-a6">Unit V QB, 2 marks</a>, <a href="../question-bank/unit-5.html#q-u5-b5">Unit V QB, 16 marks</a>, <a href="../question-bank/unit-5.html#q-u5-b6">Unit V QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="acid-vs-base" aria-labelledby="acid-vs-base-title">
+            <div class="cmp-lead">
+            <h3 id="acid-vs-base-title">ACID and BASE</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> ACID puts correct data first; BASE (basically available, soft state, eventually consistent) puts availability and speed first.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>ACID and BASE</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">ACID</th><th scope="col">BASE</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Main goal</th><td>Correct data at all times</td><td>Always available and fast</td></tr>
+                <tr><th scope="row">Consistency</th><td>Strong: every read sees the latest write</td><td>Eventual: copies agree after some time</td></tr>
+                <tr><th scope="row">Availability</th><td>May refuse requests during a failure</td><td>Keeps answering during a failure</td></tr>
+                <tr><th scope="row">Scaling</th><td>Harder across many servers</td><td>Easy across many servers</td></tr>
+                <tr><th scope="row">Used by</th><td>Relational databases (MySQL, Oracle)</td><td>Many NoSQL databases (Cassandra, DynamoDB)</td></tr>
+                <tr><th scope="row">Good for</th><td>Banking, exam results, bookings</td><td>Likes, comments, product views, logs</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Expand BASE in full: Basically Available, Soft state, Eventually consistent. Then link it to AP systems in the CAP theorem.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-5/nosql-introduction.html#base"><span class="rev-num">5.4</span> NoSQL Databases: Introduction: ACID and BASE</a></div>
+          </article>
+        </section>
+
+        <section id="t5-5" class="section cmp-topic" aria-labelledby="t5-5-title">
+          <h2 id="t5-5-title"><a href="../units/unit-5/cap-theorem.html"><span class="rev-num">5.5</span> CAP Theorem</a></h2>
+          <article class="cmp-item" id="cp-vs-ap" aria-labelledby="cp-vs-ap-title">
+            <div class="cmp-lead">
+            <h3 id="cp-vs-ap-title">CP and AP systems</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> During a network partition, a CP system refuses some requests to keep data consistent. An AP system keeps answering, even if some answers are old.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>CP and AP systems</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">CP system</th><th scope="col">AP system</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Keeps during a partition</th><td>Consistency and partition tolerance</td><td>Availability and partition tolerance</td></tr>
+                  <tr><th scope="row">Gives up during a partition</th><td>Availability: some requests wait or fail</td><td>Consistency: some reads return old data</td></tr>
+                  <tr><th scope="row">Consistency</th><td>Strong</td><td>Eventual</td></tr>
+                  <tr><th scope="row">Transaction style</th><td>Closer to ACID</td><td>BASE</td></tr>
+                  <tr><th scope="row">After the partition heals</th><td>Normal service resumes</td><td>Copies are brought into agreement</td></tr>
+                  <tr><th scope="row">Examples</th><td>HBase, MongoDB (default settings), Redis Cluster</td><td>Cassandra, CouchDB, DynamoDB</td></tr>
+                  <tr><th scope="row">Good for</th><td>Bank balances, ticket booking, stock levels</td><td>Likes, feeds, shopping carts</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>The three pairs of the CAP theorem</caption>
+              <thead><tr><th scope="col">Type</th><th scope="col">During a partition</th><th scope="col">Examples</th><th scope="col">Good for</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">CP (consistency + partition tolerance)</th><td>Some servers refuse or wait, so no one sees old data</td><td>HBase, MongoDB (default settings), Redis Cluster</td><td>Banking, ticket booking, stock levels</td></tr>
+                <tr><th scope="row">AP (availability + partition tolerance)</th><td>All servers keep answering; some answers may be old; copies sync later</td><td>Apache Cassandra, CouchDB, Amazon DynamoDB</td><td>Social media feeds, likes, shopping carts</td></tr>
+                <tr><th scope="row">CA (consistency + availability)</th><td>Cannot handle a partition; works only on one site</td><td>MySQL or PostgreSQL on a single server</td><td>Small systems on one server</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Partitions cannot be avoided in a distributed system, so the real choice is between C and A while a partition lasts.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-5/cap-theorem.html#choices"><span class="rev-num">5.5</span> CAP Theorem: CP, AP and CA systems</a><br>Asked in: <a href="../question-bank/unit-5.html#q-u5-a7">Unit V QB, 2 marks</a>, <a href="../question-bank/unit-5.html#q-u5-b4">Unit V QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t5-6" class="section cmp-topic" aria-labelledby="t5-6-title">
+          <h2 id="t5-6-title"><a href="../units/unit-5/document-based-systems.html"><span class="rev-num">5.6</span> Document Based Systems</a></h2>
+          <article class="cmp-item" id="sql-vs-mongodb" aria-labelledby="sql-vs-mongodb-title">
+            <div class="cmp-lead">
+            <h3 id="sql-vs-mongodb-title">SQL (MySQL) and MongoDB commands</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> The same tasks written both ways. MySQL works on tables and rows with SQL. MongoDB works on collections and documents with methods such as find and updateOne.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Relational terms and document database terms</caption>
+              <thead><tr><th scope="col">Relational database</th><th scope="col">Document database (MongoDB)</th></tr></thead>
+              <tbody>
+                <tr><td>Database</td><td>Database</td></tr>
+                <tr><td>Table</td><td>Collection</td></tr>
+                <tr><td>Row (tuple)</td><td>Document</td></tr>
+                <tr><td>Column (attribute)</td><td>Field</td></tr>
+                <tr><td>Primary key</td><td><code>_id</code> field</td></tr>
+                <tr><td>Join</td><td>Embedded document, or a lookup</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>Basic operations in SQL (MySQL 8.4) and in MongoDB (mongosh)</caption>
+              <thead><tr><th scope="col">Task</th><th scope="col">SQL</th><th scope="col">MongoDB</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Insert</th><td><code>INSERT INTO students (roll_no, name, dept) VALUES (101, 'Anitha', 'CSE');</code></td><td><code>db.students.insertOne({ _id: 101, name: "Anitha", dept: "CSE" })</code></td></tr>
+                <tr><th scope="row">Find all CSE students</th><td><code>SELECT * FROM students WHERE dept = 'CSE';</code></td><td><code>db.students.find({ dept: "CSE" })</code></td></tr>
+                <tr><th scope="row">Marks above 80</th><td><code>SELECT name FROM students WHERE marks &gt; 80;</code></td><td><code>db.students.find({ marks: { $gt: 80 } }, { name: 1 })</code></td></tr>
+                <tr><th scope="row">Update</th><td><code>UPDATE students SET dept = 'IT' WHERE roll_no = 101;</code></td><td><code>db.students.updateOne({ _id: 101 }, { $set: { dept: "IT" } })</code></td></tr>
+                <tr><th scope="row">Delete</th><td><code>DELETE FROM students WHERE roll_no = 101;</code></td><td><code>db.students.deleteOne({ _id: 101 })</code></td></tr>
+                <tr><th scope="row">Index</th><td><code>CREATE INDEX idx_dept ON students (dept);</code></td><td><code>db.students.createIndex({ dept: 1 })</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="table-wrap">
+            <table>
+              <caption>Document databases and relational databases</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Relational database</th><th scope="col">Document database</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Unit of data</th><td>Row in a table</td><td>Document in a collection</td></tr>
+                <tr><th scope="row">Schema</th><td>Fixed; every row has the same columns</td><td>Flexible; each document can have its own fields</td></tr>
+                <tr><th scope="row">Values</th><td>One atomic value per cell (1NF)</td><td>Arrays and embedded documents allowed</td></tr>
+                <tr><th scope="row">Related data</th><td>Separate tables joined with foreign keys</td><td>Embedded in the document, or referenced by <code>_id</code></td></tr>
+                <tr><th scope="row">Query language</th><td>SQL</td><td>Product-specific, such as MongoDB's query documents</td></tr>
+                <tr><th scope="row">Scaling</th><td>Mostly vertical</td><td>Horizontal (sharding)</td></tr>
+                <tr><th scope="row">Redundancy</th><td>Removed by normalization</td><td>Some copying of data is accepted for fast reads</td></tr>
+                <tr><th scope="row">Best for</th><td>Many links between data, strict transactions</td><td>Catalogs, profiles, content, app data that changes shape</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+              <div class="code-block">
+                <span class="code-label">SQL (MySQL 8.4)</span>
+                <pre><code>INSERT INTO students
+  (roll_no, name, dept)
+VALUES (101, 'Anitha', 'CSE');
+
+SELECT name FROM students
+WHERE marks &gt; 80;
+
+UPDATE students SET dept = 'IT'
+WHERE roll_no = 101;</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">MongoDB (mongosh)</span>
+                <pre><code>db.students.insertOne(
+  { _id: 101, name: "Anitha",
+    dept: "CSE" })
+
+db.students.find(
+  { marks: { $gt: 80 } },
+  { name: 1 })
+
+db.students.updateOne(
+  { _id: 101 },
+  { $set: { dept: "IT" } })</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-5/document-based-systems.html#terms"><span class="rev-num">5.6</span> Document Based Systems: Documents and collections</a>; <a href="../units/unit-5/document-based-systems.html#crud"><span class="rev-num">5.6</span> Document Based Systems: Worked example: MongoDB and SQL side by side</a>; <a href="../units/unit-5/document-based-systems.html#compare"><span class="rev-num">5.6</span> Document Based Systems: Document and relational databases compared</a><br>Asked in: <a href="../question-bank/unit-5.html#q-u5-a8">Unit V QB, 2 marks</a>, <a href="../question-bank/unit-5.html#q-u5-b6">Unit V QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t5-8" class="section cmp-topic" aria-labelledby="t5-8-title">
+          <h2 id="t5-8-title"><a href="../units/unit-5/column-based-systems.html"><span class="rev-num">5.8</span> Column Based Systems</a></h2>
+          <article class="cmp-item" id="wide-column-vs-columnar" aria-labelledby="wide-column-vs-columnar-title">
+            <div class="cmp-lead">
+            <h3 id="wide-column-vs-columnar-title">Wide-column stores and columnar databases</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> A wide-column store keeps each row's column families together and has a flexible schema. A columnar database keeps each column's values together and uses SQL.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Wide-column NoSQL stores and columnar databases</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Wide-column NoSQL</th><th scope="col">Columnar database</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Stored together</th><td>A column family of a row</td><td>All values of one column</td></tr>
+                <tr><th scope="row">Schema</th><td>Flexible columns per row</td><td>Fixed relational schema</td></tr>
+                <tr><th scope="row">Query language</th><td>Own API or CQL</td><td>SQL</td></tr>
+                <tr><th scope="row">Good for</th><td>Huge, fast writes; reads by row key</td><td>Reports that add up columns</td></tr>
+                <tr><th scope="row">Examples</th><td>HBase, Cassandra</td><td>Amazon Redshift, ClickHouse</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Both are called “column” databases, so examiners like to ask this. Say what is stored together in each.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-5/column-based-systems.html#columnar"><span class="rev-num">5.8</span> Column Based Systems: Wide-column and columnar are not the same</a><br>Asked in: <a href="../question-bank/unit-5.html#q-u5-a10">Unit V QB, 2 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t5-9" class="section cmp-topic" aria-labelledby="t5-9-title">
+          <h2 id="t5-9-title"><a href="../units/unit-5/graph-databases.html"><span class="rev-num">5.9</span> Graph Databases</a></h2>
+          <article class="cmp-item" id="nosql-types" aria-labelledby="nosql-types-title">
+            <div class="cmp-lead">
+            <h3 id="nosql-types-title">Document, key-value, column-based and graph databases</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> The four NoSQL families differ in their unit of data: a JSON document, a key and its value, a row of column families, or nodes and edges.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Document, key-value, column-based and graph databases</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col"><a href="../units/unit-5/document-based-systems.html">Document</a></th><th scope="col"><a href="../units/unit-5/key-value-stores.html">Key-value</a></th><th scope="col"><a href="../units/unit-5/column-based-systems.html">Column-based</a></th><th scope="col">Graph</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Unit of data</th><td>JSON document</td><td>Key and opaque value</td><td>Row with column families</td><td>Nodes and edges</td></tr>
+                <tr><th scope="row">Query by</th><td>Any field</td><td>Key only</td><td>Row key or partition key</td><td>Patterns of links</td></tr>
+                <tr><th scope="row">Relationships</th><td>Embedded or referenced</td><td>None</td><td>None</td><td>Stored directly</td></tr>
+                <tr><th scope="row">Strength</th><td>Flexible records</td><td>Speed and simplicity</td><td>Huge data, fast writes</td><td>Connected data</td></tr>
+                <tr><th scope="row">Uses</th><td>Catalogs, profiles, content</td><td>Caches, sessions, carts</td><td>Logs, sensors, messages</td><td>Social networks, fraud, routes</td></tr>
+                <tr><th scope="row">Examples</th><td>MongoDB, CouchDB</td><td>Redis, DynamoDB</td><td>Cassandra, HBase</td><td>Neo4j, Amazon Neptune</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>One query in each</h4>
+              <div class="cmp-syntax-grid cmp-syntax-many">
+              <div>
+              <div class="code-block">
+                <span class="code-label">Document (MongoDB)</span>
+                <pre><code>db.students.find(
+  { dept: "CSE" })</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Key-value (Redis)</span>
+                <pre><code>SET session:42 "cart=3"
+GET session:42</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Column-based (Cassandra CQL)</span>
+                <pre><code>SELECT name, marks
+FROM student
+WHERE roll_no = 101;</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Graph (Neo4j Cypher)</span>
+                <pre><code>MATCH (a:Person {name: 'Anu'})
+      -[:FRIEND]-&gt;(f)
+RETURN f.name;</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>For the 16-mark question, give each family its data model, a small example, two systems, two uses, and its merits and demerits. End with this table.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-5/graph-databases.html#four"><span class="rev-num">5.9</span> Graph Databases: The four NoSQL types compared</a>; <a href="../units/unit-5/document-based-systems.html"><span class="rev-num">5.6</span> Document Based Systems</a>; <a href="../units/unit-5/key-value-stores.html"><span class="rev-num">5.7</span> Key Value Stores</a>; <a href="../units/unit-5/column-based-systems.html"><span class="rev-num">5.8</span> Column Based Systems</a><br>Asked in: <a href="../question-bank/unit-5.html#q-u5-b5">Unit V QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t5-11" class="section cmp-topic" aria-labelledby="t5-11-title">
+          <h2 id="t5-11-title"><a href="../units/unit-5/access-control-based-on-privileges.html"><span class="rev-num">5.11</span> Access Control Based on Privileges</a></h2>
+          <article class="cmp-item" id="dac-mac-rbac" aria-labelledby="dac-mac-rbac-title">
+            <div class="cmp-lead">
+            <h3 id="dac-mac-rbac-title">Discretionary, mandatory and role-based access control</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> In DAC the owner grants privileges to users. In MAC the system compares security levels, and in RBAC privileges go to roles that users are given.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Three access control models</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">DAC</th><th scope="col">MAC</th><th scope="col">RBAC</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Privileges given to</th><td>Each user</td><td>Security levels</td><td>Roles</td></tr>
+                <tr><th scope="row">Who decides</th><td>The object's owner</td><td>The system</td><td>The administrator</td></tr>
+                <tr><th scope="row">Passing rights on</th><td>Yes (grant option)</td><td>No</td><td>No; roles are assigned centrally</td></tr>
+                <tr><th scope="row">Easy to manage at scale</th><td>No</td><td>Medium</td><td>Yes</td></tr>
+                <tr><th scope="row">Matches the organization</th><td>No</td><td>Partly (levels)</td><td>Yes (jobs)</td></tr>
+                <tr><th scope="row">Used in</th><td>Small systems, personal data</td><td>Military, government</td><td>Most companies, colleges and hospitals</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>Discretionary and mandatory access control</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">DAC</th><th scope="col">MAC</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Who decides</th><td>The owner of the object</td><td>The system, by security levels</td></tr>
+                <tr><th scope="row">Based on</th><td>Privileges given to accounts</td><td>Clearance of users and classification of data</td></tr>
+                <tr><th scope="row">Passing rights on</th><td>Allowed with WITH GRANT OPTION</td><td>Not allowed</td></tr>
+                <tr><th scope="row">Controls information flow</th><td>No; a reader can copy data anywhere</td><td>Yes; no read up and no write down</td></tr>
+                <tr><th scope="row">Flexibility</th><td>High</td><td>Low; rigid</td></tr>
+                <tr><th scope="row">Used in</th><td>Most commercial databases (MySQL, Oracle)</td><td>Military and government systems</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid cmp-syntax-many">
+              <div>
+              <div class="code-block">
+                <span class="code-label">DAC: GRANT to a user</span>
+                <pre><code>GRANT SELECT, UPDATE
+  ON college.marks
+  TO 'ravi'@'%'
+  WITH GRANT OPTION;</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">RBAC: GRANT to a role</span>
+                <pre><code>CREATE ROLE 'teacher';
+GRANT SELECT, UPDATE
+  ON college.marks
+  TO 'teacher';
+GRANT 'teacher' TO 'ravi'@'%';
+SET DEFAULT ROLE ALL
+  TO 'ravi'@'%';</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">MAC: levels (no SQL)</span>
+                <pre><code>Clearance(Ravi)  = Secret
+Class(marks)     = Confidential
+
+Read:  allowed
+  (Secret ≥ Confidential)
+Write: refused
+  (no write down)</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-5/role-based-access-control.html#compare"><span class="rev-num">5.12</span> Role Based Access Control: DAC, MAC and RBAC compared</a>; <a href="../units/unit-5/access-control-based-on-privileges.html#compare"><span class="rev-num">5.11</span> Access Control Based on Privileges: DAC and MAC compared</a>; <a href="../units/unit-5/role-based-access-control.html#mysql"><span class="rev-num">5.12</span> Role Based Access Control: Worked example: roles in MySQL 8.4</a><br>Asked in: <a href="../question-bank/unit-5.html#q-u5-a13">Unit V QB, 2 marks</a>, <a href="../question-bank/unit-5.html#q-u5-b8">Unit V QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t5-13" class="section cmp-topic" aria-labelledby="t5-13-title">
+          <h2 id="t5-13-title"><a href="../units/unit-5/sql-injection.html"><span class="rev-num">5.13</span> SQL Injection</a></h2>
+          <article class="cmp-item" id="dynamic-sql-vs-prepared" aria-labelledby="dynamic-sql-vs-prepared-title">
+            <div class="cmp-lead">
+            <h3 id="dynamic-sql-vs-prepared-title">Dynamic SQL and prepared statements</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Dynamic SQL joins user input into the query text, so input can change the query. A prepared statement fixes the query first and sends input only as values.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Dynamic SQL and prepared statements</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Dynamic SQL (string concatenation)</th><th scope="col">Prepared statement (parameterized query)</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">How the query is built</th><td>User input is joined into the SQL text</td><td>The SQL has ? placeholders; input is bound to them later</td></tr>
+                  <tr><th scope="row">When the query is parsed</th><td>After the input is added</td><td>Before the input arrives</td></tr>
+                  <tr><th scope="row">Can input change the query?</th><td>Yes: quotes and keywords in the input become SQL</td><td>No: input is always treated as a value</td></tr>
+                  <tr><th scope="row">SQL injection</th><td>Possible</td><td>Prevented</td></tr>
+                  <tr><th scope="row">Repeated runs</th><td>Parsed again each time</td><td>Parsed once, run many times</td></tr>
+                  <tr><th scope="row">Input <code>' OR '1'='1</code> as the password</th><td>Logs in without the password</td><td>No row matches; the login fails</td></tr>
+                  <tr><th scope="row">In code</th><td><code>"... WHERE username = '" + user + "'"</code></td><td><code>"... WHERE username = ?"</code> and <code>setString(1, user)</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid cmp-syntax-many">
+              <div>
+              <div class="code-block">
+                <span class="code-label">Unsafe: dynamic SQL (Java)</span>
+                <pre><code>String sql =
+  "SELECT * FROM users" +
+  " WHERE username = '" + user +
+  "' AND password = '" + pass +
+  "'";
+ResultSet rs =
+  stmt.executeQuery(sql);</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Safe: prepared (Java)</span>
+                <pre><code>String sql =
+  "SELECT * FROM users" +
+  " WHERE username = ?" +
+  " AND password = ?";
+PreparedStatement ps =
+  conn.prepareStatement(sql);
+ps.setString(1, user);
+ps.setString(2, pass);
+ResultSet rs = ps.executeQuery();</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Safe: prepared (MySQL)</span>
+                <pre><code>PREPARE login FROM
+  'SELECT * FROM users
+   WHERE username = ?
+   AND password = ?';
+SET @u = 'anitha',
+    @p = ''' OR ''1''=''1';
+EXECUTE login USING @u, @p;
+-- no rows: the attack fails
+DEALLOCATE PREPARE login;</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>A prepared statement is safe only if every input goes into a ?. Joining input into the text before calling prepareStatement is still unsafe.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-5/sql-injection.html#prepared"><span class="rev-num">5.13</span> SQL Injection: Worked example: the prepared statement fix</a><br>Asked in: <a href="../question-bank/unit-5.html#q-u5-a14">Unit V QB, 2 marks</a>, <a href="../question-bank/unit-5.html#q-u5-b9">Unit V QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t5-14" class="section cmp-topic" aria-labelledby="t5-14-title">
+          <h2 id="t5-14-title"><a href="../units/unit-5/encryption-and-public-key-infrastructures.html"><span class="rev-num">5.14</span> Encryption and Public Key Infrastructures</a></h2>
+          <article class="cmp-item" id="symmetric-vs-asymmetric" aria-labelledby="symmetric-vs-asymmetric-title">
+            <div class="cmp-lead">
+            <h3 id="symmetric-vs-asymmetric-title">Symmetric and asymmetric encryption</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Symmetric encryption uses one shared secret key and is fast. Asymmetric encryption uses a public and a private key, which makes key sharing and signatures easy but is slow.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Symmetric and asymmetric encryption</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Symmetric</th><th scope="col">Asymmetric</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Keys</th><td>One shared secret key</td><td>A public key and a private key</td></tr>
+                <tr><th scope="row">Speed</th><td>Fast</td><td>Slow (hundreds of times slower)</td></tr>
+                <tr><th scope="row">Key sharing</th><td>Hard: the key must reach the other side secretly</td><td>Easy: the public key can be shared openly</td></tr>
+                <tr><th scope="row">Keys for n users to talk in pairs</th><td>n(n − 1)/2</td><td>2n (one pair each)</td></tr>
+                <tr><th scope="row">Used for</th><td>Bulk data: disks, tables, backups</td><td>Sharing keys, digital signatures, certificates</td></tr>
+                <tr><th scope="row">Examples</th><td>AES, DES (old)</td><td>RSA, elliptic curve (ECC)</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+              <div class="code-block">
+                <span class="code-label">Symmetric (AES in MySQL)</span>
+                <pre><code>SET @key = 'k3y-0f-16-bytes!';
+SELECT AES_ENCRYPT('Anitha', @key)
+  INTO @c;
+SELECT CAST(
+  AES_DECRYPT(@c, @key)
+  AS CHAR);
+-- Anitha (same key both ways)</code></pre>
+              </div>
+              </div>
+              <div>
+              <div class="code-block">
+                <span class="code-label">Asymmetric (idea)</span>
+                <pre><code>Sender:   C = encrypt(M,
+            receiver's PUBLIC key)
+Receiver: M = decrypt(C,
+            receiver's PRIVATE key)
+
+Signature: sign with the sender's
+  PRIVATE key; anyone checks it
+  with the sender's PUBLIC key</code></pre>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>In practice both are used together: asymmetric encryption shares a symmetric key safely, then the symmetric key encrypts the data.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-5/encryption-and-public-key-infrastructures.html#compare"><span class="rev-num">5.14</span> Encryption and Public Key Infrastructures: Symmetric and asymmetric compared</a>; <a href="../units/unit-5/encryption-and-public-key-infrastructures.html#mysql"><span class="rev-num">5.14</span> Encryption and Public Key Infrastructures: Worked example: encryption in MySQL 8.4</a><br>Asked in: <a href="../question-bank/unit-5.html#q-u5-a15">Unit V QB, 2 marks</a>, <a href="../question-bank/unit-5.html#q-u5-b10">Unit V QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <div class="btn-row cmp-more no-print">
+          <a class="btn" href="../diagrams/unit-5.html">Unit V diagrams and examples</a>
+          <a class="btn" href="../outlines/unit-5.html">Unit V 16-mark outlines</a>
+          <a class="btn" href="../units/unit-5/index.html">Unit V topics</a>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/revision.js"></script>
+</body>
+</html>

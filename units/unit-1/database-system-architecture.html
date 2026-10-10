@@ -209,14 +209,17 @@
             </svg>
             <figcaption>In three-tier, the client never talks to the database directly.</figcaption>
           </figure>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-two-three-tier">
             <table>
               <caption>Two-tier and three-tier compared</caption>
               <thead><tr><th scope="col">Point</th><th scope="col">Two-tier</th><th scope="col">Three-tier</th></tr></thead>
               <tbody>
+                <tr><th scope="row">Layers</th><td>Client and database server</td><td>Client, application server and database server</td></tr>
                 <tr><th scope="row">Where the business logic runs</th><td>On the client</td><td>On the application server</td></tr>
                 <tr><th scope="row">Client talks to</th><td>The database, using SQL (for example, through JDBC)</td><td>The application server only</td></tr>
                 <tr><th scope="row">Security</th><td>Lower, because every client reaches the database</td><td>Higher, because only the server reaches the database</td></tr>
+                <tr><th scope="row">Scalability</th><td>Low; each client keeps its own connection to the database</td><td>High; the application server shares connections among many users</td></tr>
+                <tr><th scope="row">Changing the logic</th><td>Update the program on every client</td><td>Update the application server once</td></tr>
                 <tr><th scope="row">Suits</th><td>Small groups, such as one office</td><td>Large web applications with many users</td></tr>
                 <tr><th scope="row">Example</th><td>A billing program in a shop that connects to a database on the shop's server</td><td>An online shopping website</td></tr>
               </tbody>

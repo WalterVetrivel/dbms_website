@@ -169,6 +169,20 @@
   }
 }
 
+/* Below 1360 px the Home link is dropped from the header (the brand links home), and below
+   1200 px the search button shows only its icon, so the menu fits on one line. */
+@media (min-width: 1024px) and (max-width: 1359px) {
+  .top-nav a:first-child {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .search-btn .search-label {
+    display: none;
+  }
+}
+
 /* Small laptops: even tighter links, and the search button shows only its icon. */
 @media (min-width: 1024px) and (max-width: 1099px) {
   .top-nav a {

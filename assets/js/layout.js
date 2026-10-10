@@ -79,12 +79,13 @@
     return null;
   }
 
-  // A unit's question bank, 16-mark outlines, quiz and revision sheet. live is false until that page is published.
+  // A unit's question bank, 16-mark outlines, diagrams, comparisons, quiz and revision sheet. live is false until that page is published.
   function unitExtras(u) {
     return [
       { id: "question-bank", title: "Question bank", icon: "file-question" },
       { id: "outlines", title: "16-mark outlines", icon: "file-text" },
       { id: "diagrams", title: "Diagrams and examples", icon: "shapes" },
+      { id: "comparisons", title: "Comparisons", icon: "columns" },
       { id: "quizzes", title: "Quiz", icon: "list-checks" },
       { id: "revision", title: "Revision sheet", icon: "layers" }
     ].map(function (x) {
@@ -112,6 +113,7 @@
     "book-open": '<path d="M12 5v16"/><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"/>',
     flask: '<path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"/><path d="M6.453 15h11.094"/><path d="M8.5 2h7"/>',
     shapes: '<path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5"/>',
+    columns: '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M12 3v18"/>',
     "list-checks": '<path d="M13 5h8"/><path d="M13 12h8"/><path d="M13 19h8"/><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/>',
     "graduation-cap": '<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>',
     "file-question": '<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M12 17h.01"/><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/>',
@@ -436,7 +438,7 @@
       var labsHub = pageById("labs");
       crumbs.push('<li><a href="' + url(labsHub.href) + '">' + esc(labsHub.title) + "</a></li>");
       crumbs.push('<li aria-current="page">Exercise ' + lab.n + "</li>");
-    } else if (u && hub && ["question-bank", "outlines", "diagrams", "quizzes", "revision"].indexOf(PAGE) !== -1) {
+    } else if (u && hub && ["question-bank", "outlines", "diagrams", "comparisons", "quizzes", "revision"].indexOf(PAGE) !== -1) {
       // A unit page of a hub, for example Home / Question Banks / Unit IV
       crumbs.push('<li><a href="' + url(hub.href) + '">' + esc(hub.title) + "</a></li>");
       crumbs.push('<li aria-current="page">Unit ' + u.roman + "</li>");
@@ -513,6 +515,13 @@
     if (labsPage && isPublished(labsPage)) {
       labs.forEach(function (l) {
         items.push({ kind: "Lab", title: "Exercise " + l.n + ": " + l.short, sub: l.title, href: labHref(l), text: l.title + " " + l.summary });
+      });
+    }
+    var cmpPage = pageById("comparisons");
+    if (cmpPage && isPublished(cmpPage)) {
+      (D.comparisonIndex || []).forEach(function (c) {
+        var u = unitByNumber(c.unit);
+        items.push({ kind: "Compare", title: c.title, sub: "Unit " + u.roman + " comparisons", href: "comparisons/" + u.slug + ".html#" + c.id, text: c.text });
       });
     }
     (D.searchExtras || []).forEach(function (x) {
@@ -618,7 +627,22 @@
     });
   }
 
+  // The list of comparisons is only needed for search, so it loads when search first opens.
+  function loadComparisonIndex() {
+    var cmpPage = pageById("comparisons");
+    if (D.comparisonIndex || !cmpPage || !isPublished(cmpPage) || document.getElementById("comparison-index")) return;
+    var s = document.createElement("script");
+    s.id = "comparison-index";
+    s.src = url("data/comparison-index.js");
+    s.onload = function () {
+      searchIndex = null;
+      if (input && input.value.trim()) renderResults();
+    };
+    document.body.appendChild(s);
+  }
+
   function openSearch() {
+    loadComparisonIndex();
     if (!dialog) createSearch();
     if (typeof dialog.showModal === "function") dialog.showModal();
     else dialog.setAttribute("open", "");
@@ -1068,7 +1092,7 @@
     renderTopic();
     renderSectionMenu();
   }
-  if (PAGE === "diagrams" && UNIT) renderSectionMenu();
+  if ((PAGE === "diagrams" || PAGE === "comparisons") && UNIT) renderSectionMenu();
   if (PAGE === "labs") renderLabs();
   if (PAGE === "lab") {
     renderLab();

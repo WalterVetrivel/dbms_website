@@ -172,17 +172,18 @@
 
         <section id="compare" class="topic-section" aria-labelledby="compare-title">
           <h2 id="compare-title">Static hashing compared with dynamic hashing</h2>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-static-dynamic">
             <table>
               <caption>Static hashing compared with dynamic (extendible) hashing</caption>
-              <thead><tr><th scope="col">Static hashing</th><th scope="col">Dynamic hashing</th></tr></thead>
+              <thead><tr><th scope="col">Point</th><th scope="col">Static hashing</th><th scope="col">Dynamic hashing</th></tr></thead>
               <tbody>
-                <tr><td>The number of buckets is fixed when the file is created.</td><td>The number of buckets grows and shrinks with the data.</td></tr>
-                <tr><td>The hash function never changes.</td><td>The function uses more or fewer bits of the hash value.</td></tr>
-                <tr><td>A growing file causes bucket overflow and long chains.</td><td>A full bucket splits, so overflow is rare.</td></tr>
-                <tr><td>Growing means reorganizing the whole file.</td><td>Growing changes only one bucket (and sometimes doubles the directory).</td></tr>
-                <tr><td>Simple; no directory.</td><td>Needs a directory (bucket address table), one extra step on each lookup.</td></tr>
-                <tr><td>Wastes space if built large for the future.</td><td>Uses space in step with the data.</td></tr>
+                <tr><th scope="row">Number of buckets</th><td>The number of buckets is fixed when the file is created.</td><td>The number of buckets grows and shrinks with the data.</td></tr>
+                <tr><th scope="row">Hash function</th><td>The hash function never changes.</td><td>The function uses more or fewer bits of the hash value.</td></tr>
+                <tr><th scope="row">When the file grows</th><td>A growing file causes bucket overflow and long chains.</td><td>A full bucket splits, so overflow is rare.</td></tr>
+                <tr><th scope="row">Cost of growing</th><td>Growing means reorganizing the whole file.</td><td>Growing changes only one bucket (and sometimes doubles the directory).</td></tr>
+                <tr><th scope="row">Directory</th><td>Simple; no directory.</td><td>Needs a directory (bucket address table), one extra step on each lookup.</td></tr>
+                <tr><th scope="row">Space</th><td>Wastes space if built large for the future.</td><td>Uses space in step with the data.</td></tr>
+                <tr><th scope="row">Example</th><td>h(K) = K mod 5 with five fixed buckets</td><td>Extendible hashing, with a global depth and a local depth for each bucket</td></tr>
               </tbody>
             </table>
           </div>

@@ -157,3 +157,98 @@
     break-inside: avoid;
   }
 }
+
+/* Comparisons: one comparison per block, in small print, with the code kept readable. */
+@media print {
+  body[data-page="comparisons"] {
+    font-size: 9pt;
+    line-height: 1.35;
+  }
+
+  body[data-page="comparisons"] h1 {
+    font-size: 16pt;
+    margin: 0 0 1mm;
+  }
+
+  body[data-page="comparisons"] .cmp-toc,
+  body[data-page="comparisons"] .kiot-banner,
+  body[data-page="comparisons"] .footer-links,
+  body[data-page="comparisons"] .license {
+    display: none;
+  }
+
+  .cmp-topic > h2 {
+    font-size: 11pt;
+    margin: 4mm 0 1mm;
+    break-after: avoid;
+  }
+
+  /* A comparison may run on to the next page, but its title stays with its summary,
+     and a table or code block is not split. */
+  .cmp-item {
+    padding: 2mm 0;
+  }
+
+  .cmp-lead {
+    break-inside: avoid;
+  }
+
+  .cmp-syntax h4,
+  .cmp-syntax-grid .code-label {
+    break-after: avoid;
+  }
+
+  .cmp-syntax-grid .code-block {
+    break-inside: avoid;
+  }
+
+  .cmp-lead > h3 {
+    font-size: 10.5pt;
+    margin-bottom: 1mm;
+    break-after: avoid;
+  }
+
+  .cmp-summary {
+    padding: 1mm 2mm;
+    margin: 0 0 2mm;
+    background: none;
+  }
+
+  .cmp-item .table-wrap {
+    overflow: visible;
+    margin-bottom: 2mm;
+  }
+
+  .cmp-item table {
+    font-size: 8.5pt;
+  }
+
+  .cmp-item th,
+  .cmp-item td {
+    padding: 1mm 1.5mm;
+  }
+
+  .cmp-syntax-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cmp-syntax-many {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .cmp-syntax-grid pre {
+    padding: 1.5mm 2mm;
+    font-size: 7.5pt;
+    white-space: pre-wrap;
+  }
+
+  .cmp-item .callout {
+    padding: 1mm 2mm;
+    margin: 1mm 0;
+  }
+
+  body[data-page="comparisons"] .site-footer {
+    font-size: 7.5pt;
+    margin-top: 2mm;
+  }
+}

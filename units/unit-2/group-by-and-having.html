@@ -188,7 +188,7 @@ ORDER BY COMPANY;</code></pre>
 
         <section id="where-having" class="topic-section" aria-labelledby="wh-title">
           <h2 id="wh-title">WHERE and HAVING compared</h2>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-where-having">
             <table>
               <caption>WHERE compared with HAVING</caption>
               <thead><tr><th scope="col">Point</th><th scope="col">WHERE</th><th scope="col">HAVING</th></tr></thead>
@@ -197,6 +197,8 @@ ORDER BY COMPANY;</code></pre>
                 <tr><th scope="row">Runs</th><td>Before GROUP BY</td><td>After GROUP BY</td></tr>
                 <tr><th scope="row">Aggregate functions</th><td>Not allowed</td><td>Allowed</td></tr>
                 <tr><th scope="row">Needs GROUP BY</th><td>No</td><td>Usually used with it (without it, the whole table is one group)</td></tr>
+                <tr><th scope="row">Used in</th><td>SELECT, UPDATE and DELETE</td><td>SELECT only</td></tr>
+                <tr><th scope="row">Can use a column alias from SELECT</th><td>No</td><td>Yes, in MySQL</td></tr>
                 <tr><th scope="row">Example</th><td><code>WHERE RATE &gt;= 20</code></td><td><code>HAVING SUM(COST) &gt; 150</code></td></tr>
               </tbody>
             </table>

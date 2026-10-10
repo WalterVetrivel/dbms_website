@@ -178,7 +178,7 @@ WHERE sensor_id = 'S17' AND day = '2026-10-07';</code></pre>
         <section id="columnar" class="topic-section" aria-labelledby="columnar-title">
           <h2 id="columnar-title">Wide-column and columnar are not the same</h2>
           <p>Some books also use “column store” for a different idea: a <strong>columnar</strong> database that stores each column of a table separately on disk. Adding up one column, such as total sales, is then very fast. Examples are Amazon Redshift and ClickHouse, used for data warehouses and reports.</p>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-wide-columnar">
             <table>
               <caption>Wide-column NoSQL stores and columnar databases</caption>
               <thead><tr><th scope="col">Point</th><th scope="col">Wide-column NoSQL</th><th scope="col">Columnar database</th></tr></thead>

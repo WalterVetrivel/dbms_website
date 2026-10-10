@@ -150,7 +150,7 @@
             <li>If TS(T<sub>i</sub>) &gt; TS(T<sub>j</sub>), that is T<sub>i</sub> is younger, T<sub>i</sub> <strong>waits</strong>.</li>
           </ul>
           <p>A younger transaction may wait for an older one, but an older one never waits for a younger one.</p>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-wait-die-wound-wait">
             <table>
               <caption>What happens when T<sub>i</sub> asks for a lock held by T<sub>j</sub></caption>
               <thead><tr><th scope="col">Requester T<sub>i</sub> is</th><th scope="col">Wait-die</th><th scope="col">Wound-wait</th></tr></thead>
@@ -253,13 +253,18 @@
             <li>The system keeps selecting the same transaction as the deadlock victim, so it restarts, deadlocks again and is rolled back again, forever.</li>
             <li>Two transactions keep running into each other, both back off, both retry at the same moment, and collide again.</li>
           </ul>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-deadlock-livelock">
             <table>
               <caption>Deadlock, livelock and starvation</caption>
               <thead><tr><th scope="col"></th><th scope="col">Deadlock</th><th scope="col">Livelock</th><th scope="col">Starvation</th></tr></thead>
               <tbody>
+                <tr><th scope="row">Meaning</th><td>Each transaction in a cycle waits for a lock held by the next, so none can go on</td><td>Transactions keep changing state (rolling back and restarting) in response to each other, but none finishes</td><td>A transaction waits a very long time, or forever, while others are served</td></tr>
                 <tr><th scope="row">State of the transactions</th><td>Blocked, waiting</td><td>Running, but no progress</td><td>One waits or restarts while others progress</td></tr>
                 <tr><th scope="row">Who is affected</th><td>All transactions in the cycle</td><td>The transactions that keep colliding</td><td>Usually one transaction</td></tr>
+                <tr><th scope="row">Uses the CPU</th><td>No; the transactions are idle</td><td>Yes; work is done and thrown away again and again</td><td>Others use it; the starved one gets little or none</td></tr>
+                <tr><th scope="row">Detected by</th><td>A cycle in the wait-for graph, or a timeout</td><td>Hard to detect; no cycle in the wait-for graph</td><td>Counting how often or how long a transaction has waited</td></tr>
+                <tr><th scope="row">Ends on its own?</th><td>No; the DBMS must roll back a victim</td><td>Possibly, by chance</td><td>Possibly, once the others finish</td></tr>
+                <tr><th scope="row">Example</th><td>T3 holds B and waits for A; T4 holds A and waits for B</td><td>T1 and T2 both restart after a clash, then clash again at the same point each time</td><td>The same young transaction is chosen as the victim every time</td></tr>
                 <tr><th scope="row">Cure</th><td>Prevention, or detection and rollback</td><td>Random delay before restart; fair victim choice</td><td>Fair lock queue; count rollbacks in victim cost; keep old timestamps</td></tr>
               </tbody>
             </table>

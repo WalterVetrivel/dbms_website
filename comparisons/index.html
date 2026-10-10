@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Built by tools/build-comparisons.mjs from data/comparisons and the topic pages. Edit those, then run the script again. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Comparisons | DBMS Study Guide</title>
+  <meta name="description" content="Tables that compare related DBMS concepts, such as DDL and DML, 3NF and BCNF, B tree and B+ tree, and two-phase and three-phase commit, with SQL syntax side by side.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="comparisons" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        <h1>Comparisons</h1>
+        <p class="lead">Exams often ask you to compare two ideas. These tables put related ideas side by side, unit by unit. For SQL, they also show the syntax of each one.</p>
+
+        <section class="section" aria-labelledby="units-title">
+          <h2 id="units-title">Choose a unit</h2>
+          <p>There are 83 comparisons in all. Each unit page prints well, so you can keep a paper copy.</p>
+          <div class="grid">
+            <a class="card unit-card u-1" href="unit-1.html">
+              <span class="unit-label">Unit I</span>
+              <h3>Introduction to Relational Database</h3>
+              <div class="card-foot"><span class="badge badge-unit">17 comparisons</span></div>
+            </a>
+            <a class="card unit-card u-2" href="unit-2.html">
+              <span class="unit-label">Unit II</span>
+              <h3>Database Design</h3>
+              <div class="card-foot"><span class="badge badge-unit">20 comparisons</span></div>
+            </a>
+            <a class="card unit-card u-3" href="unit-3.html">
+              <span class="unit-label">Unit III</span>
+              <h3>Transaction Management</h3>
+              <div class="card-foot"><span class="badge badge-unit">17 comparisons</span></div>
+            </a>
+            <a class="card unit-card u-4" href="unit-4.html">
+              <span class="unit-label">Unit IV</span>
+              <h3>Implementation Techniques</h3>
+              <div class="card-foot"><span class="badge badge-unit">15 comparisons</span></div>
+            </a>
+            <a class="card unit-card u-5" href="unit-5.html">
+              <span class="unit-label">Unit V</span>
+              <h3>Advanced Topics</h3>
+              <div class="card-foot"><span class="badge badge-unit">14 comparisons</span></div>
+            </a>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="how-title">
+          <h2 id="how-title">How to write a comparison answer</h2>
+          <ul>
+            <li>Draw a table. The first column is the <strong>basis of comparison</strong>, and there is one column for each idea.</li>
+            <li>Start with a one-line definition of each idea, then give the differences.</li>
+            <li>For a 2-mark question, two or three rows are enough.</li>
+            <li>For a 16-mark question, write eight or more rows, then add an example, a diagram or a query for each idea.</li>
+            <li>For SQL, write the syntax of each command and a short example.</li>
+          </ul>
+        </section>
+
+        <section class="section" aria-labelledby="all-title">
+          <h2 id="all-title">All comparisons</h2>
+          <div class="gallery-index u-1">
+            <h3><a href="unit-1.html">Unit I: Introduction to Relational Database</a></h3>
+            <div class="table-wrap">
+              <table class="cmp-index">
+                <caption>Unit I comparisons by topic</caption>
+                <thead><tr><th scope="col">Topic</th><th scope="col">Comparisons</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row"><span class="rev-num">1.1</span> Purpose of Database System</th><td><ul class="chips"><li><a class="chip" href="unit-1.html#file-system-vs-database">File-processing system and database system</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">1.2</span> Views of Data</th><td><ul class="chips"><li><a class="chip" href="unit-1.html#schema-vs-instance">Schema and instance</a></li><li><a class="chip" href="unit-1.html#data-independence">Physical and logical data independence</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">1.3</span> Data Models</th><td><ul class="chips"><li><a class="chip" href="unit-1.html#data-models">Data models: relational, E-R, object-based, semi-structured, hierarchical and network</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">1.4</span> Database System Architecture</th><td><ul class="chips"><li><a class="chip" href="unit-1.html#two-tier-vs-three-tier">Two-tier and three-tier architecture</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">1.7</span> Keys</th><td><ul class="chips"><li><a class="chip" href="unit-1.html#types-of-keys">Super key, candidate key, primary key, alternate key, composite key and foreign key</a></li><li><a class="chip" href="unit-1.html#primary-key-vs-foreign-key">Primary key and foreign key</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">1.8</span> Constraints</th><td><ul class="chips"><li><a class="chip" href="unit-1.html#primary-key-vs-unique">PRIMARY KEY and UNIQUE constraints</a></li><li><a class="chip" href="unit-1.html#entity-vs-referential-integrity">Entity integrity and referential integrity</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">1.9</span> Relational Algebra</th><td><ul class="chips"><li><a class="chip" href="unit-1.html#select-vs-project">Selection (σ) and projection (π)</a></li><li><a class="chip" href="unit-1.html#relational-algebra-joins">Theta join, equijoin, natural join and outer joins</a></li><li><a class="chip" href="unit-1.html#relational-algebra-vs-sql">Relational algebra and SQL</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">1.10</span> Overview of the SQL Query Language</th><td><ul class="chips"><li><a class="chip" href="unit-1.html#ddl-dml-dcl-tcl">DDL, DML, DCL and TCL</a></li><li><a class="chip" href="unit-1.html#char-vs-varchar">CHAR and VARCHAR</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">1.12</span> DDL</th><td><ul class="chips"><li><a class="chip" href="unit-1.html#ddl-vs-dml">DDL and DML</a></li><li><a class="chip" href="unit-1.html#delete-truncate-drop">DELETE, TRUNCATE and DROP</a></li><li><a class="chip" href="unit-1.html#alter-vs-update">ALTER and UPDATE</a></li></ul></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="gallery-index u-2">
+            <h3><a href="unit-2.html">Unit II: Database Design</a></h3>
+            <div class="table-wrap">
+              <table class="cmp-index">
+                <caption>Unit II comparisons by topic</caption>
+                <thead><tr><th scope="col">Topic</th><th scope="col">Comparisons</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row"><span class="rev-num">2.1</span> Entity-Relationship Model</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#strong-vs-weak-entity">Strong and weak entity sets</a></li><li><a class="chip" href="unit-2.html#attribute-types">Simple and composite, single-valued and multivalued, stored and derived attributes</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">2.3</span> ER-to-Relational Mapping</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#specialization-vs-generalization">Specialization and generalization</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">2.4</span> Functional Dependencies</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#fd-types">Trivial, non-trivial, full, partial and transitive dependencies</a></li><li><a class="chip" href="unit-2.html#fd-vs-mvd">Functional dependency and multivalued dependency</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">2.5</span> Non-loss Decomposition</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#lossless-vs-lossy">Lossless and lossy decomposition</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">2.6</span> First, Second and Third Normal Forms</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#1nf-2nf-3nf">1NF, 2NF and 3NF</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">2.7</span> Dependency Preservation</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#lossless-vs-dependency-preservation">Lossless join and dependency preservation</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">2.8</span> Boyce-Codd Normal Form</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#3nf-vs-bcnf">3NF and BCNF</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">2.10</span> Join Dependencies and Fifth Normal Form</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#normal-forms">The normal forms from 1NF to 5NF</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">2.11</span> SQL Set Operations</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#set-operations">UNION, UNION ALL, INTERSECT and EXCEPT</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">2.12</span> Aggregate Functions</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#count-forms">COUNT(*), COUNT(column) and COUNT(DISTINCT column)</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">2.13</span> GROUP BY and HAVING</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#where-vs-having">WHERE and HAVING</a></li><li><a class="chip" href="unit-2.html#group-by-vs-order-by">GROUP BY and ORDER BY</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">2.14</span> Joins</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#join-types">Inner, outer, cross, natural and self joins</a></li><li><a class="chip" href="unit-2.html#join-vs-subquery">Join and subquery</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">2.15</span> Sub Queries</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#correlated-vs-non-correlated">Correlated and non-correlated subqueries</a></li><li><a class="chip" href="unit-2.html#in-vs-exists-any-vs-all">IN and EXISTS, ANY and ALL</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">2.16</span> Views</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#table-vs-view">Table, view and materialized view</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">2.17</span> Triggers</th><td><ul class="chips"><li><a class="chip" href="unit-2.html#trigger-types">BEFORE and AFTER triggers, row-level and statement-level triggers, NEW and OLD</a></li></ul></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="gallery-index u-3">
+            <h3><a href="unit-3.html">Unit III: Transaction Management</a></h3>
+            <div class="table-wrap">
+              <table class="cmp-index">
+                <caption>Unit III comparisons by topic</caption>
+                <thead><tr><th scope="col">Topic</th><th scope="col">Comparisons</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row"><span class="rev-num">3.3</span> Schedules</th><td><ul class="chips"><li><a class="chip" href="unit-3.html#serial-vs-concurrent-schedule">Serial and concurrent schedules</a></li><li><a class="chip" href="unit-3.html#recoverable-cascadeless-strict">Recoverable, cascadeless and strict schedules</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">3.4</span> Serializability</th><td><ul class="chips"><li><a class="chip" href="unit-3.html#conflict-vs-view-serializability">Conflict and view serializability</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">3.5</span> Concurrency Control and Need for Concurrency</th><td><ul class="chips"><li><a class="chip" href="unit-3.html#concurrency-problems">Lost update, dirty read, unrepeatable read and phantom</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">3.6</span> Locking Protocols</th><td><ul class="chips"><li><a class="chip" href="unit-3.html#shared-vs-exclusive-lock">Shared and exclusive locks</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">3.7</span> Two Phase Locking</th><td><ul class="chips"><li><a class="chip" href="unit-3.html#two-phase-locking-types">Basic, strict, rigorous and conservative two phase locking</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">3.8</span> Deadlock</th><td><ul class="chips"><li><a class="chip" href="unit-3.html#deadlock-livelock-starvation">Deadlock, livelock and starvation</a></li><li><a class="chip" href="unit-3.html#wait-die-vs-wound-wait">Wait-die and wound-wait</a></li><li><a class="chip" href="unit-3.html#deadlock-handling">Deadlock prevention, detection and timeout</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">3.9</span> Transaction Recovery</th><td><ul class="chips"><li><a class="chip" href="unit-3.html#storage-types">Volatile, non-volatile and stable storage</a></li><li><a class="chip" href="unit-3.html#recovery-methods">Deferred update, immediate update and shadow paging</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">3.10</span> Save Points</th><td><ul class="chips"><li><a class="chip" href="unit-3.html#commit-rollback-savepoint">COMMIT, ROLLBACK and ROLLBACK TO SAVEPOINT</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">3.11</span> Isolation Levels</th><td><ul class="chips"><li><a class="chip" href="unit-3.html#isolation-levels">READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ and SERIALIZABLE</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">3.12</span> SQL Facilities for Concurrency and Recovery</th><td><ul class="chips"><li><a class="chip" href="unit-3.html#locking-reads-and-lock-tables">SELECT ... FOR SHARE, SELECT ... FOR UPDATE and LOCK TABLES</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">3.13</span> Backup and Recovery System</th><td><ul class="chips"><li><a class="chip" href="unit-3.html#backup-types">Full, incremental and differential backups</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">3.14</span> SQL DCL and TCL Commands</th><td><ul class="chips"><li><a class="chip" href="unit-3.html#dcl-vs-tcl">DCL and TCL</a></li><li><a class="chip" href="unit-3.html#grant-vs-revoke">GRANT and REVOKE</a></li></ul></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="gallery-index u-4">
+            <h3><a href="unit-4.html">Unit IV: Implementation Techniques</a></h3>
+            <div class="table-wrap">
+              <table class="cmp-index">
+                <caption>Unit IV comparisons by topic</caption>
+                <thead><tr><th scope="col">Topic</th><th scope="col">Comparisons</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row"><span class="rev-num">4.1</span> RAID</th><td><ul class="chips"><li><a class="chip" href="unit-4.html#raid-levels">RAID levels 0 to 6</a></li><li><a class="chip" href="unit-4.html#striping-mirroring-parity">Striping, mirroring and parity</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">4.2</span> File Organization</th><td><ul class="chips"><li><a class="chip" href="unit-4.html#file-organizations">Heap, sequential, hashing and clustering file organizations</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">4.3</span> Organization of Records in Files</th><td><ul class="chips"><li><a class="chip" href="unit-4.html#fixed-vs-variable-records">Fixed-length and variable-length records</a></li><li><a class="chip" href="unit-4.html#active-vs-passive-dictionary">Active and passive data dictionary</a></li><li><a class="chip" href="unit-4.html#row-vs-column-storage">Row-oriented and column-oriented storage</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">4.4</span> Indexing and Hashing</th><td><ul class="chips"><li><a class="chip" href="unit-4.html#indexing-vs-hashing">Ordered indexing and hashing</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">4.5</span> Ordered Indices</th><td><ul class="chips"><li><a class="chip" href="unit-4.html#dense-vs-sparse">Dense and sparse indices</a></li><li><a class="chip" href="unit-4.html#clustering-vs-non-clustering">Clustering (primary) and non-clustering (secondary) indices</a></li><li><a class="chip" href="unit-4.html#single-vs-multilevel-index">Single-level and multilevel indices</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">4.7</span> B Tree Index Files</th><td><ul class="chips"><li><a class="chip" href="unit-4.html#btree-vs-bplus-tree">B tree and B+ tree</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">4.8</span> Static Hashing</th><td><ul class="chips"><li><a class="chip" href="unit-4.html#open-vs-closed-hashing">Overflow chaining (closed hashing) and linear probing (open hashing)</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">4.9</span> Dynamic Hashing</th><td><ul class="chips"><li><a class="chip" href="unit-4.html#static-vs-dynamic-hashing">Static and dynamic hashing</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">4.10</span> Query Processing Overview</th><td><ul class="chips"><li><a class="chip" href="unit-4.html#join-algorithms">Nested-loop, block nested-loop, indexed nested-loop, merge and hash joins</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">4.11</span> Query Optimization using Heuristics and Cost Estimation</th><td><ul class="chips"><li><a class="chip" href="unit-4.html#heuristic-vs-cost-based">Heuristic and cost-based optimization</a></li></ul></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="gallery-index u-5">
+            <h3><a href="unit-5.html">Unit V: Advanced Topics</a></h3>
+            <div class="table-wrap">
+              <table class="cmp-index">
+                <caption>Unit V comparisons by topic</caption>
+                <thead><tr><th scope="col">Topic</th><th scope="col">Comparisons</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row"><span class="rev-num">5.1</span> Distributed Databases: Architecture</th><td><ul class="chips"><li><a class="chip" href="unit-5.html#centralized-vs-distributed">Centralized and distributed databases</a></li><li><a class="chip" href="unit-5.html#replication-vs-fragmentation">Replication and fragmentation</a></li><li><a class="chip" href="unit-5.html#fragmentation-types">Horizontal, vertical and mixed fragmentation</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">5.2</span> Types of Distributed Databases</th><td><ul class="chips"><li><a class="chip" href="unit-5.html#homogeneous-vs-heterogeneous">Homogeneous, heterogeneous and federated distributed databases</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">5.3</span> Transaction Processing</th><td><ul class="chips"><li><a class="chip" href="unit-5.html#commit-protocols">Single-phase, two-phase and three-phase commit</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">5.4</span> NoSQL Databases: Introduction</th><td><ul class="chips"><li><a class="chip" href="unit-5.html#rdbms-vs-nosql">Relational (SQL) and NoSQL databases</a></li><li><a class="chip" href="unit-5.html#acid-vs-base">ACID and BASE</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">5.5</span> CAP Theorem</th><td><ul class="chips"><li><a class="chip" href="unit-5.html#cp-vs-ap">CP and AP systems</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">5.6</span> Document Based Systems</th><td><ul class="chips"><li><a class="chip" href="unit-5.html#sql-vs-mongodb">SQL (MySQL) and MongoDB commands</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">5.8</span> Column Based Systems</th><td><ul class="chips"><li><a class="chip" href="unit-5.html#wide-column-vs-columnar">Wide-column stores and columnar databases</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">5.9</span> Graph Databases</th><td><ul class="chips"><li><a class="chip" href="unit-5.html#nosql-types">Document, key-value, column-based and graph databases</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">5.11</span> Access Control Based on Privileges</th><td><ul class="chips"><li><a class="chip" href="unit-5.html#dac-mac-rbac">Discretionary, mandatory and role-based access control</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">5.13</span> SQL Injection</th><td><ul class="chips"><li><a class="chip" href="unit-5.html#dynamic-sql-vs-prepared">Dynamic SQL and prepared statements</a></li></ul></td></tr>
+                  <tr><th scope="row"><span class="rev-num">5.14</span> Encryption and Public Key Infrastructures</th><td><ul class="chips"><li><a class="chip" href="unit-5.html#symmetric-vs-asymmetric">Symmetric and asymmetric encryption</a></li></ul></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+</body>
+</html>

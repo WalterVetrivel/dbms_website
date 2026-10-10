@@ -141,15 +141,17 @@ end</code></pre>
             </table>
           </div>
           <h3>Fixed-length and variable-length records compared</h3>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-fixed-variable">
             <table>
               <caption>Fixed-length compared with variable-length records</caption>
-              <thead><tr><th scope="col">Fixed-length records</th><th scope="col">Variable-length records</th></tr></thead>
+              <thead><tr><th scope="col">Point</th><th scope="col">Fixed-length records</th><th scope="col">Variable-length records</th></tr></thead>
               <tbody>
-                <tr><td>Every record has the same size.</td><td>Records can have different sizes.</td></tr>
-                <tr><td>Record i starts at byte n × (i − 1), so it is easy to find.</td><td>Needs (offset, length) pairs and a slotted page to find each record.</td></tr>
-                <tr><td>Short values are padded, so space is wasted.</td><td>Uses only the space it needs.</td></tr>
-                <tr><td>Example: CHAR(10) fields.</td><td>Example: VARCHAR(50) fields.</td></tr>
+                <tr><th scope="row">Size</th><td>Every record has the same size.</td><td>Records can have different sizes.</td></tr>
+                <tr><th scope="row">Finding a record</th><td>Record i starts at byte n × (i − 1), so it is easy to find.</td><td>Needs (offset, length) pairs and a slotted page to find each record.</td></tr>
+                <tr><th scope="row">Space</th><td>Short values are padded, so space is wasted.</td><td>Uses only the space it needs.</td></tr>
+                <tr><th scope="row">Example</th><td>Example: CHAR(10) fields.</td><td>Example: VARCHAR(50) fields.</td></tr>
+                <tr><th scope="row">Deleting a record</th><td>The slot goes on a free list; any new record fits it</td><td>Free space in the page is packed together; other records may move</td></tr>
+                <tr><th scope="row">Suits</th><td>Fields that always have the same size</td><td>VARCHAR fields, fields that may be NULL, repeating fields</td></tr>
               </tbody>
             </table>
           </div>
@@ -212,14 +214,16 @@ end</code></pre>
           </ul>
           <p>Most systems store the data dictionary as <strong>relations</strong> too, so the DBMS can use its own code to read it.</p>
           <h3>Active and passive data dictionaries</h3>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-active-passive">
             <table>
               <caption>Active compared with passive data dictionary</caption>
-              <thead><tr><th scope="col">Active data dictionary</th><th scope="col">Passive data dictionary</th></tr></thead>
+              <thead><tr><th scope="col">Point</th><th scope="col">Active data dictionary</th><th scope="col">Passive data dictionary</th></tr></thead>
               <tbody>
-                <tr><td>Managed by the DBMS itself.</td><td>Managed separately, by people.</td></tr>
-                <tr><td>Updated automatically whenever the database structure changes.</td><td>Updated by hand, so it can become out of date.</td></tr>
-                <tr><td>Always matches the current database.</td><td>Used only for documentation.</td></tr>
+                <tr><th scope="row">Managed by</th><td>Managed by the DBMS itself.</td><td>Managed separately, by people.</td></tr>
+                <tr><th scope="row">Updates</th><td>Updated automatically whenever the database structure changes.</td><td>Updated by hand, so it can become out of date.</td></tr>
+                <tr><th scope="row">Accuracy</th><td>Always matches the current database.</td><td>Used only for documentation.</td></tr>
+                <tr><th scope="row">Used by</th><td>The DBMS itself, on every query, to check names and plan the query</td><td>People: designers, programmers and auditors</td></tr>
+                <tr><th scope="row">Example</th><td>MySQL&#39;s INFORMATION_SCHEMA tables</td><td>A design document or spreadsheet of tables and columns</td></tr>
               </tbody>
             </table>
           </div>
@@ -239,7 +243,7 @@ WHERE table_schema = DATABASE() AND table_name = 'student';</code></pre>
             <div class="callout-title">Definition</div>
             <p>In <strong>column-oriented storage</strong> (columnar storage), the values of <strong>each attribute are stored together</strong>, in a separate file or area for each column.</p>
           </div>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-row-column-demo">
             <table>
               <caption>The same three rows stored by row and by column</caption>
               <thead><tr><th scope="col">Row-oriented</th><th scope="col">Column-oriented</th></tr></thead>

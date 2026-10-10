@@ -26,13 +26,13 @@ function loadRegistry() {
   return ctx.DBMS;
 }
 
-const escAttr = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
-const escText = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-const plain = (s) => s.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+export const escAttr = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+export const escText = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+export const plain = (s) => s.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
 const count = (n, k) => `${n} ${n === 1 ? k.one : k.many}`;
 
 // The index just after the element that starts at index i, matching nested tags of the same name.
-function elementEnd(html, i, where) {
+export function elementEnd(html, i, where) {
   const tag = html.slice(i + 1).match(/^[a-z]+/)[0];
   const re = new RegExp(`<${tag}[\\s>]|</${tag}>`, "g");
   re.lastIndex = i;
@@ -46,7 +46,7 @@ function elementEnd(html, i, where) {
 }
 
 // The element with the given id, and the topic section it sits in.
-function findElement(html, id, where) {
+export function findElement(html, id, where) {
   const at = html.indexOf(` id="${id}"`);
   if (at < 0) throw new Error(`${where}: no element with id "${id}"`);
   const start = html.lastIndexOf("<", at);
@@ -64,7 +64,7 @@ function findElement(html, id, where) {
 
 // Makes a copied element work on its new page: ids get the item's prefix, so two copies
 // never clash, and links that were relative to the topic page still reach their targets.
-function adapt(frag, item, rootId, topicHref) {
+export function adapt(frag, item, rootId, topicHref) {
   frag = frag.replace(` id="${rootId}"`, "");
   const ids = new Set([...frag.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
   const ren = (id) => (ids.has(id) ? `${item.id}-${id}` : id);
@@ -81,7 +81,7 @@ function adapt(frag, item, rootId, topicHref) {
 }
 
 // The widget scripts a page needs, from the selectors each script looks for.
-function widgetScripts(html) {
+export function widgetScripts(html) {
   const dir = path.join(ROOT, "assets/js/widgets");
   const files = fs.readdirSync(dir).filter((f) => f.endsWith(".js") && f !== "player.js").sort();
   const needed = files.filter((f) => {

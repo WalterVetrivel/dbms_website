@@ -269,15 +269,18 @@
 
         <section id="compare" class="topic-section" aria-labelledby="compare-title">
           <h2 id="compare-title">Commit protocols compared</h2>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-commit-protocols">
             <table>
               <caption>Single-phase, two-phase and three-phase commit</caption>
               <thead><tr><th scope="col">Point</th><th scope="col">Single-phase</th><th scope="col">Two-phase (2PC)</th><th scope="col">Three-phase (3PC)</th></tr></thead>
               <tbody>
                 <tr><th scope="row">Rounds of messages</th><td>One</td><td>Two</td><td>Three</td></tr>
+                <tr><th scope="row">Phases</th><td>Commit</td><td>Prepare (voting), then commit or abort (decision)</td><td>Prepare (voting), pre-commit, then commit</td></tr>
+                <tr><th scope="row">Extra log record</th><td>None</td><td>&lt;ready T&gt; at each site; &lt;commit T&gt; or &lt;abort T&gt; at the coordinator</td><td>Also &lt;precommit T&gt;</td></tr>
                 <tr><th scope="row">Can a site vote no?</th><td>No</td><td>Yes</td><td>Yes</td></tr>
                 <tr><th scope="row">Atomicity</th><td>Not guaranteed</td><td>Guaranteed</td><td>Guaranteed</td></tr>
                 <tr><th scope="row">Blocking when the coordinator fails</th><td>Not applicable</td><td>Possible</td><td>Avoided (if no partition)</td></tr>
+                <tr><th scope="row">Network partition</th><td>Not handled</td><td>Safe, but sites may block</td><td>Not handled: assumes no partition</td></tr>
                 <tr><th scope="row">Cost</th><td>Lowest</td><td>Medium</td><td>Highest</td></tr>
                 <tr><th scope="row">Used in practice</th><td>Rarely</td><td>Widely</td><td>Rarely</td></tr>
               </tbody>
