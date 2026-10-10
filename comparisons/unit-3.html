@@ -398,7 +398,7 @@ else                 -- Ti younger
           <article class="cmp-item" id="deadlock-handling" aria-labelledby="deadlock-handling-title">
             <div class="cmp-lead">
             <h3 id="deadlock-handling-title">Deadlock prevention, detection and timeout</h3>
-            <p class="cmp-summary"><strong>In one line:</strong> Prevention makes a deadlock impossible, detection lets it happen and then breaks it, and timeout simply rolls back any transaction that waits too long.</p>
+            <p class="cmp-summary"><strong>In one line:</strong> Prevention makes a deadlock impossible, detection lets it happen and then breaks it and timeout simply rolls back any transaction that waits too long.</p>
             <div class="table-wrap">
               <table class="cmp-table">
                 <caption>Ways to handle deadlocks</caption>
@@ -424,7 +424,7 @@ else                 -- Ti younger
           <article class="cmp-item" id="storage-types" aria-labelledby="storage-types-title">
             <div class="cmp-lead">
             <h3 id="storage-types-title">Volatile, non-volatile and stable storage</h3>
-            <p class="cmp-summary"><strong>In one line:</strong> Volatile storage loses its data in a crash, non-volatile storage survives a crash but not every disk failure, and stable storage is built to lose nothing.</p>
+            <p class="cmp-summary"><strong>In one line:</strong> Volatile storage loses its data in a crash, non-volatile storage survives a crash but not every disk failure and stable storage is built to lose nothing.</p>
             <div class="table-wrap">
             <table>
               <caption>Storage types and what survives</caption>
@@ -458,7 +458,7 @@ else                 -- Ti younger
             </table>
           </div>
             </div>
-            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Remember the pairs: deferred update needs only redo, immediate update needs undo and redo, and shadow paging needs neither.</p></div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Remember the pairs: deferred update needs only redo, immediate update needs undo and redo and shadow paging needs neither.</p></div>
             <div class="cmp-source">Read more: <a href="../units/unit-3/transaction-recovery.html#compare"><span class="rev-num">3.9</span> Transaction Recovery: Recovery techniques compared</a><br>Asked in: <a href="../question-bank/unit-3.html#q-u3-b6">Unit III QB, 16 marks</a>, <a href="../question-bank/unit-3.html#q-u3-b15">Unit III QB, 16 marks</a></div>
           </article>
         </section>
@@ -589,7 +589,7 @@ SELECT @@transaction_isolation;
           <article class="cmp-item" id="locking-reads-and-lock-tables" aria-labelledby="locking-reads-and-lock-tables-title">
             <div class="cmp-lead">
             <h3 id="locking-reads-and-lock-tables-title">SELECT ... FOR SHARE, SELECT ... FOR UPDATE and LOCK TABLES</h3>
-            <p class="cmp-summary"><strong>In one line:</strong> FOR SHARE takes shared row locks, FOR UPDATE takes exclusive row locks, and LOCK TABLES locks whole tables for a session.</p>
+            <p class="cmp-summary"><strong>In one line:</strong> FOR SHARE takes shared row locks, FOR UPDATE takes exclusive row locks and LOCK TABLES locks whole tables for a session.</p>
             <div class="table-wrap">
               <table class="cmp-table">
                 <caption>Locking statements in MySQL</caption>
@@ -746,7 +746,7 @@ COMMIT;</code></pre>
                   <tr><th scope="row">Purpose</th><td>Gives privileges</td><td>Takes privileges away</td></tr>
                   <tr><th scope="row">Keyword before the user</th><td>TO</td><td>FROM</td></tr>
                   <tr><th scope="row">Passing rights on</th><td><code>WITH GRANT OPTION</code> lets the user grant the same privileges to others</td><td>Removing <code>GRANT OPTION</code> stops the user from granting it</td></tr>
-                  <tr><th scope="row">Run by</th><td>The DBA, the owner, or a user who has the privilege WITH GRANT OPTION</td><td>The DBA, or the user who granted it</td></tr>
+                  <tr><th scope="row">Run by</th><td>The DBA, the owner or a user who has the privilege WITH GRANT OPTION</td><td>The DBA, or the user who granted it</td></tr>
                   <tr><th scope="row">Effect of a mistake</th><td>The user can see or change too much</td><td>MySQL gives an error if that privilege was never granted</td></tr>
                   <tr><th scope="row">Transaction</th><td>Takes effect at once; cannot be rolled back</td><td>Takes effect at once; cannot be rolled back</td></tr>
                   <tr><th scope="row">See the result</th><td><code>SHOW GRANTS FOR user;</code></td><td><code>SHOW GRANTS FOR user;</code></td></tr>

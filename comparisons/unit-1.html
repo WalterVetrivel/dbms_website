@@ -267,7 +267,7 @@ VALUES (3, 'Charan', 'Salem');
           <article class="cmp-item" id="types-of-keys" aria-labelledby="types-of-keys-title">
             <div class="cmp-lead">
             <h3 id="types-of-keys-title">Super key, candidate key, primary key, alternate key, composite key and foreign key</h3>
-            <p class="cmp-summary"><strong>In one line:</strong> Every primary key is a candidate key, every candidate key is a super key, and a foreign key points to the primary key of another table.</p>
+            <p class="cmp-summary"><strong>In one line:</strong> Every primary key is a candidate key, every candidate key is a super key and a foreign key points to the primary key of another table.</p>
             <div class="table-wrap">
               <table class="cmp-table">
                 <caption>The keys of Student(RegNo, RollNo, Dept, Name, Email) and Marks(RegNo, CourseID, Marks)</caption>
@@ -318,7 +318,7 @@ VALUES (3, 'Charan', 'Salem');
               </div>
               </div>
             </div>
-            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Draw the keys as nested circles: super keys outside, candidate keys inside them, and the primary key in the middle.</p></div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Draw the keys as nested circles: super keys outside, candidate keys inside them and the primary key in the middle.</p></div>
             <div class="cmp-source">Read more: <a href="../units/unit-1/keys.html#super-key"><span class="rev-num">1.7</span> Keys: Super key</a>; <a href="../units/unit-1/keys.html#candidate-key"><span class="rev-num">1.7</span> Keys: Candidate key</a>; <a href="../units/unit-1/keys.html#primary-key"><span class="rev-num">1.7</span> Keys: Primary key and alternate key</a>; <a href="../units/unit-1/keys.html#composite-key"><span class="rev-num">1.7</span> Keys: Composite key</a>; <a href="../units/unit-1/keys.html#foreign-key"><span class="rev-num">1.7</span> Keys: Foreign key</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-a11">Unit I QB, 2 marks</a></div>
           </article>
           <article class="cmp-item" id="primary-key-vs-foreign-key" aria-labelledby="primary-key-vs-foreign-key-title">
@@ -613,7 +613,7 @@ LEFT JOIN Dept ON Emp.dno = Dept.dno;</code></pre>
                   <tr><th scope="row">Used by</th><td>The DBMS, to plan and optimize queries</td><td>Users and application programs</td></tr>
                   <tr><th scope="row">Works on</th><td>Relations (sets), so duplicates are removed</td><td>Tables (multisets), so duplicates are kept unless DISTINCT is used</td></tr>
                   <tr><th scope="row">Operators</th><td>σ, π, ∪, ∩, −, ×, ρ, ⋈, ÷</td><td>SELECT, FROM, WHERE, JOIN, UNION, GROUP BY and more</td></tr>
-                  <tr><th scope="row">Changes data?</th><td>No, it only queries</td><td>Yes: INSERT, UPDATE, DELETE, and DDL too</td></tr>
+                  <tr><th scope="row">Changes data?</th><td>No, it only queries</td><td>Yes: INSERT, UPDATE and DELETE, and DDL too</td></tr>
                   <tr><th scope="row">Aggregates and sorting</th><td>Not in the basic operators</td><td>COUNT, SUM, AVG, ORDER BY</td></tr>
                 </tbody>
               </table>
@@ -666,7 +666,7 @@ WHERE bname = 'DBMS';</code></pre>
           <article class="cmp-item" id="ddl-dml-dcl-tcl" aria-labelledby="ddl-dml-dcl-tcl-title">
             <div class="cmp-lead">
             <h3 id="ddl-dml-dcl-tcl-title">DDL, DML, DCL and TCL</h3>
-            <p class="cmp-summary"><strong>In one line:</strong> DDL defines the structure, DML works on the rows, DCL gives and takes away access rights, and TCL ends or undoes transactions.</p>
+            <p class="cmp-summary"><strong>In one line:</strong> DDL defines the structure, DML works on the rows, DCL gives and takes away access rights and TCL ends or undoes transactions.</p>
             <div class="table-wrap">
             <table>
               <caption>The main parts of SQL</caption>

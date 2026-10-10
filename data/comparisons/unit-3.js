@@ -157,7 +157,7 @@ DBMS.comparisons = (DBMS.comparisons || []).concat([
     topics: ["3.8"],
     title: "Deadlock prevention, detection and timeout",
     keywords: "deadlock prevention detection recovery timeout wait-for graph avoidance vs difference",
-    summary: "Prevention makes a deadlock impossible, detection lets it happen and then breaks it, and timeout simply rolls back any transaction that waits too long.",
+    summary: "Prevention makes a deadlock impossible, detection lets it happen and then breaks it and timeout simply rolls back any transaction that waits too long.",
     tables: [{
       caption: "Ways to handle deadlocks",
       head: ["Basis", "Prevention", "Detection and recovery", "Timeout"],
@@ -179,7 +179,7 @@ DBMS.comparisons = (DBMS.comparisons || []).concat([
     topics: ["3.9"],
     title: "Volatile, non-volatile and stable storage",
     keywords: "volatile non-volatile stable storage memory disk crash vs difference",
-    summary: "Volatile storage loses its data in a crash, non-volatile storage survives a crash but not every disk failure, and stable storage is built to lose nothing.",
+    summary: "Volatile storage loses its data in a crash, non-volatile storage survives a crash but not every disk failure and stable storage is built to lose nothing.",
     tables: [{ from: "3.9", ref: "cmp-storage-types" }],
     tip: "The log must be written to stable storage. Say why: recovery depends on it surviving every failure.",
     questions: ["u3-b6"]
@@ -191,7 +191,7 @@ DBMS.comparisons = (DBMS.comparisons || []).concat([
     keywords: "deferred immediate update modification shadow paging log based recovery undo redo vs difference",
     summary: "Deferred update writes to the database only after commit. Immediate update writes at any time. Shadow paging keeps an old copy of the page table and needs no log.",
     tables: [{ from: "3.9", ref: "cmp-recovery-methods" }],
-    tip: "Remember the pairs: deferred update needs only redo, immediate update needs undo and redo, and shadow paging needs neither.",
+    tip: "Remember the pairs: deferred update needs only redo, immediate update needs undo and redo and shadow paging needs neither.",
     questions: ["u3-b6", "u3-b15"]
   },
   {
@@ -242,7 +242,7 @@ DBMS.comparisons = (DBMS.comparisons || []).concat([
     topics: ["3.12"],
     title: "SELECT ... FOR SHARE, SELECT ... FOR UPDATE and LOCK TABLES",
     keywords: "for share for update lock in share mode lock tables unlock row lock table lock vs difference",
-    summary: "FOR SHARE takes shared row locks, FOR UPDATE takes exclusive row locks, and LOCK TABLES locks whole tables for a session.",
+    summary: "FOR SHARE takes shared row locks, FOR UPDATE takes exclusive row locks and LOCK TABLES locks whole tables for a session.",
     tables: [
       {
         caption: "Locking statements in MySQL",
@@ -303,7 +303,7 @@ DBMS.comparisons = (DBMS.comparisons || []).concat([
         ["Purpose", "Gives privileges", "Takes privileges away"],
         ["Keyword before the user", "TO", "FROM"],
         ["Passing rights on", "<code>WITH GRANT OPTION</code> lets the user grant the same privileges to others", "Removing <code>GRANT OPTION</code> stops the user from granting it"],
-        ["Run by", "The DBA, the owner, or a user who has the privilege WITH GRANT OPTION", "The DBA, or the user who granted it"],
+        ["Run by", "The DBA, the owner or a user who has the privilege WITH GRANT OPTION", "The DBA, or the user who granted it"],
         ["Effect of a mistake", "The user can see or change too much", "MySQL gives an error if that privilege was never granted"],
         ["Transaction", "Takes effect at once; cannot be rolled back", "Takes effect at once; cannot be rolled back"],
         ["See the result", "<code>SHOW GRANTS FOR user;</code>", "<code>SHOW GRANTS FOR user;</code>"]

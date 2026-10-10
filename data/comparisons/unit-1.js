@@ -92,7 +92,7 @@ DBMS.comparisons = (DBMS.comparisons || []).concat([
     topics: ["1.7"],
     title: "Super key, candidate key, primary key, alternate key, composite key and foreign key",
     keywords: "keys types superkey candidate primary alternate composite foreign vs difference",
-    summary: "Every primary key is a candidate key, every candidate key is a super key, and a foreign key points to the primary key of another table.",
+    summary: "Every primary key is a candidate key, every candidate key is a super key and a foreign key points to the primary key of another table.",
     tables: [{
       caption: "The keys of Student(RegNo, RollNo, Dept, Name, Email) and Marks(RegNo, CourseID, Marks)",
       head: ["Key", "Meaning", "How many per table", "Example", "SQL"],
@@ -109,7 +109,7 @@ DBMS.comparisons = (DBMS.comparisons || []).concat([
       { label: "Primary, alternate and composite keys", code: "CREATE TABLE student (\n  reg_no  CHAR(10) PRIMARY KEY,\n  roll_no INT NOT NULL,\n  dept    VARCHAR(5) NOT NULL,\n  name    VARCHAR(30) NOT NULL,\n  -- alternate key:\n  email   VARCHAR(40) NOT NULL UNIQUE,\n  -- composite alternate key:\n  UNIQUE (roll_no, dept)\n);" },
       { label: "Composite primary key and foreign keys", code: "CREATE TABLE marks (\n  reg_no    CHAR(10),\n  course_id CHAR(5),\n  marks     INT,\n  PRIMARY KEY (reg_no, course_id),\n  FOREIGN KEY (reg_no)\n    REFERENCES student (reg_no),\n  FOREIGN KEY (course_id)\n    REFERENCES course (course_id)\n);" }
     ],
-    tip: "Draw the keys as nested circles: super keys outside, candidate keys inside them, and the primary key in the middle.",
+    tip: "Draw the keys as nested circles: super keys outside, candidate keys inside them and the primary key in the middle.",
     read: ["1.7#super-key", "1.7#candidate-key", "1.7#primary-key", "1.7#composite-key", "1.7#foreign-key"],
     questions: ["u1-a11"]
   },
@@ -265,7 +265,7 @@ DBMS.comparisons = (DBMS.comparisons || []).concat([
           ["Used by", "The DBMS, to plan and optimize queries", "Users and application programs"],
           ["Works on", "Relations (sets), so duplicates are removed", "Tables (multisets), so duplicates are kept unless DISTINCT is used"],
           ["Operators", "σ, π, ∪, ∩, −, ×, ρ, ⋈, ÷", "SELECT, FROM, WHERE, JOIN, UNION, GROUP BY and more"],
-          ["Changes data?", "No, it only queries", "Yes: INSERT, UPDATE, DELETE, and DDL too"],
+          ["Changes data?", "No, it only queries", "Yes: INSERT, UPDATE and DELETE, and DDL too"],
           ["Aggregates and sorting", "Not in the basic operators", "COUNT, SUM, AVG, ORDER BY"]
         ]
       },
@@ -296,7 +296,7 @@ DBMS.comparisons = (DBMS.comparisons || []).concat([
     topics: ["1.10"],
     title: "DDL, DML, DCL and TCL",
     keywords: "parts of sql commands data definition manipulation control transaction vs difference",
-    summary: "DDL defines the structure, DML works on the rows, DCL gives and takes away access rights, and TCL ends or undoes transactions.",
+    summary: "DDL defines the structure, DML works on the rows, DCL gives and takes away access rights and TCL ends or undoes transactions.",
     tables: [{ from: "1.10", ref: "cmp-sql-parts" }],
     syntax: [
       { label: "DDL", code: "CREATE TABLE student (\n  roll_no INT PRIMARY KEY,\n  name    VARCHAR(30)\n);\nALTER TABLE student\n  ADD city VARCHAR(20);" },

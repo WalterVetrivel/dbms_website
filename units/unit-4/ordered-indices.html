@@ -102,15 +102,17 @@
             <p>This page follows Silberschatz, where “primary index” and “clustering index” mean the same thing. Elmasri and Navathe split them. In their books, a <strong>primary index</strong> is on an ordering field that is a <strong>key</strong> (unique). A <strong>clustering index</strong> is on an ordering field that is <strong>not a key</strong>, such as Dept when the file is sorted by Dept. In both books, a <strong>secondary index</strong> is on a field that does not set the order of the file.</p>
           </div>
           <p>A clustering index on a non-key field groups records with the same value together. For example, if the file were sorted by semester, all first-semester students would be together, then all second-semester students, and so on. The index entry for each semester points to the first record of its group.</p>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-clustering">
             <table>
               <caption>Clustering index compared with non-clustering index</caption>
-              <thead><tr><th scope="col">Clustering (primary) index</th><th scope="col">Non-clustering (secondary) index</th></tr></thead>
+              <thead><tr><th scope="col">Point</th><th scope="col">Clustering (primary) index</th><th scope="col">Non-clustering (secondary) index</th></tr></thead>
               <tbody>
-                <tr><td>The file is sorted on the same search key as the index.</td><td>The file is sorted on a different key.</td></tr>
-                <tr><td>Only one for each file.</td><td>A file can have many.</td></tr>
-                <tr><td>Can be sparse.</td><td>Must be dense.</td></tr>
-                <tr><td>Records with nearby keys are in the same block, so range queries read few blocks.</td><td>Records with nearby keys can be in different blocks, so a range query may read one block per record.</td></tr>
+                <tr><th scope="row">Order of the file</th><td>The file is sorted on the same search key as the index.</td><td>The file is sorted on a different key.</td></tr>
+                <tr><th scope="row">Number for each file</th><td>Only one for each file.</td><td>A file can have many.</td></tr>
+                <tr><th scope="row">Dense or sparse</th><td>Can be sparse.</td><td>Must be dense.</td></tr>
+                <tr><th scope="row">Range queries</th><td>Records with nearby keys are in the same block, so range queries read few blocks.</td><td>Records with nearby keys can be in different blocks, so a range query may read one block per record.</td></tr>
+                <tr><th scope="row">Also called</th><td>Primary index</td><td>Secondary index</td></tr>
+                <tr><th scope="row">In MySQL (InnoDB)</th><td>The PRIMARY KEY index; rows are stored in its order</td><td>Every other index; each entry holds the primary key value of its row</td></tr>
               </tbody>
             </table>
           </div>
@@ -150,15 +152,16 @@
             <p>Only one data block is read, and the index has only 5 entries instead of 15.</p>
           </div>
           <p>A sparse index works only when the file is <strong>sorted</strong> on the search key, so only a clustering index can be sparse. A secondary index must be dense, because the records it points to are not in order.</p>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-dense-sparse">
             <table>
               <caption>Dense index compared with sparse index</caption>
-              <thead><tr><th scope="col">Dense index</th><th scope="col">Sparse index</th></tr></thead>
+              <thead><tr><th scope="col">Point</th><th scope="col">Dense index</th><th scope="col">Sparse index</th></tr></thead>
               <tbody>
-                <tr><td>An entry for every search-key value.</td><td>Entries for only some values (one per block).</td></tr>
-                <tr><td>Faster to find a record; can tell that a key is missing without reading the file.</td><td>A little slower: must read the block and look through it.</td></tr>
-                <tr><td>Needs more space and more upkeep on inserts and deletes.</td><td>Needs less space and less upkeep.</td></tr>
-                <tr><td>Can be used with any file.</td><td>Only when the file is sorted on the search key.</td></tr>
+                <tr><th scope="row">Entries</th><td>An entry for every search-key value.</td><td>Entries for only some values (one per block).</td></tr>
+                <tr><th scope="row">Search speed</th><td>Faster to find a record; can tell that a key is missing without reading the file.</td><td>A little slower: must read the block and look through it.</td></tr>
+                <tr><th scope="row">Space and upkeep</th><td>Needs more space and more upkeep on inserts and deletes.</td><td>Needs less space and less upkeep.</td></tr>
+                <tr><th scope="row">Works with</th><td>Can be used with any file.</td><td>Only when the file is sorted on the search key.</td></tr>
+                <tr><th scope="row">Kinds of index</th><td>Every secondary index is dense</td><td>Only a clustering index can be sparse</td></tr>
               </tbody>
             </table>
           </div>
