@@ -10,7 +10,9 @@ DBMS.site = {
     name: "Walter Vetrivel S",
     role: "Assistant Professor, Department of CSE",
     institution: "Knowledge Institute of Technology, Salem",
-    institutionUrl: "https://kiot.ac.in/"
+    institutionUrl: "https://kiot.ac.in/",
+    github: "https://github.com/WalterVetrivel/",
+    linkedin: "https://www.linkedin.com/in/walter-vetrivel-selvakumar/"
   },
   license: {
     name: "CC BY-NC-SA 4.0",

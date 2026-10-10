@@ -227,7 +227,9 @@
   border-right: 1px solid var(--border);
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: var(--sp-4) var(--sp-3) var(--sp-12);
+  padding: var(--sp-4) var(--sp-3) var(--sp-6);
+  display: flex;
+  flex-direction: column;
   transform: translateX(-102%);
   transition: transform var(--dur) var(--ease);
   visibility: hidden;
@@ -380,6 +382,56 @@
   padding: var(--sp-2);
   font-size: var(--fs-xs);
   color: var(--text-muted);
+}
+
+/* Site credits, pushed to the bottom of the sidebar */
+.side-credit {
+  margin-top: auto;
+  padding: var(--sp-4) var(--sp-2) 0;
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.side-credit p {
+  margin: 0 0 var(--sp-2);
+}
+
+.side-credit .profile-links {
+  justify-content: flex-start;
+}
+
+/* GitHub and LinkedIn links, in the sidebar and the footer */
+.profile-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+
+.profile-links a,
+.sidebar .profile-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 36px;
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+  font-size: var(--fs-sm);
+  font-weight: 400;
+}
+
+.profile-links a:hover {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+}
+
+.profile-links .icon {
+  width: 16px;
+  height: 16px;
 }
 
 .unit-dot {
