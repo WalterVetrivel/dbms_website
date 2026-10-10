@@ -263,7 +263,7 @@ DROP TABLE IF EXISTS old_marks;   -- no error if the table is not there</code></
 SELECT COUNT(*) FROM enrolment;   -- 0, but the table still exists</code></pre>
           </div>
           <h3>DROP, TRUNCATE and DELETE</h3>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-delete-truncate-drop">
             <table>
               <caption>Three ways to remove data</caption>
               <thead><tr><th scope="col"></th><th scope="col">DELETE</th><th scope="col">TRUNCATE</th><th scope="col">DROP</th></tr></thead>
@@ -292,7 +292,7 @@ ALTER TABLE person RENAME TO person_details;   -- the same thing with ALTER</cod
 
         <section id="ddl-vs-dml" class="topic-section" aria-labelledby="vs-title">
           <h2 id="vs-title">DDL compared with DML</h2>
-          <div class="table-wrap">
+          <div class="table-wrap" id="cmp-ddl-dml">
             <table>
               <caption>DDL and DML side by side</caption>
               <thead><tr><th scope="col"></th><th scope="col">DDL</th><th scope="col">DML</th></tr></thead>

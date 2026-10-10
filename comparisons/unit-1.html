@@ -1,0 +1,955 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Built by tools/build-comparisons.mjs from data/comparisons and the topic pages. Edit those, then run the script again. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit I Comparisons | DBMS Study Guide</title>
+  <meta name="description" content="Tables that compare the related concepts of Unit I (Introduction to Relational Database), with the syntax side by side for SQL. Each one links to its topic page. Prints well.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/print.css" media="print">
+  <script>try{var t=localStorage.getItem("dbms-theme");if(t)document.documentElement.setAttribute("data-theme",JSON.parse(t))}catch(e){}</script>
+</head>
+<body data-root="../" data-page="comparisons" data-unit="1" data-sidebar="static">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header id="site-header" class="site-header"></header>
+  <div class="page">
+    <main id="main" class="main" tabindex="-1">
+      <div class="content u-1">
+        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        <header class="cmp-head">
+          <span class="eyebrow">Unit I: Introduction to Relational Database</span>
+          <h1>Unit I Comparisons</h1>
+          <p class="lead">17 comparisons of the related ideas in Unit I, as tables you can learn and write in the exam. Each one links to its topic page.</p>
+        </header>
+
+        <div class="btn-row no-print">
+          <button type="button" class="btn btn-primary" data-print>Print the comparisons</button>
+          <a class="btn" href="../revision/unit-1.html">Unit I revision sheet</a>
+          <a class="btn" href="../question-bank/unit-1.html">Unit I question bank</a>
+        </div>
+
+        <nav class="on-this-page cmp-toc" aria-labelledby="toc-title">
+          <strong id="toc-title">On this page</strong>
+          <ol>
+            <li><a href="#t1-1">1.1 Purpose of Database System</a>
+              <ol>
+                <li><a href="#file-system-vs-database">File-processing system and database system</a></li>
+              </ol>
+            </li>
+            <li><a href="#t1-2">1.2 Views of Data</a>
+              <ol>
+                <li><a href="#schema-vs-instance">Schema and instance</a></li>
+                <li><a href="#data-independence">Physical and logical data independence</a></li>
+              </ol>
+            </li>
+            <li><a href="#t1-3">1.3 Data Models</a>
+              <ol>
+                <li><a href="#data-models">Data models: relational, E-R, object-based, semi-structured, hierarchical and network</a></li>
+              </ol>
+            </li>
+            <li><a href="#t1-4">1.4 Database System Architecture</a>
+              <ol>
+                <li><a href="#two-tier-vs-three-tier">Two-tier and three-tier architecture</a></li>
+              </ol>
+            </li>
+            <li><a href="#t1-7">1.7 Keys</a>
+              <ol>
+                <li><a href="#types-of-keys">Super key, candidate key, primary key, alternate key, composite key and foreign key</a></li>
+                <li><a href="#primary-key-vs-foreign-key">Primary key and foreign key</a></li>
+              </ol>
+            </li>
+            <li><a href="#t1-8">1.8 Constraints</a>
+              <ol>
+                <li><a href="#primary-key-vs-unique">PRIMARY KEY and UNIQUE constraints</a></li>
+                <li><a href="#entity-vs-referential-integrity">Entity integrity and referential integrity</a></li>
+              </ol>
+            </li>
+            <li><a href="#t1-9">1.9 Relational Algebra</a>
+              <ol>
+                <li><a href="#select-vs-project">Selection (σ) and projection (π)</a></li>
+                <li><a href="#relational-algebra-joins">Theta join, equijoin, natural join and outer joins</a></li>
+                <li><a href="#relational-algebra-vs-sql">Relational algebra and SQL</a></li>
+              </ol>
+            </li>
+            <li><a href="#t1-10">1.10 Overview of the SQL Query Language</a>
+              <ol>
+                <li><a href="#ddl-dml-dcl-tcl">DDL, DML, DCL and TCL</a></li>
+                <li><a href="#char-vs-varchar">CHAR and VARCHAR</a></li>
+              </ol>
+            </li>
+            <li><a href="#t1-12">1.12 DDL</a>
+              <ol>
+                <li><a href="#ddl-vs-dml">DDL and DML</a></li>
+                <li><a href="#delete-truncate-drop">DELETE, TRUNCATE and DROP</a></li>
+                <li><a href="#alter-vs-update">ALTER and UPDATE</a></li>
+              </ol>
+            </li>
+          </ol>
+        </nav>
+
+        <section id="t1-1" class="section cmp-topic" aria-labelledby="t1-1-title">
+          <h2 id="t1-1-title"><a href="../units/unit-1/purpose-of-database-system.html"><span class="rev-num">1.1</span> Purpose of Database System</a></h2>
+          <article class="cmp-item" id="file-system-vs-database" aria-labelledby="file-system-vs-database-title">
+            <div class="cmp-lead">
+            <h3 id="file-system-vs-database-title">File-processing system and database system</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> A file-processing system keeps data in separate files owned by separate programs; a database system keeps it once, under one DBMS that controls access to it.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>File-processing system and database system</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">File-processing system</th><th scope="col">Database system</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Redundancy</th><td>Same data is stored in many files</td><td>Data is stored once and shared, so redundancy is controlled</td></tr>
+                <tr><th scope="row">Consistency</th><td>Copies can disagree</td><td>One copy, so all users see the same value</td></tr>
+                <tr><th scope="row">Access</th><td>A new program for each new question</td><td>A query language such as SQL answers new questions</td></tr>
+                <tr><th scope="row">Integrity</th><td>Rules are hidden in program code</td><td>Rules are declared once as constraints and checked by the DBMS</td></tr>
+                <tr><th scope="row">Atomicity</th><td>Half-done updates can remain</td><td>Transactions run fully or not at all</td></tr>
+                <tr><th scope="row">Concurrent access</th><td>Users can overwrite each other</td><td>Concurrency control keeps users apart</td></tr>
+                <tr><th scope="row">Security</th><td>Hard to limit who sees what</td><td>Each user gets only the rights they need</td></tr>
+                <tr><th scope="row">Backup and recovery</th><td>Done by hand, if at all</td><td>Built into the DBMS</td></tr>
+                <tr><th scope="row">Data independence</th><td>Programs depend on the file format</td><td>Programs do not change when storage changes</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>This table is also the answer to “advantages of a DBMS”. Each row of the database column is one advantage.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/purpose-of-database-system.html#compare"><span class="rev-num">1.1</span> Purpose of Database System: File system and database system compared</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-a1">Unit I QB, 2 marks</a>, <a href="../question-bank/unit-1.html#q-u1-a2">Unit I QB, 2 marks</a>, <a href="../question-bank/unit-1.html#q-u1-b1">Unit I QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t1-2" class="section cmp-topic" aria-labelledby="t1-2-title">
+          <h2 id="t1-2-title"><a href="../units/unit-1/views-of-data.html"><span class="rev-num">1.2</span> Views of Data</a></h2>
+          <article class="cmp-item" id="schema-vs-instance" aria-labelledby="schema-vs-instance-title">
+            <div class="cmp-lead">
+            <h3 id="schema-vs-instance-title">Schema and instance</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> The schema is the design of the database and rarely changes; the instance is the data stored in it at one moment and changes all the time.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Schema and instance</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Schema</th><th scope="col">Instance</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Meaning</th><td>The overall design (structure) of the database</td><td>The data stored in the database at one moment</td></tr>
+                  <tr><th scope="row">Other names</th><td>Intension, database structure</td><td>Extension, database state, snapshot</td></tr>
+                  <tr><th scope="row">How often it changes</th><td>Rarely, and only by the designer</td><td>All the time, with every insert, update and delete</td></tr>
+                  <tr><th scope="row">Defined with</th><td>DDL (<code>CREATE TABLE</code>, <code>ALTER TABLE</code>)</td><td>DML (<code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>)</td></tr>
+                  <tr><th scope="row">Kinds</th><td>Physical schema, logical schema and subschemas (views)</td><td>One current instance</td></tr>
+                  <tr><th scope="row">Programming idea</th><td>Like a variable's type</td><td>Like the variable's value</td></tr>
+                  <tr><th scope="row">Example</th><td>student(roll_no, name, city)</td><td>The rows (1, Anitha, Salem) and (2, Bharath, Chennai) at 10 a.m. today</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+                <div class="code-block">
+                  <span class="code-label">Schema (DDL)</span>
+                  <pre><code>CREATE TABLE student (
+    roll_no INT PRIMARY KEY,
+    name    VARCHAR(30),
+    city    VARCHAR(20)
+  );</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">Instance changes (DML)</span>
+                  <pre><code>INSERT INTO student
+  VALUES (3, 'Charan', 'Salem');
+  -- The schema is the same;
+  -- the instance now has one more row.</code></pre>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/views-of-data.html#schema"><span class="rev-num">1.2</span> Views of Data: Instances and schemas</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-b1">Unit I QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="data-independence" aria-labelledby="data-independence-title">
+            <div class="cmp-lead">
+            <h3 id="data-independence-title">Physical and logical data independence</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Physical data independence hides changes in storage from the logical level; logical data independence hides changes in the logical schema from the views.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Physical and logical data independence</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Physical data independence</th><th scope="col">Logical data independence</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Meaning</th><td>Change the physical schema without changing the logical schema</td><td>Change the logical schema without changing the views or application programs</td></tr>
+                <tr><th scope="row">Mapping that absorbs it</th><td>Logical–physical mapping</td><td>View–logical mapping</td></tr>
+                <tr><th scope="row">Example changes</th><td>Move files to a new disk, add an index, change the file organization</td><td>Add a column, add a table, split one table into two</td></tr>
+                <tr><th scope="row">How hard</th><td>Easier to achieve</td><td>Harder to achieve, because programs depend on the tables they use</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>“Physical changes do not reach the logical level; logical changes do not reach the views.” Write this line, then give one example change for each.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/views-of-data.html#independence"><span class="rev-num">1.2</span> Views of Data: Data independence</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-a5">Unit I QB, 2 marks</a>, <a href="../question-bank/unit-1.html#q-u1-b1">Unit I QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t1-3" class="section cmp-topic" aria-labelledby="t1-3-title">
+          <h2 id="t1-3-title"><a href="../units/unit-1/data-models.html"><span class="rev-num">1.3</span> Data Models</a></h2>
+          <article class="cmp-item" id="data-models" aria-labelledby="data-models-title">
+            <div class="cmp-lead">
+            <h3 id="data-models-title">Data models: relational, E-R, object-based, semi-structured, hierarchical and network</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Each data model describes data, relationships and constraints in its own way: as tables, entities, objects, tagged documents, a tree or a graph.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>The six data models at a glance</caption>
+                <thead><tr><th scope="col">Model</th><th scope="col">Data is kept as</th><th scope="col">Relationships through</th><th scope="col">Query style</th><th scope="col">Example system</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Relational</th><td>Tables (relations) of rows and columns</td><td>Common values (keys)</td><td>Declarative SQL</td><td>MySQL, Oracle, PostgreSQL</td></tr>
+                  <tr><th scope="row">Entity-relationship (E-R)</th><td>Entities with attributes, drawn as a diagram</td><td>Relationship sets</td><td>None; a design model, mapped to tables</td><td>Used on paper and in design tools</td></tr>
+                  <tr><th scope="row">Object-based</th><td>Objects with attributes and methods</td><td>Object references and inheritance</td><td>Object query languages or SQL with object types</td><td>PostgreSQL types, db4o</td></tr>
+                  <tr><th scope="row">Semi-structured</th><td>Tagged documents (XML, JSON); each item can have different fields</td><td>Nesting and references</td><td>XPath, XQuery or a document query language</td><td>MongoDB, XML databases</td></tr>
+                  <tr><th scope="row">Hierarchical</th><td>Records in a tree; each child has one parent</td><td>Parent-child pointers</td><td>Navigate the tree</td><td>IBM IMS</td></tr>
+                  <tr><th scope="row">Network</th><td>Records in a graph; a child can have many parents</td><td>Pointers (owner-member sets)</td><td>Navigate the pointers</td><td>IDMS</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="table-wrap">
+            <table>
+              <caption>Hierarchical, network and relational models</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Hierarchical</th><th scope="col">Network</th><th scope="col">Relational</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Structure</th><td>Tree</td><td>Graph</td><td>Tables</td></tr>
+                <tr><th scope="row">Parents per record</th><td>One</td><td>Many</td><td>Not used; tables are linked by common values</td></tr>
+                <tr><th scope="row">Many-to-many</th><td>Not directly</td><td>Yes</td><td>Yes, through a linking table</td></tr>
+                <tr><th scope="row">Links</th><td>Pointers</td><td>Pointers</td><td>Keys (common columns)</td></tr>
+                <tr><th scope="row">Query</th><td>Navigate the tree</td><td>Navigate the pointers</td><td>Declarative SQL</td></tr>
+                <tr><th scope="row">Data independence</th><td>Low</td><td>Low</td><td>High</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>For the 16-mark question, give one small example for each model, then end with these tables.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/data-models.html#compare"><span class="rev-num">1.3</span> Data Models: The models compared</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-a6">Unit I QB, 2 marks</a>, <a href="../question-bank/unit-1.html#q-u1-b2">Unit I QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t1-4" class="section cmp-topic" aria-labelledby="t1-4-title">
+          <h2 id="t1-4-title"><a href="../units/unit-1/database-system-architecture.html"><span class="rev-num">1.4</span> Database System Architecture</a></h2>
+          <article class="cmp-item" id="two-tier-vs-three-tier" aria-labelledby="two-tier-vs-three-tier-title">
+            <div class="cmp-lead">
+            <h3 id="two-tier-vs-three-tier-title">Two-tier and three-tier architecture</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> In two-tier, the client talks to the database directly; in three-tier, an application server sits between the client and the database.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Two-tier and three-tier compared</caption>
+              <thead><tr><th scope="col">Point</th><th scope="col">Two-tier</th><th scope="col">Three-tier</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Layers</th><td>Client and database server</td><td>Client, application server and database server</td></tr>
+                <tr><th scope="row">Where the business logic runs</th><td>On the client</td><td>On the application server</td></tr>
+                <tr><th scope="row">Client talks to</th><td>The database, using SQL (for example, through JDBC)</td><td>The application server only</td></tr>
+                <tr><th scope="row">Security</th><td>Lower, because every client reaches the database</td><td>Higher, because only the server reaches the database</td></tr>
+                <tr><th scope="row">Scalability</th><td>Low; each client keeps its own connection to the database</td><td>High; the application server shares connections among many users</td></tr>
+                <tr><th scope="row">Changing the logic</th><td>Update the program on every client</td><td>Update the application server once</td></tr>
+                <tr><th scope="row">Suits</th><td>Small groups, such as one office</td><td>Large web applications with many users</td></tr>
+                <tr><th scope="row">Example</th><td>A billing program in a shop that connects to a database on the shop's server</td><td>An online shopping website</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Draw both diagrams side by side: user, application, database system (two-tier); user, application client, application server, database system (three-tier).</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/database-system-architecture.html#tiers"><span class="rev-num">1.4</span> Database System Architecture: Two-tier and three-tier architecture</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-b3">Unit I QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t1-7" class="section cmp-topic" aria-labelledby="t1-7-title">
+          <h2 id="t1-7-title"><a href="../units/unit-1/keys.html"><span class="rev-num">1.7</span> Keys</a></h2>
+          <article class="cmp-item" id="types-of-keys" aria-labelledby="types-of-keys-title">
+            <div class="cmp-lead">
+            <h3 id="types-of-keys-title">Super key, candidate key, primary key, alternate key, composite key and foreign key</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Every primary key is a candidate key, every candidate key is a super key, and a foreign key points to the primary key of another table.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>The keys of Student(RegNo, RollNo, Dept, Name, Email) and Marks(RegNo, CourseID, Marks)</caption>
+                <thead><tr><th scope="col">Key</th><th scope="col">Meaning</th><th scope="col">How many per table</th><th scope="col">Example</th><th scope="col">SQL</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Super key</th><td>Any set of attributes that identifies each tuple uniquely; it need not be minimal</td><td>Many</td><td>{RegNo}, {RegNo, Name}</td><td>Not declared</td></tr>
+                  <tr><th scope="row">Candidate key</th><td>A minimal super key: no attribute can be removed</td><td>One or more</td><td>{RegNo}, {Email}, {RollNo, Dept}</td><td>Not declared as such</td></tr>
+                  <tr><th scope="row">Primary key</th><td>The candidate key chosen to identify tuples; never NULL</td><td>Exactly one</td><td>{RegNo}</td><td><code>PRIMARY KEY</code></td></tr>
+                  <tr><th scope="row">Alternate key</th><td>A candidate key that was not chosen as the primary key</td><td>Zero or more</td><td>{Email}, {RollNo, Dept}</td><td><code>UNIQUE</code> (with <code>NOT NULL</code>)</td></tr>
+                  <tr><th scope="row">Composite key</th><td>A key made of two or more attributes</td><td>Any key above can be composite</td><td>{RollNo, Dept}; {RegNo, CourseID} in Marks</td><td><code>PRIMARY KEY (a, b)</code></td></tr>
+                  <tr><th scope="row">Foreign key</th><td>Attributes that refer to the primary key of another (or the same) table; may be NULL</td><td>Zero or more</td><td>RegNo in Marks refers to Student</td><td><code>FOREIGN KEY ... REFERENCES</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+                <div class="code-block">
+                  <span class="code-label">Primary, alternate and composite keys</span>
+                  <pre><code>CREATE TABLE student (
+    reg_no  CHAR(10) PRIMARY KEY,
+    roll_no INT NOT NULL,
+    dept    VARCHAR(5) NOT NULL,
+    name    VARCHAR(30) NOT NULL,
+    -- alternate key:
+    email   VARCHAR(40) NOT NULL UNIQUE,
+    -- composite alternate key:
+    UNIQUE (roll_no, dept)
+  );</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">Composite primary key and foreign keys</span>
+                  <pre><code>CREATE TABLE marks (
+    reg_no    CHAR(10),
+    course_id CHAR(5),
+    marks     INT,
+    PRIMARY KEY (reg_no, course_id),
+    FOREIGN KEY (reg_no)
+      REFERENCES student (reg_no),
+    FOREIGN KEY (course_id)
+      REFERENCES course (course_id)
+  );</code></pre>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Draw the keys as nested circles: super keys outside, candidate keys inside them, and the primary key in the middle.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/keys.html#super-key"><span class="rev-num">1.7</span> Keys: Super key</a>; <a href="../units/unit-1/keys.html#candidate-key"><span class="rev-num">1.7</span> Keys: Candidate key</a>; <a href="../units/unit-1/keys.html#primary-key"><span class="rev-num">1.7</span> Keys: Primary key and alternate key</a>; <a href="../units/unit-1/keys.html#composite-key"><span class="rev-num">1.7</span> Keys: Composite key</a>; <a href="../units/unit-1/keys.html#foreign-key"><span class="rev-num">1.7</span> Keys: Foreign key</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-a11">Unit I QB, 2 marks</a></div>
+          </article>
+          <article class="cmp-item" id="primary-key-vs-foreign-key" aria-labelledby="primary-key-vs-foreign-key-title">
+            <div class="cmp-lead">
+            <h3 id="primary-key-vs-foreign-key-title">Primary key and foreign key</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> A primary key identifies each row of its own table; a foreign key in another table refers to that primary key and links the two tables.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Primary key and foreign key</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Primary key</th><th scope="col">Foreign key</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Purpose</th><td>Identifies each tuple of its own table uniquely</td><td>Links a tuple to a tuple of another (parent) table</td></tr>
+                  <tr><th scope="row">Unique values</th><td>Yes, always</td><td>No; many child rows can hold the same value</td></tr>
+                  <tr><th scope="row">NULL</th><td>Never allowed</td><td>Allowed, unless declared NOT NULL</td></tr>
+                  <tr><th scope="row">Number per table</th><td>Exactly one (it may be composite)</td><td>Zero, one or many</td></tr>
+                  <tr><th scope="row">Table it lives in</th><td>The parent (referenced) table</td><td>The child (referencing) table</td></tr>
+                  <tr><th scope="row">Rule it enforces</th><td>Entity integrity</td><td>Referential integrity</td></tr>
+                  <tr><th scope="row">Value comes from</th><td>Chosen for each new row</td><td>Must already exist in the parent's primary key (or be NULL)</td></tr>
+                  <tr><th scope="row">Deleting a row</th><td>A parent row that is still referenced cannot be deleted, unless ON DELETE CASCADE or SET NULL is given</td><td>A child row can be deleted freely</td></tr>
+                  <tr><th scope="row">Index</th><td>Created automatically</td><td>MySQL (InnoDB) creates one if none exists</td></tr>
+                  <tr><th scope="row">Example</th><td>course_id in Course</td><td>course_id in Marks</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+                <div class="code-block">
+                  <span class="code-label">Primary key (parent)</span>
+                  <pre><code>CREATE TABLE course (
+    course_id CHAR(5) PRIMARY KEY,
+    title     VARCHAR(40)
+  );</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">Foreign key (child)</span>
+                  <pre><code>CREATE TABLE marks (
+    reg_no    CHAR(10),
+    course_id CHAR(5),
+    marks     INT,
+    FOREIGN KEY (course_id)
+      REFERENCES course (course_id)
+      ON DELETE CASCADE
+  );</code></pre>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/keys.html#primary-key"><span class="rev-num">1.7</span> Keys: Primary key and alternate key</a>; <a href="../units/unit-1/keys.html#foreign-key"><span class="rev-num">1.7</span> Keys: Foreign key</a><br>Asked in: <a href="../question-bank/unit-2.html#q-u2-a2">Unit II QB, 2 marks</a>, <a href="../question-bank/unit-1.html#q-u1-a11">Unit I QB, 2 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t1-8" class="section cmp-topic" aria-labelledby="t1-8-title">
+          <h2 id="t1-8-title"><a href="../units/unit-1/constraints.html"><span class="rev-num">1.8</span> Constraints</a></h2>
+          <article class="cmp-item" id="primary-key-vs-unique" aria-labelledby="primary-key-vs-unique-title">
+            <div class="cmp-lead">
+            <h3 id="primary-key-vs-unique-title">PRIMARY KEY and UNIQUE constraints</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Both stop duplicate values, but a table has only one PRIMARY KEY and it never holds NULL, while it can have many UNIQUE constraints that allow NULL.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>PRIMARY KEY and UNIQUE</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">PRIMARY KEY</th><th scope="col">UNIQUE</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Duplicates</th><td>Not allowed</td><td>Not allowed</td></tr>
+                  <tr><th scope="row">NULL</th><td>Not allowed (the columns become NOT NULL)</td><td>Allowed; in MySQL many rows may hold NULL</td></tr>
+                  <tr><th scope="row">Number per table</th><td>Only one</td><td>Many</td></tr>
+                  <tr><th scope="row">Used for</th><td>The primary key</td><td>Alternate keys, such as an email or a phone number</td></tr>
+                  <tr><th scope="row">Can a foreign key refer to it?</th><td>Yes; this is the usual case</td><td>Yes, in MySQL, but referring to the primary key is the normal practice</td></tr>
+                  <tr><th scope="row">Index in MySQL (InnoDB)</th><td>The clustered index; rows are stored in its order</td><td>A separate secondary index</td></tr>
+                  <tr><th scope="row">Syntax</th><td><code>col INT PRIMARY KEY</code></td><td><code>col VARCHAR(40) UNIQUE</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid cmp-syntax-many">
+              <div>
+                <div class="code-block">
+                  <span class="code-label">Column level</span>
+                  <pre><code>CREATE TABLE student (
+    reg_no CHAR(10)    PRIMARY KEY,
+    email  VARCHAR(40) UNIQUE,
+    phone  CHAR(10)    UNIQUE
+  );</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">Table level, with names</span>
+                  <pre><code>CREATE TABLE student (
+    reg_no CHAR(10),
+    email  VARCHAR(40),
+    CONSTRAINT pk_student
+      PRIMARY KEY (reg_no),
+    CONSTRAINT uq_email
+      UNIQUE (email)
+  );</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">What happens</span>
+                  <pre><code>INSERT INTO student (reg_no, email)
+    VALUES (NULL, 'a@kiot.in');
+  -- Error: reg_no cannot be NULL
+  
+  INSERT INTO student (reg_no, email)
+    VALUES ('7110231001', NULL);
+  -- OK: UNIQUE allows NULL</code></pre>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/constraints.html#column"><span class="rev-num">1.8</span> Constraints: NOT NULL, UNIQUE, CHECK and DEFAULT</a>; <a href="../units/unit-1/keys.html#primary-key"><span class="rev-num">1.7</span> Keys: Primary key and alternate key</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-a16">Unit I QB, 2 marks</a></div>
+          </article>
+          <article class="cmp-item" id="entity-vs-referential-integrity" aria-labelledby="entity-vs-referential-integrity-title">
+            <div class="cmp-lead">
+            <h3 id="entity-vs-referential-integrity-title">Entity integrity and referential integrity</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Entity integrity: a primary key is never NULL. Referential integrity: a foreign key matches a primary key value in the parent table, or is NULL.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Entity integrity and referential integrity</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Entity integrity</th><th scope="col">Referential integrity</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Rule</th><td>No attribute of a primary key can be NULL</td><td>A foreign key value must match a primary key value in the parent table, or be NULL</td></tr>
+                  <tr><th scope="row">Tables involved</th><td>One table</td><td>Two tables (or one table that refers to itself)</td></tr>
+                  <tr><th scope="row">Declared with</th><td><code>PRIMARY KEY</code></td><td><code>FOREIGN KEY ... REFERENCES</code></td></tr>
+                  <tr><th scope="row">Protects against</th><td>Rows that cannot be identified</td><td>Child rows that point to a parent that does not exist (orphan rows)</td></tr>
+                  <tr><th scope="row">Checked on</th><td>INSERT and UPDATE of the table</td><td>INSERT and UPDATE of the child; UPDATE and DELETE of the parent</td></tr>
+                  <tr><th scope="row">On a violation</th><td>The statement is rejected</td><td>The statement is rejected, or the change is passed on with CASCADE, SET NULL or RESTRICT</td></tr>
+                  <tr><th scope="row">Example</th><td>A student row with no register number is rejected</td><td>Marks for course CS999 are rejected when Course has no CS999</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+                <div class="code-block">
+                  <span class="code-label">Entity integrity</span>
+                  <pre><code>CREATE TABLE customer (
+    cust_id INT PRIMARY KEY,
+    name    VARCHAR(30)
+  );
+  INSERT INTO customer
+    VALUES (NULL, 'Ravi');
+  -- Error: cust_id cannot be NULL</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">Referential integrity</span>
+                  <pre><code>CREATE TABLE orders (
+    order_id INT PRIMARY KEY,
+    cust_id  INT,
+    FOREIGN KEY (cust_id)
+      REFERENCES customer (cust_id)
+      ON DELETE SET NULL
+  );
+  INSERT INTO orders VALUES (1, 99);
+  -- Error if there is no
+  -- customer 99</code></pre>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/constraints.html#entity"><span class="rev-num">1.8</span> Constraints: Entity integrity rule</a>; <a href="../units/unit-1/constraints.html#referential"><span class="rev-num">1.8</span> Constraints: Referential integrity rule</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-a10">Unit I QB, 2 marks</a>, <a href="../question-bank/unit-1.html#q-u1-b4">Unit I QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t1-9" class="section cmp-topic" aria-labelledby="t1-9-title">
+          <h2 id="t1-9-title"><a href="../units/unit-1/relational-algebra.html"><span class="rev-num">1.9</span> Relational Algebra</a></h2>
+          <article class="cmp-item" id="select-vs-project" aria-labelledby="select-vs-project-title">
+            <div class="cmp-lead">
+            <h3 id="select-vs-project-title">Selection (σ) and projection (π)</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Selection picks rows that satisfy a condition; projection picks columns and removes duplicate rows.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Selection and projection</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Selection (σ)</th><th scope="col">Projection (π)</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Picks</th><td>Tuples (rows)</td><td>Attributes (columns)</td></tr>
+                  <tr><th scope="row">Needs</th><td>A condition (predicate)</td><td>A list of attributes</td></tr>
+                  <tr><th scope="row">Notation</th><td>σ<sub>condition</sub>(r)</td><td>π<sub>A1, A2</sub>(r)</td></tr>
+                  <tr><th scope="row">Degree of the result (columns)</th><td>Same as r</td><td>The number of attributes listed</td></tr>
+                  <tr><th scope="row">Cardinality of the result (rows)</th><td>Same as r or fewer</td><td>Same as r or fewer, because duplicates are removed</td></tr>
+                  <tr><th scope="row">Duplicates</th><td>Cannot appear (r has none)</td><td>Removed, because a relation is a set</td></tr>
+                  <tr><th scope="row">Commutative?</th><td>Yes: σ<sub>c1</sub>(σ<sub>c2</sub>(r)) = σ<sub>c2</sub>(σ<sub>c1</sub>(r))</td><td>No; the outer list must be part of the inner list</td></tr>
+                  <tr><th scope="row">SQL part</th><td><code>WHERE</code></td><td>The column list after <code>SELECT</code> (with <code>DISTINCT</code>)</td></tr>
+                  <tr><th scope="row">Example</th><td>σ<sub>age &gt; 18</sub>(Student)</td><td>π<sub>city</sub>(Student)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+                <div class="code-block">
+                  <span class="code-label">Relational algebra</span>
+                  <pre><code>σ age &gt; 18 (Student)
+  
+  π city (Student)
+  
+  π sname (σ city = 'Salem' (Student))</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">SQL</span>
+                  <pre><code>SELECT * FROM Student WHERE age &gt; 18;
+  
+  SELECT DISTINCT city FROM Student;
+  
+  SELECT sname FROM Student
+  WHERE city = 'Salem';</code></pre>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>SQL's SELECT keyword does projection, not selection. Selection is the WHERE clause.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/relational-algebra.html#select"><span class="rev-num">1.9</span> Relational Algebra: Select (σ)</a>; <a href="../units/unit-1/relational-algebra.html#project"><span class="rev-num">1.9</span> Relational Algebra: Project (π)</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-a13">Unit I QB, 2 marks</a>, <a href="../question-bank/unit-1.html#q-u1-b5">Unit I QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="relational-algebra-joins" aria-labelledby="relational-algebra-joins-title">
+            <div class="cmp-lead">
+            <h3 id="relational-algebra-joins-title">Theta join, equijoin, natural join and outer joins</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> All joins combine related tuples of two relations; they differ in the condition they use and in what they do with tuples that have no match.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Joins in relational algebra</caption>
+                <thead><tr><th scope="col">Join</th><th scope="col">Notation</th><th scope="col">Condition</th><th scope="col">Common attributes in the result</th><th scope="col">Unmatched tuples</th><th scope="col">SQL</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Theta join</th><td>r ⋈<sub>θ</sub> s</td><td>Any comparison: =, ≠, &lt;, ≤, &gt;, ≥</td><td>Both copies kept</td><td>Dropped</td><td><code>JOIN ... ON r.a &lt; s.b</code></td></tr>
+                  <tr><th scope="row">Equijoin</th><td>r ⋈<sub>r.a = s.a</sub> s</td><td>Only =</td><td>Both copies kept</td><td>Dropped</td><td><code>JOIN ... ON r.a = s.a</code></td></tr>
+                  <tr><th scope="row">Natural join</th><td>r ⋈ s</td><td>None written; equal values in all attributes with the same name</td><td>Kept once</td><td>Dropped</td><td><code>NATURAL JOIN</code></td></tr>
+                  <tr><th scope="row">Left outer join</th><td>r ⟕ s</td><td>As in the join</td><td>Kept once (natural) or both</td><td>Kept from r, padded with NULL</td><td><code>LEFT JOIN</code></td></tr>
+                  <tr><th scope="row">Right outer join</th><td>r ⟖ s</td><td>As in the join</td><td>Kept once (natural) or both</td><td>Kept from s, padded with NULL</td><td><code>RIGHT JOIN</code></td></tr>
+                  <tr><th scope="row">Full outer join</th><td>r ⟗ s</td><td>As in the join</td><td>Kept once (natural) or both</td><td>Kept from both, padded with NULL</td><td>No FULL JOIN in MySQL; use LEFT JOIN UNION RIGHT JOIN</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+                <div class="code-block">
+                  <span class="code-label">Relational algebra</span>
+                  <pre><code>Student ⋈ Student.sid = Reserve.sid
+    Reserve
+  
+  Reserve ⋈ Book
+  
+  Emp ⟕ Dept</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">SQL (MySQL)</span>
+                  <pre><code>SELECT * FROM Student
+  JOIN Reserve
+    ON Student.sid = Reserve.sid;
+  
+  SELECT * FROM Reserve
+  NATURAL JOIN Book;
+  
+  SELECT * FROM Emp
+  LEFT JOIN Dept ON Emp.dno = Dept.dno;</code></pre>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Theta join, equijoin and natural join are all inner joins. Say this in one line, then show the NULL-padded rows of an outer join.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/relational-algebra.html#joins"><span class="rev-num">1.9</span> Relational Algebra: Joins: theta join, equijoin and natural join</a>; <a href="../units/unit-1/relational-algebra.html#outer"><span class="rev-num">1.9</span> Relational Algebra: Outer joins</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-b5">Unit I QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="relational-algebra-vs-sql" aria-labelledby="relational-algebra-vs-sql-title">
+            <div class="cmp-lead">
+            <h3 id="relational-algebra-vs-sql-title">Relational algebra and SQL</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> Relational algebra is a procedural set of operators on relations used inside the DBMS; SQL is the declarative language that users write.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Relational algebra and SQL</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">Relational algebra</th><th scope="col">SQL</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Kind of language</th><td>Procedural: says how to get the result, step by step</td><td>Declarative (non-procedural): says what result is wanted</td></tr>
+                  <tr><th scope="row">Used by</th><td>The DBMS, to plan and optimize queries</td><td>Users and application programs</td></tr>
+                  <tr><th scope="row">Works on</th><td>Relations (sets), so duplicates are removed</td><td>Tables (multisets), so duplicates are kept unless DISTINCT is used</td></tr>
+                  <tr><th scope="row">Operators</th><td>σ, π, ∪, ∩, −, ×, ρ, ⋈, ÷</td><td>SELECT, FROM, WHERE, JOIN, UNION, GROUP BY and more</td></tr>
+                  <tr><th scope="row">Changes data?</th><td>No, it only queries</td><td>Yes: INSERT, UPDATE, DELETE, and DDL too</td></tr>
+                  <tr><th scope="row">Aggregates and sorting</th><td>Not in the basic operators</td><td>COUNT, SUM, AVG, ORDER BY</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>Each relational algebra operator and its SQL form</caption>
+                <thead><tr><th scope="col">Operator</th><th scope="col">Relational algebra</th><th scope="col">SQL</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Selection</th><td>σ<sub>city = 'Salem'</sub>(Student)</td><td><code>WHERE city = 'Salem'</code></td></tr>
+                  <tr><th scope="row">Projection</th><td>π<sub>sname</sub>(Student)</td><td><code>SELECT DISTINCT sname</code></td></tr>
+                  <tr><th scope="row">Cartesian product</th><td>Student × Reserve</td><td><code>FROM Student, Reserve</code> or <code>CROSS JOIN</code></td></tr>
+                  <tr><th scope="row">Natural join</th><td>Reserve ⋈ Book</td><td><code>Reserve NATURAL JOIN Book</code></td></tr>
+                  <tr><th scope="row">Union</th><td>r ∪ s</td><td><code>UNION</code></td></tr>
+                  <tr><th scope="row">Intersection</th><td>r ∩ s</td><td><code>INTERSECT</code> (MySQL 8.0.31 and later)</td></tr>
+                  <tr><th scope="row">Set difference</th><td>r − s</td><td><code>EXCEPT</code> (MINUS in Oracle)</td></tr>
+                  <tr><th scope="row">Rename</th><td>ρ<sub>S</sub>(Student)</td><td><code>Student AS S</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+                <div class="code-block">
+                  <span class="code-label">Relational algebra</span>
+                  <pre><code>π sname (σ bname = 'DBMS'
+    (Student ⋈ Reserve ⋈ Book))</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">SQL</span>
+                  <pre><code>SELECT DISTINCT s.sname
+  FROM Student s
+  NATURAL JOIN Reserve
+  NATURAL JOIN Book
+  WHERE bname = 'DBMS';</code></pre>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/relational-algebra.html#what"><span class="rev-num">1.9</span> Relational Algebra: What is relational algebra?</a>; <a href="../units/unit-1/basic-structure-of-sql-queries.html#structure"><span class="rev-num">1.11</span> Basic Structure of SQL Queries: The SELECT-FROM-WHERE structure</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-a12">Unit I QB, 2 marks</a>, <a href="../question-bank/unit-1.html#q-u1-b5">Unit I QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <section id="t1-10" class="section cmp-topic" aria-labelledby="t1-10-title">
+          <h2 id="t1-10-title"><a href="../units/unit-1/overview-of-sql.html"><span class="rev-num">1.10</span> Overview of the SQL Query Language</a></h2>
+          <article class="cmp-item" id="ddl-dml-dcl-tcl" aria-labelledby="ddl-dml-dcl-tcl-title">
+            <div class="cmp-lead">
+            <h3 id="ddl-dml-dcl-tcl-title">DDL, DML, DCL and TCL</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> DDL defines the structure, DML works on the rows, DCL gives and takes away access rights, and TCL ends or undoes transactions.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>The main parts of SQL</caption>
+              <thead><tr><th scope="col">Part</th><th scope="col">Purpose</th><th scope="col">Commands</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">DDL: Data Definition Language</th><td>Define, change and delete the schema (tables, views, indexes)</td><td>CREATE, ALTER, DROP, TRUNCATE, RENAME</td></tr>
+                <tr><th scope="row">DML: Data Manipulation Language</th><td>Insert, change, delete and retrieve the data</td><td>INSERT, UPDATE, DELETE, SELECT</td></tr>
+                <tr><th scope="row">DCL: Data Control Language</th><td>Give and take away access rights</td><td>GRANT, REVOKE</td></tr>
+                <tr><th scope="row">TCL: Transaction Control Language</th><td>Mark the start and end of transactions</td><td>COMMIT, ROLLBACK, SAVEPOINT</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid cmp-syntax-many">
+              <div>
+                <div class="code-block">
+                  <span class="code-label">DDL</span>
+                  <pre><code>CREATE TABLE student (
+    roll_no INT PRIMARY KEY,
+    name    VARCHAR(30)
+  );
+  ALTER TABLE student
+    ADD city VARCHAR(20);</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">DML</span>
+                  <pre><code>INSERT INTO student
+    VALUES (1, 'Anitha', 'Salem');
+  UPDATE student SET city = 'Erode'
+    WHERE roll_no = 1;
+  SELECT * FROM student;</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">DCL</span>
+                  <pre><code>GRANT SELECT, INSERT
+    ON college.student
+    TO 'clerk'@'localhost';
+  REVOKE INSERT
+    ON college.student
+    FROM 'clerk'@'localhost';</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">TCL</span>
+                  <pre><code>START TRANSACTION;
+  UPDATE student SET city = 'Salem'
+    WHERE roll_no = 1;
+  SAVEPOINT sp1;
+  DELETE FROM student;
+  ROLLBACK TO sp1;
+  COMMIT;</code></pre>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>Memory aid: DDL is the shape, DML is the data, DCL is the door (who may enter) and TCL is the save button.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/overview-of-sql.html#parts"><span class="rev-num">1.10</span> Overview of the SQL Query Language: Parts of SQL</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-a14">Unit I QB, 2 marks</a>, <a href="../question-bank/unit-3.html#q-u3-a12">Unit III QB, 2 marks</a></div>
+          </article>
+          <article class="cmp-item" id="char-vs-varchar" aria-labelledby="char-vs-varchar-title">
+            <div class="cmp-lead">
+            <h3 id="char-vs-varchar-title">CHAR and VARCHAR</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> CHAR(n) always takes n characters, padded with spaces; VARCHAR(n) takes only as many characters as the value needs, up to n.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>CHAR and VARCHAR in MySQL</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">CHAR(n)</th><th scope="col">VARCHAR(n)</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Length</th><td>Fixed: always n characters</td><td>Variable: up to n characters</td></tr>
+                  <tr><th scope="row">Storage of 'Ram' in (10)</th><td>'Ram' plus 7 spaces</td><td>'Ram' plus 1 length byte</td></tr>
+                  <tr><th scope="row">Extra bytes</th><td>None</td><td>1 length byte (2 if the column can be longer than 255 bytes)</td></tr>
+                  <tr><th scope="row">Maximum n</th><td>255</td><td>65,535 bytes in all for the row</td></tr>
+                  <tr><th scope="row">Trailing spaces</th><td>Added when stored, removed when read</td><td>Kept as given</td></tr>
+                  <tr><th scope="row">Speed</th><td>Slightly faster to find and update, because every value has the same size</td><td>Saves space when values vary in length</td></tr>
+                  <tr><th scope="row">Best for</th><td>Values of one length: PIN code, gender code, register number</td><td>Values that vary: names, addresses, emails</td></tr>
+                  <tr><th scope="row">Example</th><td><code>pin_code CHAR(6)</code></td><td><code>name VARCHAR(30)</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+                <div class="code-block">
+                  <span class="code-label">CHAR</span>
+                  <pre><code>CREATE TABLE t (code CHAR(5));
+  INSERT INTO t VALUES ('ab');
+  SELECT LENGTH(code) FROM t;
+  -- 2 (the padding spaces are removed
+  --    when the value is read)</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">VARCHAR</span>
+                  <pre><code>CREATE TABLE u (code VARCHAR(5));
+  INSERT INTO u VALUES ('ab ');
+  SELECT LENGTH(code) FROM u;
+  -- 3 (the space is kept)</code></pre>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/overview-of-sql.html#types"><span class="rev-num">1.10</span> Overview of the SQL Query Language: Basic data types</a></div>
+          </article>
+        </section>
+
+        <section id="t1-12" class="section cmp-topic" aria-labelledby="t1-12-title">
+          <h2 id="t1-12-title"><a href="../units/unit-1/ddl.html"><span class="rev-num">1.12</span> DDL</a></h2>
+          <article class="cmp-item" id="ddl-vs-dml" aria-labelledby="ddl-vs-dml-title">
+            <div class="cmp-lead">
+            <h3 id="ddl-vs-dml-title">DDL and DML</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> DDL commands create and change the structure (schema) of the database; DML commands insert, change, delete and read the rows.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>DDL and DML side by side</caption>
+              <thead><tr><th scope="col"></th><th scope="col">DDL</th><th scope="col">DML</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Full name</th><td>Data Definition Language</td><td>Data Manipulation Language</td></tr>
+                <tr><th scope="row">Works on</th><td>The structure (schema)</td><td>The data (rows)</td></tr>
+                <tr><th scope="row">Commands</th><td>CREATE, ALTER, DROP, TRUNCATE, RENAME</td><td>INSERT, UPDATE, DELETE, SELECT</td></tr>
+                <tr><th scope="row">Effect</th><td>Changes the data dictionary</td><td>Changes or reads the stored rows</td></tr>
+                <tr><th scope="row">Commit</th><td>Saved at once (auto-commit in MySQL)</td><td>Can be undone with ROLLBACK before COMMIT</td></tr>
+                <tr><th scope="row">WHERE clause</th><td>Not used</td><td>Used to pick rows</td></tr>
+                <tr><th scope="row">Who uses it most</th><td>Database designers and administrators</td><td>Application programmers and users</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+                <div class="code-block">
+                  <span class="code-label">DDL: works on the structure</span>
+                  <pre><code>CREATE TABLE person (
+    id   INT PRIMARY KEY,
+    name VARCHAR(30)
+  );
+  ALTER TABLE person ADD age INT;
+  TRUNCATE TABLE person;
+  DROP TABLE person;</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">DML: works on the rows</span>
+                  <pre><code>INSERT INTO person
+    VALUES (1, 'Arun', 20);
+  UPDATE person SET age = 21
+    WHERE id = 1;
+  DELETE FROM person WHERE id = 1;
+  SELECT * FROM person;</code></pre>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>For 2 marks, write the full names and three rows: works on, commands and rollback. Add one example statement for each.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/ddl.html#ddl-vs-dml"><span class="rev-num">1.12</span> DDL: DDL compared with DML</a>; <a href="../units/unit-1/dml.html#ddl-vs-dml"><span class="rev-num">1.13</span> DML: DML compared with DDL</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-a15">Unit I QB, 2 marks</a>, <a href="../question-bank/unit-1.html#q-u1-b6">Unit I QB, 16 marks</a></div>
+          </article>
+          <article class="cmp-item" id="delete-truncate-drop" aria-labelledby="delete-truncate-drop-title">
+            <div class="cmp-lead">
+            <h3 id="delete-truncate-drop-title">DELETE, TRUNCATE and DROP</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> DELETE removes chosen rows and can be rolled back; TRUNCATE quickly removes all rows but keeps the table; DROP removes the table itself.</p>
+            <div class="table-wrap">
+            <table>
+              <caption>Three ways to remove data</caption>
+              <thead><tr><th scope="col"></th><th scope="col">DELETE</th><th scope="col">TRUNCATE</th><th scope="col">DROP</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Language</th><td>DML</td><td>DDL</td><td>DDL</td></tr>
+                <tr><th scope="row">Removes</th><td>Chosen rows (or all)</td><td>All rows</td><td>Rows and the table itself</td></tr>
+                <tr><th scope="row">WHERE allowed</th><td>Yes</td><td>No</td><td>No</td></tr>
+                <tr><th scope="row">Table kept</th><td>Yes</td><td>Yes</td><td>No</td></tr>
+                <tr><th scope="row">Can be rolled back in MySQL</th><td>Yes, inside a transaction</td><td>No</td><td>No</td></tr>
+                <tr><th scope="row">Speed on a big table</th><td>Slow (row by row)</td><td>Fast</td><td>Fast</td></tr>
+                <tr><th scope="row">AUTO_INCREMENT counter</th><td>Kept</td><td>Reset</td><td>Gone</td></tr>
+              </tbody>
+            </table>
+          </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid cmp-syntax-many">
+              <div>
+                <div class="code-block">
+                  <span class="code-label">DELETE (DML)</span>
+                  <pre><code>DELETE FROM person
+  WHERE age &lt; 18;
+  -- or every row:
+  DELETE FROM person;</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">TRUNCATE (DDL)</span>
+                  <pre><code>TRUNCATE TABLE person;
+  -- all rows gone,
+  -- the table is still there</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">DROP (DDL)</span>
+                  <pre><code>DROP TABLE person;
+  -- rows and table gone;
+  -- DESC person now fails</code></pre>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/ddl.html#truncate"><span class="rev-num">1.12</span> DDL: TRUNCATE</a>; <a href="../units/unit-1/dml.html#delete"><span class="rev-num">1.13</span> DML: DELETE</a></div>
+          </article>
+          <article class="cmp-item" id="alter-vs-update" aria-labelledby="alter-vs-update-title">
+            <div class="cmp-lead">
+            <h3 id="alter-vs-update-title">ALTER and UPDATE</h3>
+            <p class="cmp-summary"><strong>In one line:</strong> ALTER TABLE changes the structure of a table, such as its columns; UPDATE changes the values stored in its rows.</p>
+            <div class="table-wrap">
+              <table class="cmp-table">
+                <caption>ALTER and UPDATE</caption>
+                <thead><tr><th scope="col">Basis</th><th scope="col">ALTER TABLE</th><th scope="col">UPDATE</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Language</th><td>DDL</td><td>DML</td></tr>
+                  <tr><th scope="row">Changes</th><td>The structure: columns, data types, constraints, table name</td><td>The data: values in existing rows</td></tr>
+                  <tr><th scope="row">Rows affected</th><td>The whole table's definition (every row gets the new column)</td><td>Only the rows that match WHERE (all rows if WHERE is left out)</td></tr>
+                  <tr><th scope="row">Uses a WHERE clause</th><td>No</td><td>Yes</td></tr>
+                  <tr><th scope="row">Can be rolled back in MySQL</th><td>No; it commits at once</td><td>Yes, inside a transaction</td></tr>
+                  <tr><th scope="row">Typical forms</th><td>ADD, MODIFY, CHANGE, RENAME COLUMN, DROP COLUMN, ADD CONSTRAINT</td><td>SET column = value</td></tr>
+                  <tr><th scope="row">Example task</th><td>Add an age column to person</td><td>Change Arun's age to 21</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+            <div class="cmp-syntax">
+              <h4>Syntax side by side</h4>
+              <div class="cmp-syntax-grid">
+              <div>
+                <div class="code-block">
+                  <span class="code-label">ALTER TABLE (structure)</span>
+                  <pre><code>ALTER TABLE person ADD age INT;
+  ALTER TABLE person
+    MODIFY name VARCHAR(50);
+  ALTER TABLE person
+    RENAME COLUMN age TO years;
+  ALTER TABLE person DROP COLUMN years;</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="code-block">
+                  <span class="code-label">UPDATE (data)</span>
+                  <pre><code>UPDATE person
+  SET age = 21
+  WHERE name = 'Arun';
+  
+  UPDATE person
+  SET age = age + 1;  -- every row</code></pre>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="callout callout-tip"><div class="callout-title">Exam tip</div><p>A common slip is writing “UPDATE TABLE”. The table keyword belongs to ALTER TABLE; UPDATE is followed directly by the table name.</p></div>
+            <div class="cmp-source">Read more: <a href="../units/unit-1/ddl.html#alter"><span class="rev-num">1.12</span> DDL: ALTER</a>; <a href="../units/unit-1/dml.html#update"><span class="rev-num">1.13</span> DML: UPDATE</a><br>Asked in: <a href="../question-bank/unit-1.html#q-u1-b6">Unit I QB, 16 marks</a></div>
+          </article>
+        </section>
+
+        <div class="btn-row cmp-more no-print">
+          <a class="btn" href="../diagrams/unit-1.html">Unit I diagrams and examples</a>
+          <a class="btn" href="../outlines/unit-1.html">Unit I 16-mark outlines</a>
+          <a class="btn" href="../units/unit-1/index.html">Unit I topics</a>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer id="site-footer" class="site-footer"></footer>
+  <script src="../data/site.js"></script>
+  <script src="../data/topics.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/revision.js"></script>
+</body>
+</html>
