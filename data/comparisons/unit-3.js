@@ -119,7 +119,7 @@ DBMS.comparisons = (DBMS.comparisons || []).concat([
     tables: [{ from: "3.8", ref: "cmp-deadlock-livelock" }],
     tip: "Livelock is a special case of starvation. Say this, then give one example of each.",
     read: ["3.8#livelock"],
-    questions: ["u3-a8", "u3-b5", "u3-b17"]
+    questions: ["u3-a8", "u3-a16", "u3-b5", "u3-b17"]
   },
   {
     id: "wait-die-vs-wound-wait",

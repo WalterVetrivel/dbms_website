@@ -258,6 +258,25 @@
         "<p><strong>Recovery</strong> is <strong>restoring the database to a correct state</strong> after a failure, such as a disk crash. We restore the latest backup, then apply the log (the binary log in MySQL) to redo the committed changes made after it.</p>"
     },
     {
+      id: "u3-a16",
+      unit: 3,
+      part: "A",
+      marks: 2,
+      topics: ["3.8"],
+      sources: [{ bank: "Unit III", extra: true }],
+      original: "What is dead lock? List the conditions for dead lock.",
+      question: "What is a deadlock? List the conditions for a deadlock.",
+      answer:
+        "<p>A <strong>deadlock</strong> is a state where each transaction in a set is <strong>waiting for a data item locked by another transaction</strong> in the same set, so none of them can continue.</p>" +
+        "<p>A deadlock can occur only when all four conditions hold at the same time:</p>" +
+        "<ul>" +
+        "<li><strong>Mutual exclusion:</strong> at least one lock cannot be shared (an exclusive lock).</li>" +
+        "<li><strong>Hold and wait:</strong> a transaction holds some locks while it waits for another.</li>" +
+        "<li><strong>No preemption:</strong> a lock cannot be taken away; only its holder releases it.</li>" +
+        "<li><strong>Circular wait:</strong> T1 waits for T2, T2 waits for T3, and so on, and the last waits for T1.</li>" +
+        "</ul>"
+    },
+    {
       id: "u3-b1",
       unit: 3,
       part: "B",

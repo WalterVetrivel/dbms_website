@@ -749,4 +749,211 @@
       }
     ]
   };
+
+  D.outlines["u4-b12"] = {
+    aim: "A construction problem. State what three pointers per node means, then insert the keys in the order given (not sorted), drawing the tree after every split and saying which key is copied up from a leaf or moved up from an internal node. The final tree must be correct and neatly drawn.",
+    sections: [
+      {
+        title: "Introduction to the B+ tree",
+        pages: 0.5,
+        see: ["4.6#why", "4.6#structure"],
+        points: [
+          "Define a B+ tree: balanced; all keys in linked leaves; internal nodes route the search."
+        ],
+        draw: ["One node: P1, K1, P2, K2, P3."]
+      },
+      {
+        title: "What the question gives",
+        pages: 0.5,
+        see: ["4.6#insertion", "4.6#worked-example"],
+        points: [
+          "n = 3 pointers, so each node holds at most 2 keys.",
+          "A leaf needs at least ⌈(n − 1)/2⌉ = 1 key; an internal node needs at least ⌈n/2⌉ = 2 pointers.",
+          "The insertion rule: a leaf split copies the middle key up; an internal split moves it up.",
+          "When three keys split, the new (right) leaf gets the extra key, as in the class notes. State the method you use."
+        ]
+      },
+      {
+        title: "Insert 26, 27, 28, 3 and 4",
+        pages: 1,
+        see: ["4.6#insertion"],
+        points: [
+          "26 and 27 fit in the first leaf.",
+          "28 splits [26 | 27 | 28] into [26] and [27 | 28]; 27 is copied up into a new root [27].",
+          "3 goes into the left leaf: [3 | 26]. No split.",
+          "4 splits [3 | 4 | 26] into [3] and [4 | 26]; 4 is copied up: root [4 | 27]."
+        ],
+        draw: ["The tree after 28 and after 4."]
+      },
+      {
+        title: "Insert 7, 9 and 46",
+        pages: 1.25,
+        see: ["4.6#insertion", "4.6#worked-example"],
+        points: [
+          "7: [4 | 7 | 26] splits into [4] and [7 | 26] and copies 7 up; the root [4 | 7 | 27] overflows and splits into [4] and [27], moving 7 up into a new root. Height becomes 3.",
+          "9: [7 | 9 | 26] splits into [7] and [9 | 26]; 9 is copied up into [9 | 27].",
+          "46: [27 | 28 | 46] splits into [27] and [28 | 46] and copies 28 up; [9 | 27 | 28] splits into [9] and [28], moving 27 up into the root [7 | 27]."
+        ],
+        draw: ["The tree after 7, after 9 and after 46."]
+      },
+      {
+        title: "Insert 48, 51, 2 and 6",
+        pages: 1.25,
+        see: ["4.6#insertion", "4.6#try-it"],
+        points: [
+          "48: [28 | 46 | 48] splits into [28] and [46 | 48]; 46 is copied up into [28 | 46].",
+          "51: [46 | 48 | 51] splits into [46] and [48 | 51] and copies 48 up; [28 | 46 | 48] splits into [28] and [48], moving 46 up; the root [7 | 27 | 46] splits into [7] and [46], moving 27 up into a new root. Height becomes 4.",
+          "2 goes into the leaf [3], which becomes [2 | 3]. No split.",
+          "6 goes into the leaf [4], which becomes [4 | 6]. No split."
+        ],
+        draw: ["The tree after 51, and the final tree after 6: root [27]; [7] and [46]; [4], [9], [28] and [48]; leaves [2 | 3] → [4 | 6] → [7] → [9 | 26] → [27] → [28] → [46] → [48 | 51]."]
+      },
+      {
+        title: "Checking the final tree and conclusion",
+        pages: 0.5,
+        see: ["4.6#search", "4.6#try-it"],
+        points: [
+          "Check: all leaves at one level, every node within its limits, every key in a leaf, leaves linked in order.",
+          "Trace a search for 26 (27 → left, 7 → right, 9 → right, leaf [9 | 26]) and a range search from 4 to 28 along the leaf links.",
+          "Check every step in the B+ tree visualizer: set n to 3 and type all twelve keys at once."
+        ]
+      }
+    ]
+  };
+
+  D.outlines["u4-b13"] = {
+    aim: "A worked problem. Explain the extendible hashing structure briefly, write every key's hash value in binary, build the starting structure, then redraw the directory and buckets after each of the four steps, saying whether a bucket splits, the directory doubles, or buckets merge.",
+    sections: [
+      {
+        title: "Extendible hashing in brief",
+        pages: 0.75,
+        see: ["4.9#why", "4.9#extendible"],
+        points: [
+          "Why static hashing is not enough as the file grows.",
+          "The directory, global depth d, buckets and local depth d′; 2^(d − d′) entries point to one bucket.",
+          "The rule: double the directory only when the full bucket's local depth equals the global depth."
+        ],
+        draw: ["A directory with its bit strings pointing to buckets, with the depths marked."]
+      },
+      {
+        title: "Hash values of the keys",
+        pages: 0.5,
+        see: ["4.9#worked-example"],
+        points: [
+          "x mod 8 keeps the last three bits of x.",
+          "State that the answer uses the last bits of the hash value, as in the class notes."
+        ],
+        table: ["Key and its bits: 1 = 001, 3 = 011, 5 = 101, 8 = 000, 9 = 001, 12 = 100, 17 = 001, 28 = 100, 2 = 010, 24 = 000."]
+      },
+      {
+        title: "The starting structure for 1, 3, 5, 8, 9, 12, 17 and 28",
+        pages: 1.25,
+        see: ["4.9#worked-example", "4.9#operations"],
+        points: [
+          "Start with global depth 2: 1, 5 and 9 go to bucket 01 and fill it; 8 and 12 go to 00; 3 goes to 11.",
+          "17 ends in 01, which is full with local depth 2 = global depth, so the directory doubles to depth 3 and bucket 01 splits: 001 holds 1, 9, 17 and 101 holds 5.",
+          "28 ends in 100, which still points to bucket 00: 00 now holds 8, 12, 28."
+        ],
+        draw: ["The structure after all eight keys: directory 000 to 111; buckets 00 (2): 8, 12, 28; 001 (3): 1, 9, 17; 101 (3): 5; 10 (2): empty; 11 (2): 3."]
+      },
+      {
+        title: "Insert 2 and insert 24",
+        pages: 1.25,
+        see: ["4.9#worked-example", "4.9#try-it"],
+        points: [
+          "Insert 2: it ends in 010 and goes into the empty bucket 10. No split.",
+          "Insert 24: it ends in 000; bucket 00 is full but its local depth 2 is less than 3, so only the bucket splits: 000 (3) holds 8, 24 and 100 (3) holds 12, 28. The directory does not double."
+        ],
+        draw: ["The structure after insert 2 and after insert 24."]
+      },
+      {
+        title: "Delete 5 and delete 12",
+        pages: 1,
+        see: ["4.9#operations", "4.9#worked-example"],
+        points: [
+          "Delete 5: bucket 101 becomes empty and merges with its split image 001; the merged bucket 01 has local depth 2. The directory stays at depth 3, because 000 and 100 still use three bits.",
+          "Delete 12: remove it from bucket 100, which still holds 28. Nothing merges."
+        ],
+        draw: ["The final structure: 000 (3): 8, 24; 100 (3): 28; 01 (2): 1, 9, 17; 10 (2): 2; 11 (2): 3."]
+      },
+      {
+        title: "Conclusion",
+        pages: 0.5,
+        see: ["4.9#merits", "4.9#compare"],
+        points: [
+          "Sum up: one directory doubling (for 17), one split without doubling (for 24), one merge (for 5).",
+          "Merits of extendible hashing over static hashing: no overflow chains, and the file grows one bucket at a time."
+        ]
+      }
+    ]
+  };
+
+  D.outlines["u4-b14"] = {
+    aim: "Define query optimization and why it is needed, then give each step its own heading: the query tree, equivalence rules, heuristic rewriting, cost estimation and choosing the plan. Follow one SQL query through every step and draw its tree before and after optimization.",
+    sections: [
+      {
+        title: "What query optimization is and why it is needed",
+        pages: 0.75,
+        see: ["4.11#what", "4.10#steps"],
+        points: [
+          "Define query optimization: choosing the cheapest evaluation plan among the many equivalent plans for a query.",
+          "Plans for the same query can differ in cost by orders of magnitude, so the optimizer is worth its time.",
+          "Where it sits: parser and translator → optimizer (with catalog statistics) → evaluation engine."
+        ],
+        draw: ["The query processing steps with the optimizer and the catalog marked."]
+      },
+      {
+        title: "Step 1: translate the query into a query tree",
+        pages: 0.75,
+        see: ["4.11#trees", "4.10#steps"],
+        points: [
+          "Translate the SQL query into a relational algebra expression.",
+          "Draw it as a query tree: relations at the leaves, operations at the internal nodes."
+        ],
+        example: ["One SQL query with a join and a selection, its relational algebra expression and its initial tree."]
+      },
+      {
+        title: "Step 2: generate equivalent expressions",
+        pages: 1,
+        see: ["4.11#equivalence"],
+        points: [
+          "Two expressions are equivalent if they give the same result on every database.",
+          "State the main equivalence rules: cascade of selections, commutativity of selections, cascade of projections, selection pushed through a join, and commutativity and associativity of joins."
+        ]
+      },
+      {
+        title: "Step 3: apply heuristic rules",
+        pages: 1,
+        see: ["4.11#heuristics", "4.11#try-it"],
+        points: [
+          "Perform selections as early as possible.",
+          "Perform projections early and keep only the attributes needed.",
+          "Run the most restrictive selections and joins first.",
+          "Replace a Cartesian product followed by a selection with a join."
+        ],
+        draw: ["The query tree from step 1 after the heuristics are applied."]
+      },
+      {
+        title: "Step 4: estimate the cost of each plan",
+        pages: 0.75,
+        see: ["4.11#statistics", "4.11#cost-based", "4.10#cost"],
+        points: [
+          "Catalog statistics: number of tuples n_r, number of blocks b_r and distinct values V(A, r).",
+          "Estimate the size of each intermediate result, for example n_r / V(A, r) for an equality selection.",
+          "Cost is measured in block transfers and disk seeks."
+        ]
+      },
+      {
+        title: "Step 5: choose the algorithms and the cheapest plan",
+        pages: 0.75,
+        see: ["4.11#choosing", "4.10#plans", "4.11#compare"],
+        points: [
+          "Annotate the tree with an algorithm for each operation (index scan, hash join and so on) to get an evaluation plan.",
+          "Compare the estimated costs and pick the cheapest; the evaluation engine then runs it.",
+          "Close with how MySQL shows the chosen plan with EXPLAIN."
+        ],
+        table: ["Heuristic optimization compared with cost-based optimization."]
+      }
+    ]
+  };
 })();

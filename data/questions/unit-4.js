@@ -282,6 +282,43 @@
         "</tbody></table>"
     },
     {
+      id: "u4-a18",
+      unit: 4,
+      part: "A",
+      marks: 2,
+      topics: ["4.5"],
+      sources: [{ bank: "Unit IV", extra: true }],
+      original: "Define ordered indices with example.",
+      question: "Define ordered indices with an example.",
+      answer:
+        "<p>An <strong>ordered index</strong> stores the <strong>search-key values in sorted order</strong>, and links each value to the records (or the block) that have it. A search uses binary search on the index, then follows the pointer.</p>" +
+        "<p>Example: a STUDENT file sorted on RollNo, with 3 records in each block. A sparse index on RollNo has one entry per block:</p>" +
+        "<pre><code>101 → B1   112 → B2   123 → B3   134 → B4   145 → B5</code></pre>" +
+        "<p>To find RollNo 126, take the largest entry not above 126 (123), go to block B3 and scan it.</p>" +
+        "<p>Kinds: <strong>primary</strong> and <strong>secondary</strong> indices, and <strong>dense</strong> and <strong>sparse</strong> indices.</p>"
+    },
+    {
+      id: "u4-a19",
+      unit: 4,
+      part: "A",
+      marks: 2,
+      topics: ["4.2"],
+      sources: [{ bank: "Unit IV", extra: true }],
+      original: "Mention all the operations of files.",
+      question: "Mention the operations on files.",
+      answer:
+        "<p>Operations on files are of two kinds: <strong>retrieval</strong> (find and read records) and <strong>update</strong> (insert, delete and modify records).</p>" +
+        "<p><strong>Record-at-a-time operations:</strong></p>" +
+        "<ul>" +
+        "<li><strong>Open:</strong> prepare the file for reading or writing. <strong>Close:</strong> finish using it.</li>" +
+        "<li><strong>Reset:</strong> move the file pointer back to the first record.</li>" +
+        "<li><strong>Find (locate):</strong> find the first record that meets a condition. <strong>FindNext:</strong> find the next one.</li>" +
+        "<li><strong>Read (get):</strong> copy the current record into memory.</li>" +
+        "<li><strong>Insert</strong>, <strong>Delete</strong> and <strong>Modify:</strong> add a record, remove the current record, or change its field values.</li>" +
+        "</ul>" +
+        "<p><strong>Set-at-a-time operations:</strong> <strong>FindAll</strong> (all matching records), <strong>Find n</strong> (the next n records), <strong>FindOrdered</strong> (all records in a given order) and <strong>Reorganize</strong> (for example, sort the file).</p>"
+    },
+    {
       id: "u4-b1",
       unit: 4,
       part: "B",
@@ -410,6 +447,42 @@
       sources: [{ bank: "Unit IV", extra: true }],
       original: "Construct a B+ Tree for the following set of key values: (2, 3, 5, 7, 11, 17, 19, 23, 29, 31). Assume that the tree is initially empty and the values are inserted in ascending order. Consider that each node can contain a maximum of Three pointers.",
       question: "Construct a B+ tree for the following set of key values: (2, 3, 5, 7, 11, 17, 19, 23, 29, 31). Assume that the tree is initially empty and the values are inserted in ascending order. Each node can contain a maximum of three pointers.",
+      answer: null,
+      outline: true
+    },
+    {
+      id: "u4-b12",
+      unit: 4,
+      part: "B",
+      marks: 16,
+      topics: ["4.6"],
+      sources: [{ bank: "Unit IV", extra: true }],
+      original: "Develop a B+ Tree for the following data. 26,27,28,3,4,7,9,46,48,51,2,6, where number of pointers that fit in one node are 3.",
+      question: "Construct a B+ tree for the following keys, inserted in the given order: 26, 27, 28, 3, 4, 7, 9, 46, 48, 51, 2, 6. The number of pointers that fit in one node is 3.",
+      answer: null,
+      outline: true
+    },
+    {
+      id: "u4-b13",
+      unit: 4,
+      part: "B",
+      marks: 16,
+      topics: ["4.9"],
+      sources: [{ bank: "Unit IV", extra: true }],
+      original: "The following key values are organized in an extendible hashing technique. 1 3 5 8 9 12 17 28. Show the extendible hash structure for this file if the hash function is h(x) = x mod 8 and buckets can hold three records. Show how extendable hash structure changes as the result of each of the following steps: Insert 2, Insert 24, Delete 5, Delete 12.",
+      question: "The key values 1, 3, 5, 8, 9, 12, 17 and 28 are organized with extendible hashing. Show the extendible hash structure for this file if the hash function is h(x) = x mod 8 and a bucket can hold three records. Then show how the structure changes as the result of each of these steps: insert 2, insert 24, delete 5 and delete 12.",
+      answer: null,
+      outline: true
+    },
+    {
+      id: "u4-b14",
+      unit: 4,
+      part: "B",
+      marks: 16,
+      topics: ["4.11", "4.10"],
+      sources: [{ bank: "Unit IV", extra: true }],
+      original: "What is query optimization? Outline the steps in query optimization.",
+      question: "What is query optimization? Outline the steps in query optimization.",
       answer: null,
       outline: true
     }

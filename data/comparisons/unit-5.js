@@ -136,7 +136,7 @@ DBMS.comparisons = (DBMS.comparisons || []).concat([
     ],
     tip: "Partitions cannot be avoided in a distributed system, so the real choice is between C and A while a partition lasts.",
     read: ["5.5#choices"],
-    questions: ["u5-a7", "u5-b4"]
+    questions: ["u5-a7", "u5-b4", "u5-b11"]
   },
   {
     id: "nosql-types",
@@ -154,7 +154,7 @@ DBMS.comparisons = (DBMS.comparisons || []).concat([
     syntaxTitle: "One query in each",
     tip: "For the 16-mark question, give each family its data model, a small example, two systems, two uses, and its merits and demerits. End with this table.",
     read: ["5.9#four"],
-    questions: ["u5-b5"]
+    questions: ["u5-b5", "u5-b11"]
   },
   {
     id: "sql-vs-mongodb",
@@ -244,6 +244,6 @@ DBMS.comparisons = (DBMS.comparisons || []).concat([
     ],
     tip: "In practice both are used together: asymmetric encryption shares a symmetric key safely, then the symmetric key encrypts the data.",
     read: ["5.14#compare", "5.14#mysql"],
-    questions: ["u5-a15", "u5-b10"]
+    questions: ["u5-a15", "u5-a16", "u5-b10"]
   }
 ]);
