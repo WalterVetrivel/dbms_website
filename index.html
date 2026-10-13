@@ -23,16 +23,41 @@
     <main id="main" class="main" tabindex="-1">
       <div class="content-wide">
         <section class="hero">
-          <span class="eyebrow">Study guide</span>
-          <h1>Database Management System</h1>
-          <p class="lead">Learn every topic of your DBMS course in simple steps. See how things work with interactive diagrams. Practice with questions from the question banks.</p>
-          <div class="btn-row">
-            <a class="btn btn-primary" href="units/unit-1/index.html">Start with Unit I</a>
-            <button type="button" class="btn" data-open-search>Search topics</button>
+          <div class="hero-text">
+            <span class="eyebrow">Study guide</span>
+            <h1>Database Management System</h1>
+            <p class="lead">Learn every topic of your DBMS course in simple steps. See how things work with interactive diagrams. Practice with questions from the question banks.</p>
+            <div class="btn-row">
+              <a class="btn btn-primary" href="units/unit-1/index.html">Start with Unit I</a>
+              <button type="button" class="btn" data-open-search>Search topics</button>
+            </div>
+            <div id="continue" class="callout callout-tip" hidden>
+              <div class="callout-title">Continue where you left off</div>
+              <p><a href="index.html"><span class="continue-title"></span></a></p>
+            </div>
           </div>
-          <div id="continue" class="callout callout-tip" hidden>
-            <div class="callout-title">Continue where you left off</div>
-            <p><a href="index.html"><span class="continue-title"></span></a></p>
+          <div class="hero-art" aria-hidden="true">
+            <span class="hero-pill">&#10003; ACID safe</span>
+            <div class="hero-card hero-sql"><span class="hero-card-label">Query</span><b>SELECT</b> name, dept<br><b>FROM</b> student<br><b>WHERE</b> cgpa &gt; <i>8.5</i>;</div>
+            <div class="hero-card hero-result">
+              <span class="hero-card-label">Result</span>
+              <table>
+                <tr><th>name</th><th>dept</th></tr>
+                <tr><td>Anitha</td><td>CSE</td></tr>
+                <tr><td>Karthik</td><td>IT</td></tr>
+                <tr><td>Priya</td><td>CSE</td></tr>
+              </table>
+            </div>
+            <div class="hero-card hero-tree">
+              <span class="hero-card-label">B+ tree</span>
+              <svg viewBox="0 0 200 74">
+                <path d="M100 26 L34 50 M100 26 L100 50 M100 26 L166 50"/>
+                <rect x="70" y="4" width="60" height="22" rx="5"/><text x="83" y="19">20 | 40</text>
+                <rect x="6" y="50" width="56" height="22" rx="5"/><text x="16" y="65">5 · 12</text>
+                <rect x="72" y="50" width="56" height="22" rx="5"/><text x="81" y="65">20 · 31</text>
+                <rect x="138" y="50" width="56" height="22" rx="5"/><text x="147" y="65">40 · 57</text>
+              </svg>
+            </div>
           </div>
         </section>
 
