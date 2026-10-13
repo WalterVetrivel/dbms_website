@@ -53,6 +53,7 @@
           <strong id="toc-title">On this page</strong>
           <ol>
             <li><a href="#basics">Files, records and blocks</a></li>
+            <li><a href="#operations">Operations on files</a></li>
             <li><a href="#heap">Heap file organization</a></li>
             <li><a href="#sequential">Sequential file organization</a></li>
             <li><a href="#hashing">Hashing file organization</a></li>
@@ -81,6 +82,43 @@
             <p>A <strong>file organization</strong> is the method of arranging the records of a file on disk, so that the DBMS can store and find them.</p>
           </div>
           <p>The four main file organizations are <strong>heap</strong>, <strong>sequential</strong>, <strong>hashing</strong> and <strong>multitable clustering</strong>. How each record is laid out inside a block (fixed-length and variable-length records) is covered in topic 4.3.</p>
+        </section>
+
+        <section id="operations" class="topic-section" aria-labelledby="operations-title">
+          <h2 id="operations-title">Operations on files</h2>
+          <p>Programs work with a file through a small set of operations. They are of two kinds: <strong>retrieval</strong> operations find and read records, and <strong>update</strong> operations insert, delete and modify them. Most operations use a <strong>selection condition</strong>, such as RollNo = 112 or Dept = 'CSE', to choose the records.</p>
+          <p>The DBMS keeps a <strong>current record</strong> pointer for each open file. Record-at-a-time operations work on one record and move this pointer.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Record-at-a-time operations</caption>
+              <thead>
+                <tr><th scope="col">Operation</th><th scope="col">What it does</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Open</th><td>Prepares the file for reading or writing and sets the pointer to the start of the file.</td></tr>
+                <tr><th scope="row">Reset</th><td>Moves the pointer back to the first record.</td></tr>
+                <tr><th scope="row">Find (locate)</th><td>Finds the first record that meets the condition and makes it the current record.</td></tr>
+                <tr><th scope="row">FindNext</th><td>Finds the next record that meets the condition.</td></tr>
+                <tr><th scope="row">Read (get)</th><td>Copies the current record into memory.</td></tr>
+                <tr><th scope="row">Insert</th><td>Adds a new record to the file.</td></tr>
+                <tr><th scope="row">Delete</th><td>Removes the current record, or marks it as deleted.</td></tr>
+                <tr><th scope="row">Modify</th><td>Changes some field values of the current record.</td></tr>
+                <tr><th scope="row">Close</th><td>Finishes using the file and frees its buffers.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Set-at-a-time operations work on many records at once:</p>
+          <ul>
+            <li><strong>FindAll:</strong> finds all the records that meet the condition.</li>
+            <li><strong>Find n:</strong> finds the next n records that meet the condition.</li>
+            <li><strong>FindOrdered:</strong> returns all the records in a given order.</li>
+            <li><strong>Reorganize:</strong> rebuilds the file, for example to sort it or to remove deleted records.</li>
+          </ul>
+          <div class="callout callout-example">
+            <div class="callout-title">Example</div>
+            <p>To raise the marks of RollNo 112: Open the STUDENT file, Find the record with RollNo = 112, Read it, Modify the Marks field, then Close the file. The SQL statement <code>UPDATE student SET marks = marks + 5 WHERE rollno = 112;</code> does all of these steps for you.</p>
+          </div>
+          <p>The file organization decides how fast each operation is. For example, Find on RollNo is slow in a heap file but fast in a hashing file on RollNo.</p>
         </section>
 
         <section id="heap" class="topic-section" aria-labelledby="heap-title">
@@ -249,6 +287,7 @@ SELECT * FROM student WHERE roll_no BETWEEN 110 AND 125;</code></pre>
             <ul>
               <li>A file is a sequence of records, and a record is a sequence of fields. Data moves between disk and memory in blocks.</li>
               <li>A file organization is the way the records of a file are arranged on disk.</li>
+              <li>Operations on files: Open, Reset, Find, FindNext, Read, Insert, Delete, Modify and Close one record at a time, and FindAll, Find n, FindOrdered and Reorganize for many records.</li>
               <li>Heap: records in any order. Fast inserts, slow searches.</li>
               <li>Sequential: records sorted on a search key and linked by pointers. Fast ordered reads, slow inserts.</li>
               <li>A sequential file puts extra records in overflow blocks and is reorganized from time to time.</li>
