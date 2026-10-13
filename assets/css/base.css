@@ -209,6 +209,13 @@ textarea {
   max-width: 40rem;
 }
 
+/* In-page links, such as the section menu, glide to their section. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
