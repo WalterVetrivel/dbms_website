@@ -288,16 +288,7 @@
   margin-top: 0;
 }
 
-.side-links {
-  border-bottom: 1px solid var(--border);
-  padding-bottom: var(--sp-3);
-  margin-bottom: var(--sp-3);
-}
-
-/* The study hubs are shown only in the fixed sidebar. The drawer lists them
-   with the other site pages in .side-links. */
 .side-hubs {
-  display: none;
   margin-bottom: var(--sp-4);
 }
 
@@ -411,6 +402,14 @@
   margin: 0 0 var(--sp-2);
 }
 
+.side-credit strong {
+  color: var(--text);
+}
+
+.sidebar .side-about {
+  margin: 0 calc(-1 * var(--sp-2)) var(--sp-2);
+}
+
 .side-credit .profile-links {
   justify-content: flex-start;
 }
@@ -469,13 +468,8 @@
     background: transparent;
   }
 
-  body[data-sidebar="static"] .sidebar-head .icon-btn,
-  body[data-sidebar="static"] .side-links {
+  body[data-sidebar="static"] .sidebar-head .icon-btn {
     display: none;
-  }
-
-  body[data-sidebar="static"] .side-hubs {
-    display: block;
   }
 
   body[data-sidebar="static"] .menu-btn {

@@ -121,6 +121,8 @@
     printer: '<path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/>',
     github: '<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/>',
     linkedin: '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>',
+    library: '<path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/>',
+    info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
     key: '<path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/>',
     "circle-play": '<path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/>',
     layers: '<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/>'
@@ -316,28 +318,23 @@
     sidebar.id = "sidebar";
     sidebar.setAttribute("aria-label", "Site menu");
 
-    var siteLinks = pages
-      .filter(function (p) {
-        return p.nav && isPublished(p);
-      })
-      .map(function (p) {
-        var current = p.id === PAGE ? ' aria-current="page"' : "";
-        return '<li><a href="' + url(p.href) + '"' + current + ">" + esc(p.title) + "</a></li>";
-      })
-      .join("");
-
-    // The study hubs (question banks, outlines and so on), for the fixed sidebar on
-    // wide screens, where the header links above are the only other way to reach them.
-    // Labs has its own group below.
+    // The study hubs (question banks, outlines and so on) and the resources page.
+    // Labs has its own group below, and About is linked from the credits.
     var hubLinks = pages
       .filter(function (p) {
-        return p.icon && p.id !== "labs" && isPublished(p);
+        return (p.icon || p.id === "resources") && p.id !== "labs" && isPublished(p);
       })
       .map(function (p) {
         var current = p.id === PAGE && !UNIT ? ' aria-current="page"' : "";
-        return '<li><a href="' + url(p.href) + '"' + current + ">" + icon(p.icon, "side-icon") + "<span>" + esc(p.title) + "</span></a></li>";
+        return '<li><a href="' + url(p.href) + '"' + current + ">" + icon(p.icon || "library", "side-icon") + "<span>" + esc(p.title) + "</span></a></li>";
       })
       .join("");
+
+    var site = D.site || {};
+    var aboutPage = pageById("about");
+    var aboutLink = aboutPage && isPublished(aboutPage)
+      ? '<a class="side-about" href="' + url(aboutPage.href) + '"' + (PAGE === "about" ? ' aria-current="page"' : "") + ">" + icon("info", "side-icon") + "<span>About this site</span></a>"
+      : "";
 
     var progress = D.progress.data();
     var unitGroups = units
@@ -388,10 +385,9 @@
     sidebar.innerHTML =
       '<div class="sidebar-head"><span class="sidebar-title">Menu</span>' +
       '<button type="button" class="icon-btn close-btn" aria-label="Close menu">' + icon("x") + "</button></div>" +
-      '<nav aria-label="Site pages" class="side-links"><ul>' + siteLinks + "</ul></nav>" +
       (hubLinks ? '<nav aria-label="Study tools" class="side-hubs"><div class="sidebar-title">Study tools</div><ul>' + hubLinks + "</ul></nav>" : "") +
       '<nav aria-label="Units and topics"><div class="sidebar-title">Units</div>' + unitGroups + "</nav>" + labGroup +
-      '<div class="side-credit"><p>by ' + esc(((D.site || {}).credit || {}).name || "") + "</p>" +
+      '<div class="side-credit"><p><strong>' + esc(site.name || "") + "</strong><br>by " + esc((site.credit || {}).name || "") + "</p>" + aboutLink +
       '<div class="profile-links">' + profileLinks() + "</div></div>";
 
     frame.insertBefore(sidebar, frame.firstChild);
