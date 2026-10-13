@@ -295,7 +295,9 @@ const report = [];
 for (const f of htmlFiles) {
   const html = fs.readFileSync(f, "utf8");
   const main = (html.match(/<main[\s\S]*?<\/main>/) || [""])[0]
-    .replace(/<(pre|code|table|script|style|noscript)[\s\S]*?<\/\1>/g, " ");
+    .replace(/<(pre|code|table|script|style|noscript)[\s\S]*?<\/\1>/g, " ")
+    // Video titles are quoted as YouTube gives them, so they are not scored.
+    .replace(/<section id="videos"[\s\S]*?<\/section>/g, " ");
   const paras = [...main.matchAll(/<(p|li|dd)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/g)].map((m) => stripTags(m[2]));
   const text = paras.map((p) => p.trim().replace(/[^.!?]$/, "$&.")).join(" ").replace(/&[a-z]+;/g, " ");
   const score = flesch(text);
