@@ -245,6 +245,23 @@
         "</ul>"
     },
     {
+      id: "u5-a16",
+      unit: 5,
+      part: "A",
+      marks: 2,
+      topics: ["5.14"],
+      sources: [{ bank: "Unit V", extra: true }],
+      original: "What is encryption in database security?",
+      question: "What is encryption in database security?",
+      answer:
+        "<p><strong>Encryption</strong> turns readable data (<strong>plaintext</strong>) into scrambled data (<strong>ciphertext</strong>) with an algorithm and a <strong>key</strong>. Only someone with the right key can <strong>decrypt</strong> it. So stolen data is useless without the key.</p>" +
+        "<p>Databases encrypt <strong>data in transit</strong> (between the app and the server, with TLS) and <strong>data at rest</strong> (on disk, in backups and logs).</p>" +
+        "<ul>" +
+        "<li><strong>Symmetric:</strong> one shared key encrypts and decrypts. Example: AES.</li>" +
+        "<li><strong>Asymmetric:</strong> a public key encrypts and a private key decrypts. Example: RSA.</li>" +
+        "</ul>"
+    },
+    {
       id: "u5-b1",
       unit: 5,
       part: "B",
@@ -361,6 +378,18 @@
       sources: [{ bank: "Unit V", no: 10 }],
       original: "Explain encryption and public key infrastructures used in databases. What challenges are involved in database security?",
       question: "Explain encryption and the public key infrastructures used in databases. What challenges are involved in database security?",
+      answer: null,
+      outline: true
+    },
+    {
+      id: "u5-b11",
+      unit: 5,
+      part: "B",
+      marks: 16,
+      topics: ["5.5", "5.4", "5.6", "5.7", "5.8", "5.9"],
+      sources: [{ bank: "Unit V", extra: true }],
+      original: "Discuss CAP theorem and compare different types of NoSQL databases.",
+      question: "Discuss the CAP theorem and compare the different types of NoSQL databases.",
       answer: null,
       outline: true
     }

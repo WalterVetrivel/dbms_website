@@ -676,4 +676,72 @@
       }
     ]
   };
+
+  D.outlines["u5-b11"] = {
+    aim: "Two parts. CAP theorem: the three guarantees, the theorem, the two-server partition example, and CP, AP and CA systems. NoSQL types: each of the four types with its data model drawn and an example, then a detailed comparison table that includes where each type usually sits on CAP.",
+    sections: [
+      {
+        title: "Introduction: NoSQL and distributed data",
+        pages: 0.5,
+        see: ["5.4#what", "5.4#need", "5.4#scaling"],
+        points: [
+          "Define NoSQL and why it is needed: big data, flexible schemas and scaling out.",
+          "NoSQL systems keep copies of data on many servers, which is where the CAP theorem applies."
+        ]
+      },
+      {
+        title: "CAP theorem: the three guarantees and the theorem",
+        pages: 1,
+        see: ["5.5#setting", "5.5#three", "5.5#theorem"],
+        points: [
+          "Consistency: every read sees the latest write.",
+          "Availability: every request gets a non-error answer.",
+          "Partition tolerance: the system keeps working when the network splits.",
+          "The theorem: during a partition, a distributed system must give up consistency or availability."
+        ],
+        draw: ["The CAP triangle with CP, AP and CA on its sides."]
+      },
+      {
+        title: "Why only two, and CP, AP and CA systems",
+        pages: 1,
+        see: ["5.5#why", "5.5#choices", "5.5#acid-base"],
+        points: [
+          "The two-server example: a partition separates the copies, and a read must either wait (CP) or return old data (AP).",
+          "CP examples: HBase, MongoDB (default settings). AP examples: Cassandra, CouchDB, DynamoDB. CA: a single-server RDBMS.",
+          "Link to ACID (CP side) and BASE (AP side)."
+        ],
+        draw: ["Two servers with a broken link between them and a client writing to one and reading from the other."]
+      },
+      {
+        title: "The four types of NoSQL databases",
+        pages: 1.5,
+        see: ["5.4#types", "5.6#what", "5.7#what", "5.8#model", "5.9#model"],
+        points: [
+          "Document: JSON-like documents in collections; MongoDB, CouchDB; product catalogs and user profiles.",
+          "Key-value: a key and its value; Redis, DynamoDB; caches, sessions and shopping carts.",
+          "Column-based: rows with column families; Cassandra, HBase; logs, sensor data and time series.",
+          "Graph: nodes and edges with properties; Neo4j; friend networks, routes and fraud checks."
+        ],
+        draw: ["The same student data stored in each of the four models."]
+      },
+      {
+        title: "Comparison of the four types",
+        pages: 1,
+        see: ["5.9#four", "5.6#compare", "5.7#compare", "5.8#compare"],
+        points: [
+          "Do not just describe; compare point by point.",
+          "Mention the merits and limits of each type in the table."
+        ],
+        table: ["Document, key-value, column-based and graph compared on data model, query power, schema, scaling, usual CAP choice, examples and best use."]
+      },
+      {
+        title: "Conclusion",
+        pages: 0.25,
+        see: ["5.4#merits"],
+        points: [
+          "Choose the type by the shape of the data and the queries, and the CAP choice by what the application can tolerate during a partition."
+        ]
+      }
+    ]
+  };
 })();

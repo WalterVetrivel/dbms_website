@@ -227,6 +227,6 @@ DBMS.comparisons = (DBMS.comparisons || []).concat([
     ],
     syntaxTitle: "Each one at work",
     tip: "Real optimizers use both: heuristics to cut down the plans, then cost estimates to choose among the rest.",
-    questions: ["u4-a13", "u4-a14", "u4-b9", "u4-b10"]
+    questions: ["u4-a13", "u4-a14", "u4-b9", "u4-b10", "u4-b14"]
   }
 ]);
