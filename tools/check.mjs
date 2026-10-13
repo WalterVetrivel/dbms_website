@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { buildRevision } from "./build-revision.mjs";
 import { buildGallery } from "./build-gallery.mjs";
 import { buildComparisons } from "./build-comparisons.mjs";
+import { buildSitemap } from "./build-sitemap.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SKIP_DIRS = new Set([".git", "node_modules", "tools", ".github"]);
@@ -273,6 +274,16 @@ try {
   }
 } catch (e) {
   err("tools/build-comparisons.mjs", e.message);
+}
+
+// 6d. The site map in about.html must list every page.
+try {
+  for (const [file, html] of Object.entries(buildSitemap())) {
+    const full = path.join(ROOT, file);
+    if (fs.readFileSync(full, "utf8") !== html) err(file, "site map is out of date; run node tools/build-sitemap.mjs");
+  }
+} catch (e) {
+  err("tools/build-sitemap.mjs", e.message);
 }
 
 // 7. Readability (Flesch reading ease). A warning only.
