@@ -387,6 +387,11 @@ caption {
   content: "\2212";
 }
 
+/* While an accordion closes, its sign already shows that it is closing. */
+.accordion[data-anim="closing"] > summary::after {
+  content: "+";
+}
+
 .accordion-body {
   padding: 0 var(--sp-4) var(--sp-4);
   border-top: 1px solid var(--border);
@@ -1121,6 +1126,24 @@ a.chip:hover {
   font-size: var(--fs-xs);
 }
 
+/* The study tool links in the rail, under a "Study tools" label */
+.toc-rail .toc-group {
+  margin-top: var(--sp-4);
+  padding: var(--sp-3) var(--sp-3) var(--sp-2);
+  border-top: 2px dashed var(--border);
+  color: var(--accent);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.toc-rail .toc-tool a {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
 .toc-rail ol a.is-parent {
   color: var(--text);
   font-weight: 600;
@@ -1208,6 +1231,125 @@ a.chip:hover {
 
 .topic-section > h2 {
   margin-top: var(--sp-12);
+}
+
+/* Study tools: the sections at the end of a topic page for learning, revising and
+   exploring further. layout.js marks them, so the topic content and the tools
+   read as two parts of the page. */
+.study-tools-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin: var(--sp-12) 0 0;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.study-tools-divider::before,
+.study-tools-divider::after {
+  content: "";
+  flex: 1;
+  border-top: 2px dashed var(--border-strong);
+}
+
+.study-tools-divider span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.study-tools-divider .icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--accent);
+}
+
+.study-tools-divider + .study-tool > h2 {
+  margin-top: var(--sp-6);
+}
+
+.study-tool > h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.study-tool-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.study-tool-icon .icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* The study tool links in the "On this page" box, in their own row */
+.toc-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+  margin-top: var(--sp-3);
+  padding-top: var(--sp-3);
+  border-top: 2px dashed var(--border);
+}
+
+.toc-tools-label {
+  color: var(--accent);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.toc-tools ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toc-tools li {
+  margin: 0;
+}
+
+.toc-tools a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.toc-tools a:hover {
+  border-color: var(--accent);
+}
+
+.toc-tools .icon,
+.toc-rail .toc-tool .icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--accent);
 }
 
 .topic-footer {

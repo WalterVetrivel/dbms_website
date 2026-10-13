@@ -121,12 +121,26 @@
     printer: '<path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/>',
     github: '<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/>',
     linkedin: '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>',
+    lightbulb: '<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+    key: '<path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/>',
+    "circle-play": '<path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/>',
     layers: '<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/>'
   };
 
   function icon(name, cls) {
     return '<svg class="icon' + (cls ? " " + cls : "") + '" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + (ICONS[name] || "") + "</svg>";
   }
+
+  // The sections at the end of a topic page that help a student learn, revise and
+  // explore further, by section id, with the icon each one shows.
+  var STUDY_TOOLS = {
+    "real-world": "lightbulb",
+    "key-points": "key",
+    questions: "file-question",
+    quiz: "list-checks",
+    videos: "circle-play",
+    reading: "book-open"
+  };
   // Links to the author's GitHub and LinkedIn profiles, for the sidebar and footer credits.
   function profileLinks() {
     var c = (D.site || {}).credit || {};
@@ -986,9 +1000,15 @@
       items = items.concat(x.children);
     });
     if (!items.length) return;
+    // On topic pages, the study tool links come last, under their own label and with icons.
+    var tools = PAGE === "topic" ? STUDY_TOOLS : {};
     var listHtml = function (list) {
+      var started = false;
       return list.map(function (x) {
-        return '<li><a href="#' + esc(x.id) + '">' + esc(x.text) + "</a>" +
+        var tool = !x.parent && tools.hasOwnProperty(x.id) ? tools[x.id] : "";
+        var label = tool && !started ? '<li class="toc-group" aria-hidden="true">Study tools</li>' : "";
+        if (tool) started = true;
+        return label + "<li" + (tool ? ' class="toc-tool"' : "") + '><a href="#' + esc(x.id) + '">' + (tool ? icon(tool) : "") + esc(x.text) + "</a>" +
           (x.children.length ? '<ol class="toc-sub">' + listHtml(x.children) + "</ol>" : "") + "</li>";
       }).join("");
     };
@@ -1080,6 +1100,80 @@
     update();
   }
 
+  /* ---------- Study tools (topic pages) ----------
+     Sets the study tool sections apart from the topic itself: a "Study tools"
+     divider before the first one, an icon in each heading, and in the
+     "On this page" box, the tool links move to their own row under the list. */
+
+  function markStudyTools() {
+    var first = null;
+    Object.keys(STUDY_TOOLS).forEach(function (id) {
+      var sec = document.getElementById(id);
+      if (!sec || !sec.classList.contains("topic-section")) return;
+      sec.classList.add("study-tool");
+      var h = sec.querySelector(":scope > h2");
+      if (h) h.insertAdjacentHTML("afterbegin", '<span class="study-tool-icon">' + icon(STUDY_TOOLS[id]) + "</span>");
+      if (!first || first.compareDocumentPosition(sec) & Node.DOCUMENT_POSITION_PRECEDING) first = sec;
+    });
+    if (first) {
+      first.insertAdjacentHTML("beforebegin",
+        '<div class="study-tools-divider" role="separator" aria-label="Study tools"><span>' + icon("graduation-cap") + "Study tools</span></div>");
+    }
+
+    var toc = document.querySelector(".on-this-page");
+    var ol = toc && toc.querySelector("ol");
+    if (!ol) return;
+    var moved = Array.prototype.filter.call(ol.children, function (li) {
+      var a = li.querySelector(":scope > a[href^='#']");
+      return a && STUDY_TOOLS.hasOwnProperty(a.getAttribute("href").slice(1)) && document.getElementById(a.getAttribute("href").slice(1));
+    });
+    if (!moved.length) return;
+    var box = document.createElement("div");
+    box.className = "toc-tools";
+    box.innerHTML = '<span class="toc-tools-label">Study tools</span><ul></ul>';
+    moved.forEach(function (li) {
+      var a = li.querySelector("a");
+      a.insertAdjacentHTML("afterbegin", icon(STUDY_TOOLS[a.getAttribute("href").slice(1)]));
+      box.querySelector("ul").appendChild(li);
+    });
+    toc.appendChild(box);
+  }
+
+  /* ---------- Accordions ----------
+     Opens and closes accordions with a short height animation, unless the
+     reader has asked their device for less motion. Without the animation, or
+     without JavaScript, they open and close at once as before. */
+
+  function enhanceAccordions() {
+    var less = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
+    document.addEventListener("click", function (e) {
+      var summary = e.target.closest("details.accordion > summary");
+      if (!summary || e.defaultPrevented || less.matches || !summary.animate || e.target.closest("summary a")) return;
+      var d = summary.parentNode;
+      e.preventDefault();
+      // A second click during the animation turns it around.
+      var opening = d.dataset.anim ? d.dataset.anim === "closing" : !d.open;
+      var from = d.getBoundingClientRect().height;
+      if (d._anim) d._anim.cancel();
+      d.open = true;
+      var to = opening
+        ? d.getBoundingClientRect().height
+        : summary.getBoundingClientRect().bottom - d.getBoundingClientRect().top + parseFloat(getComputedStyle(d).borderBottomWidth);
+      d.dataset.anim = opening ? "opening" : "closing";
+      d.style.overflow = "hidden";
+      var anim = (d._anim = d.animate(
+        { height: [from + "px", to + "px"] },
+        { duration: Math.min(400, 180 + Math.abs(to - from) / 6), easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" }
+      ));
+      anim.onfinish = function () {
+        d._anim = null;
+        delete d.dataset.anim;
+        d.style.overflow = "";
+        if (!opening) d.open = false;
+      };
+    });
+  }
+
   /* ---------- Start ---------- */
 
   renderHeader();
@@ -1091,6 +1185,7 @@
   if (PAGE === "topic") {
     renderTopic();
     renderSectionMenu();
+    markStudyTools();
   }
   if ((PAGE === "diagrams" || PAGE === "comparisons") && UNIT) renderSectionMenu();
   if (PAGE === "labs") renderLabs();
@@ -1102,4 +1197,5 @@
   enhanceTabs();
   enhanceSearchButtons();
   enhanceResetButtons();
+  enhanceAccordions();
 })();
