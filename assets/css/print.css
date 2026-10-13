@@ -18,12 +18,21 @@
   .search-dialog,
   .toc-rail,
   .toc-fab,
+  .hero-art,
+  .hero::before,
+  .hero::after,
   .no-print {
     display: none !important;
   }
 
   .main {
     padding: 0;
+  }
+
+  .hero {
+    display: block;
+    padding: 0;
+    border: 0;
   }
 
   .content,
