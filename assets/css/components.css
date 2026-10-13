@@ -1874,3 +1874,75 @@ a.chip:hover {
 .cmp-index .chips {
   margin: 0;
 }
+
+/* About page: screenshots in the How to use steps */
+.about-steps > li > p {
+  margin-bottom: var(--sp-3);
+}
+.about-shot {
+  margin: 0 0 var(--sp-6);
+}
+.about-shot a {
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.about-shot a:hover {
+  border-color: var(--border-strong);
+}
+.about-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.about-shot-tall {
+  max-width: 28rem;
+}
+.about-shot figcaption {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+/* About page: site map, built by tools/build-sitemap.mjs */
+.site-map h3 {
+  margin-top: var(--sp-6);
+}
+.site-map-grid {
+  display: grid;
+  gap: var(--sp-4) var(--sp-6);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+}
+.site-map-group {
+  border-top: 3px solid var(--unit-color, var(--primary));
+  padding-top: var(--sp-3);
+}
+.site-map-group h4 {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-base);
+}
+.site-map-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: var(--fs-sm);
+}
+.site-map-list li {
+  display: flex;
+  gap: var(--sp-2);
+  margin: 0 0 var(--sp-1);
+}
+.site-map-num {
+  flex: 0 0 2.25rem;
+  font-weight: 600;
+  color: var(--unit-color, var(--primary));
+  font-variant-numeric: tabular-nums;
+}
+.site-map-main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-5);
+  font-size: var(--fs-base);
+}

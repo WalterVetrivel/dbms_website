@@ -15,6 +15,8 @@ Live site: https://waltervetrivel.github.io/dbms_website/
 - The unit revision sheets in `revision/` are built from the Key points section of each topic page. After you change key points, run `node tools/build-revision.mjs`. The checks fail if a sheet is out of date.
 - The Diagrams and Examples pages in `diagrams/` copy their diagrams, queries and tables from the topic pages. `data/gallery.js` lists each item and the ids of the elements it copies. After you change that list or one of those elements, run `node tools/build-gallery.mjs`. The checks fail if a page is out of date.
 - The Comparisons pages in `comparisons/` are built from `data/comparisons/unit-1.js` to `unit-5.js`. A comparison either copies its table from a topic page (by element id) or carries its own rows, and can show SQL syntax side by side. After you change that data or a copied table, run `node tools/build-comparisons.mjs`. It also writes `data/comparison-index.js`, which the search box loads. The checks fail if a page is out of date.
+- The site map on `about.html` is built from the pages on disk, with `data/site.js` and `data/topics.js` for grouping and order. After you add, remove or rename a page, run `node tools/build-sitemap.mjs`. The checks fail if the site map is out of date or misses a page.
+- The screenshots in the How to use section of `about.html` live in `assets/img/about`. To take them again, serve the site locally and run `node tools/take-about-screenshots.mjs http://localhost:8000/` (needs Playwright).
 - `styleguide.html` shows every building block. Use it when you write a new page.
 
 ## Folders
