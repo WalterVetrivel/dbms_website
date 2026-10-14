@@ -59,6 +59,11 @@ for (const f of htmlFiles) {
     if (rootMatch[1] !== expected) err(name, `data-root is "${rootMatch[1]}" (expected "${expected}")`);
   }
 
+  // Fonts, styles and scripts must load from the site itself, so pages work offline.
+  for (const m of html.matchAll(/<(?:script\b[^>]*\ssrc|link\b[^>]*\srel="(?:stylesheet|preload|preconnect|modulepreload|icon)"[^>]*\shref)="((?:https?:)?\/\/[^"]+)"/g)) {
+    err(name, `loads a file from another site: ${m[1]}`);
+  }
+
   // Local links and sources must point to files that exist.
   if (name === "404.html") continue; // uses an absolute site root
   for (const m of html.matchAll(/\s(?:href|src)="([^"]+)"/g)) {

@@ -17,6 +17,7 @@ Live site: https://waltervetrivel.github.io/dbms_website/
 - The Comparisons pages in `comparisons/` are built from `data/comparisons/unit-1.js` to `unit-5.js`. A comparison either copies its table from a topic page (by element id) or carries its own rows, and can show SQL syntax side by side. After you change that data or a copied table, run `node tools/build-comparisons.mjs`. It also writes `data/comparison-index.js`, which the search box loads. The checks fail if a page is out of date.
 - The site map on `about.html` is built from the pages on disk, with `data/site.js` and `data/topics.js` for grouping and order. After you add, remove or rename a page, run `node tools/build-sitemap.mjs`. The checks fail if the site map is out of date or misses a page.
 - The screenshots in the How to use section of `about.html` live in `assets/img/about`. To take them again, serve the site locally and run `node tools/take-about-screenshots.mjs http://localhost:8000/` (needs Playwright).
+- The fonts (Inter and JetBrains Mono) are stored in `assets/fonts` and loaded by `assets/fonts/fonts.css`, so the site works offline and does not depend on Google Fonts. Pages must not load fonts, styles or scripts from other sites. The checks fail if one does.
 - `styleguide.html` shows every building block. Use it when you write a new page.
 
 ## Folders
@@ -26,6 +27,7 @@ Live site: https://waltervetrivel.github.io/dbms_website/
 | `assets/css` | Design tokens, base styles, layout, components and print styles |
 | `assets/js` | Page scripts |
 | `assets/img` | Images and icons |
+| `assets/fonts` | Font files, their stylesheet and their licenses |
 | `data` | Units, topics, site settings, question bank items and quiz items |
 | `units/unit-1` to `units/unit-5` | Unit pages and topic pages |
 | `question-bank` | The question bank hub and one page per unit |
